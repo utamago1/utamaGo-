@@ -1,0 +1,428 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidUsername(username) {
+      return username is string && username.size() >= 3 && username.size() <= 24 && username.matches('^[a-z0-9_.]+$');
+    }
+
+    function isValidJlptLevel(level) {
+      return level is string && level in ['N5', 'N4', 'N3', 'N2', 'N1'];
+    }
+
+    function isValidGender(gender) {
+      return gender is string && gender in ['cowok', 'cewek'];
+    }
+
+    function isValidAnkiDeckId(deckId) {
+      return deckId is string && deckId in [
+        'N5', 'N4', 'N3', 'N2', 'N1',
+        'N5_BUNPOU', 'N4_BUNPOU', 'N3_BUNPOU', 'N2_BUNPOU', 'N1_BUNPOU'
+      ];
+    }
+
+    function isValidAnkiCategory(cat) {
+      return cat is string && cat in ['kosakata', 'bunpou'];
+    }
+
+    function isValidAnkiCardState(st) {
+      return st is string && st in ['new', 'learning', 'review', 'relearning', 'suspended'];
+    }
+
+    function isValidAnkiRating(rating) {
+      return rating is string && rating in ['again', 'hard', 'good', 'easy'];
+    }
+
+    function isValidDateKey(key) {
+      return key is string && key.size() == 10 && key.matches('^\\d{4}-\\d{2}-\\d{2}$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidUserProfile(data) {
+      return data.keys().hasAll([
+          'uid',
+          'username',
+          'email',
+          'name',
+          'gender',
+          'selfAssessedLevel',
+          'targetLevel',
+          'dailyMinutes',
+          'onboardingCompleted',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'uid',
+          'username',
+          'email',
+          'name',
+          'gender',
+          'selfAssessedLevel',
+          'targetLevel',
+          'dailyMinutes',
+          'onboardingCompleted',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        isValidId(data.uid) &&
+        data.uid == request.auth.uid &&
+        isValidUsername(data.username) &&
+        data.email is string &&
+        data.email.size() >= 3 &&
+        data.email.size() <= 120 &&
+        data.email == request.auth.token.email &&
+        data.name is string &&
+        data.name.size() <= 60 &&
+        isValidGender(data.gender) &&
+        isValidJlptLevel(data.selfAssessedLevel) &&
+        isValidJlptLevel(data.targetLevel) &&
+        data.dailyMinutes is number &&
+        data.dailyMinutes >= 5 &&
+        data.dailyMinutes <= 240 &&
+        data.onboardingCompleted is bool &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    function isValidUsernameLookup(data) {
+      return data.keys().hasAll(['uid', 'email', 'createdAt']) &&
+        data.keys().hasOnly(['uid', 'email', 'createdAt']) &&
+        isValidId(data.uid) &&
+        data.uid == request.auth.uid &&
+        data.email is string &&
+        data.email.size() >= 3 &&
+        data.email.size() <= 120 &&
+        data.email == request.auth.token.email &&
+        data.createdAt is timestamp;
+    }
+
+    function isValidAnkiDeckSettings(s) {
+      return s is map &&
+        s.keys().hasAll([
+          'dailyNewLimit',
+          'maxReviewsPerDay',
+          'targetRetention',
+          'learningStepsMinutes',
+          'relearningStepsMinutes',
+          'newCardOrder',
+          'reviewCardOrder',
+          'resumeInterruptedSession'
+        ]) &&
+        s.keys().hasOnly([
+          'dailyNewLimit',
+          'maxReviewsPerDay',
+          'targetRetention',
+          'learningStepsMinutes',
+          'relearningStepsMinutes',
+          'newCardOrder',
+          'reviewCardOrder',
+          'resumeInterruptedSession'
+        ]) &&
+        s.dailyNewLimit is number && s.dailyNewLimit >= 0 && s.dailyNewLimit <= 200 &&
+        s.maxReviewsPerDay is number && s.maxReviewsPerDay >= 0 && s.maxReviewsPerDay <= 2000 &&
+        s.targetRetention is number && s.targetRetention >= 75 && s.targetRetention <= 97 &&
+        s.learningStepsMinutes is list && s.learningStepsMinutes.size() >= 1 && s.learningStepsMinutes.size() <= 6 && s.learningStepsMinutes[0] is number &&
+        s.relearningStepsMinutes is list && s.relearningStepsMinutes.size() >= 1 && s.relearningStepsMinutes.size() <= 6 && s.relearningStepsMinutes[0] is number &&
+        s.newCardOrder is string && s.newCardOrder in ['random', 'sequential'] &&
+        s.reviewCardOrder is string && s.reviewCardOrder in ['oldest_due', 'random'] &&
+        s.resumeInterruptedSession is bool;
+    }
+
+    function isValidAnkiDeckDaily(d) {
+      return d is map &&
+        d.keys().hasAll([
+          'dateKey',
+          'newCardIdsToday',
+          'reviewedCardIdsToday',
+          'reviewCompletionsToday',
+          'extraReviewQuotaToday',
+          'dailyNewOrderDateKey',
+          'dailyNewOrderIds'
+        ]) &&
+        d.keys().hasOnly([
+          'dateKey',
+          'newCardIdsToday',
+          'reviewedCardIdsToday',
+          'reviewCompletionsToday',
+          'extraReviewQuotaToday',
+          'dailyNewOrderDateKey',
+          'dailyNewOrderIds'
+        ]) &&
+        isValidDateKey(d.dateKey) &&
+        d.newCardIdsToday is list && d.newCardIdsToday.size() <= 250 && (d.newCardIdsToday.size() == 0 || d.newCardIdsToday[0] is string) &&
+        d.reviewedCardIdsToday is list && d.reviewedCardIdsToday.size() <= 2000 && (d.reviewedCardIdsToday.size() == 0 || d.reviewedCardIdsToday[0] is string) &&
+        d.reviewCompletionsToday is number && d.reviewCompletionsToday >= 0 && d.reviewCompletionsToday <= 5000 &&
+        d.extraReviewQuotaToday is number && d.extraReviewQuotaToday >= 0 && d.extraReviewQuotaToday <= 1000 &&
+        d.dailyNewOrderDateKey is string && d.dailyNewOrderDateKey.size() <= 10 &&
+        d.dailyNewOrderIds is list && d.dailyNewOrderIds.size() <= 300 && (d.dailyNewOrderIds.size() == 0 || d.dailyNewOrderIds[0] is string);
+    }
+
+    function isValidAnkiSession(sess, expectedDeckId) {
+      return sess == null || (
+        sess is map &&
+        sess.keys().hasAll([
+          'sessionId',
+          'deckId',
+          'scope',
+          'dateKey',
+          'queueCardIds',
+          'currentIndex',
+          'completedCardIds',
+          'startedAt',
+          'updatedAt'
+        ]) &&
+        sess.keys().hasOnly([
+          'sessionId',
+          'deckId',
+          'scope',
+          'dateKey',
+          'queueCardIds',
+          'currentIndex',
+          'completedCardIds',
+          'startedAt',
+          'updatedAt'
+        ]) &&
+        sess.sessionId is string && sess.sessionId.size() >= 1 && sess.sessionId.size() <= 120 &&
+        sess.deckId == expectedDeckId &&
+        sess.scope is string && sess.scope in ['due', 'all'] &&
+        isValidDateKey(sess.dateKey) &&
+        sess.queueCardIds is list && sess.queueCardIds.size() <= 500 && (sess.queueCardIds.size() == 0 || sess.queueCardIds[0] is string) &&
+        sess.currentIndex is number && sess.currentIndex >= 0 && sess.currentIndex <= 500 &&
+        sess.completedCardIds is list && sess.completedCardIds.size() <= 500 && (sess.completedCardIds.size() == 0 || sess.completedCardIds[0] is string) &&
+        sess.startedAt is string && sess.startedAt.size() <= 40 &&
+        sess.updatedAt is string && sess.updatedAt.size() <= 40
+      );
+    }
+
+    function isValidAnkiDeckState(data, userId, deckId) {
+      return data.keys().hasAll([
+          'userId',
+          'deckId',
+          'category',
+          'jlptLevel',
+          'settings',
+          'daily',
+          'activeSession',
+          'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'userId',
+          'deckId',
+          'category',
+          'jlptLevel',
+          'settings',
+          'daily',
+          'activeSession',
+          'updatedAt'
+        ]) &&
+        isValidId(data.userId) &&
+        data.userId == userId &&
+        data.userId == request.auth.uid &&
+        isValidAnkiDeckId(data.deckId) &&
+        data.deckId == deckId &&
+        isValidAnkiCategory(data.category) &&
+        isValidJlptLevel(data.jlptLevel) &&
+        isValidAnkiDeckSettings(data.settings) &&
+        isValidAnkiDeckDaily(data.daily) &&
+        isValidAnkiSession(data.activeSession, deckId) &&
+        data.updatedAt is timestamp &&
+        data.updatedAt == request.time;
+    }
+
+    function isValidAnkiCardProgress(data, userId) {
+      return data.keys().hasAll([
+          'userId',
+          'cardId',
+          'deckId',
+          'category',
+          'jlptLevel',
+          'state',
+          'previousStateBeforeSuspend',
+          'easeFactor',
+          'intervalDays',
+          'repetitions',
+          'lapses',
+          'learningStepIndex',
+          'dueDate',
+          'dueAt',
+          'lastReviewedAt',
+          'lastRating',
+          'isMastered',
+          'reviewHistory',
+          'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'userId',
+          'cardId',
+          'deckId',
+          'category',
+          'jlptLevel',
+          'state',
+          'previousStateBeforeSuspend',
+          'easeFactor',
+          'intervalDays',
+          'repetitions',
+          'lapses',
+          'learningStepIndex',
+          'dueDate',
+          'dueAt',
+          'lastReviewedAt',
+          'lastRating',
+          'isMastered',
+          'reviewHistory',
+          'updatedAt'
+        ]) &&
+        isValidId(data.userId) &&
+        data.userId == userId &&
+        data.userId == request.auth.uid &&
+        data.cardId is string && data.cardId.size() >= 1 && data.cardId.size() <= 200 &&
+        isValidAnkiDeckId(data.deckId) &&
+        isValidAnkiCategory(data.category) &&
+        isValidJlptLevel(data.jlptLevel) &&
+        isValidAnkiCardState(data.state) &&
+        data.previousStateBeforeSuspend is string &&
+        data.previousStateBeforeSuspend in ['', 'new', 'learning', 'review', 'relearning'] &&
+        data.easeFactor is number && data.easeFactor >= 1.3 && data.easeFactor <= 4.0 &&
+        data.intervalDays is number && data.intervalDays >= 0 && data.intervalDays <= 36500 &&
+        data.repetitions is number && data.repetitions >= 0 && data.repetitions <= 10000 &&
+        data.lapses is number && data.lapses >= 0 && data.lapses <= 10000 &&
+        data.learningStepIndex is number && data.learningStepIndex >= 0 && data.learningStepIndex <= 10 &&
+        isValidDateKey(data.dueDate) &&
+        data.dueAt is number && data.dueAt >= 0 && data.dueAt <= 9999999999999 &&
+        data.lastReviewedAt is string && data.lastReviewedAt.size() <= 40 &&
+        isValidAnkiRating(data.lastRating) &&
+        data.isMastered is bool &&
+        data.reviewHistory is list && data.reviewHistory.size() <= 50 && (data.reviewHistory.size() == 0 || data.reviewHistory[0] is map) &&
+        data.updatedAt is timestamp &&
+        data.updatedAt == request.time;
+    }
+
+    match /users/{userId} {
+      allow get: if isOwner(userId) && isValidId(userId);
+      allow list: if false;
+      allow create: if isOwner(userId) &&
+        isValidId(userId) &&
+        isValidUserProfile(incoming()) &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+      allow update: if isOwner(userId) &&
+        isValidId(userId) &&
+        isValidUserProfile(incoming()) &&
+        incoming().uid == existing().uid &&
+        incoming().username == existing().username &&
+        incoming().email == existing().email &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'name',
+          'gender',
+          'selfAssessedLevel',
+          'targetLevel',
+          'dailyMinutes',
+          'onboardingCompleted',
+          'updatedAt'
+        ]);
+      allow delete: if isOwner(userId) && isValidId(userId);
+
+      match /ankiDecks/{deckId} {
+        allow get: if isOwner(userId) && isValidId(userId) && isValidAnkiDeckId(deckId);
+        allow list: if isOwner(userId) && isValidId(userId) && resource.data.userId == request.auth.uid;
+        allow create: if isOwner(userId) &&
+          isValidId(userId) &&
+          isValidAnkiDeckId(deckId) &&
+          isValidAnkiDeckState(incoming(), userId, deckId);
+        allow update: if isOwner(userId) &&
+          isValidId(userId) &&
+          isValidAnkiDeckId(deckId) &&
+          isValidAnkiDeckState(incoming(), userId, deckId) &&
+          incoming().userId == existing().userId &&
+          incoming().deckId == existing().deckId &&
+          incoming().diff(existing()).affectedKeys().hasOnly([
+            'category',
+            'jlptLevel',
+            'settings',
+            'daily',
+            'activeSession',
+            'updatedAt'
+          ]);
+        allow delete: if isOwner(userId) && isValidId(userId) && isValidAnkiDeckId(deckId);
+      }
+
+      match /ankiCards/{cardDocId} {
+        allow get: if isOwner(userId) && isValidId(userId) && isValidId(cardDocId);
+        allow list: if isOwner(userId) && isValidId(userId) && resource.data.userId == request.auth.uid;
+        allow create: if isOwner(userId) &&
+          isValidId(userId) &&
+          isValidId(cardDocId) &&
+          isValidAnkiCardProgress(incoming(), userId);
+        allow update: if isOwner(userId) &&
+          isValidId(userId) &&
+          isValidId(cardDocId) &&
+          isValidAnkiCardProgress(incoming(), userId) &&
+          incoming().userId == existing().userId &&
+          incoming().cardId == existing().cardId &&
+          incoming().deckId == existing().deckId &&
+          incoming().diff(existing()).affectedKeys().hasOnly([
+            'category',
+            'jlptLevel',
+            'state',
+            'previousStateBeforeSuspend',
+            'easeFactor',
+            'intervalDays',
+            'repetitions',
+            'lapses',
+            'learningStepIndex',
+            'dueDate',
+            'dueAt',
+            'lastReviewedAt',
+            'lastRating',
+            'isMastered',
+            'reviewHistory',
+            'updatedAt'
+          ]);
+        allow delete: if isOwner(userId) && isValidId(userId) && isValidId(cardDocId);
+      }
+    }
+
+    match /usernames/{username} {
+      allow get: if isValidUsername(username);
+      allow list: if false;
+      allow create: if isValidUsername(username) &&
+        isSignedIn() &&
+        isValidUsernameLookup(incoming()) &&
+        incoming().createdAt == request.time;
+      allow update: if false;
+      allow delete: if isValidUsername(username) &&
+        isSignedIn() &&
+        existing().uid == request.auth.uid;
+    }
+
+    match /test/connection {
+      allow get: if true;
+      allow list, write: if false;
+    }
+  }
+}

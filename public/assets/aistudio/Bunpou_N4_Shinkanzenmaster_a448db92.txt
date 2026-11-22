@@ -1,0 +1,1419 @@
+================================================================
+MATERI BUNPOU JLPT N4
+Sumber: 新完全マスター 文法 日本語能力試験 N4 (Shin Kanzen Master Bunpou N4)
+Isi: setiap bunpou berisi arti, rumus sambungan, catatan pemakaian,
+     2 contoh kalimat, dan terjemahan Bahasa Indonesia.
+Catatan: contoh kalimat dibuat ulang (bukan salinan dari buku).
+================================================================
+
+[Keterangan singkat]
+N      = kata benda (meishi)
+V      = kata kerja (doushi)
+Adj-i  = kata sifat -i (i-keiyoushi)
+Adj-na = kata sifat -na (na-keiyoushi)
+V-kamus = bentuk kamus (jishokei), V-ta = bentuk lampau, V-nai = bentuk negatif
+V-te = bentuk te, V-ba = bentuk ba, V-masu stem = bentuk masu tanpa ます
+V-volitional = bentuk (よ)う
+Bentuk biasa (futsuukei) = bentuk kamus/ta/nai/nakatta dari V, Adj-i, Adj-na, N
+  (Adj-na/N bentuk sekarang: ~だ → ~な / ~の bila menyambung ke kata benda)
+
+
+################################################################
+第1部 意味機能別の文法形式  (BAGIAN 1: TATA BAHASA MENURUT FUNGSI MAKNA)
+################################################################
+
+
+================================================================
+1課 ~より… / ~ほど…ません・~より~のほう・~と~とどちら
+================================================================
+
+[1-1] ~より… / ~ほど…ません   (yori ... / hodo ... masen)
+Arti    : Lebih ... daripada ... / Tidak se-... (dalam kalimat negatif)
+Rumus   : N + より
+          N + ほど…ません (kalimat negatif)
+Catatan : 「~より」 membandingkan tingkat topik dengan hal lain. Untuk
+          menyatakan tingkat paling tinggi (superlatif), gunakan 「Kata tanya
+          + より」. Dalam kalimat negatif, gunakan 「~ほど…ません」.
+Contoh  :
+  1) 東京はわたしの国より物価が高いです。
+     Tokyo biaya hidupnya lebih mahal daripada negara saya.
+  2) 今年の夏は去年の夏ほど暑くありませんでした。
+     Musim panas tahun ini tidak sepanas musim panas tahun lalu.
+
+[1-2] ~より~のほう   (yori ... no hou)
+Arti    : Dibanding ..., lebih ...
+Rumus   : N1 + より + N2 + のほう
+Catatan : Membandingkan dua hal untuk menyatakan bahwa N2 memiliki tingkat
+          yang lebih tinggi daripada N1 (N2 > N1). Umumnya tidak dipakai
+          dalam kalimat negatif.
+Contoh  :
+  1) 電車より飛行機のほうが速いです。
+     Dibanding kereta, pesawat lebih cepat.
+  2) 肉より魚のほうがよく食べます。
+     Dibanding daging, saya lebih sering makan ikan.
+
+[1-3] ~と~とどちら   (to ... to dochira)
+Arti    : Antara ... dan ..., mana yang lebih ...?
+Rumus   : N1 + と + N2 + と + どちら
+Catatan : Menanyakan pilihan atau perbandingan tingkat antara dua hal.
+          Biasanya dijawab dengan pola 「~のほう」 atau 「どちらも」.
+Contoh  :
+  1) 夏と冬とどちらが好きですか。
+     Antara musim panas dan musim dingin, mana yang lebih kamu suka?
+  2) 駅までバスと自転車とどちらが早いですか。
+     Sampai stasiun, antara bus dan sepeda mana yang lebih cepat?
+
+
+================================================================
+2課 ~ながら…・~ところです・~まで…・~までに…
+================================================================
+
+[2-1] ~ながら…   (nagara)
+Arti    : Sambil ...
+Rumus   : V-masu stem + ながら
+Catatan : Menyatakan tindakan utama (...) dilakukan bersamaan dengan tindakan
+          sampingan (~). Disambungkan ke kata kerja yang menyatakan aksi
+          berkelanjutan.
+Contoh  :
+  1) コーヒーを飲みながら、新聞を読みます。
+     Saya membaca koran sambil minum kopi.
+  2) 音楽を聞きながら、部屋の掃除をしました。
+     Saya membersihkan kamar sambil mendengarkan musik.
+
+[2-2] ~ところです   (tokoro desu)
+Arti    : Baru akan ... / Sedang ... / Baru saja ...
+Rumus   : V-kamus / V-te iru / V-ta + ところです
+Catatan : Menunjukkan tahapan suatu tindakan atau perubahan:
+          V-kamus + ところ = tepat sebelum dimulai (baru akan);
+          V-te iru + ところ = sedang berlangsung;
+          V-ta + ところ = baru saja selesai.
+Contoh  :
+  1) 今、昼ご飯を作っているところです。
+     Sekarang saya sedang membuat makan siang.
+  2) ちょうど家に帰ってきたところです。
+     Saya baru saja pulang ke rumah.
+
+[2-3] ~まで…・~までに…   (made / made ni)
+Arti    : Sampai ... (terus berlangsung) / Paling lambat ... (batas waktu)
+Rumus   : N / V-kamus + まで・までに
+Catatan : Menyatakan batas waktu. Setelah 「~まで」 diikuti kalimat yang
+          menyatakan tindakan atau keadaan berkelanjutan; setelah 「~までに」
+          diikuti kalimat yang menyatakan tindakan sesaat (selesai sebelum batas).
+Contoh  :
+  1) 5時まで図書館で勉強しています。
+     Saya belajar di perpustakaan sampai jam 5.
+  2) 金曜日までにレポートを出さなければなりません。
+     Saya harus mengumpulkan laporan paling lambat hari Jumat.
+
+
+================================================================
+3課 ~ませんか・~ましょう(か)
+================================================================
+
+[3-1] ~ませんか   (masen ka)
+Arti    : Maukah ...? / Bagaimana kalau ...? (ajakan/tawaran)
+Rumus   : V-masu stem + ませんか
+Catatan : Dipakai untuk mengusulkan atau mengajak. Bisa untuk melakukan
+          sesuatu bersama-sama, maupun mengajak lawan bicara saja. Dalam
+          percakapan akrab bisa memakai bentuk negatif biasa 「~ない？」.
+Contoh  :
+  1) 週末、いっしょに映画を見ませんか。
+     Akhir pekan ini, maukah menonton film bersama?
+  2) 疲れたでしょう。少し休みませんか。
+     Pasti capek, ya. Bagaimana kalau istirahat sebentar?
+
+[3-2] ~ましょう(か)   (mashou (ka))
+Arti    : Ayo ... / Mari saya ... (menawarkan bantuan)
+Rumus   : V-masu stem + ましょう(か)
+Catatan : Mengajak melakukan sesuatu bersama dengan persetujuan lawan bicara,
+          atau menawarkan diri untuk melakukan sesuatu bagi lawan bicara.
+          Dalam percakapan akrab berubah menjadi bentuk 「う・よう」.
+Contoh  :
+  1) 雨が降ってきたから、タクシーで帰りましょうか。
+     Karena hujan turun, bagaimana kalau kita pulang naik taksi?
+  2) 重そうですね。わたしが持ちましょうか。
+     Kelihatannya berat, ya. Mari saya bawakan?
+
+
+================================================================
+4課 ~(ら)れます・~ができます・見えます・聞こえます
+================================================================
+
+[4-1] ~(ら)れます   ((ra)remasu) [bentuk potensial]
+Arti    : Bisa ... / Dapat ...
+Rumus   : Bentuk potensial kata kerja (V-I: -u→-eru, V-II: -ru→-rareru,
+          V-III: する→できる, 来る→来られる)
+Catatan : Menyatakan kemampuan atau kondisi yang memungkinkan. Dipakai dengan
+          kata kerja berkehendak. Partikel objek 「を」 sering berubah menjadi
+          「が」 (contoh: 日本語を話す → 日本語が話せる).
+Contoh  :
+  1) 妹はピアノが上手に弾けます。
+     Adik perempuan saya bisa bermain piano dengan mahir.
+  2) この店ではいろいろな国の料理が食べられます。
+     Di toko ini kita bisa makan masakan dari berbagai negara.
+
+[4-2] ~ができます・~ことができます   (ga dekimasu / koto ga dekimasu)
+Arti    : Bisa ... / Dapat ...
+Rumus   : N + ができます
+          V-kamus + ことができます
+Catatan : Menyatakan kondisi yang memungkinkan, izin, atau kemampuan.
+          Sedikit lebih formal/kaku dibandingkan 「~(ら)れます」.
+Contoh  :
+  1) このカードがあれば、図書館で本を借りることができます。
+     Kalau punya kartu ini, Anda bisa meminjam buku di perpustakaan.
+  2) 弟は漢字を500ぐらい書くことができます。
+     Adik laki-laki saya bisa menulis sekitar 500 kanji.
+
+[4-3] 見えます・聞こえます   (miemasu / kikoemasu)
+Arti    : Terlihat / Terdengar (secara alami)
+Rumus   : N + が見えます・が聞こえます
+Catatan : Menyatakan sesuatu yang masuk ke penglihatan atau pendengaran secara
+          alami tanpa usaha khusus.
+Contoh  :
+  1) 晴れた日には、ここから富士山が見えます。
+     Pada hari yang cerah, Gunung Fuji terlihat dari sini.
+  2) 隣の部屋から赤ちゃんの泣き声が聞こえます。
+     Dari kamar sebelah terdengar suara tangisan bayi.
+
+
+================================================================
+5課 ~たことがあります・~ことがあります
+================================================================
+
+[5-1] ~たことがあります   (ta koto ga arimasu)
+Arti    : Pernah ...
+Rumus   : V-ta + ことがあります
+Catatan : Menyatakan pengalaman masa lalu (bukan masa lalu yang baru saja
+          terjadi). Sering dipakai bersama kata frekuensi seperti 「一度・
+          何度も」, tidak dipakai dengan 「いつも・たいてい」.
+Contoh  :
+  1) わたしは一度だけ北海道へ行ったことがあります。
+     Saya pernah pergi ke Hokkaido sekali saja.
+  2) 納豆を食べたことがありますか。
+     Apakah kamu pernah makan natto?
+
+[5-2] ~ことがあります   (koto ga arimasu)
+Arti    : Kadang-kadang ... / Ada kalanya ...
+Rumus   : V-kamus / V-nai + ことがあります
+Catatan : Menyatakan kejadian tidak biasa yang sesekali terjadi (bukan yang
+          terlalu sering). Juga dipakai dalam bentuk 「~こともあります」.
+Contoh  :
+  1) 忙しいときは、昼ご飯を食べないこともあります。
+     Saat sibuk, ada kalanya saya tidak makan siang.
+  2) 電車が遅れて、会社に間に合わないことがあります。
+     Kadang kereta terlambat sehingga saya tidak sempat tiba di kantor.
+
+
+================================================================
+6課 ~てもいいです・~てはいけません・~なくてもいいです・~なければなりません
+================================================================
+
+[6-1] ~てもいいです / ~てはいけません   (temo ii desu / te wa ikemasen)
+Arti    : Boleh ... / Tidak boleh (dilarang) ...
+Rumus   : V-te / Adj-i (~い→~くて) / Adj-na + で / N + で + もいいです・はいけません
+Catatan : 「~てもいいです」 menyatakan izin atau konsesi (tidak apa-apa).
+          「~てはいけません」 menyatakan larangan.
+Contoh  :
+  1) ここで写真を撮ってもいいですか。
+     Apakah boleh mengambil foto di sini?
+  2) 美術館の中で大きな声で話してはいけません。
+     Di dalam museum seni tidak boleh berbicara dengan suara keras.
+
+[6-2] ~なくてもいいです / ~なければなりません   (nakutemo ii desu / nakereba narimasen)
+Arti    : Tidak perlu ... / Harus ...
+Rumus   : V-nai (~ない→~なく) / Adj-i (~く) / Adj-na (~で) / N (~で) + てもいいです
+          V-nai (~ない→~なく) / Adj-i (~く) / Adj-na (~で) / N (~で) + ければなりません
+Catatan : 「~なくてもいいです」 menyatakan tidak ada keharusan.
+          「~なければなりません」 menyatakan keharusan atau kewajiban.
+Contoh  :
+  1) 明日は日曜日ですから、早く起きなくてもいいです。
+     Karena besok hari Minggu, tidak perlu bangun pagi.
+  2) パスポートをなくしたら、すぐ警察に連絡しなければなりません。
+     Kalau paspor hilang, harus segera menghubungi polisi.
+
+
+================================================================
+7課 ~がほしいです・~たいです・~といいです
+================================================================
+
+[7-1] ~がほしいです・~たいです   (ga hoshii desu / tai desu)
+Arti    : Ingin (benda) ... / Ingin (melakukan) ...
+Rumus   : N + がほしいです / N + をほしがります
+          V-masu stem + たいです・たがります
+Catatan : Menyatakan keinginan pembicara. Untuk objek pada 「~たいです」,
+          partikel 「を」 sering berubah menjadi 「が」. Untuk orang ketiga,
+          gunakan bentuk 「~ほしがります・~たがります」.
+Contoh  :
+  1) 新しいパソコンがほしいです。
+     Saya ingin komputer baru.
+  2) 夏休みには海で泳ぎたいです。
+     Saat liburan musim panas saya ingin berenang di laut.
+
+[7-2] ~といいです   (to ii desu)
+Arti    : Semoga ... / Alangkah baiknya jika ...
+Rumus   : Bentuk biasa (hanya bentuk sekarang, tidak pakai ~た/~なかった) + といいです
+Catatan : Menyatakan situasi yang diharapkan pembicara. Disambungkan ke kata
+          kerja non-kehendak (無意志動詞), kata kerja potensial, atau kata kerja
+          dengan subjek orang ketiga. Sering diakhiri 「ね・けど・なあ」.
+Contoh  :
+  1) 明日の運動会は雨が降らないといいですね。
+     Semoga besok saat hari olahraga tidak turun hujan, ya.
+  2) 試験に合格できるといいなあ。
+     Semoga saya bisa lulus ujian.
+
+
+================================================================
+8課 ~そうです・~がっています・~まま…
+================================================================
+
+[8-1] ~そうです   (sou desu) [tampaknya / kelihatannya]
+Arti    : Kelihatannya ... / Sepertinya akan ...
+Rumus   : V-masu stem + そうです / そうもありません (negatif)
+          Adj-i (~い除く) / Adj-na (~な除く) + そうです
+            (pengecualian: いい・よい → よさそうです)
+          Negatif Adj: Adj-i (~く) / Adj-na (~では) / N (~では) + なさそうです
+Catatan : Menyatakan tanda sesuatu akan terjadi dari penampilan luar atau
+          situasi, dugaan berdasarkan sifat/keadaan, atau firasat.
+Contoh  :
+  1) 空が暗いから、今にも雨が降りそうです。
+     Karena langit gelap, sepertinya sebentar lagi hujan akan turun.
+  2) このケーキはとてもおいしそうですね。
+     Kue ini kelihatannya enak sekali, ya.
+
+[8-2] ~がっています・~がります   (gatte imasu / garimasu)
+Arti    : Tampak ingin ... / Merasa ... (orang ketiga)
+Rumus   : Adj-i (~い除く) / Adj-na (~な除く) + がっています・がります
+Catatan : Mengungkapkan keinginan atau emosi orang ketiga (terutama keluarga
+          atau orang yang lebih rendah posisinya). Untuk kecenderungan umum,
+          gunakan bentuk 「~がります」.
+Contoh  :
+  1) 子どもが外で遊びたがっています。
+     Anak-anak tampak ingin bermain di luar.
+  2) 弟は暗い所をこわがります。
+     Adik laki-laki saya takut pada tempat gelap.
+
+[8-3] ~まま…   (mama)
+Arti    : Tetap dalam keadaan ... / Membiarkan tetap ...
+Rumus   : V-ta / V-nai / Adj-i (~い) / Adj-na (~な) / N + の + まま
+Catatan : Menyatakan keadaan yang terus berlanjut tanpa berubah. Sering
+          dipakai ketika keadaan yang tidak berubah itu menimbulkan situasi
+          yang kurang baik.
+Contoh  :
+  1) 眼鏡をかけたまま寝てしまいました。
+     Saya ketiduran dengan kacamata masih terpasang.
+  2) 電気をつけたまま出かけないでください。
+     Jangan pergi keluar dengan membiarkan lampu tetap menyala.
+
+
+================================================================
+9課 ~から…・~ので…・~て…
+================================================================
+
+[9-1] ~から…・~からです   (kara / kara desu)
+Arti    : Karena ...
+Rumus   : Bentuk biasa / Bentuk sopan + から
+          Bentuk biasa + からです
+Catatan : Menjelaskan sebab, alasan, atau dasar secara cukup tegas.
+Contoh  :
+  1) 頭が痛いから、今日は早く帰ります。
+     Karena kepala sakit, hari ini saya pulang lebih awal.
+  2) 遅刻したのは、バスがなかなか来なかったからです。
+     Alasan saya terlambat adalah karena busnya lama tidak datang.
+
+[9-2] ~ので…   (node)
+Arti    : Karena ... (lebih halus/sopan)
+Rumus   : Bentuk biasa (Adj-na だ→な, N だ→な) + ので
+Catatan : Menyatakan sebab dan alasan dengan cara lebih sopan dan halus dari
+          「~から」. Tidak diikuti kalimat perintah (読め, 見ろ) atau ungkapan
+          salam (すみません, ありがとう).
+Contoh  :
+  1) 用事があるので、先に失礼します。
+     Karena ada urusan, saya permisi pulang duluan.
+  2) 道がこんでいたので、少し遅れました。
+     Karena jalanan macet, saya sedikit terlambat.
+
+[9-3] ~て…・~くて…・~で…   (te / kute / de) [sebab/alasan]
+Arti    : Karena ... (sebab perasaan/kondisi)
+Rumus   : V-te / Adj-i (~い→~くて) / Adj-na + で / N + で
+          Bentuk negatif: ~なくて
+Catatan : Menyatakan sebab alasan, terutama untuk perasaan/sensasi (こまる,
+          さびしい), ketidakmampuan, dan ungkapan sopan (すみません, ありがとう).
+          Tidak diikuti kalimat harapan, niat, atau ajakan pembicara.
+Contoh  :
+  1) ニュースを聞いて、とても安心しました。
+     Mendengar berita itu, saya merasa sangat lega.
+  2) 仕事が忙しくて、全然休めません。
+     Karena pekerjaan sibuk, saya sama sekali tidak bisa beristirahat.
+
+
+================================================================
+10課 ~に…・~ため(に)…・~ように…
+================================================================
+
+[10-1] ~に…   (ni) [tujuan pergerakan]
+Arti    : Pergi/datang untuk ...
+Rumus   : N (kata benda suru) / V-masu stem + に + 行きます・来ます・帰ります
+Catatan : Menyatakan tujuan perpindahan sehari-hari yang ringan. Di depan 「に」
+          kata kerja berkehendak; di belakangnya kata kerja pergerakan terbatas.
+Contoh  :
+  1) スーパーへ野菜を買いに行きます。
+     Saya pergi ke supermarket untuk membeli sayuran.
+  2) 友だちが家に遊びに来ました。
+     Teman saya datang ke rumah untuk bermain.
+
+[10-2] ~ため(に)…   (tame (ni))
+Arti    : Demi ... / Untuk ...
+Rumus   : N + の / V-kamus + ため(に)
+          N + の / V-kamus + ための + N
+Catatan : Menyatakan tujuan tindakan yang berkehendak. Subjek sebelum dan
+          sesudah 「ため(に)」 adalah sama.
+Contoh  :
+  1) 将来のために、毎日貯金をしています。
+     Demi masa depan, saya menabung setiap hari.
+  2) 日本語を勉強するために、辞書を買いました。
+     Untuk belajar bahasa Jepang, saya membeli kamus.
+
+[10-3] ~ように…   (you ni)
+Arti    : Supaya ... / Agar ...
+Rumus   : V-kamus / V-nai + ように
+Catatan : Menyatakan harapan agar keadaan ~ terwujud. Dipakai dengan kata
+          kerja non-kehendak (無意志動詞), bentuk potensial, atau subjek orang
+          ketiga.
+Contoh  :
+  1) 後ろの人にも聞こえるように、大きい声で話しました。
+     Supaya terdengar oleh orang di belakang juga, saya berbicara dengan suara keras.
+  2) 風邪をひかないように、毎日うがいをしています。
+     Agar tidak masuk angin, setiap hari saya berkumur.
+
+
+================================================================
+11課 (~も)~し、(~も)…・~たり~たりします
+================================================================
+
+[11-1] (~も)~し、(~も)…   ((mo) ... shi, (mo) ...)
+Arti    : Selain ..., juga ... / Lagipula ... (menyebut beberapa alasan/fakta)
+Rumus   : (N + も +) Bentuk biasa + し、(N + も +) Bentuk biasa + し
+Catatan : A) Menyebutkan beberapa alasan (bila 「~し」 hanya satu, menyiratkan
+          masih ada alasan lain). B) Menambahkan informasi yang senada.
+Contoh  :
+  1) この店は安いし、料理もおいしいし、よく来ます。
+     Toko ini murah dan masakannya juga enak, jadi saya sering datang.
+  2) 雨が降っているし、風も強いので、出かけません。
+     Selain hujan turun, anginnya juga kencang, jadi saya tidak keluar.
+
+[11-2] ~たり~たりします   (tari ... tari shimasu)
+Arti    : Melakukan ... dan ... (dan lain-lain) / Kadang ... kadang ...
+Rumus   : V-ta + り + V-ta + り + します
+Catatan : A) Menyebutkan beberapa contoh tindakan tanpa memedulikan urutan
+          waktu. B) Bila memakai dua kata kerja berlawanan makna, menyatakan
+          dua gerakan/keadaan yang berulang-ulang.
+Contoh  :
+  1) 休みの日は本を読んだり、映画を見たりします。
+     Pada hari libur saya membaca buku, menonton film, dan lain-lain.
+  2) 昨日の天気は晴れたり、曇ったりしていました。
+     Cuaca kemarin kadang cerah, kadang mendung.
+
+
+================================================================
+12課 ~かもしれません・~はずです・~ようです・~みたいです
+================================================================
+
+[12-1] ~かもしれません   (kamo shiremasen)
+Arti    : Mungkin ... / Bisa jadi ...
+Rumus   : Bentuk biasa (Adj-na だ→∅, N だ→∅) + かもしれません
+Catatan : Menyatakan adanya kemungkinan (tingkat kepastian tidak terlalu
+          tinggi).
+Contoh  :
+  1) 午後から雨が降るかもしれません。
+     Mulai sore nanti mungkin akan turun hujan.
+  2) この問題は少し難しいかもしれませんね。
+     Soal ini mungkin agak sulit, ya.
+
+[12-2] ~はずです   (hazu desu)
+Arti    : Seharusnya ... / Pasti ... (berdasarkan dasar objektif)
+Rumus   : Bentuk biasa (Adj-na だ→な, N だ→の) + はずです
+Catatan : Menyatakan keyakinan pembicara yang didasarkan pada alasan atau
+          bukti objektif.
+Contoh  :
+  1) 彼は昨日連絡したから、今日は来るはずです。
+     Karena kemarin dia sudah menghubungi, seharusnya hari ini dia datang.
+  2) この薬を飲めば、すぐによくなるはずです。
+     Kalau minum obat ini, seharusnya segera membaik.
+
+[12-3] ~ようです・~みたいです   (you desu / mitai desu)
+Arti    : Sepertinya ... / Tampaknya ... (dugaan pribadi)
+Rumus   : Bentuk biasa (Adj-na だ→な, N だ→の) + ようです
+          Bentuk biasa (Adj-na だ→∅, N だ→∅) + みたいです
+Catatan : Menyatakan dugaan berdasarkan pengamatan atau penginderaan pribadi
+          pembicara. 「~みたいです」 lebih kasual dan dihindari pada situasi
+          resmi.
+Contoh  :
+  1) 玄関で音がしました。だれか来たようです。
+     Ada suara di pintu masuk. Sepertinya ada seseorang yang datang.
+  2) 彼女は日本での生活に慣れたみたいですね。
+     Sepertinya dia sudah terbiasa dengan kehidupan di Jepang, ya.
+
+
+================================================================
+13課 ~なさい・~ほうがいいです・~ないと
+================================================================
+
+[13-1] ~なさい   (nasai)
+Arti    : ...lah! (instruksi/perintah halus)
+Rumus   : V-masu stem + なさい
+Catatan : Dipakai guru kepada murid, orang tua kepada anak, serta dalam
+          kalimat instruksi soal ujian.
+Contoh  :
+  1) もう遅いから、早く寝なさい。
+     Sudah larut, cepat tidurlah.
+  2) 次の質問に日本語で答えなさい。
+     Jawablah pertanyaan berikut dalam bahasa Jepang.
+
+[13-2] ~ほうがいいです   (hou ga ii desu)
+Arti    : Sebaiknya ... / Sebaiknya jangan ...
+Rumus   : V-ta / V-nai + ほうがいいです
+Catatan : Memberikan saran atau peringatan ringan agar terhindar dari hasil
+          yang kurang baik. Sering diakhiri partikel 「よ・ね」.
+Contoh  :
+  1) 寒いから、厚いコートを着たほうがいいですよ。
+     Karena dingin, sebaiknya kamu memakai mantel tebal.
+  2) 夜は危ないから、一人で歩かないほうがいいです。
+     Malam hari berbahaya, jadi sebaiknya tidak berjalan sendirian.
+
+[13-3] ~ないと   (nai to)
+Arti    : Harus ... (kalau tidak ..., nanti gawat)
+Rumus   : V-nai + と
+Catatan : Bentuk percakapan untuk mendorong diri sendiri atau lawan bicara
+          bertindak karena situasi akan memburuk jika tidak dilakukan.
+Contoh  :
+  1) もう7時だよ。急がないと。
+     Sudah jam 7 lho. Harus cepat-cepat.
+  2) テストが近いから、もっと勉強しないと。
+     Ujian sudah dekat, jadi saya harus belajar lebih giat.
+
+
+================================================================
+14課 ~たら…・~ば…・~なら…・~と…
+================================================================
+
+[14-1] ~たら…   (tara)
+Arti    : Kalau ... / Seandainya ...
+Rumus   : Bentuk biasa (hanya bentuk lampau ~た・~なかった) + ら
+Catatan : Mengandaikan sesuatu (jika ~ terjadi, maka ...). Sering dipakai
+          bersama 「もし」.
+Contoh  :
+  1) もし明日雨が降ったら、ハイキングは中止です。
+     Kalau besok turun hujan, kegiatan mendaki dibatalkan.
+  2) 時間があったら、映画を見に行きませんか。
+     Kalau ada waktu, maukah pergi menonton film?
+
+[14-2] ~ば…・~なら…   (ba / nara)
+Arti    : Jika ... / Apabila ... (syarat)
+Rumus   : V-ba / Adj-i (~ければ) / Adj-na なら / N なら
+Catatan : Menyatakan kondisi syarat agar ... terwujud. Jika ~ adalah kata kerja
+          gerakan/tindakan, klausa ... tidak berisi niat atau ajakan pembicara.
+          Terkadang memakai 「もし」.
+Contoh  :
+  1) 練習すれば、だれでも上手になります。
+     Jika berlatih, siapa pun akan menjadi mahir.
+  2) 駅までバスに乗れば、10分で着きます。
+     Jika naik bus ke stasiun, tiba dalam 10 menit.
+
+[14-3] ~と…   (to)
+Arti    : Kalau ... pasti ... (konsekuensi otomatis/alami)
+Rumus   : Bentuk biasa (tidak pakai ~た・~なかった) + と
+Catatan : Menyatakan hal yang pasti terjadi apabila ~ terjadi (hukum alam,
+          cara kerja alat, petunjuk jalan). Klausa ... tidak berisi niat atau
+          ajakan pembicara.
+Contoh  :
+  1) このボタンを押すと、お釣りが出ます。
+     Kalau menekan tombol ini, uang kembaliannya keluar.
+  2) まっすぐ行って右に曲がると、郵便局があります。
+     Kalau jalan lurus lalu belok kanan, ada kantor pos.
+
+
+================================================================
+15課 ~たら…・~なら…
+================================================================
+
+[15-1] ~たら…   (tara) [waktu setelah terjadi]
+Arti    : Setelah ... / Kalau sudah ...
+Rumus   : V-ta + ら
+Catatan : Menyatakan tindakan yang dilakukan setelah ~ terwujud. Bukan
+          pengandaian, melainkan hal yang sudah pasti akan terjadi.
+Contoh  :
+  1) 家に帰ったら、すぐ手を洗います。
+     Setelah pulang ke rumah, saya langsung mencuci tangan.
+  2) 仕事が終わったら、いっしょに飲みに行きましょう。
+     Setelah pekerjaan selesai, mari pergi minum bersama.
+
+[15-2] ~なら…   (nara) [topik dari lawan bicara]
+Arti    : Kalau (membahas/soal) ...
+Rumus   : Bentuk biasa (Adj-na だ→∅, N だ→∅) + なら
+Catatan : Menanggapi topik atau informasi yang baru disampaikan orang lain
+          atau terlihat dari keadaan, lalu memberi saran/penilaian/niat.
+Contoh  :
+  1) パソコンを買うなら、駅前の店が安いですよ。
+     Kalau mau membeli komputer, toko di depan stasiun murah lho.
+  2) もう見ないなら、テレビを消してもいいですか。
+     Kalau sudah tidak menonton, bolehkah saya mematikan TV?
+
+
+================================================================
+16課 ~ても…・~のに…
+================================================================
+
+[16-1] ~ても…   (temo)
+Arti    : Meskipun ... / Walaupun ... / Sekalipun ...
+Rumus   : V-te / Adj-i (~い→~くて) / Adj-na + で / N + で + も
+          Negatif: ~なくても
+Catatan : Menyatakan bahwa hasil yang wajar diharapkan dari ~ tidak terjadi.
+          ~ bisa berupa pengandaian maupun fakta. Sering dipakai bersama
+          「もし・どんなに・いくら」 dan kata tanya.
+Contoh  :
+  1) いくら説明しても、なかなか分かってくれません。
+     Seberapa pun dijelaskan, dia tetap sulit mengerti.
+  2) 雨が降っても、サッカーの試合は行います。
+     Meskipun hujan turun, pertandingan sepak bola tetap diadakan.
+
+[16-2] ~のに…   (noni)
+Arti    : Padahal ... / Meskipun ... (rasa kecewa/heran)
+Rumus   : Bentuk biasa (Adj-na だ→な, N だ→な) + のに
+Catatan : Menyatakan bahwa fakta ~ tidak menghasilkan sesuatu yang wajarnya
+          terjadi. Mengandung rasa terkejut, menyesal, kecewa, atau menyalahkan.
+          Klausa setelahnya tidak berisi niat atau ajakan pembicara. Dapat juga
+          berada di akhir kalimat.
+Contoh  :
+  1) 一生懸命勉強したのに、テストに落ちてしまいました。
+     Padahal sudah belajar sungguh-sungguh, saya malah tidak lulus tes.
+  2) 今日は日曜日なのに、仕事に行かなければなりません。
+     Padahal hari ini hari Minggu, saya harus pergi bekerja.
+
+
+================================================================
+17課 ~と…・~か…・~かどうか…
+================================================================
+
+[17-1] ~と…   (to) [kutipan / pikiran]
+Arti    : Bahwa ... / Mengatakan / Berpikir bahwa ...
+Rumus   : Nama / Bentuk biasa / 「ucapan langsung」 + と + 言う・思う・聞く・書く
+Catatan : Dipakai untuk mengutip ucapan, nama, maupun pikiran. Jika subjeknya
+          orang ketiga, gunakan 「~と思っています」 (bukan 「~と思います」).
+Contoh  :
+  1) 明日は天気がよくなると思います。
+     Saya kira besok cuacanya akan membaik.
+  2) 先生は来週テストがあると言いました。
+     Guru mengatakan bahwa minggu depan ada ujian.
+
+[17-2] ~か…・~かどうか…   (ka / ka dou ka)
+Arti    : ... (kata tanya) / Apakah ... (atau tidak)
+Rumus   : Kata tanya (何・いつ・だれ・どこ…) (+ Bentuk biasa) + か
+          Bentuk biasa (Adj-na だ→∅, N だ→∅) + かどうか
+Catatan : Menyisipkan kalimat tanya ke dalam kalimat lain. Jika ada kata tanya,
+          pakai 「か」; jika tidak ada kata tanya, pakai 「かどうか」.
+Contoh  :
+  1) 駅までどうやって行くか教えてください。
+     Tolong beritahu bagaimana cara pergi ke stasiun.
+  2) 田中さんがパーティーに来るかどうか分かりません。
+     Saya tidak tahu apakah Tanaka akan datang ke pesta atau tidak.
+
+
+================================================================
+18課 ~(よ)うと思います・~つもりです
+================================================================
+
+[18-1] ~(よ)うと思います   ((yo)u to omoimasu)
+Arti    : Berpikir untuk ... / Berencana ...
+Rumus   : V-volitional + と思います・と思っています
+Catatan : Menyatakan niat pembicara (subjek orang pertama). 「~と思っていま
+          す」 dipakai bila niat itu sudah ada sejak sebelumnya. 「~とは思い
+          ません」 menyatakan penolakan/niat negatif yang kuat.
+Contoh  :
+  1) 今年の夏は海へ泳ぎに行こうと思います。
+     Musim panas ini saya berpikir untuk pergi berenang ke pantai.
+  2) 来年、車の免許を取ろうと思っています。
+     Tahun depan saya berencana mengambil SIM mobil.
+
+[18-2] ~つもりです   (tsumori desu)
+Arti    : Berniat untuk ... / Tidak berniat ...
+Rumus   : V-kamus / V-nai + つもりです
+          V-kamus + つもりはありません
+Catatan : Menyatakan niat yang lebih tegas dan sudah diputuskan sebelumnya
+          (subjek orang pertama). Untuk orang ketiga, tambahkan 「~そうです・
+          ~らしいです・~と言っていました」. 「~つもりはありません」 jauh
+          lebih tegas daripada 「~ないつもりです」.
+Contoh  :
+  1) 大学を卒業したら、日本で働くつもりです。
+     Setelah lulus universitas, saya berniat bekerja di Jepang.
+  2) 今日はどこへも出かけないつもりです。
+     Hari ini saya berniat tidak pergi ke mana-mana.
+
+
+================================================================
+19課 ~と言っていました・~そうです・~らしいです
+================================================================
+
+[19-1] ~と言っていました   (to itte imashita)
+Arti    : (Dia) berkata bahwa ... / Katanya ...
+Rumus   : Bentuk biasa + と言っていました
+Catatan : Menyampaikan kembali ucapan orang lain. Dalam kalimat tanya,
+          gunakan 「何と」.
+Contoh  :
+  1) サラさんは明日休むと言っていましたよ。
+     Sara bilang besok dia libur lho.
+  2) 先生は試験について何と言っていましたか。
+     Guru berkata apa mengenai ujian?
+
+[19-2] ~そうです   (sou desu) [kabar / informasi]
+Arti    : Katanya ... / Kabarnya ...
+Rumus   : Bentuk biasa + そうです
+Catatan : Menyampaikan informasi yang didengar atau dibaca. Sering disertai
+          sumber informasi seperti 「~によると・~では・~で読みましたが」.
+Contoh  :
+  1) 天気予報によると、明日は雪が降るそうです。
+     Menurut ramalan cuaca, kabarnya besok akan turun salju.
+  2) 新聞で読みましたが、駅前に新しいデパートができるそうですね。
+     Saya baca di koran, kabarnya di depan stasiun akan dibangun department store baru ya.
+
+[19-3] ~らしいです   (rashii desu)
+Arti    : Sepertinya ... / Kabarnya ... (sumber kurang pasti)
+Rumus   : Bentuk biasa (Adj-na だ→∅, N だ→∅) + らしいです
+Catatan : Menyampaikan informasi dari orang lain atau penilaian berdasarkan
+          situasi sekitar. Sumber informasi atau isinya lebih tidak pasti
+          dibandingkan 「~そうです」.
+Contoh  :
+  1) うわさによると、あのレストランはとてもおいしいらしいです。
+     Menurut rumor, restoran itu kabarnya sangat enak.
+  2) 外がぬれています。夜中に雨が降ったらしいですね。
+     Di luar basah. Sepertinya semalam turun hujan ya.
+
+
+================================================================
+20課 ~くします・~にします / ~くなります・~になります・~ようになります
+================================================================
+
+[20-1] ~くします・~にします   (ku shimasu / ni shimasu)
+Arti    : Membuat menjadi ... (perubahan disengaja)
+Rumus   : Adj-i (~い→~く) + します   (pengecualian: いい → よくします)
+          Adj-na (~な除く) + にします / N + にします
+Catatan : Menyatakan seseorang dengan sengaja mengubah keadaan suatu benda
+          atau situasi.
+Contoh  :
+  1) テレビの音が小さいですから、もう少し大きくします。
+     Suara TV kecil, jadi saya besarkan sedikit lagi.
+  2) 部屋をきれいにしてから、友だちを呼びます。
+     Setelah merapikan kamar menjadi bersih, saya akan mengundang teman.
+
+[20-2] ~くなります・~になります・~ようになります   (ku narimasu / ni narimasu / you ni narimasu)
+Arti    : Menjadi ... (perubahan alami) / Menjadi bisa / Mulai ...
+Rumus   : Adj-i (~い→~く) + なります   (pengecualian: いい → よくなります)
+          Adj-na (~な除く) + になります / N + になります
+          V-kamus + ようになります / V-nai (~ない→~なく) + なります
+Catatan : Menyatakan perubahan keadaan secara alami. Tidak dipakai dengan kata
+          kerja yang sudah bermakna perubahan (変わる, 太る, 増える, dsb.).
+Contoh  :
+  1) だんだん涼しくなってきましたね。
+     Lama-kelamaan udaranya menjadi sejuk ya.
+  2) 毎日練習したので、日本語が話せるようになりました。
+     Karena berlatih setiap hari, saya menjadi bisa berbicara bahasa Jepang.
+
+
+================================================================
+21課 ~にします・~ことにします / ~になります・~ことになります
+================================================================
+
+[21-1] ~にします・~ことにします   (ni shimasu / koto ni shimasu)
+Arti    : Memilih ... / Memutuskan untuk ...
+Rumus   : N + にします
+          V-kamus / V-nai + ことにします
+Catatan : Menyatakan keputusan pribadi berdasarkan kehendak pembicara dengan
+          sikap aktif.
+Contoh  :
+  1) 飲み物は温かい紅茶にします。
+     Untuk minuman, saya pilih teh hitam hangat.
+  2) 健康のために、毎日30分歩くことにしました。
+     Demi kesehatan, saya memutuskan untuk berjalan kaki 30 menit setiap hari.
+
+[21-2] ~になります・~ことになります   (ni narimasu / koto ni narimasu)
+Arti    : Diputuskan menjadi ... / Jadinya ... (keputusan di luar kehendak pribadi)
+Rumus   : N + になります
+          V-kamus / V-nai + ことになります
+Catatan : Menyatakan keputusan yang ditetapkan tanpa bergantung pada kehendak
+          pribadi pembicara (aturan, jadwal, keputusan pihak lain), atau untuk
+          menyampaikan keputusan sendiri secara tidak langsung.
+Contoh  :
+  1) 来月から東京の支社で働くことになりました。
+     Mulai bulan depan diputuskan saya akan bekerja di cabang Tokyo.
+  2) 雨なので、今日の試合は中止になりました。
+     Karena hujan, pertandingan hari ini dibatalkan.
+
+
+================================================================
+22課 ~てみます・~ておきます・~てしまいます
+================================================================
+
+[22-1] ~てみます   (te mimasu)
+Arti    : Mencoba melakukan ...
+Rumus   : V-te + みます
+Catatan : Mencoba sesuatu untuk mengetahui baik/cocok atau bagaimana rasanya.
+          Juga dipakai untuk menyarankan secara ringan kepada orang lain.
+          Disambungkan ke kata kerja berkehendak.
+Contoh  :
+  1) この靴、サイズが合うかどうか履いてみます。
+     Saya coba pakai sepatu ini untuk melihat apakah ukurannya pas.
+  2) とてもおいしいですから、ぜひ食べてみてください。
+     Rasanya enak sekali, silakan coba makan.
+
+[22-2] ~ておきます   (te okimasu)
+Arti    : Melakukan ... terlebih dahulu (persiapan) / Membiarkan tetap ...
+Rumus   : V-te + おきます
+Catatan : Melakukan sesuatu sebelumnya agar tidak repot nanti atau sebagai
+          persiapan. Dapat juga berarti membiarkan suatu keadaan tetap seperti
+          itu (mis. 「開けておいてください」).
+Contoh  :
+  1) お客さんが来る前に、部屋を掃除しておきます。
+     Sebelum tamu datang, saya membersihkan kamar terlebih dahulu.
+  2) 暑いので、窓は開けておいてください。
+     Karena panas, tolong biarkan jendelanya tetap terbuka.
+
+[22-3] ~てしまいます   (te shimaimasu)
+Arti    : Selesai ... (tuntas) / Terlanjur ... (penyesalan)
+Rumus   : V-te + しまいます
+Catatan : Menyatakan tindakan selesai dengan cepat sampai tuntas, atau rasa
+          menyesal karena terjadi hal yang tidak bisa diulang/diperbaiki lagi.
+Contoh  :
+  1) 借りた本はもう全部読んでしまいました。
+     Buku yang saya pinjam sudah habis saya baca semuanya.
+  2) 電車の中に傘を忘れてしまいました。
+     Saya kelupaan meninggalkan payung di dalam kereta.
+
+
+================================================================
+23課 あげます・くれます・もらいます
+================================================================
+
+[23-1] あげます・~てあげます   (agemasu / te agemasu)
+Arti    : Memberi ... / Melakukan ... untuk orang lain
+Rumus   : N + をあげます・さしあげます
+          V-te + あげます・さしあげます
+Catatan : Subjek adalah pembicara atau orang yang dekat secara psikologis;
+          penerima adalah orang lain. Jika penerima berstatus lebih tinggi di
+          luar keluarga (guru, atasan, tamu), gunakan 「さしあげます」.
+Contoh  :
+  1) 母の誕生日に花をあげました。
+     Saya memberi bunga pada ulang tahun ibu.
+  2) 友だちに日本語の宿題を手伝ってあげました。
+     Saya membantu teman mengerjakan PR bahasa Jepang.
+
+[23-2] くれます・~てくれます   (kuremasu / te kuremasu)
+Arti    : Memberi ... (kepada saya) / Melakukan ... untuk saya
+Rumus   : N + をくれます・くださいます
+          V-te + くれます・くださいます
+Catatan : Subjek adalah orang lain; penerima adalah pembicara atau orang yang
+          dekat secara psikologis. Jika pemberi berstatus lebih tinggi di luar
+          keluarga, gunakan 「くださいます」.
+Contoh  :
+  1) 先生がわたしに日本の小説をくださいました。
+     Guru memberi saya sebuah novel Jepang.
+  2) 友だちが駅まで車で送ってくれました。
+     Teman saya mengantarkan saya sampai stasiun dengan mobil.
+
+[23-3] もらいます・~てもらいます   (moraimasu / te moraimasu)
+Arti    : Menerima ... / Meminta orang lain melakukan ... (untuk saya)
+Rumus   : N + をもらいます・いただきます
+          V-te + もらいます・いただきます
+Catatan : Subjek (penerima) adalah pembicara atau orang yang dekat secara
+          psikologis. Jika menerima dari orang yang berstatus lebih tinggi di
+          luar keluarga, gunakan 「いただきます」.
+Contoh  :
+  1) 誕生日に兄から時計をもらいました。
+     Pada hari ulang tahun saya menerima jam tangan dari kakak laki-laki.
+  2) 先生に作文を直していただきました。
+     Saya meminta guru mengoreksi karangan saya.
+
+
+================================================================
+24課 ~(ら)れます (受身 / Kalimat Pasif)
+================================================================
+
+[24-1] ~(ら)れます — 受身 1   ((ra)remasu - ukemi 1)
+Arti    : Di-... (menerima tindakan orang lain)
+Rumus   : Bentuk pasif kata kerja (V-I: -u→-areru, V-II: -ru→-rareru,
+          V-III: する→される, 来る→来られる)
+Catatan : Subjek adalah pembicara atau orang dekat, menyatakan menerima
+          tindakan dari orang lain. Jika subjeknya 「わたし」, biasanya
+          dihilangkan.
+Contoh  :
+  1) わたしは先生にほめられました。
+     Saya dipuji oleh guru.
+  2) 駅で外国人に道を聞かれました。
+     Saya ditanya jalan oleh orang asing di stasiun.
+
+[24-2] ~(ら)れます — 受身 2   ((ra)remasu - ukemi 2)
+Arti    : Di-... / Terkena dampak ... (pasif menderita / merugikan)
+Rumus   : Bentuk pasif kata kerja (termasuk kata kerja intransitif)
+Catatan : Bagian tubuh atau barang milik terkena tindakan orang lain, atau
+          terdampak secara tidak langsung oleh perilaku orang lain/kejadian.
+          Umumnya dipakai bila merasa terganggu/kesulitan. Jika merasa
+          bersyukur, gunakan 「~てくれる・~てもらう」.
+Contoh  :
+  1) 満員電車の中で足を踏まれました。
+     Di dalam kereta yang penuh sesak, kaki saya terinjak.
+  2) 帰る途中で雨に降られて、ぬれてしまいました。
+     Di tengah jalan pulang kehujanan hingga basah kuyup.
+
+[24-3] ~(ら)れます — 受身 3   ((ra)remasu - ukemi 3)
+Arti    : Di-... (subjek benda atau peristiwa)
+Rumus   : Benda / Peristiwa + が/は + Bentuk pasif
+Catatan : Kalimat pasif dengan benda atau peristiwa sebagai subjek. Hanya
+          menyatakan fakta secara objektif tanpa melibatkan emosi pembicara.
+Contoh  :
+  1) 次のオリンピックは東京で開かれます。
+     Olimpiade berikutnya akan diadakan di Tokyo.
+  2) このお寺は500年前に建てられました。
+     Kuil ini dibangun 500 tahun yang lalu.
+
+
+================================================================
+25課 ~(さ)せます・~さ(せら)れます
+================================================================
+
+[25-1] ~(さ)せます   ((sa)semasu) [Kausatif]
+Arti    : Menyuruh / Memaksa / Membiarkan / Membuat (emosi) ...
+Rumus   : Bentuk kausatif kata kerja (V-I: -u→-aseru, V-II: -ru→-saseru,
+          V-III: する→させる, 来る→来させる)
+Catatan : Memaksa/menyuruh orang bertindak, mengizinkan/membiarkan, atau
+          memicu emosi (sedih, marah, senang). Partikel pelaku umumnya 「を」
+          jika kata kerja intransitif, dan 「に」 jika transitif.
+Contoh  :
+  1) 母は子どもに毎日野菜を食べさせます。
+     Ibu menyuruh anak-anak makan sayur setiap hari.
+  2) 少し休ませていただけませんか。
+     Bolehkah saya diizinkan beristirahat sebentar?
+
+[25-2] ~さ(せら)れます   (sa(sera)remasu) [Kausatif Pasif]
+Arti    : Dipaksa untuk ... / Terpaksa ... / Dibuat merasa ...
+Rumus   : Bentuk kausatif pasif (V-I: -u→-asareru / -aserareru,
+          V-II: -ru→-saserareru, V-III: させられる, 来させられる)
+Catatan : Menyatakan terpaksa melakukan sesuatu karena disuruh/dipaksa, atau
+          suatu perasaan muncul karena orang lain. Jika bukan paksaan melainkan
+          keinginan, gunakan 「~させてくれる・~させてもらう」.
+Contoh  :
+  1) 子どものころ、嫌いなピーマンを食べさせられました。
+     Waktu kecil, saya dipaksa makan paprika yang tidak saya sukai.
+  2) 部長に毎日残業させられています。
+     Saya dipaksa lembur setiap hari oleh kepala bagian.
+
+
+################################################################
+第2部 文法形式の整理  (BAGIAN 2: PENYUSUNAN BENTUK TATA BAHASA)
+################################################################
+
+
+================================================================
+1課 で・に  (Partikel で dan に)
+================================================================
+
+[P2-1-1] 「で」の使い方   (de no tsukaikata)
+Arti    : Di (tempat aksi) / Dengan (alat/bahan) / Di antara (lingkup) / Karena (sebab)
+Rumus   : N + で
+Catatan : A) Tempat terjadinya tindakan/kejadian. B) Alat/cara atau bahan
+          pembuatan. C) Lingkup perbandingan/superlatif. D) Sebab atau alasan.
+Contoh  :
+  1) 図書館で友達と勉強しました。
+     Saya belajar bersama teman di perpustakaan. (A)
+  2) 日本語でスピーチをしました。
+     Saya berpidato dengan bahasa Jepang. (B)
+
+[P2-1-2] 「に」の使い方   (ni no tsukaikata)
+Arti    : Di (keberadaan) / Ke (tujuan) / Kepada (penerima) / Pada (waktu)
+Rumus   : N + に
+Catatan : A) Lokasi keberadaan benda/makhluk atau tempat keadaan tampak.
+          B) Titik tujuan perpindahan objek atau subjek. C) Penerima atau
+          sasaran tindakan. D) Titik waktu.
+Contoh  :
+  1) 机の上に辞書が置いてあります。
+     Di atas meja ada kamus yang diletakkan. (A)
+  2) 毎朝7時に家を出ます。
+     Setiap pagi saya keluar rumah pada jam 7. (D)
+
+
+================================================================
+2課 を・と  (Partikel を dan と)
+================================================================
+
+[P2-2-1] 「を」の使い方   (o no tsukaikata)
+Arti    : Menandai objek / Tempat melintas / Titik awal / Keadaan (~をしている)
+Rumus   : N + を
+Catatan : A) Objek tindakan. B) Tempat yang dilalui/dilintasi. C) Tempat yang
+          ditinggalkan/titik keberangkatan. D) Pola 「~をしている」 untuk
+          menggambarkan bentuk atau ciri fisik.
+Contoh  :
+  1) 毎朝、公園を散歩します。
+     Setiap pagi saya berjalan-jalan di taman. (B)
+  2) あの人はとてもきれいな目をしていますね。
+     Orang itu memiliki mata yang sangat indah ya. (D)
+
+[P2-2-2] 「と」の使い方   (to no tsukaikata)
+Arti    : Dan / Bersama / Dengan (lawan/pembanding) / Bahwa (kutipan)
+Rumus   : N + と / Kutipan + と
+Catatan : A) Menghubungkan benda dalam daftar. B) Partner melakukan bersama.
+          C) Lawan atau standar perbandingan. D) Setelah nama, ucapan, atau
+          isi pikiran.
+Contoh  :
+  1) 日曜日に家族と買い物に行きました。
+     Pada hari Minggu saya pergi berbelanja bersama keluarga. (B)
+  2) わたしは兄と背の高さが同じです。
+     Tinggi badan saya sama dengan kakak laki-laki saya. (C)
+
+
+================================================================
+3課 も・しか  (Partikel も dan しか)
+================================================================
+
+[P2-3-1] 「も」の使い方   (mo no tsukaikata)
+Arti    : Juga / Sampai ... / Sama sekali tidak ... / Bahkan ...
+Rumus   : N + も / Kata bilangan + も
+Catatan : A) Menambah hal yang sama/serupa. B) Dengan kata bilangan, menekankan
+          jumlah banyak. C) Pola 「1+satuan+も+negatif」 menekankan nol/tidak ada.
+          D) Kata tanya + も + negatif menekankan penyangkalan total. E) Contoh
+          ekstrem.
+Contoh  :
+  1) 駅まで30分も歩きました。
+     Saya berjalan kaki sampai 30 menit ke stasiun. (B)
+  2) 部屋にはだれもいませんでした。
+     Di dalam kamar tidak ada siapa pun. (D)
+
+[P2-3-2] 「しか」の使い方   (shika no tsukaikata)
+Arti    : Hanya ... (selalu diikuti bentuk negatif)
+Rumus   : N / Kata bilangan + しか + bentuk negatif
+Catatan : A) Dengan kata bilangan + negatif menekankan jumlah yang sedikit.
+          B) Membatasi hanya pada hal tersebut dan menyangkal kemungkinan lain.
+Contoh  :
+  1) 財布に500円しかありません。
+     Di dompet hanya ada 500 yen.
+  2) わたしはひらがなしか書けません。
+     Saya hanya bisa menulis hiragana.
+
+
+================================================================
+4課 だけ・でも  (Partikel だけ dan でも)
+================================================================
+
+[P2-4-1] 「だけ」の使い方   (dake no tsukaikata)
+Arti    : Hanya ... / Saja
+Rumus   : N (+助詞) / Bentuk biasa + だけ
+Catatan : Membatasi hanya pada satu hal/jumlah tersebut. Bisa diikuti bentuk
+          positif maupun negatif.
+Contoh  :
+  1) 日曜日だけ朝遅くまで寝ています。
+     Hanya pada hari Minggu saya tidur sampai siang.
+  2) この秘密はあなただけに教えます。
+     Rahasia ini hanya saya beritahukan kepada kamu.
+
+[P2-4-2] 「でも」の使い方   (demo no tsukaikata)
+Arti    : Bahkan ... / Meski hanya ... / ... atau semacamnya / ... pun (semua)
+Rumus   : N + でも / Kata tanya + でも
+Catatan : A) Contoh ekstrem (bahkan ...). B) Pola 「1+satuan+でも」 (konsesi
+          minimal). C) Memberi saran ringan dalam ajakan/permintaan. D) Kata
+          tanya + でも berarti semua dalam kategori tersebut (siapa pun, dsb.).
+Contoh  :
+  1) 疲れたでしょう。お茶でも飲みませんか。
+     Pasti capek, ya. Bagaimana kalau minum teh atau semacamnya? (C)
+  2) この問題はだれでも簡単に解けます。
+     Soal ini siapa pun bisa menyelesaikannya dengan mudah. (D)
+
+
+================================================================
+5課 は・が  (Partikel は dan が)
+================================================================
+
+[P2-5-1] 「は」の使い方   (wa no tsukaikata)
+Arti    : Menandai topik / Membedakan / Kontras / Batas minimum
+Rumus   : N (+助詞) + は
+Catatan : A) Topik fakta umum/tetap. B) Memisahkan topik dari opsi lain.
+          C) Mengontraskan dua hal. D) Dengan bilangan, menunjukkan batas
+          minimum ("paling sedikit ...").
+Contoh  :
+  1) コーヒーは好きですが、紅茶はあまり飲みません。
+     Saya suka kopi, tetapi teh hitam jarang minum. (C)
+  2) 駅まで歩いて20分はかかりますよ。
+     Jalan kaki ke stasiun paling tidak butuh 20 menit lho. (D)
+
+[P2-5-2] 「が」の使い方   (ga no tsukaikata)
+Arti    : Menandai subjek baru / Penekanan pelaku / Pola ~は~が~
+Rumus   : N + が
+Catatan : A) Pelaku kejadian di depan mata, dengan kata tanya, atau mengecualikan
+          yang lain ("sayalah yang..."). B) Dalam pola 「~は~が…」 menandai
+          bagian dari topik, kemampuan, persepsi indra, atau objek perasaan.
+Contoh  :
+  1) あっ、雨が降ってきましたよ。
+     Eh, hujan mulai turun lho. (A)
+  2) わたしは料理が得意です。
+     Saya pandai memasak. (B)
+
+
+================================================================
+6課 の・こと  (Nominalisasi の dan こと)
+================================================================
+
+[P2-6-1] 「の」の使い方   (no no tsukaikata)
+Arti    : Penjelasan (~のです) / Penekanan (~のは…です) / Persepsi indra
+Rumus   : Bentuk biasa + のです・んです / のは…です / のが見える・聞こえる
+Catatan : A) Menjelaskan situasi, meminta penjelasan, atau memastikan sesuatu.
+          B) Menjelaskan lebih rinci bagian 「~のは」 pada 「…です」.
+          C) Menyatakan sesuatu yang ditangkap oleh indra (melihat/mendengar).
+Contoh  :
+  1) どうして学校を休んだんですか。
+     Mengapa kamu tidak masuk sekolah? (A)
+  2) 弟が庭で遊んでいるのが見えます。
+     Terlihat adik laki-laki saya sedang bermain di halaman. (C)
+
+[P2-6-2] 「こと」の使い方   (koto no tsukaikata)
+Arti    : Hal tentang ... (~のこと) / Adalah ... (~は…ことです)
+Rumus   : N + のこと / N + は + V-kamus + ことです
+Catatan : A) Memperjelas fokus pembicaraan (hal tentang ~). B) Menjelaskan
+          secara konkret isi dari topik kalimat (hobi, cita-cita, pekerjaan).
+Contoh  :
+  1) 日本の文化のことをもっと知りたいです。
+     Saya ingin tahu lebih banyak tentang budaya Jepang. (A)
+  2) わたしの趣味は写真を撮ることです。
+     Hobi saya adalah memotret. (B)
+
+
+================================================================
+7課 ~て…・~ないで…  (Bentuk て dan ないで)
+================================================================
+
+[P2-7-1] 「~て… / ~ないで…」の使い方   (te / naide no tsukaikata)
+Arti    : Lalu ... / Dengan cara ... / Dalam keadaan ... / Dan / Karena ...
+Rumus   : V-te / V-nai + で (untuk sebab negatif gunakan ~なくて)
+Catatan : A) Urutan kejadian/tindakan (bila subjek beda, tidak boleh diikuti
+          niat/ajakan). B) Cara/metode. C) Dalam keadaan melakukan/tidak
+          melakukan. D) Dua hal paralel atau kontras. E) Penyebab (~て/~なくて).
+Contoh  :
+  1) 朝起きて、顔を洗ってからご飯を食べます。
+     Bangun pagi, lalu cuci muka kemudian makan nasi. (A)
+  2) 辞書を使わないで、新聞を読んでみました。
+     Saya mencoba membaca koran tanpa menggunakan kamus. (C)
+
+
+================================================================
+8課 他動詞・自動詞  (Kata Kerja Transitif dan Intransitif)
+================================================================
+
+[P2-8-1] 他動詞・自動詞   (tadoushi / jidoushi)
+Arti    : Kata kerja berobjek (pelaku + を + 他動詞) vs tanpa objek (benda + が + 自動詞)
+Rumus   : [Pelaku] が/は + [Objek] を + 他動詞
+          [Benda/Hal] が/は + 自動詞
+Catatan : 他動詞 menyoroti tindakan pelaku terhadap objek (例: ドアを開ける,
+          電気をつける). 自動詞 menyoroti perubahan/gerakan pada benda itu
+          sendiri (例: ドアが開く, 電気がつく).
+Contoh  :
+  1) 部屋が暑いので、窓を開けました。(他動詞)
+     Karena kamar panas, saya membuka jendela.
+  2) 風が強くて、急に窓が開きました。(自動詞)
+     Karena angin kencang, tiba-tiba jendela terbuka.
+
+
+================================================================
+9課 ~ています・~てあります
+================================================================
+
+[P2-9-1] 「~ています」の使い方   (te imasu no tsukaikata)
+Arti    : Sedang ... / Kebiasaan ... / Dalam keadaan (hasil) ... / Belum ...
+Rumus   : V-te + います (negatif: ~ていません)
+Catatan : A) Aksi yang sedang berlangsung atau kebiasaan yang diulang dalam
+          jangka lama. B) Keadaan yang masih tersisa sebagai hasil perubahan
+          (dengan kata kerja intransitif). C) Dalam kalimat negatif menyatakan
+          hal yang seharusnya terjadi masih belum selesai.
+Contoh  :
+  1) 姉は東京の会社で働いています。
+     Kakak perempuan saya bekerja di perusahaan di Tokyo. (A)
+  2) ドアが閉まっていますね。
+     Pintunya tertutup ya. (B)
+
+[P2-9-2] 「~てあります」の使い方   (te arimasu no tsukaikata)
+Arti    : Sudah ter-... (keadaan hasil tindakan disengaja)
+Rumus   : N + が + V-te (他動詞) + あります
+Catatan : Menyatakan keadaan hasil dari suatu tindakan yang dilakukan dengan
+          tujuan tertentu. Selalu disambungkan ke kata kerja transitif (他動詞).
+Contoh  :
+  1) 壁にきれいな絵が飾ってあります。
+     Di dinding terpajang lukisan yang indah.
+  2) 会議の資料はもうコピーしてあります。
+     Materi rapat sudah difotokopi.
+
+
+================================================================
+10課 ~てきます・~ていきます
+================================================================
+
+[P2-10-1] ~てきます・~ていきます   (te kimasu / te ikimasu)
+Arti    : Datang mendekat / Pergi menjauh / ... dulu lalu kembali / Mulai ...
+Rumus   : V-te + きます・いきます
+Catatan : A) Pergerakan mendekati pembicara (~てくる) atau menjauhi pembicara
+          (~ていく). B) Melakukan aksi di tempat lain lalu kembali (~てくる),
+          atau melakukan aksi dulu lalu pergi (~ていく). C) Keadaan/perubahan
+          berlanjut hingga kini (~てきた) atau ke masa depan (~ていく).
+          D) Awal munculnya perubahan (~てくる, tanpa pasangan ~ていく).
+Contoh  :
+  1) ちょっとコンビニで飲み物を買ってきます。
+     Saya pergi membeli minuman di minimarket sebentar (lalu kembali). (B)
+  2) 最近、日本語が少しずつ分かってきました。
+     Akhir-akhir ini, saya mulai sedikit demi sedikit mengerti bahasa Jepang. (D)
+
+
+================================================================
+11課 こ・そ・あ  (Kata Tunjuk こ・そ・あ)
+================================================================
+
+[P2-11-1] 「こ (これ・この・ここ・こう)」の使い方   (ko-series)
+Arti    : Ini / Di sini / Begini (dekat pembicara)
+Rumus   : これ / この + N / ここ / こう
+Catatan : Menunjuk benda/tempat yang dekat dengan pembicara dan lawan bicara
+          (terlihat oleh keduanya), atau hal di sisi pembicara saja.
+Contoh  :
+  1) これはわたしが昨日買った本です。
+     Ini adalah buku yang saya beli kemarin.
+  2) この漢字はこう書きます。
+     Kanji ini ditulis seperti ini.
+
+[P2-11-2] 「そ (それ・その・そこ・そう)」の使い方   (so-series)
+Arti    : Itu / Di situ / Begitu (dekat lawan bicara / baru dibicarakan)
+Rumus   : それ / その + N / そこ / そう
+Catatan : Menunjuk hal yang lebih dekat ke lawan bicara, agak jauh dari
+          keduanya, atau hal yang hanya diketahui salah satu pihak (pembicara
+          atau pendengar) dalam percakapan.
+Contoh  :
+  1) あなたが持っているそのかばん、素敵ですね。
+     Tas yang sedang kamu pegang itu bagus sekali ya.
+  2) 昨日面白い映画を見ました。その映画は日本のアニメです。
+     Kemarin saya menonton film menarik. Film itu adalah anime Jepang.
+
+[P2-11-3] 「あ (あれ・あの・あそこ・ああ)」の使い方   (a-series)
+Arti    : Itu (jauh) / Di sana / Seperti itu
+Rumus   : あれ / あの + N / あそこ / ああ
+Catatan : Menunjuk hal yang jauh dari pembicara maupun lawan bicara namun
+          terlihat keduanya, atau hal yang sama-sama diketahui oleh pembicara
+          dan pendengar.
+Contoh  :
+  1) あそこに高いビルが見えますね。
+     Di sana terlihat gedung tinggi ya.
+  2) 先月行ったあのレストラン、また行きたいですね。
+     Restoran yang kita kunjungi bulan lalu itu, ingin pergi lagi ya.
+
+
+================================================================
+12課 接続の言葉  (Kata Sambung / Konjungsi)
+================================================================
+
+[P2-12-1] ですから・だから   (desu kara / dakara)
+Arti    : Oleh karena itu / Jadi
+Rumus   : Kalimat 1。ですから・だから、Kalimat 2。
+Catatan : Menyatakan kesimpulan (fakta, penilaian, atau ajakan/perintah) yang
+          muncul dari informasi pada kalimat sebelumnya.
+Contoh  :
+  1) 明日は試験があります。だから、今日は早く寝ます。
+     Besok ada ujian. Karena itu, hari ini saya tidur lebih awal.
+  2) この道は狭いです。ですから、気をつけて運転してください。
+     Jalan ini sempit. Oleh karena itu, berkendaralah dengan hati-hati.
+
+[P2-12-2] それで   (sore de)
+Arti    : Lalu karena itu / Sehingga
+Rumus   : Kalimat 1。それで、Kalimat 2。
+Catatan : Menyatakan kesimpulan berupa fakta/hasil nyata berdasarkan fakta
+          pada kalimat sebelumnya (tidak dipakai untuk ajakan atau perintah).
+Contoh  :
+  1) 電車が止まりました。それで、会社に遅れました。
+     Keretanya berhenti. Karena itu, saya terlambat ke kantor.
+  2) 鍵をなくしました。それで、家に入れませんでした。
+     Kuncinya hilang. Jadi, saya tidak bisa masuk ke rumah.
+
+[P2-12-3] けれど(も)   (keredo(mo))
+Arti    : Tetapi / Namun
+Rumus   : Kalimat 1。けれど(も)、Kalimat 2。
+Catatan : Menyatakan hal yang bertentangan atau berlawanan dengan kalimat
+          sebelumnya.
+Contoh  :
+  1) この部屋は広いです。けれども、家賃が高いです。
+     Kamar ini luas. Namun, uang sewanya mahal.
+  2) 薬を飲みました。けれど、まだ熱が下がりません。
+     Saya sudah minum obat. Tetapi, demamnya belum juga turun.
+
+[P2-12-4] それに   (sore ni)
+Arti    : Selain itu / Ditambah lagi
+Rumus   : Kalimat 1。それに、Kalimat 2。
+Catatan : Menambahkan informasi lain yang sejenis atau sejalan dengan isi
+          kalimat sebelumnya.
+Contoh  :
+  1) このレストランはおいしいです。それに、店員も親切です。
+     Restoran ini enak. Selain itu, pelayannya juga ramah.
+  2) 今日は寒いし、それに風も強いです。
+     Hari ini dingin, ditambah lagi anginnya juga kencang.
+
+[P2-12-5] たとえば   (tatoeba)
+Arti    : Misalnya / Contohnya
+Rumus   : Kalimat 1。たとえば、Kalimat 2 / Contoh。
+Catatan : Memberikan contoh konkret dari hal yang disebutkan pada kalimat
+          sebelumnya.
+Contoh  :
+  1) 日本の伝統的なスポーツ、たとえば相撲を見てみたいです。
+     Saya ingin menonton olahraga tradisional Jepang, misalnya sumo.
+  2) 毎日運動をしています。たとえば、朝30分ジョギングします。
+     Saya berolahraga setiap hari. Misalnya, lari pagi 30 menit.
+
+[P2-12-6] (それ)では・じゃ   ((sore) de wa / ja)
+Arti    : Kalau begitu / Baiklah
+Rumus   : Kalimat 1。(それ)では・じゃ、Kalimat 2。
+Catatan : Menanggapi informasi kalimat sebelumnya dengan perkiraan, niat,
+          atau ajakan kepada lawan bicara.
+Contoh  :
+  1) みんな集まりましたね。それでは、会議を始めましょう。
+     Semua sudah berkumpul ya. Kalau begitu, mari kita mulai rapatnya.
+  2) 雨がやみましたよ。じゃ、そろそろ出かけましょうか。
+     Hujannya sudah reda lho. Kalau begitu, ayo kita berangkat sekarang.
+
+
+================================================================
+13課 副詞  (Kata Keterangan / Adverbia)
+================================================================
+
+[P2-13-1] まだ / もう   (mada / mou)
+Arti    : Masih / Belum (まだ) / Sudah / ... lagi (もう)
+Rumus   : まだ + kalimat positif/negatif
+          もう + bentuk lampau / 1+satuan / 少し
+Catatan : 「もう」 menyatakan keadaan sudah tercapai atau proses selesai (atau
+          menambah sedikit lagi). 「まだ」 menyatakan keadaan belum tercapai
+          atau masih berlanjut.
+Contoh  :
+  1) 宿題はもう終わりましたが、部屋はまだ片づけていません。
+     PR sudah selesai, tetapi kamar masih belum saya bereskan.
+  2) スープにもう少し塩を入れてください。
+     Tolong tambahkan sedikit lagi garam ke dalam sup.
+
+[P2-13-2] なかなか / やっと / とうとう   (nakanaka / yatto / toutou)
+Arti    : Susah / Lama tidak ... (なかなか~ない) / Akhirnya berhasil (やっと) /
+          Pada akhirnya (とうとう)
+Rumus   : なかなか + bentuk negatif
+          やっと + bentuk lampau (~た)
+          とうとう + bentuk lampau (~た / ~なかった)
+Catatan : 「なかなか~ない」 = sulit terwujud. 「やっと~た」 = hal sulit/lama
+          akhirnya terwujud (rasa lega). 「とうとう~た/~なかった」 = hasil
+          akhir setelah menunggu lama.
+Contoh  :
+  1) 漢字がなかなか覚えられません。
+     Kanji susah sekali untuk dihafal.
+  2) 長い間探していた本がやっと見つかりました。
+     Buku yang lama saya cari akhirnya ditemukan juga.
+
+[P2-13-3] かならず / きっと / ぜひ   (kanarazu / kitto / zehi)
+Arti    : Pasti tanpa kecuali (かならず) / Pasti (dugaan kuat: きっと) /
+          Benar-benar / Harap sekali (ぜひ)
+Rumus   : かならず / きっと + dugaan/tekad/ajakan
+          ぜひ + ~てください / ~たいです
+Catatan : 「かならず」 = kepastian tanpa pengecualian/tekad kuat. 「きっと」
+          = dugaan kuat atau ajakan. 「ぜひ」 = harapan atau permintaan yang
+          sangat kuat.
+Contoh  :
+  1) 明日の朝はかならず6時に起きます。
+     Besok pagi saya pasti bangun jam 6.
+  2) 機会があったら、ぜひわたしの国へ遊びに来てください。
+     Kalau ada kesempatan, harap sekali datang berkunjung ke negara saya.
+
+
+================================================================
+14課 ~すぎます・~にくいです・~やすいです
+================================================================
+
+[P2-14-1] ~すぎます   (sugimasu)
+Arti    : Terlalu ... / Kelewat ...
+Rumus   : V-masu stem / Adj-i (~い除く) / Adj-na (~な除く) + すぎます
+            (pengecualian: いいです → よすぎます)
+Catatan : Menyatakan melebihi batas yang wajar. Umumnya bermakna negatif.
+Contoh  :
+  1) 昨日お酒を飲みすぎて、今朝頭が痛いです。
+     Kemarin terlalu banyak minum alkohol, jadi pagi ini kepala saya sakit.
+  2) この部屋はわたしには少し狭すぎます。
+     Kamar ini terlalu sempit bagi saya.
+
+[P2-14-2] ~にくいです   (nikui desu)
+Arti    : Sulit untuk ... / Tidak mudah ...
+Rumus   : V-masu stem + にくいです
+Catatan : Menyatakan sulit dilakukan dengan mudah atau jarang terjadi. Bisa
+          bermakna negatif (sulit) maupun positif (tidak mudah rusak/luntur).
+Contoh  :
+  1) このペンは細くて書きにくいです。
+     Pena ini terlalu tipis sehingga sulit dipakai menulis.
+  2) 丈夫で壊れにくいかばんを買いました。
+     Saya membeli tas yang kuat dan tidak mudah rusak.
+
+[P2-14-3] ~やすいです   (yasui desu)
+Arti    : Mudah untuk ... / Gampang ...
+Rumus   : V-masu stem + やすいです
+Catatan : Menyatakan mudah dilakukan atau mudah terjadi. Bisa bermakna positif
+          (mudah dipahami) maupun negatif (mudah pecah/rusak).
+Contoh  :
+  1) 先生の字は大きくて読みやすいです。
+     Tulisan guru besar sehingga mudah dibaca.
+  2) 冬はかぜをひきやすい季節です。
+     Musim dingin adalah musim yang mudah terkena flu.
+
+
+================================================================
+15課 品詞  (Kelas Kata / Parts of Speech)
+================================================================
+
+[P2-15-1] 名詞 ⇔ 動詞   (Kata Benda ⇔ Kata Kerja)
+Arti    : Mengubah kata kerja (yang lazim dipakai) menjadi kata benda
+Rumus   : N + する → N   (例: 料理します → 料理)
+          V-masu stem → N   (例: 帰ります → 帰り)
+          N + 助詞 + V → N + V-masu stem   (例: 山にのぼります → 山のぼり)
+Catatan : Kata benda golongan 「~する」 dan bentuk masu-stem tertentu bisa
+          diperlakukan sebagai kata benda (hanya untuk ungkapan yang lazim).
+Contoh  :
+  1) 会社の帰りにスーパーへ寄りました。
+     Dalam perjalanan pulang dari kantor saya mampir ke supermarket.
+  2) わたしの趣味は山のぼりです。
+     Hobi saya adalah mendaki gunung.
+
+[P2-15-2] 名詞 ⇔ 形容詞   (Kata Benda ⇔ Kata Sifat)
+Arti    : Mengubah kata sifat menjadi kata benda (tingkat/sifat)
+Rumus   : Adj-i (~い→~さ)   (pengecualian: いい → よさ)
+          Adj-na (~な→~さ)
+Catatan : Penambahan 「さ」 mengubah kata sifat menjadi kata benda abstrak.
+Contoh  :
+  1) この山の高さは約3,000メートルです。
+     Ketinggian gunung ini sekitar 3.000 meter.
+  2) インターネットのべんりさがよく分かりました。
+     Saya jadi sangat mengerti kepraktisan internet.
+
+[P2-15-3] 副詞 ⇔ 形容詞   (Kata Keterangan ⇔ Kata Sifat)
+Arti    : Mengubah kata sifat menjadi kata keterangan (menerangkan kata kerja)
+Rumus   : Adj-i (~い→~く)   (pengecualian: いい → よく)
+          Adj-na (~な→~に)
+Catatan : Penambahan 「く」 pada Adj-i dan 「に」 pada Adj-na membuat kata
+          sifat berfungsi sebagai adverbia.
+Contoh  :
+  1) 試験の結果がよくなくて、残念でした。
+     Hasil ujiannya tidak bagus, jadi saya kecewa.
+  2) 部屋をきれいに掃除しました。
+     Saya membersihkan kamar dengan rapi/bersih.
+
+[P2-15-4] 名詞 ⇔ 文   (Kata Benda ⇔ Kalimat)
+Arti    : Mengubah kalimat bentuk biasa menjadi frasa kata benda
+Rumus   : Bentuk biasa + の・こと
+Catatan : Penambahan 「の」 atau 「こと」 di belakang kalimat bentuk biasa
+          mengubahnya menjadi frasa nomina sehingga bisa diikuti partikel.
+Contoh  :
+  1) 日本語で日記を書くのは楽しいです。
+     Menulis buku harian dalam bahasa Jepang itu menyenangkan.
+  2) 明日会議があることを忘れていました。
+     Saya lupa bahwa besok ada rapat.
+
+
+================================================================
+Selesai.
+Catatan penyusun: bagian "形の練習" (latihan perubahan bentuk), "れんしゅう" (latihan soal),
+"まとめ問題", "模擬試験", dan "問題紹介" dalam buku tidak dimasukkan karena bukan poin tata bahasa baru.
+================================================================

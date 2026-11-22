@@ -1,0 +1,657 @@
+#separator:tab
+#html:true
+#tags column:3
+かばん　Kata benda	かばん　Tas (tas jinjing, tas kerja, koper kecil)<br><br>1. このかばんは軽いです。<br>Tas ini ringan.<br><br>2. かばんの中に本が入っています。<br>Di dalam tas ada buku.	jlpt-n5
+ください　Ungkapan	ください　Tolong (berikan kepada saya)<br><br>1. 水をください。<br>Tolong beri saya air.<br><br>2. この本をください。<br>Tolong beri saya buku ini.	jlpt-n5
+いる　Kata kerja (Ichidan) - intransitif	いる　Ada, berada (untuk makhluk hidup)<br><br>1. 弟は部屋にいます。<br>Adik laki-laki ada di kamar.<br><br>2. 犬が庭にいます。<br>Ada anjing di halaman.	jlpt-n5
+こちら　Kata ganti	こちら　Arah sini, ke sini<br><br>1. こちらへどうぞ。<br>Silakan lewat sini.<br><br>2. こちらは田中さんです。<br>Ini Tanaka-san. (memperkenalkan orang)	jlpt-n5
+やさしい　Kata sifat-i	やさしい　Mudah, sederhana<br><br>1. この問題はやさしいです。<br>Soal ini mudah.<br><br>2. やさしい日本語で話してください。<br>Tolong bicara dengan bahasa Jepang yang mudah.	jlpt-n5
+ページ　Kata benda / Kata bantu bilangan	ページ　Halaman<br><br>1. 本の10ページを開けてください。<br>Tolong buka halaman 10 buku.<br><br>2. このページに名前を書いてください。<br>Tolong tulis nama di halaman ini.	jlpt-n5
+はがき　Kata benda	はがき　Kartu pos<br><br>1. 友達にはがきを書きました。<br>Saya menulis kartu pos untuk teman.<br><br>2. 京都からはがきが来ました。<br>Kartu pos datang dari Kyoto.	jlpt-n5
+ワイシャツ　Kata benda	ワイシャツ　Kemeja (resmi)<br><br>1. 父は白いワイシャツを着ています。<br>Ayah memakai kemeja putih.<br><br>2. ワイシャツを洗いました。<br>Saya mencuci kemeja.	jlpt-n5
+キロメートル　Kata benda	キロメートル　Kilometer<br><br>1. 学校まで3キロメートルあります。<br>Jarak ke sekolah 3 kilometer.<br><br>2. この道を2キロメートル歩きました。<br>Saya berjalan 2 kilometer di jalan ini.	jlpt-n5
+マッチ　Kata benda	マッチ　Korek api<br><br>1. マッチはどこですか。<br>Di mana korek apinya?<br><br>2. マッチで火をつけます。<br>Menyalakan api dengan korek api.	jlpt-n5
+よく　Kata keterangan	よく　Dengan baik, sering<br><br>1. よく勉強します。<br>Saya belajar dengan rajin.<br><br>2. この店によく来ます。<br>Saya sering datang ke toko ini.	jlpt-n5
+いる　Kata kerja (Godan) - intransitif	いる　Perlu, butuh<br><br>1. ペンがいります。<br>Saya butuh pen.<br><br>2. お金がいりますか。<br>Apakah butuh uang?	jlpt-n5
+コーヒー　Kata benda	コーヒー　Kopi<br><br>1. 毎朝コーヒーを飲みます。<br>Setiap pagi saya minum kopi.<br><br>2. コーヒーにお砂糖を入れますか。<br>Apakah kopinya mau diberi gula?	jlpt-n5
+メートル　Kata benda	メートル　Meter<br><br>1. この部屋は5メートルです。<br>Ruangan ini panjangnya 5 meter.<br><br>2. 駅まで100メートルです。<br>Jarak ke stasiun 100 meter.	jlpt-n5
+あれ　Kata ganti	あれ　Itu (yang di sana)<br><br>1. あれは何ですか。<br>Itu apa?<br><br>2. あれは私の車です。<br>Itu mobil saya.	jlpt-n5
+ボタン　Kata benda	ボタン　Kancing<br><br>1. シャツのボタンが取れました。<br>Kancing kemeja lepas.<br><br>2. ボタンを押してください。<br>Tolong tekan tombolnya.	jlpt-n5
+ぬるい　Kata sifat-i	ぬるい　Suam-suam kuku<br><br>1. このお茶はぬるいです。<br>Teh ini suam-suam kuku.<br><br>2. ぬるいお湯でシャワーを浴びます。<br>Mandi dengan air hangat suam-suam kuku.	jlpt-n5
+グラム　Kata benda	グラム　Gram<br><br>1. 砂糖を100グラム買いました。<br>Saya membeli gula 100 gram.<br><br>2. 肉を200グラムください。<br>Tolong beri saya daging 200 gram.	jlpt-n5
+キログラム　Kata benda	キログラム　Kilogram<br><br>1. 米を5キログラム買いました。<br>Saya membeli beras 5 kilogram.<br><br>2. この荷物は10キログラムです。<br>Barang ini beratnya 10 kilogram.	jlpt-n5
+すぐに　Kata keterangan	すぐに　Segera, langsung<br><br>1. すぐに行きます。<br>Saya segera pergi.<br><br>2. 先生はすぐに来ます。<br>Guru segera datang.	jlpt-n5
+カレー　Kata benda	カレー　Kari (kari Jepang)<br><br>1. 昼ご飯にカレーを食べました。<br>Saya makan kari untuk makan siang.<br><br>2. カレーは辛いです。<br>Karinya pedas.	jlpt-n5
+コップ　Kata benda	コップ　Gelas<br><br>1. コップに水を入れます。<br>Menuang air ke dalam gelas.<br><br>2. コップを洗ってください。<br>Tolong cuci gelasnya.	jlpt-n5
+めがね　Kata benda	めがね　Kacamata<br><br>1. 兄はめがねをかけています。<br>Kakak laki-laki memakai kacamata.<br><br>2. めがねを忘れました。<br>Saya lupa kacamata.	jlpt-n5
+たばこ　Kata benda	たばこ　Rokok, tembakau<br><br>1. ここでたばこを吸わないでください。<br>Tolong jangan merokok di sini.<br><br>2. 父はたばこをやめました。<br>Ayah sudah berhenti merokok.	jlpt-n5
+かわいい　Kata sifat-i	かわいい　Imut, lucu<br><br>1. この猫はかわいいです。<br>Kucing ini imut.<br><br>2. かわいい服を買いました。<br>Saya membeli pakaian yang lucu.	jlpt-n5
+あなた　Kata ganti	あなた　Kamu, Anda<br><br>1. あなたの名前は何ですか。<br>Siapa namamu?<br><br>2. あなたはどこに住んでいますか。<br>Kamu tinggal di mana?	jlpt-n5
+どの　Kata sifat prenominal (rentaishi)	どの　Yang mana (kata sifat penunjuk)<br><br>1. どの本が好きですか。<br>Buku yang mana yang kamu suka?<br><br>2. どの人が先生ですか。<br>Orang yang mana yang guru?	jlpt-n5
+とても　Kata keterangan	とても　Sangat<br><br>1. 今日はとても暑いです。<br>Hari ini sangat panas.<br><br>2. この料理はとてもおいしいです。<br>Masakan ini sangat enak.	jlpt-n5
+これ　Kata ganti	これ　Ini<br><br>1. これは私の傘です。<br>Ini payung saya.<br><br>2. これをください。<br>Tolong beri saya yang ini.	jlpt-n5
+たくさん　Kata sifat-na / Kata benda / Kata keterangan	たくさん　Banyak<br><br>1. 公園に人がたくさんいます。<br>Di taman ada banyak orang.<br><br>2. 宿題がたくさんあります。<br>Ada banyak PR.	jlpt-n5
+どこ　Kata ganti	どこ　Di mana<br><br>1. トイレはどこですか。<br>Toilet di mana?<br><br>2. あなたはどこから来ましたか。<br>Kamu berasal dari mana?	jlpt-n5
+どなた　Kata ganti	どなた　Siapa (sopan)<br><br>1. あの方はどなたですか。<br>Beliau itu siapa?<br><br>2. どなたですか。<br>Siapa di sana?	jlpt-n5
+ちょっと　Kata keterangan	ちょっと　Sedikit, sebentar<br><br>1. ちょっと待ってください。<br>Tolong tunggu sebentar.<br><br>2. ちょっと疲れました。<br>Saya sedikit capek.	jlpt-n5
+なぜ　Kata keterangan	なぜ　Mengapa<br><br>1. なぜ学校を休みましたか。<br>Mengapa kamu tidak masuk sekolah?<br><br>2. なぜ日本語を勉強しますか。<br>Mengapa kamu belajar bahasa Jepang?	jlpt-n5
+どうして　Kata keterangan	どうして　Mengapa, bagaimana<br><br>1. どうして泣いていますか。<br>Mengapa kamu menangis?<br><br>2. どうして遅れましたか。<br>Mengapa kamu terlambat?	jlpt-n5
+ちょうど　Kata keterangan	ちょうど　Tepat, pas<br><br>1. 今ちょうど3時です。<br>Sekarang tepat jam 3.<br><br>2. ちょうどいい時に来ました。<br>Kamu datang pada saat yang pas.	jlpt-n5
+きれい　Kata sifat-na	きれい　Cantik, bersih<br><br>1. この花はきれいです。<br>Bunga ini cantik.<br><br>2. 部屋がきれいになりました。<br>Kamarnya menjadi bersih.	jlpt-n5
+しかし　Kata sambung	しかし　Tetapi, namun<br><br>1. 雨です。しかし、行きます。<br>Hujan. Namun, saya tetap pergi.<br><br>2. この店は安いです。しかし、おいしくないです。<br>Toko ini murah. Namun, tidak enak.	jlpt-n5
+いろいろ　Kata sifat-na / Kata keterangan / Kata benda	いろいろ　Berbagai macam<br><br>1. 店にいろいろな物があります。<br>Di toko ada berbagai macam barang.<br><br>2. いろいろ教えてくれてありがとう。<br>Terima kasih sudah mengajari berbagai hal.	jlpt-n5
+おいしい　Kata sifat-i	おいしい　Enak<br><br>1. このケーキはおいしいです。<br>Kue ini enak.<br><br>2. 母の料理はとてもおいしいです。<br>Masakan ibu sangat enak.	jlpt-n5
+だんだん　Kata keterangan	だんだん　Lama-kelamaan, perlahan<br><br>1. だんだん寒くなります。<br>Lama-kelamaan menjadi dingin.<br><br>2. 日本語がだんだん上手になりました。<br>Bahasa Jepang saya lama-kelamaan menjadi lebih baik.	jlpt-n5
+あそこ　Kata ganti	あそこ　Di sana (jauh dari kedua pihak)<br><br>1. あそこに銀行があります。<br>Di sana ada bank.<br><br>2. あそこで待っています。<br>Saya menunggu di sana.	jlpt-n5
+うるさい　Kata sifat-i	うるさい　Berisik<br><br>1. 隣の部屋はうるさいです。<br>Kamar sebelah berisik.<br><br>2. うるさいですから、窓を閉めてください。<br>Karena berisik, tolong tutup jendela.	jlpt-n5
+つまらない　Kata sifat-i	つまらない　Membosankan<br><br>1. この映画はつまらないです。<br>Film ini membosankan.<br><br>2. つまらない話を聞きました。<br>Saya mendengar cerita yang membosankan.	jlpt-n5
+おばあさん　Kata benda	おばあさん　Nenek<br><br>1. おばあさんは庭で花を見ています。<br>Nenek sedang melihat bunga di halaman.<br><br>2. おばあさんは元気です。<br>Nenek sehat.	jlpt-n5
+そちら　Kata ganti	そちら　Ke arah situ (dekat lawan bicara)<br><br>1. そちらは寒いですか。<br>Apakah di sana dingin?<br><br>2. そちらの天気はどうですか。<br>Bagaimana cuaca di sana?	jlpt-n5
+まずい　Kata sifat-i	まずい　Tidak enak<br><br>1. この料理はまずいです。<br>Masakan ini tidak enak.<br><br>2. 薬はまずいです。<br>Obatnya tidak enak.	jlpt-n5
+おまわりさん　Kata benda	おまわりさん　Polisi (panggilan akrab)<br><br>1. おまわりさんに道を聞きました。<br>Saya bertanya jalan kepada polisi.<br><br>2. 駅の前におまわりさんがいます。<br>Ada polisi di depan stasiun.	jlpt-n5
+そこ　Kata ganti	そこ　Di situ (dekat lawan bicara)<br><br>1. そこに座ってください。<br>Tolong duduk di situ.<br><br>2. そこは何ですか。<br>Apa yang ada di situ?	jlpt-n5
+どう　Kata keterangan	どう　Bagaimana<br><br>1. この漢字はどう読みますか。<br>Bagaimana cara membaca kanji ini?<br><br>2. テストはどうでしたか。<br>Bagaimana tesnya?	jlpt-n5
+いつ　Kata ganti	いつ　Kapan<br><br>1. 誕生日はいつですか。<br>Kapan ulang tahunmu?<br><br>2. いつ日本へ行きますか。<br>Kapan kamu pergi ke Jepang?	jlpt-n5
+それから　Ungkapan	それから　Lalu, setelah itu<br><br>1. 朝ご飯を食べました。それから学校へ行きました。<br>Saya sarapan. Setelah itu pergi ke sekolah.<br><br>2. 宿題をします。それから寝ます。<br>Saya mengerjakan PR. Lalu tidur.	jlpt-n5
+あちら　Kata ganti	あちら　Ke arah sana (jauh)<br><br>1. あちらは図書館です。<br>Di sebelah sana adalah perpustakaan.<br><br>2. あちらの方はどなたですか。<br>Beliau yang di sana itu siapa?	jlpt-n5
+わかる　Kata kerja (Godan) - intransitif	わかる　Mengerti, paham<br><br>1. 日本語がわかります。<br>Saya mengerti bahasa Jepang.<br><br>2. 先生の話がよくわかりました。<br>Saya paham sekali penjelasan guru.	jlpt-n5
+なくす　Kata kerja (Godan) - transitif	なくす　Menghilangkan, kehilangan<br><br>1. 財布をなくしました。<br>Saya kehilangan dompet.<br><br>2. 鍵をなくさないでください。<br>Tolong jangan sampai kehilangan kunci.	jlpt-n5
+おばさん　Kata benda	おばさん　Bibi, tante<br><br>1. おばさんは東京に住んでいます。<br>Bibi tinggal di Tokyo.<br><br>2. おばさんからプレゼントをもらいました。<br>Saya menerima hadiah dari bibi.	jlpt-n5
+そうして　Kata sambung	そうして　Dan, kemudian<br><br>1. 朝起きます。そうして、顔を洗います。<br>Saya bangun pagi. Lalu mencuci muka.<br><br>2. 窓を開けました。そうして、空気を入れました。<br>Saya membuka jendela. Lalu memasukkan udara segar.	jlpt-n5
+なる　Kata kerja (Godan) - intransitif	なる　Menjadi<br><br>1. もうすぐ春になります。<br>Sebentar lagi akan menjadi musim semi.<br><br>2. 医者になりたいです。<br>Saya ingin menjadi dokter.	jlpt-n5
+ある　Kata kerja (Godan) - intransitif	ある　Ada (benda mati)<br><br>1. 机の上に本があります。<br>Di atas meja ada buku.<br><br>2. 駅の前に郵便局があります。<br>Di depan stasiun ada kantor pos.	jlpt-n5
+その　Kata sifat prenominal (rentaishi)	その　Itu (kata sifat penunjuk)<br><br>1. その本を見せてください。<br>Tolong perlihatkan buku itu.<br><br>2. その人は先生です。<br>Orang itu adalah guru.	jlpt-n5
+できる　Kata kerja (Ichidan) - intransitif	できる　Bisa, mampu<br><br>1. 私は泳ぐことができます。<br>Saya bisa berenang.<br><br>2. 明日は仕事ができません。<br>Besok saya tidak bisa bekerja.	jlpt-n5
+この　Kata sifat prenominal (rentaishi)	この　Ini (kata sifat penunjuk)<br><br>1. この靴は高いです。<br>Sepatu ini mahal.<br><br>2. この辺に銀行がありますか。<br>Apakah ada bank di sekitar sini?	jlpt-n5
+また　Kata keterangan	また　Lagi, juga<br><br>1. また来てください。<br>Tolong datang lagi.<br><br>2. また明日会いましょう。<br>Sampai bertemu lagi besok.	jlpt-n5
+あまり　Kata benda	あまり　Sisa, kelebihan<br><br>1. ご飯の余りを食べました。<br>Saya makan sisa nasi.<br><br>2. 時間の余りがありません。<br>Tidak ada waktu tersisa.	jlpt-n5
+いくつ　Kata keterangan	いくつ　Berapa banyak<br><br>1. りんごはいくつありますか。<br>Ada berapa apel?<br><br>2. いくつ欲しいですか。<br>Kamu mau berapa?	jlpt-n5
+それ　Kata ganti	それ　Itu<br><br>1. それは何ですか。<br>Itu apa?<br><br>2. それを見せてください。<br>Tolong perlihatkan itu.	jlpt-n5
+いつも　Kata keterangan	いつも　Selalu<br><br>1. 母はいつも忙しいです。<br>Ibu selalu sibuk.<br><br>2. いつも朝6時に起きます。<br>Saya selalu bangun jam 6 pagi.	jlpt-n5
+かかる　Kata kerja (Godan) - intransitif	かかる　Memakan (waktu, biaya)<br><br>1. 駅まで30分かかります。<br>Butuh 30 menit sampai stasiun.<br><br>2. いくらかかりますか。<br>Butuh biaya berapa?	jlpt-n5
+つける　Kata kerja (Ichidan) - transitif	つける　Memasang, menempelkan<br><br>1. 部屋の電気をつけます。<br>Saya menyalakan lampu kamar.<br><br>2. ボタンをつけてください。<br>Tolong pasangkan kancingnya.	jlpt-n5
+いくら　Kata benda / Kata keterangan	いくら　Berapa harganya<br><br>1. これはいくらですか。<br>Ini berapa harganya?<br><br>2. いくら払いますか。<br>Berapa yang harus dibayar?	jlpt-n5
+まっすぐ　Kata sifat-na / Kata keterangan / Kata benda	まっすぐ　Lurus<br><br>1. まっすぐ行ってください。<br>Tolong jalan lurus.<br><br>2. この道をまっすぐ歩きます。<br>Berjalan lurus di jalan ini.	jlpt-n5
+など　Partikel	など　Dan lain-lain, dsb.<br><br>1. りんごやバナナなどを買いました。<br>Saya membeli apel, pisang, dan lain-lain.<br><br>2. 本やノートなどがあります。<br>Ada buku, buku catatan, dan sebagainya.	jlpt-n5
+する　Kata kerja (Suru)	する　Melakukan<br><br>1. 宿題をします。<br>Saya mengerjakan PR.<br><br>2. 毎日、勉強します。<br>Saya belajar setiap hari.	jlpt-n5
+そば　Kata benda	そば　Dekat, di samping<br><br>1. 駅のそばに店があります。<br>Ada toko di dekat stasiun.<br><br>2. 母のそばに座りました。<br>Saya duduk di samping ibu.	jlpt-n5
+いいえ　Interjeksi	いいえ　Tidak<br><br>1. いいえ、違います。<br>Tidak, bukan.<br><br>2. いいえ、知りません。<br>Tidak, saya tidak tahu.	jlpt-n5
+ここ　Kata ganti	ここ　Di sini<br><br>1. ここに名前を書いてください。<br>Tolong tulis nama di sini.<br><br>2. ここは図書館です。<br>Ini adalah perpustakaan.	jlpt-n5
+まだ　Kata keterangan	まだ　Masih, belum<br><br>1. まだ食べていません。<br>Saya belum makan.<br><br>2. 雨はまだ降っています。<br>Hujan masih turun.	jlpt-n5
+そして　Kata sambung	そして　Dan, lalu<br><br>1. 朝起きて、そして、顔を洗いました。<br>Saya bangun pagi, lalu mencuci muka.<br><br>2. この店は安いです。そして、おいしいです。<br>Toko ini murah. Dan juga enak.	jlpt-n5
+どれ　Kata ganti	どれ　Yang mana (dari tiga atau lebih)<br><br>1. どれが私のかばんですか。<br>Yang mana tas saya?<br><br>2. どれがいいですか。<br>Yang mana yang bagus?	jlpt-n5
+みんな　Kata benda / Kata ganti / Kata keterangan	みんな　Semuanya<br><br>1. みんな元気です。<br>Semuanya sehat.<br><br>2. みんなで歌を歌いました。<br>Kami semua bernyanyi bersama.	jlpt-n5
+かける　Kata kerja (Ichidan) - transitif	かける　Menggantung, memasang<br><br>1. 壁に絵をかけます。<br>Menggantung lukisan di dinding.<br><br>2. コートをかけてください。<br>Tolong gantung mantelnya.	jlpt-n5
+学校　Kata benda	学校(がっこう)　Sekolah<br><br>1. 私の学校は駅の近くにあります。<br>Sekolah saya dekat stasiun.<br><br>2. 毎日、学校へ行きます。<br>Setiap hari saya pergi ke sekolah.	jlpt-n5
+川　Kata benda	川(かわ)　Sungai<br><br>1. 川で魚を見ました。<br>Saya melihat ikan di sungai.<br><br>2. この川は広いです。<br>Sungai ini lebar.	jlpt-n5
+手　Kata benda	手(て)　Tangan<br><br>1. 食事の前に手を洗います。<br>Sebelum makan saya mencuci tangan.<br><br>2. 手が冷たいです。<br>Tangan saya dingin.	jlpt-n5
+戸　Kata benda	戸(と)　Pintu (gaya Jepang)<br><br>1. 戸を開けてください。<br>Tolong buka pintunya.<br><br>2. 戸が閉まっています。<br>Pintunya tertutup.	jlpt-n5
+赤　Kata benda	赤(あか)　Merah<br><br>1. 赤は私の好きな色です。<br>Merah adalah warna kesukaan saya.<br><br>2. 信号が赤になりました。<br>Lampu lalu lintas menjadi merah.	jlpt-n5
+仕事　Kata benda / Kata kerja-suru	仕事(しごと)　Pekerjaan<br><br>1. 父は忙しい仕事をしています。<br>Ayah memiliki pekerjaan yang sibuk.<br><br>2. 明日は仕事があります。<br>Besok saya ada pekerjaan.	jlpt-n5
+英語　Kata benda	英語(えいご)　Bahasa Inggris<br><br>1. 英語を勉強しています。<br>Saya sedang belajar bahasa Inggris.<br><br>2. 兄は英語が上手です。<br>Kakak laki-laki saya pandai bahasa Inggris.	jlpt-n5
+問題　Kata benda	問題(もんだい)　Soal, masalah<br><br>1. この問題は難しいです。<br>Soal ini sulit.<br><br>2. 問題がわかりません。<br>Saya tidak mengerti soalnya.	jlpt-n5
+部屋　Kata benda	部屋(へや)　Kamar, ruangan<br><br>1. 私の部屋は二階にあります。<br>Kamar saya ada di lantai dua.<br><br>2. 部屋をきれいにしました。<br>Saya membersihkan kamar.	jlpt-n5
+子供　Kata benda	子供(こども)　Anak<br><br>1. 子供が公園で遊んでいます。<br>Anak-anak bermain di taman.<br><br>2. あの子供は五歳です。<br>Anak itu berusia lima tahun.	jlpt-n5
+時間　Kata benda	時間(じかん)　Waktu<br><br>1. 今日は時間がありません。<br>Hari ini saya tidak punya waktu.<br><br>2. 時間を教えてください。<br>Tolong beri tahu saya jamnya.	jlpt-n5
+雨　Kata benda	雨(あめ)　Hujan<br><br>1. 今日は雨です。<br>Hari ini hujan.<br><br>2. 雨が降っています。<br>Hujan sedang turun.	jlpt-n5
+先生　Kata benda	先生(せんせい)　Guru<br><br>1. 田中さんは日本語の先生です。<br>Tanaka-san adalah guru bahasa Jepang.<br><br>2. 先生に質問しました。<br>Saya bertanya kepada guru.	jlpt-n5
+年　Kata benda / Kata keterangan	年(とし)　Tahun<br><br>1. 今年で二十歳になります。<br>Tahun ini saya berumur 20 tahun.<br><br>2. 年を取りました。<br>Saya sudah bertambah tua.	jlpt-n5
+手紙　Kata benda	手紙(てがみ)　Surat<br><br>1. 友達に手紙を書きます。<br>Saya menulis surat untuk teman.<br><br>2. 母から手紙が来ました。<br>Surat datang dari ibu.	jlpt-n5
+電話　Kata benda / Kata kerja-suru	電話(でんわ)　Telepon<br><br>1. 友達に電話をします。<br>Saya menelepon teman.<br><br>2. 電話が鳴っています。<br>Telepon sedang berdering.	jlpt-n5
+水　Kata benda	水(みず)　Air<br><br>1. 水を一杯ください。<br>Tolong beri saya segelas air.<br><br>2. 毎日、水をたくさん飲みます。<br>Setiap hari saya minum banyak air.	jlpt-n5
+病気　Kata benda	病気(びょうき)　Sakit, penyakit<br><br>1. 母は病気です。<br>Ibu sedang sakit.<br><br>2. 病気で学校を休みました。<br>Saya tidak masuk sekolah karena sakit.	jlpt-n5
+上げる　Kata kerja (Ichidan) - transitif	上げる(あげる)　Menaikkan, memberi<br><br>1. 手を上げてください。<br>Tolong angkat tangan.<br><br>2. 犬に水をあげます。<br>Saya memberi air pada anjing.	jlpt-n5
+結婚　Kata benda / Kata kerja-suru	結婚(けっこん)　Pernikahan<br><br>1. 姉は来年結婚します。<br>Kakak perempuan saya akan menikah tahun depan.<br><br>2. 結婚おめでとうございます。<br>Selamat atas pernikahannya.	jlpt-n5
+言葉　Kata benda	言葉(ことば)　Kata, bahasa<br><br>1. 日本語の言葉を覚えます。<br>Saya menghafal kata-kata bahasa Jepang.<br><br>2. この言葉の意味がわかりません。<br>Saya tidak mengerti arti kata ini.	jlpt-n5
+目　Kata benda	目(め)　Mata<br><br>1. 目が痛いです。<br>Mata saya sakit.<br><br>2. あの人は目が大きいです。<br>Orang itu matanya besar.	jlpt-n5
+走る　Kata kerja (Godan) - intransitif	走る(はしる)　Berlari<br><br>1. 公園を走ります。<br>Saya berlari di taman.<br><br>2. 毎朝、走っています。<br>Setiap pagi saya berlari.	jlpt-n5
+名前　Kata benda	名前(なまえ)　Nama<br><br>1. お名前は何ですか。<br>Siapa nama Anda?<br><br>2. ここに名前を書いてください。<br>Tolong tulis nama di sini.	jlpt-n5
+旅行　Kata benda / Kata kerja-suru	旅行(りょこう)　Perjalanan, bepergian<br><br>1. 夏休みに旅行をします。<br>Saya bepergian saat liburan musim panas.<br><br>2. 日本へ旅行に行きたいです。<br>Saya ingin bepergian ke Jepang.	jlpt-n5
+道　Kata benda	道(みち)　Jalan<br><br>1. この道をまっすぐ行きます。<br>Saya jalan lurus di jalan ini.<br><br>2. 道がわかりません。<br>Saya tidak tahu jalannya.	jlpt-n5
+飛行機　Kata benda	飛行機(ひこうき)　Pesawat terbang<br><br>1. 飛行機で東京へ行きます。<br>Saya pergi ke Tokyo dengan pesawat.<br><br>2. 飛行機は空を飛びます。<br>Pesawat terbang di langit.	jlpt-n5
+映画　Kata benda	映画(えいが)　Film<br><br>1. 昨日、映画を見ました。<br>Kemarin saya menonton film.<br><br>2. この映画は面白いです。<br>Film ini menarik.	jlpt-n5
+音楽　Kata benda	音楽(おんがく)　Musik<br><br>1. 音楽を聞くのが好きです。<br>Saya suka mendengarkan musik.<br><br>2. 毎日、音楽を聞きます。<br>Setiap hari saya mendengarkan musik.	jlpt-n5
+木　Kata benda	木(き)　Pohon<br><br>1. 庭に大きな木があります。<br>Di halaman ada pohon besar.<br><br>2. 木の下で休みます。<br>Saya beristirahat di bawah pohon.	jlpt-n5
+大学　Kata benda	大学(だいがく)　Universitas<br><br>1. 兄は大学で勉強しています。<br>Kakak laki-laki saya belajar di universitas.<br><br>2. 大学は駅の近くにあります。<br>Universitas dekat dengan stasiun.	jlpt-n5
+時計　Kata benda	時計(とけい)　Jam<br><br>1. 新しい時計を買いました。<br>Saya membeli jam baru.<br><br>2. 時計は三時です。<br>Jam menunjukkan pukul tiga.	jlpt-n5
+家族　Kata benda	家族(かぞく)　Keluarga<br><br>1. 私の家族は四人です。<br>Keluarga saya ada empat orang.<br><br>2. 家族と一緒に住んでいます。<br>Saya tinggal bersama keluarga.	jlpt-n5
+花　Kata benda	花(はな)　Bunga<br><br>1. 庭に花が咲いています。<br>Bunga mekar di halaman.<br><br>2. 母は花が好きです。<br>Ibu suka bunga.	jlpt-n5
+猫　Kata benda	猫(ねこ)　Kucing<br><br>1. 私の家に猫がいます。<br>Di rumah saya ada kucing.<br><br>2. 猫は魚が好きです。<br>Kucing suka ikan.	jlpt-n5
+毎日　Kata benda / Kata keterangan	毎日(まいにち)　Setiap hari<br><br>1. 毎日、日本語を勉強します。<br>Setiap hari saya belajar bahasa Jepang.<br><br>2. 毎日、六時に起きます。<br>Setiap hari saya bangun jam enam.	jlpt-n5
+宿題　Kata benda	宿題(しゅくだい)　PR (pekerjaan rumah)<br><br>1. 今日は宿題がたくさんあります。<br>Hari ini ada banyak PR.<br><br>2. 宿題をしてから寝ます。<br>Setelah mengerjakan PR, saya tidur.	jlpt-n5
+雪　Kata benda	雪(ゆき)　Salju<br><br>1. 冬は雪がたくさん降ります。<br>Di musim dingin banyak salju turun.<br><br>2. 雪は白いです。<br>Salju itu putih.	jlpt-n5
+山　Kata benda / Kata bantu bilangan	山(やま)　Gunung<br><br>1. あの山は高いです。<br>Gunung itu tinggi.<br><br>2. 夏に山へ行きました。<br>Saya pergi ke gunung saat musim panas.	jlpt-n5
+窓　Kata benda	窓(まど)　Jendela<br><br>1. 窓を開けてください。<br>Tolong buka jendela.<br><br>2. 窓から海が見えます。<br>Dari jendela terlihat laut.	jlpt-n5
+動物　Kata benda	動物(どうぶつ)　Hewan<br><br>1. 動物が好きです。<br>Saya suka hewan.<br><br>2. 公園にいろいろな動物がいます。<br>Di taman ada berbagai macam hewan.	jlpt-n5
+夜　Kata benda / Kata keterangan	夜(よる)　Malam<br><br>1. 夜は静かです。<br>Malam hari sunyi.<br><br>2. 夜十時に寝ます。<br>Saya tidur jam 10 malam.	jlpt-n5
+料理　Kata benda / Kata kerja-suru	料理(りょうり)　Masakan, memasak<br><br>1. 母は料理が上手です。<br>Ibu pandai memasak.<br><br>2. この料理はおいしいです。<br>Masakan ini enak.	jlpt-n5
+夏　Kata benda / Kata keterangan	夏(なつ)　Musim panas<br><br>1. 夏は暑いです。<br>Musim panas itu panas.<br><br>2. 夏に海へ行きます。<br>Saat musim panas saya pergi ke laut.	jlpt-n5
+新聞　Kata benda	新聞(しんぶん)　Koran<br><br>1. 毎朝、新聞を読みます。<br>Setiap pagi saya membaca koran.<br><br>2. 父は新聞を読んでいます。<br>Ayah sedang membaca koran.	jlpt-n5
+公園　Kata benda	公園(こうえん)　Taman<br><br>1. 公園で友達と遊びました。<br>Saya bermain dengan teman di taman.<br><br>2. この公園は広いです。<br>Taman ini luas.	jlpt-n5
+意味　Kata benda / Kata kerja-suru	意味(いみ)　Arti, makna<br><br>1. この言葉の意味は何ですか。<br>Apa arti kata ini?<br><br>2. 意味がわかりません。<br>Saya tidak mengerti artinya.	jlpt-n5
+自転車　Kata benda	自転車(じてんしゃ)　Sepeda<br><br>1. 自転車で学校へ行きます。<br>Saya pergi ke sekolah naik sepeda.<br><br>2. 新しい自転車を買いました。<br>Saya membeli sepeda baru.	jlpt-n5
+足　Kata benda	足(あし)　Kaki<br><br>1. 足が痛いです。<br>Kaki saya sakit.<br><br>2. あの人は足が長いです。<br>Orang itu kakinya panjang.	jlpt-n5
+電車　Kata benda	電車(でんしゃ)　Kereta listrik<br><br>1. 電車で会社へ行きます。<br>Saya pergi ke kantor naik kereta.<br><br>2. 電車は込んでいます。<br>Keretanya penuh sesak.	jlpt-n5
+散歩　Kata benda / Kata kerja-suru	散歩(さんぽ)　Jalan-jalan santai<br><br>1. 毎朝、公園を散歩します。<br>Setiap pagi saya berjalan-jalan di taman.<br><br>2. 犬と散歩に行きます。<br>Saya pergi jalan-jalan dengan anjing.	jlpt-n5
+声　Kata benda	声(こえ)　Suara<br><br>1. 大きな声で話してください。<br>Tolong bicara dengan suara keras.<br><br>2. あの人は声がきれいです。<br>Orang itu suaranya bagus.	jlpt-n5
+朝　Kata benda / Kata keterangan	朝(あさ)　Pagi<br><br>1. 朝、六時に起きます。<br>Saya bangun jam 6 pagi.<br><br>2. 今朝は雨でした。<br>Pagi ini hujan.	jlpt-n5
+歌　Kata benda	歌(うた)　Lagu<br><br>1. この歌が好きです。<br>Saya suka lagu ini.<br><br>2. 友達と歌を歌います。<br>Saya bernyanyi bersama teman.	jlpt-n5
+靴　Kata benda	靴(くつ)　Sepatu<br><br>1. 新しい靴を買いました。<br>Saya membeli sepatu baru.<br><br>2. 玄関で靴を脱ぎます。<br>Di pintu masuk saya melepas sepatu.	jlpt-n5
+箱　Kata benda	箱(はこ)　Kotak<br><br>1. 箱の中に何がありますか。<br>Apa yang ada di dalam kotak?<br><br>2. この箱は重いです。<br>Kotak ini berat.	jlpt-n5
+机　Kata benda	机(つくえ)　Meja<br><br>1. 机の上に本があります。<br>Di atas meja ada buku.<br><br>2. 新しい机を買いました。<br>Saya membeli meja baru.	jlpt-n5
+帽子　Kata benda	帽子(ぼうし)　Topi<br><br>1. 帽子をかぶります。<br>Saya memakai topi.<br><br>2. この帽子は私のです。<br>Topi ini milik saya.	jlpt-n5
+海　Kata benda	海(うみ)　Laut<br><br>1. 夏に海へ行きます。<br>Saat musim panas saya pergi ke laut.<br><br>2. 海はきれいです。<br>Lautnya indah.	jlpt-n5
+授業　Kata benda / Kata kerja-suru	授業(じゅぎょう)　Pelajaran, kelas<br><br>1. 授業は九時に始まります。<br>Pelajaran dimulai jam 9.<br><br>2. 今日の授業は面白かったです。<br>Pelajaran hari ini menarik.	jlpt-n5
+銀行　Kata benda	銀行(ぎんこう)　Bank<br><br>1. 銀行でお金を出します。<br>Saya mengambil uang di bank.<br><br>2. 銀行は駅の前にあります。<br>Bank ada di depan stasiun.	jlpt-n5
+写真　Kata benda	写真(しゃしん)　Foto<br><br>1. 写真を撮ります。<br>Saya mengambil foto.<br><br>2. 家族の写真を見せてください。<br>Tolong perlihatkan foto keluarga.	jlpt-n5
+冬　Kata benda / Kata keterangan	冬(ふゆ)　Musim dingin<br><br>1. 冬は寒いです。<br>Musim dingin itu dingin.<br><br>2. 冬に雪が降ります。<br>Salju turun saat musim dingin.	jlpt-n5
+村　Kata benda	村(むら)　Desa<br><br>1. 私の村は山の近くにあります。<br>Desa saya dekat dengan gunung.<br><br>2. この村は静かです。<br>Desa ini tenang.	jlpt-n5
+傘　Kata benda	傘(かさ)　Payung<br><br>1. 雨ですから、傘を持って行きます。<br>Karena hujan, saya membawa payung.<br><br>2. 傘を忘れました。<br>Saya lupa payung.	jlpt-n5
+口　Kata benda	口(くち)　Mulut<br><br>1. 口を大きく開けてください。<br>Tolong buka mulut lebar-lebar.<br><br>2. あの人は口が小さいです。<br>Orang itu mulutnya kecil.	jlpt-n5
+橋　Kata benda	橋(はし)　Jembatan<br><br>1. 橋を渡ります。<br>Saya menyeberangi jembatan.<br><br>2. この橋は長いです。<br>Jembatan ini panjang.	jlpt-n5
+病院　Kata benda	病院(びょういん)　Rumah sakit<br><br>1. 母は病院で働いています。<br>Ibu bekerja di rumah sakit.<br><br>2. 病院へ行きます。<br>Saya pergi ke rumah sakit.	jlpt-n5
+図書館　Kata benda	図書館(としょかん)　Perpustakaan<br><br>1. 図書館で本を借ります。<br>Saya meminjam buku di perpustakaan.<br><br>2. 図書館は静かです。<br>Perpustakaan itu sunyi.	jlpt-n5
+春　Kata benda / Kata keterangan	春(はる)　Musim semi<br><br>1. 春は暖かいです。<br>Musim semi itu hangat.<br><br>2. 春に花が咲きます。<br>Bunga mekar pada musim semi.	jlpt-n5
+買い物　Kata benda / Kata kerja-suru	買い物(かいもの)　Belanja<br><br>1. 昼にデパートで買い物をします。<br>Siang hari saya berbelanja di mal.<br><br>2. 母と買い物に行きます。<br>Saya pergi berbelanja dengan ibu.	jlpt-n5
+椅子　Kata benda	椅子(いす)　Kursi<br><br>1. 椅子に座ってください。<br>Tolong duduk di kursi.<br><br>2. この椅子は軽いです。<br>Kursi ini ringan.	jlpt-n5
+自動車　Kata benda	自動車(じどうしゃ)　Mobil<br><br>1. 父は自動車で会社へ行きます。<br>Ayah pergi ke kantor naik mobil.<br><br>2. 自動車を洗いました。<br>Saya mencuci mobil.	jlpt-n5
+色　Kata benda	色(いろ)　Warna<br><br>1. 好きな色は何ですか。<br>Apa warna kesukaanmu?<br><br>2. この色はきれいです。<br>Warna ini indah.	jlpt-n5
+卵　Kata benda	卵(たまご)　Telur<br><br>1. 朝ご飯に卵を食べます。<br>Saya makan telur untuk sarapan.<br><br>2. 卵を二つ買いました。<br>Saya membeli dua butir telur.	jlpt-n5
+肉　Kata benda	肉(にく)　Daging<br><br>1. 肉と野菜を買いました。<br>Saya membeli daging dan sayuran.<br><br>2. 私は肉が好きです。<br>Saya suka daging.	jlpt-n5
+風邪　Kata benda	風邪(かぜ)　Flu, masuk angin<br><br>1. 風邪を引きました。<br>Saya terkena flu.<br><br>2. 風邪で学校を休みました。<br>Saya tidak masuk sekolah karena flu.	jlpt-n5
+掃除　Kata benda / Kata kerja-suru	掃除(そうじ)　Bersih-bersih<br><br>1. 毎日、部屋を掃除します。<br>Setiap hari saya membersihkan kamar.<br><br>2. 日曜日に掃除をします。<br>Hari Minggu saya bersih-bersih.	jlpt-n5
+紙　Kata benda	紙(かみ)　Kertas<br><br>1. 紙に名前を書いてください。<br>Tolong tulis nama di kertas.<br><br>2. 紙がありません。<br>Tidak ada kertas.	jlpt-n5
+鍵　Kata benda	鍵(かぎ)　Kunci<br><br>1. 鍵をなくしました。<br>Saya kehilangan kunci.<br><br>2. ドアの鍵を閉めます。<br>Saya mengunci pintu.	jlpt-n5
+雑誌　Kata benda	雑誌(ざっし)　Majalah<br><br>1. 雑誌を読んでいます。<br>Saya sedang membaca majalah.<br><br>2. この雑誌は面白いです。<br>Majalah ini menarik.	jlpt-n5
+切符　Kata benda	切符(きっぷ)　Tiket<br><br>1. 駅で切符を買います。<br>Saya membeli tiket di stasiun.<br><br>2. 切符をなくしました。<br>Saya kehilangan tiket.	jlpt-n5
+外国人　Kata benda	外国人(がいこくじん)　Orang asing<br><br>1. この町に外国人が多いです。<br>Di kota ini banyak orang asing.<br><br>2. あの外国人は日本語が上手です。<br>Orang asing itu pandai bahasa Jepang.	jlpt-n5
+財布　Kata benda	財布(さいふ)　Dompet<br><br>1. 財布にお金が入っています。<br>Di dalam dompet ada uang.<br><br>2. 財布を忘れました。<br>Saya lupa dompet.	jlpt-n5
+鉛筆　Kata benda	鉛筆(えんぴつ)　Pensil<br><br>1. 鉛筆で名前を書きます。<br>Saya menulis nama dengan pensil.<br><br>2. 鉛筆を貸してください。<br>Tolong pinjamkan pensil.	jlpt-n5
+大人　Kata benda / Kata sifat-na	大人(おとな)　Orang dewasa<br><br>1. 兄はもう大人です。<br>Kakak laki-laki saya sudah dewasa.<br><br>2. 大人は千円です。<br>Untuk orang dewasa seribu yen.	jlpt-n5
+塩　Kata benda	塩(しお)　Garam<br><br>1. スープに塩を入れます。<br>Saya menambahkan garam ke sup.<br><br>2. 塩を取ってください。<br>Tolong ambilkan garam.	jlpt-n5
+地図　Kata benda	地図(ちず)　Peta<br><br>1. 地図を見ながら歩きます。<br>Saya berjalan sambil melihat peta.<br><br>2. 日本の地図を買いました。<br>Saya membeli peta Jepang.	jlpt-n5
+砂糖　Kata benda	砂糖(さとう)　Gula<br><br>1. コーヒーに砂糖を入れます。<br>Saya menambahkan gula ke kopi.<br><br>2. 砂糖は甘いです。<br>Gula itu manis.	jlpt-n5
+夏休み　Kata benda	夏休み(なつやすみ)　Liburan musim panas<br><br>1. 夏休みに海へ行きます。<br>Saat liburan musim panas saya pergi ke laut.<br><br>2. 夏休みは長いです。<br>Liburan musim panas itu panjang.	jlpt-n5
+池　Kata benda	池(いけ)　Kolam<br><br>1. 池に魚がいます。<br>Di kolam ada ikan.<br><br>2. 公園の池は大きいです。<br>Kolam di taman itu besar.	jlpt-n5
+郵便局　Kata benda	郵便局(ゆうびんきょく)　Kantor pos<br><br>1. 郵便局で切手を買います。<br>Saya membeli perangko di kantor pos.<br><br>2. 郵便局は駅の隣です。<br>Kantor pos ada di sebelah stasiun.	jlpt-n5
+教室　Kata benda	教室(きょうしつ)　Ruang kelas<br><br>1. 教室に学生が十人います。<br>Di ruang kelas ada sepuluh murid.<br><br>2. 教室は二階です。<br>Ruang kelasnya di lantai dua.	jlpt-n5
+耳　Kata benda	耳(みみ)　Telinga<br><br>1. 耳が痛いです。<br>Telinga saya sakit.<br><br>2. 犬は耳がいいです。<br>Anjing pendengarannya bagus.	jlpt-n5
+切手　Kata benda	切手(きって)　Perangko<br><br>1. 手紙に切手を貼ります。<br>Saya menempelkan perangko pada surat.<br><br>2. 切手を三枚ください。<br>Tolong beri saya tiga lembar perangko.	jlpt-n5
+台所　Kata benda	台所(だいどころ)　Dapur<br><br>1. 母は台所にいます。<br>Ibu ada di dapur.<br><br>2. 台所で料理を作ります。<br>Saya memasak di dapur.	jlpt-n5
+電気　Kata benda	電気(でんき)　Listrik<br><br>1. 電気をつけてください。<br>Tolong nyalakan lampu.<br><br>2. 部屋の電気を消します。<br>Saya mematikan lampu kamar.	jlpt-n5
+作文　Kata benda / Kata kerja-suru	作文(さくぶん)　Karangan<br><br>1. 日本語で作文を書きます。<br>Saya menulis karangan dalam bahasa Jepang.<br><br>2. 作文は難しいです。<br>Menulis karangan itu sulit.	jlpt-n5
+紅茶　Kata benda	紅茶(こうちゃ)　Teh hitam<br><br>1. 紅茶を飲みます。<br>Saya minum teh hitam.<br><br>2. 紅茶に砂糖を入れますか。<br>Apakah teh hitamnya mau diberi gula?	jlpt-n5
+家庭　Kata benda	家庭(かてい)　Rumah tangga, keluarga<br><br>1. あたたかい家庭で育ちました。<br>Saya dibesarkan dalam keluarga yang hangat.<br><br>2. 家庭の仕事は大変です。<br>Pekerjaan rumah tangga itu berat.	jlpt-n5
+野菜　Kata benda	野菜(やさい)　Sayuran<br><br>1. 毎日、野菜を食べます。<br>Setiap hari saya makan sayuran.<br><br>2. 野菜は体にいいです。<br>Sayuran baik untuk tubuh.	jlpt-n5
+風呂　Kata benda	風呂(ふろ)　Bak mandi, mandi<br><br>1. 毎晩、お風呂に入ります。<br>Setiap malam saya mandi berendam.<br><br>2. 風呂は熱いです。<br>Air mandinya panas.	jlpt-n5
+玄関　Kata benda	玄関(げんかん)　Pintu masuk (rumah)<br><br>1. 玄関で靴を脱ぎます。<br>Saya melepas sepatu di pintu masuk.<br><br>2. 玄関に傘があります。<br>Ada payung di pintu masuk.	jlpt-n5
+地下鉄　Kata benda	地下鉄(ちかてつ)　Kereta bawah tanah<br><br>1. 地下鉄で会社へ行きます。<br>Saya pergi ke kantor naik kereta bawah tanah.<br><br>2. 地下鉄の駅はどこですか。<br>Di mana stasiun kereta bawah tanah?	jlpt-n5
+鼻　Kata benda	鼻(はな)　Hidung<br><br>1. 鼻が高いです。<br>Hidungnya mancung.<br><br>2. 風邪で鼻が痛いです。<br>Hidung saya sakit karena flu.	jlpt-n5
+緑　Kata benda	緑(みどり)　Hijau<br><br>1. 緑は私の好きな色です。<br>Hijau adalah warna kesukaan saya.<br><br>2. 山は緑です。<br>Gunungnya hijau.	jlpt-n5
+昼　Kata benda	昼(ひる)　Siang hari<br><br>1. 昼にご飯を食べます。<br>Saya makan nasi di siang hari.<br><br>2. 昼は暑いです。<br>Siang hari itu panas.	jlpt-n5
+西　Kata benda	西(にし)　Barat<br><br>1. 太陽は西に沈みます。<br>Matahari terbenam di barat.<br><br>2. 駅の西に公園があります。<br>Di sebelah barat stasiun ada taman.	jlpt-n5
+白　Kata benda	白(しろ)　Putih<br><br>1. 白は私の好きな色です。<br>Putih adalah warna kesukaan saya.<br><br>2. 雪は白です。<br>Salju itu putih.	jlpt-n5
+洗濯　Kata benda / Kata kerja-suru	洗濯(せんたく)　Mencuci (pakaian)<br><br>1. 毎日、洗濯をします。<br>Setiap hari saya mencuci pakaian.<br><br>2. 日曜日に洗濯します。<br>Hari Minggu saya mencuci pakaian.	jlpt-n5
+冷蔵庫　Kata benda	冷蔵庫(れいぞうこ)　Kulkas<br><br>1. 冷蔵庫に牛乳があります。<br>Di dalam kulkas ada susu.<br><br>2. 冷蔵庫は台所にあります。<br>Kulkasnya ada di dapur.	jlpt-n5
+南　Kata benda	南(みなみ)　Selatan<br><br>1. 南の国へ行きたいです。<br>Saya ingin pergi ke negara di selatan.<br><br>2. 窓は南にあります。<br>Jendelanya menghadap ke selatan.	jlpt-n5
+火曜日　Kata benda / Kata keterangan	火曜日(かようび)　Hari Selasa<br><br>1. 火曜日に日本語の授業があります。<br>Hari Selasa ada pelajaran bahasa Jepang.<br><br>2. 火曜日は忙しいです。<br>Hari Selasa saya sibuk.	jlpt-n5
+北　Kata benda	北(きた)　Utara<br><br>1. 北は寒いです。<br>Utara itu dingin.<br><br>2. 駅の北に学校があります。<br>Di sebelah utara stasiun ada sekolah.	jlpt-n5
+茶色　Kata benda	茶色(ちゃいろ)　Cokelat (warna)<br><br>1. 茶色の靴を買いました。<br>Saya membeli sepatu berwarna cokelat.<br><br>2. 犬の目は茶色です。<br>Mata anjing itu berwarna cokelat.	jlpt-n5
+黒　Kata benda	黒(くろ)　Hitam<br><br>1. 黒は私の好きな色です。<br>Hitam adalah warna kesukaan saya.<br><br>2. 黒の傘を持っています。<br>Saya punya payung hitam.	jlpt-n5
+喫茶店　Kata benda	喫茶店(きっさてん)　Kafe<br><br>1. 喫茶店でコーヒーを飲みます。<br>Saya minum kopi di kafe.<br><br>2. 駅の前に喫茶店があります。<br>Di depan stasiun ada kafe.	jlpt-n5
+青　Kata benda	青(あお)　Biru<br><br>1. 青は私の好きな色です。<br>Biru adalah warna kesukaan saya.<br><br>2. 信号が青になりました。<br>Lampu lalu lintas menjadi hijau (biru).	jlpt-n5
+靴下　Kata benda	靴下(くつした)　Kaus kaki<br><br>1. 靴下をはきます。<br>Saya memakai kaus kaki.<br><br>2. 新しい靴下を買いました。<br>Saya membeli kaus kaki baru.	jlpt-n5
+封筒　Kata benda	封筒(ふうとう)　Amplop<br><br>1. 封筒に切手を貼ります。<br>Saya menempelkan perangko di amplop.<br><br>2. 封筒を三枚ください。<br>Tolong beri saya tiga amplop.	jlpt-n5
+辺　Kata benda	辺(へん)　Sekitar, daerah<br><br>1. この辺に銀行がありますか。<br>Apakah ada bank di sekitar sini?<br><br>2. この辺は静かです。<br>Daerah sekitar sini tenang.	jlpt-n5
+黄色　Kata benda / Kata sifat-na	黄色(きいろ)　Kuning<br><br>1. 黄色い花が咲いています。<br>Bunga kuning sedang mekar.<br><br>2. 黄色は私の好きな色です。<br>Kuning adalah warna kesukaan saya.	jlpt-n5
+映画館　Kata benda	映画館(えいがかん)　Bioskop<br><br>1. 映画館で映画を見ます。<br>Saya menonton film di bioskop.<br><br>2. 映画館は駅の近くにあります。<br>Bioskop dekat stasiun.	jlpt-n5
+箸　Kata benda	箸(はし)　Sumpit<br><br>1. 箸でご飯を食べます。<br>Saya makan nasi dengan sumpit.<br><br>2. 箸を二本ください。<br>Tolong beri saya sepasang sumpit.	jlpt-n5
+食堂　Kata benda	食堂(しょくどう)　Ruang makan, kantin<br><br>1. 食堂で昼ご飯を食べます。<br>Saya makan siang di kantin.<br><br>2. この食堂は安いです。<br>Kantin ini murah.	jlpt-n5
+牛肉　Kata benda	牛肉(ぎゅうにく)　Daging sapi<br><br>1. 牛肉が好きです。<br>Saya suka daging sapi.<br><br>2. 牛肉を二百グラム買いました。<br>Saya membeli daging sapi 200 gram.	jlpt-n5
+交差点　Kata benda	交差点(こうさてん)　Persimpangan<br><br>1. 交差点で止まります。<br>Saya berhenti di persimpangan.<br><br>2. 交差点を右に曲がります。<br>Belok kanan di persimpangan.	jlpt-n5
+漢字　Kata benda	漢字(かんじ)　Kanji<br><br>1. 漢字を勉強します。<br>Saya belajar kanji.<br><br>2. この漢字が読めません。<br>Saya tidak bisa membaca kanji ini.	jlpt-n5
+茶わん　Kata benda	茶わん(ちゃわん)　Mangkuk nasi, cangkir teh<br><br>1. 茶わんにご飯を入れます。<br>Saya menaruh nasi di mangkuk.<br><br>2. 茶わんを洗います。<br>Saya mencuci mangkuk.	jlpt-n5
+曇り　Kata benda	曇り(くもり)　Berawan<br><br>1. 今日は曇りです。<br>Hari ini berawan.<br><br>2. 明日は曇りでしょう。<br>Besok mungkin berawan.	jlpt-n5
+背広　Kata benda	背広(せびろ)　Jas<br><br>1. 父は背広を着て会社へ行きます。<br>Ayah memakai jas pergi ke kantor.<br><br>2. 新しい背広を買いました。<br>Saya membeli jas baru.	jlpt-n5
+万年筆　Kata benda	万年筆(まんねんひつ)　Pulpen tinta (fountain pen)<br><br>1. 父は万年筆で手紙を書きます。<br>Ayah menulis surat dengan pulpen tinta.<br><br>2. この万年筆は高いです。<br>Pulpen tinta ini mahal.	jlpt-n5
+灰皿　Kata benda	灰皿(はいざら)　Asbak<br><br>1. 灰皿はどこですか。<br>Di mana asbaknya?<br><br>2. 灰皿を取ってください。<br>Tolong ambilkan asbaknya.	jlpt-n5
+大使館　Kata benda	大使館(たいしかん)　Kedutaan besar<br><br>1. 大使館は東京にあります。<br>Kedutaan besar ada di Tokyo.<br><br>2. 大使館でビザをもらいました。<br>Saya mendapat visa di kedutaan besar.	jlpt-n5
+交番　Kata benda	交番(こうばん)　Pos polisi (koban)<br><br>1. 交番で道を聞きます。<br>Saya bertanya jalan di pos polisi.<br><br>2. 駅の前に交番があります。<br>Di depan stasiun ada pos polisi.	jlpt-n5
+豚肉　Kata benda	豚肉(ぶたにく)　Daging babi<br><br>1. 豚肉を食べません。<br>Saya tidak makan daging babi.<br><br>2. 豚肉を買いました。<br>Saya membeli daging babi.	jlpt-n5
+飲む　Kata kerja (Godan) - transitif	飲む(のむ)　Minum<br><br>1. 水を飲みます。<br>Saya minum air.<br><br>2. 薬を飲んでください。<br>Tolong minum obatnya.	jlpt-n5
+頭　Kata benda	頭(あたま)　Kepala<br><br>1. 頭が痛いです。<br>Kepala saya sakit.<br><br>2. あの人は頭がいいです。<br>Orang itu pintar.	jlpt-n5
+日曜日　Kata benda / Kata keterangan	日曜日(にちようび)　Hari Minggu<br><br>1. 日曜日は休みです。<br>Hari Minggu libur.<br><br>2. 日曜日に買い物をします。<br>Hari Minggu saya berbelanja.	jlpt-n5
+誕生日　Kata benda	誕生日(たんじょうび)　Ulang tahun<br><br>1. 今日は私の誕生日です。<br>Hari ini ulang tahun saya.<br><br>2. 誕生日にケーキを食べます。<br>Saat ulang tahun saya makan kue.	jlpt-n5
+土曜日　Kata benda / Kata keterangan	土曜日(どようび)　Hari Sabtu<br><br>1. 土曜日は学校が休みです。<br>Hari Sabtu sekolah libur.<br><br>2. 土曜日に友達に会います。<br>Hari Sabtu saya bertemu teman.	jlpt-n5
+月曜日　Kata benda / Kata keterangan	月曜日(げつようび)　Hari Senin<br><br>1. 月曜日は忙しいです。<br>Hari Senin saya sibuk.<br><br>2. 月曜日に仕事が始まります。<br>Pekerjaan dimulai pada hari Senin.	jlpt-n5
+金曜日　Kata benda / Kata keterangan	金曜日(きんようび)　Hari Jumat<br><br>1. 金曜日に映画を見ます。<br>Hari Jumat saya menonton film.<br><br>2. 金曜日は早く帰ります。<br>Hari Jumat saya pulang lebih awal.	jlpt-n5
+花瓶　Kata benda	花瓶(かびん)　Vas bunga<br><br>1. 花瓶に花を入れます。<br>Saya menaruh bunga di vas.<br><br>2. 花瓶は机の上にあります。<br>Vas bunga ada di atas meja.	jlpt-n5
+本棚　Kata benda	本棚(ほんだな)　Rak buku<br><br>1. 本棚に本が十冊あります。<br>Di rak buku ada sepuluh buku.<br><br>2. 新しい本棚を買いました。<br>Saya membeli rak buku baru.	jlpt-n5
+木曜日　Kata benda / Kata keterangan	木曜日(もくようび)　Hari Kamis<br><br>1. 木曜日に病院へ行きます。<br>Hari Kamis saya pergi ke rumah sakit.<br><br>2. 木曜日は暇です。<br>Hari Kamis saya senggang.	jlpt-n5
+石鹸　Kata benda	石鹸(せっけん)　Sabun<br><br>1. 石鹸で手を洗います。<br>Saya mencuci tangan dengan sabun.<br><br>2. 石鹸がありません。<br>Sabunnya tidak ada.	jlpt-n5
+水曜日　Kata benda / Kata keterangan	水曜日(すいようび)　Hari Rabu<br><br>1. 水曜日に日本語の授業があります。<br>Hari Rabu ada pelajaran bahasa Jepang.<br><br>2. 水曜日は雨でした。<br>Hari Rabu hujan.	jlpt-n5
+飴　Kata benda	飴(あめ)　Permen<br><br>1. 子供に飴をあげます。<br>Saya memberi permen kepada anak.<br><br>2. この飴は甘いです。<br>Permen ini manis.	jlpt-n5
+八百屋　Kata benda	八百屋(やおや)　Toko sayur dan buah<br><br>1. 八百屋で野菜を買います。<br>Saya membeli sayuran di toko sayur.<br><br>2. 八百屋は駅の近くです。<br>Toko sayur dekat stasiun.	jlpt-n5
+より　Partikel	より　Daripada<br><br>1. 今日は昨日より暑いです。<br>Hari ini lebih panas daripada kemarin.<br><br>2. 兄は私より背が高いです。<br>Kakak laki-laki saya lebih tinggi daripada saya.	jlpt-n5
+一番　Kata benda	一番(いちばん)　Nomor satu, paling<br><br>1. これが一番好きです。<br>Saya paling suka yang ini.<br><br>2. クラスで一番背が高いです。<br>Dia yang paling tinggi di kelas.	jlpt-n5
+私　Kata ganti	私(わたし)　Saya<br><br>1. 私は学生です。<br>Saya adalah pelajar.<br><br>2. 私の名前はマリアです。<br>Nama saya Maria.	jlpt-n5
+外　Kata benda	外(そと)　Luar<br><br>1. 外は寒いです。<br>Di luar dingin.<br><br>2. 外で遊びましょう。<br>Ayo bermain di luar.	jlpt-n5
+姉　Kata benda	姉(あね)　Kakak perempuan (milik sendiri)<br><br>1. 姉は大学生です。<br>Kakak perempuan saya mahasiswa.<br><br>2. 姉と買い物に行きます。<br>Saya pergi berbelanja dengan kakak perempuan.	jlpt-n5
+百　Bilangan	百(ひゃく)　Seratus<br><br>1. この本は百円です。<br>Buku ini seratus yen.<br><br>2. 百人の学生がいます。<br>Ada seratus murid.	jlpt-n5
+言う　Kata kerja (Godan)	言う(いう)　Berkata<br><br>1. 先生は「おはよう」と言いました。<br>Guru berkata "selamat pagi".<br><br>2. もう一度言ってください。<br>Tolong katakan sekali lagi.	jlpt-n5
+良い　Kata sifat-i	良い(よい)　Baik, bagus<br><br>1. 今日は天気がいいです。<br>Hari ini cuacanya bagus.<br><br>2. この本はいいです。<br>Buku ini bagus.	jlpt-n5
+見る　Kata kerja (Ichidan) - transitif	見る(みる)　Melihat, menonton<br><br>1. テレビを見ます。<br>Saya menonton TV.<br><br>2. あの映画を見ましたか。<br>Apakah kamu sudah menonton film itu?	jlpt-n5
+自分　Kata ganti	自分(じぶん)　Diri sendiri<br><br>1. 自分の部屋を掃除します。<br>Saya membersihkan kamar saya sendiri.<br><br>2. 自分で作りました。<br>Saya membuatnya sendiri.	jlpt-n5
+知る　Kata kerja (Godan) - transitif	知る(しる)　Tahu, mengetahui<br><br>1. あの人を知っています。<br>Saya kenal orang itu.<br><br>2. 彼の名前を知りません。<br>Saya tidak tahu namanya.	jlpt-n5
+持つ　Kata kerja (Godan) - transitif	持つ(もつ)　Membawa, memegang<br><br>1. 傘を持って行きます。<br>Saya membawa payung.<br><br>2. 私はカメラを持っています。<br>Saya punya kamera.	jlpt-n5
+何　Kata ganti	何(なに)　Apa<br><br>1. これは何ですか。<br>Ini apa?<br><br>2. 何を食べますか。<br>Kamu makan apa?	jlpt-n5
+車　Kata benda	車(くるま)　Mobil<br><br>1. 車で会社へ行きます。<br>Saya pergi ke kantor naik mobil.<br><br>2. あの赤い車は私のです。<br>Mobil merah itu milik saya.	jlpt-n5
+話す　Kata kerja (Godan) - transitif	話す(はなす)　Berbicara, bercakap<br><br>1. 友達と話します。<br>Saya berbicara dengan teman.<br><br>2. 日本語で話してください。<br>Tolong bicara dalam bahasa Jepang.	jlpt-n5
+今　Kata benda / Kata keterangan	今(いま)　Sekarang<br><br>1. 今、何時ですか。<br>Sekarang jam berapa?<br><br>2. 今、勉強しています。<br>Sekarang saya sedang belajar.	jlpt-n5
+今日　Kata benda / Kata keterangan	今日(きょう)　Hari ini<br><br>1. 今日は天気がいいです。<br>Hari ini cuacanya bagus.<br><br>2. 今日は日曜日です。<br>Hari ini hari Minggu.	jlpt-n5
+買う　Kata kerja (Godan) - transitif	買う(かう)　Membeli<br><br>1. スーパーで野菜を買います。<br>Saya membeli sayuran di supermarket.<br><br>2. 新しい靴を買いました。<br>Saya membeli sepatu baru.	jlpt-n5
+読む　Kata kerja (Godan) - transitif	読む(よむ)　Membaca<br><br>1. 毎日、新聞を読みます。<br>Setiap hari saya membaca koran.<br><br>2. この本を読みましたか。<br>Apakah kamu sudah membaca buku ini?	jlpt-n5
+新しい　Kata sifat-i	新しい(あたらしい)　Baru<br><br>1. 新しい靴を買いました。<br>Saya membeli sepatu baru.<br><br>2. 新しい先生は優しいです。<br>Guru yang baru itu baik hati.	jlpt-n5
+話　Kata benda	話(はなし)　Cerita, pembicaraan<br><br>1. 先生の話は面白いです。<br>Cerita guru menarik.<br><br>2. 友達と話をします。<br>Saya mengobrol dengan teman.	jlpt-n5
+明日　Kata benda / Kata keterangan	明日(あした)　Besok<br><br>1. 明日は休みです。<br>Besok libur.<br><br>2. 明日、学校へ行きます。<br>Besok saya pergi ke sekolah.	jlpt-n5
+昨日　Kata benda / Kata keterangan	昨日(きのう)　Kemarin<br><br>1. 昨日、映画を見ました。<br>Kemarin saya menonton film.<br><br>2. 昨日は雨でした。<br>Kemarin hujan.	jlpt-n5
+出る　Kata kerja (Ichidan) - intransitif	出る(でる)　Keluar, pergi<br><br>1. 朝八時に家を出ます。<br>Saya keluar rumah jam 8 pagi.<br><br>2. 電話に出ます。<br>Saya mengangkat telepon.	jlpt-n5
+勉強　Kata benda / Kata kerja-suru	勉強(べんきょう)　Belajar<br><br>1. 毎日、日本語を勉強します。<br>Setiap hari saya belajar bahasa Jepang.<br><br>2. 図書館で勉強しました。<br>Saya belajar di perpustakaan.	jlpt-n5
+取る　Kata kerja (Godan) - transitif	取る(とる)　Mengambil<br><br>1. 塩を取ってください。<br>Tolong ambilkan garam.<br><br>2. 写真を取ります。<br>Saya mengambil foto.	jlpt-n5
+誰　Kata ganti	誰(だれ)　Siapa<br><br>1. あの人は誰ですか。<br>Orang itu siapa?<br><br>2. 誰が来ましたか。<br>Siapa yang datang?	jlpt-n5
+お金　Kata benda	お金(おかね)　Uang<br><br>1. お金がありません。<br>Saya tidak punya uang.<br><br>2. お金を銀行に入れます。<br>Saya menyimpan uang di bank.	jlpt-n5
+男　Kata benda	男(おとこ)　Laki-laki, pria<br><br>1. あの男の人は先生です。<br>Pria itu adalah guru.<br><br>2. 男は三人います。<br>Ada tiga orang laki-laki.	jlpt-n5
+犬　Kata benda	犬(いぬ)　Anjing<br><br>1. 犬を飼っています。<br>Saya memelihara anjing.<br><br>2. 犬は散歩が好きです。<br>Anjing suka jalan-jalan.	jlpt-n5
+使う　Kata kerja (Godan) - transitif	使う(つかう)　Menggunakan<br><br>1. 辞書を使います。<br>Saya menggunakan kamus.<br><br>2. このペンを使ってください。<br>Tolong gunakan pen ini.	jlpt-n5
+大変　Kata keterangan	大変(たいへん)　Sangat, repot<br><br>1. 今日は大変暑いです。<br>Hari ini sangat panas.<br><br>2. 仕事は大変です。<br>Pekerjaannya berat.	jlpt-n5
+待つ　Kata kerja (Godan) - transitif/intransitif	待つ(まつ)　Menunggu<br><br>1. 駅で友達を待ちます。<br>Saya menunggu teman di stasiun.<br><br>2. ちょっと待ってください。<br>Tolong tunggu sebentar.	jlpt-n5
+作る　Kata kerja (Godan) - transitif	作る(つくる)　Membuat<br><br>1. 母は料理を作ります。<br>Ibu memasak.<br><br>2. ケーキを作りました。<br>Saya membuat kue.	jlpt-n5
+後ろ　Kata benda	後ろ(うしろ)　Belakang<br><br>1. 私は後ろに座ります。<br>Saya duduk di belakang.<br><br>2. 後ろを見てください。<br>Tolong lihat ke belakang.	jlpt-n5
+町　Kata benda	町(まち)　Kota kecil<br><br>1. この町は静かです。<br>Kota kecil ini tenang.<br><br>2. 町に新しい店ができました。<br>Toko baru berdiri di kota.	jlpt-n5
+駅　Kata benda	駅(えき)　Stasiun<br><br>1. 駅で友達を待ちます。<br>Saya menunggu teman di stasiun.<br><br>2. 駅は学校の近くにあります。<br>Stasiun dekat sekolah.	jlpt-n5
+少し　Kata keterangan / Kata benda	少し(すこし)　Sedikit<br><br>1. 少し疲れました。<br>Saya sedikit capek.<br><br>2. 日本語が少しわかります。<br>Saya sedikit mengerti bahasa Jepang.	jlpt-n5
+欲しい　Kata sifat-i	欲しい(ほしい)　Ingin (memiliki)<br><br>1. 新しい車が欲しいです。<br>Saya ingin mobil baru.<br><br>2. 水が欲しいです。<br>Saya ingin air.	jlpt-n5
+行く　Kata kerja (Godan) - intransitif	行く(いく)　Pergi<br><br>1. 学校へ行きます。<br>Saya pergi ke sekolah.<br><br>2. 明日、東京へ行きます。<br>Besok saya pergi ke Tokyo.	jlpt-n5
+乗る　Kata kerja (Godan) - intransitif	乗る(のる)　Naik (kendaraan)<br><br>1. 電車に乗ります。<br>Saya naik kereta.<br><br>2. バスに乗って学校へ行きます。<br>Saya naik bus ke sekolah.	jlpt-n5
+大きな　Kata sifat prenominal (rentaishi)	大きな(おおきな)　Besar<br><br>1. 大きな犬がいます。<br>Ada anjing besar.<br><br>2. 大きな木の下で休みます。<br>Saya beristirahat di bawah pohon besar.	jlpt-n5
+医者　Kata benda	医者(いしゃ)　Dokter<br><br>1. 姉は医者です。<br>Kakak perempuan saya adalah dokter.<br><br>2. 医者に会いました。<br>Saya bertemu dokter.	jlpt-n5
+終わる　Kata kerja (Godan) - intransitif	終わる(おわる)　Selesai, berakhir<br><br>1. 授業は三時に終わります。<br>Pelajaran selesai jam 3.<br><br>2. 宿題が終わりました。<br>PR sudah selesai.	jlpt-n5
+学生　Kata benda	学生(がくせい)　Pelajar, mahasiswa<br><br>1. 私は大学の学生です。<br>Saya mahasiswa universitas.<br><br>2. この学校には学生が多いです。<br>Di sekolah ini banyak murid.	jlpt-n5
+長い　Kata sifat-i	長い(ながい)　Panjang<br><br>1. 髪が長いです。<br>Rambutnya panjang.<br><br>2. この道は長いです。<br>Jalan ini panjang.	jlpt-n5
+国　Kata benda	国(くに)　Negara<br><br>1. あなたの国はどこですか。<br>Negaramu di mana?<br><br>2. 日本は小さな国です。<br>Jepang adalah negara kecil.	jlpt-n5
+高い　Kata sifat-i	高い(たかい)　Tinggi, mahal<br><br>1. この山は高いです。<br>Gunung ini tinggi.<br><br>2. この時計は高いです。<br>Jam ini mahal.	jlpt-n5
+難しい　Kata sifat-i	難しい(むずかしい)　Sulit<br><br>1. 日本語は難しいです。<br>Bahasa Jepang itu sulit.<br><br>2. この問題は難しいです。<br>Soal ini sulit.	jlpt-n5
+友達　Kata benda	友達(ともだち)　Teman<br><br>1. 友達と映画を見ます。<br>Saya menonton film dengan teman.<br><br>2. あの人は私の友達です。<br>Orang itu teman saya.	jlpt-n5
+本当　Kata benda / Kata sifat-na	本当(ほんとう)　Kebenaran, benar-benar<br><br>1. それは本当ですか。<br>Apakah itu benar?<br><br>2. 本当にありがとう。<br>Terima kasih banyak.	jlpt-n5
+一つ　Bilangan	一つ(ひとつ)　Satu<br><br>1. りんごを一つください。<br>Tolong beri saya satu apel.<br><br>2. ここに箱が一つあります。<br>Di sini ada satu kotak.	jlpt-n5
+寝る　Kata kerja (Ichidan) - intransitif	寝る(ねる)　Tidur<br><br>1. 毎晩、十時に寝ます。<br>Setiap malam saya tidur jam 10.<br><br>2. もう寝ます。<br>Saya akan tidur sekarang.	jlpt-n5
+生徒　Kata benda	生徒(せいと)　Murid<br><br>1. この学校の生徒は二百人です。<br>Murid sekolah ini ada 200 orang.<br><br>2. 生徒が教室にいます。<br>Murid-murid ada di ruang kelas.	jlpt-n5
+忙しい　Kata sifat-i	忙しい(いそがしい)　Sibuk<br><br>1. 今日はとても忙しいです。<br>Hari ini sangat sibuk.<br><br>2. 父は毎日忙しいです。<br>Ayah sibuk setiap hari.	jlpt-n5
+両親　Kata benda	両親(りょうしん)　Orang tua<br><br>1. 両親は東京に住んでいます。<br>Orang tua saya tinggal di Tokyo.<br><br>2. 両親に手紙を書きます。<br>Saya menulis surat kepada orang tua.	jlpt-n5
+泳ぐ　Kata kerja (Godan) - intransitif	泳ぐ(およぐ)　Berenang<br><br>1. 夏に海で泳ぎます。<br>Saat musim panas saya berenang di laut.<br><br>2. 私は泳ぐことができません。<br>Saya tidak bisa berenang.	jlpt-n5
+出す　Kata kerja (Godan) - transitif	出す(だす)　Mengeluarkan, mengirim<br><br>1. 手紙を出します。<br>Saya mengirim surat.<br><br>2. 宿題を出してください。<br>Tolong kumpulkan PR.	jlpt-n5
+立つ　Kata kerja (Godan) - intransitif	立つ(たつ)　Berdiri<br><br>1. 立ってください。<br>Tolong berdiri.<br><br>2. 駅の前に立っています。<br>Saya berdiri di depan stasiun.	jlpt-n5
+早い　Kata sifat-i	早い(はやい)　Cepat, awal<br><br>1. 朝は早く起きます。<br>Saya bangun pagi-pagi.<br><br>2. この電車は早いです。<br>Kereta ini cepat.	jlpt-n5
+楽しい　Kata sifat-i	楽しい(たのしい)　Menyenangkan<br><br>1. 旅行は楽しいです。<br>Bepergian itu menyenangkan.<br><br>2. 昨日は楽しかったです。<br>Kemarin menyenangkan.	jlpt-n5
+面白い　Kata sifat-i	面白い(おもしろい)　Menarik, lucu<br><br>1. この本は面白いです。<br>Buku ini menarik.<br><br>2. 面白い話を聞きました。<br>Saya mendengar cerita lucu.	jlpt-n5
+絵　Kata benda	絵(え)　Gambar, lukisan<br><br>1. 壁に絵をかけます。<br>Saya menggantung lukisan di dinding.<br><br>2. 兄は絵が上手です。<br>Kakak laki-laki saya pandai menggambar.	jlpt-n5
+女の子　Ungkapan / Kata benda	女の子(おんなのこ)　Anak perempuan<br><br>1. 女の子が公園で遊んでいます。<br>Anak perempuan bermain di taman.<br><br>2. あの女の子は私の妹です。<br>Anak perempuan itu adik saya.	jlpt-n5
+着る　Kata kerja (Ichidan) - transitif	着る(きる)　Memakai (pakaian)<br><br>1. コートを着ます。<br>Saya memakai mantel.<br><br>2. 白いシャツを着ています。<br>Saya memakai kemeja putih.	jlpt-n5
+上手　Kata sifat-na / Kata benda	上手(じょうず)　Pandai, terampil<br><br>1. 姉は歌が上手です。<br>Kakak perempuan saya pandai bernyanyi.<br><br>2. 日本語が上手ですね。<br>Bahasa Jepangmu bagus ya.	jlpt-n5
+古い　Kata sifat-i	古い(ふるい)　Tua, lama<br><br>1. この家は古いです。<br>Rumah ini tua.<br><br>2. 古い本を読みます。<br>Saya membaca buku lama.	jlpt-n5
+強い　Kata sifat-i	強い(つよい)　Kuat<br><br>1. 兄は力が強いです。<br>Kakak laki-laki saya kuat.<br><br>2. 今日は風が強いです。<br>Hari ini anginnya kencang.	jlpt-n5
+全部　Kata benda / Kata keterangan	全部(ぜんぶ)　Semua<br><br>1. 宿題を全部しました。<br>Saya sudah mengerjakan semua PR.<br><br>2. 全部でいくらですか。<br>Semuanya berapa?	jlpt-n5
+呼ぶ　Kata kerja (Godan) - transitif	呼ぶ(よぶ)　Memanggil<br><br>1. 友達を呼びます。<br>Saya memanggil teman.<br><br>2. タクシーを呼んでください。<br>Tolong panggilkan taksi.	jlpt-n5
+午後　Kata benda / Kata keterangan	午後(ごご)　Sore (setelah siang)<br><br>1. 午後は暇です。<br>Sore hari saya senggang.<br><br>2. 午後三時に会いましょう。<br>Mari bertemu jam 3 sore.	jlpt-n5
+辞書　Kata benda	辞書(じしょ)　Kamus<br><br>1. 辞書で言葉を調べます。<br>Saya mencari kata di kamus.<br><br>2. この辞書は高いです。<br>Kamus ini mahal.	jlpt-n5
+天気　Kata benda	天気(てんき)　Cuaca<br><br>1. 今日は天気がいいです。<br>Hari ini cuacanya bagus.<br><br>2. 明日の天気はどうですか。<br>Bagaimana cuaca besok?	jlpt-n5
+体　Kata benda	体(からだ)　Tubuh<br><br>1. 体が大きいです。<br>Tubuhnya besar.<br><br>2. 体にいい物を食べます。<br>Saya makan makanan yang baik untuk tubuh.	jlpt-n5
+大きい　Kata sifat-i	大きい(おおきい)　Besar<br><br>1. この部屋は大きいです。<br>Kamar ini besar.<br><br>2. 大きい犬が好きです。<br>Saya suka anjing besar.	jlpt-n5
+質問　Kata benda / Kata kerja-suru	質問(しつもん)　Pertanyaan<br><br>1. 先生に質問します。<br>Saya bertanya kepada guru.<br><br>2. 質問がありますか。<br>Apakah ada pertanyaan?	jlpt-n5
+夕べ　Kata benda / Kata keterangan	夕べ(ゆうべ)　Sore menjelang malam, semalam<br><br>1. 夕べ、映画を見ました。<br>Semalam saya menonton film.<br><br>2. 夕べは寒かったです。<br>Semalam dingin.	jlpt-n5
+有名　Kata sifat-na	有名(ゆうめい)　Terkenal<br><br>1. あの人は有名です。<br>Orang itu terkenal.<br><br>2. この店は有名です。<br>Toko ini terkenal.	jlpt-n5
+兄　Kata benda	兄(あに)　Kakak laki-laki (milik sendiri)<br><br>1. 兄は会社で働いています。<br>Kakak laki-laki saya bekerja di perusahaan.<br><br>2. 兄は背が高いです。<br>Kakak laki-laki saya tinggi.	jlpt-n5
+歌う　Kata kerja (Godan) - transitif/intransitif	歌う(うたう)　Menyanyi<br><br>1. 友達と歌を歌います。<br>Saya bernyanyi dengan teman.<br><br>2. 歌を歌うのが好きです。<br>Saya suka bernyanyi.	jlpt-n5
+上る　Kata kerja (Godan) - intransitif	上る(のぼる)　Naik, mendaki<br><br>1. 山に上ります。<br>Saya mendaki gunung.<br><br>2. 階段を上ります。<br>Saya naik tangga.	jlpt-n5
+鳥　Kata benda	鳥(とり)　Burung<br><br>1. 木の上に鳥がいます。<br>Ada burung di atas pohon.<br><br>2. 鳥が空を飛んでいます。<br>Burung terbang di langit.	jlpt-n5
+服　Kata benda	服(ふく)　Pakaian<br><br>1. 新しい服を買いました。<br>Saya membeli pakaian baru.<br><br>2. この服は高いです。<br>Pakaian ini mahal.	jlpt-n5
+時々　Kata keterangan	時々(ときどき)　Kadang-kadang<br><br>1. 時々、友達に会います。<br>Kadang-kadang saya bertemu teman.<br><br>2. 時々、雨が降ります。<br>Kadang-kadang hujan turun.	jlpt-n5
+妹　Kata benda	妹(いもうと)　Adik perempuan (milik sendiri)<br><br>1. 妹は十歳です。<br>Adik perempuan saya berumur 10 tahun.<br><br>2. 妹は絵が上手です。<br>Adik perempuan saya pandai menggambar.	jlpt-n5
+二つ　Bilangan	二つ(ふたつ)　Dua<br><br>1. りんごを二つください。<br>Tolong beri saya dua apel.<br><br>2. 二つ買いました。<br>Saya membeli dua.	jlpt-n5
+頼む　Kata kerja (Godan) - transitif	頼む(たのむ)　Meminta, memesan<br><br>1. コーヒーを頼みます。<br>Saya memesan kopi.<br><br>2. 友達に頼みました。<br>Saya meminta bantuan teman.	jlpt-n5
+今朝　Kata benda / Kata keterangan	今朝(けさ)　Pagi ini<br><br>1. 今朝は雨でした。<br>Pagi ini hujan.<br><br>2. 今朝、六時に起きました。<br>Pagi ini saya bangun jam 6.	jlpt-n5
+お父さん　Kata benda	お父さん(おとうさん)　Ayah (orang lain/sopan)<br><br>1. お父さんは会社にいますか。<br>Apakah ayahmu ada di kantor?<br><br>2. お父さんは優しいです。<br>Ayahmu baik hati.	jlpt-n5
+遅い　Kata sifat-i	遅い(おそい)　Lambat, terlambat<br><br>1. バスは遅いです。<br>Busnya lambat.<br><br>2. もう遅いですから、寝ます。<br>Karena sudah larut, saya tidur.	jlpt-n5
+薬　Kata benda	薬(くすり)　Obat<br><br>1. 薬を飲みます。<br>Saya minum obat.<br><br>2. この薬は苦いです。<br>Obat ini pahit.	jlpt-n5
+借りる　Kata kerja (Ichidan) - transitif	借りる(かりる)　Meminjam<br><br>1. 図書館で本を借ります。<br>Saya meminjam buku di perpustakaan.<br><br>2. 友達に辞書を借りました。<br>Saya meminjam kamus dari teman.	jlpt-n5
+庭　Kata benda	庭(にわ)　Halaman, taman rumah<br><br>1. 庭に花が咲いています。<br>Bunga mekar di halaman.<br><br>2. 庭で犬が遊んでいます。<br>Anjing bermain di halaman.	jlpt-n5
+外国　Kata benda	外国(がいこく)　Luar negeri<br><br>1. 外国へ行きたいです。<br>Saya ingin pergi ke luar negeri.<br><br>2. 外国の友達がいます。<br>Saya punya teman dari luar negeri.	jlpt-n5
+小さい　Kata sifat-i	小さい(ちいさい)　Kecil<br><br>1. 小さい犬を飼っています。<br>Saya memelihara anjing kecil.<br><br>2. この靴は小さいです。<br>Sepatu ini kecil.	jlpt-n5
+元気　Kata sifat-na / Kata benda	元気(げんき)　Sehat, bersemangat<br><br>1. おじいさんは元気です。<br>Kakek sehat.<br><br>2. 元気ですか。<br>Apa kabar? (Apakah kamu sehat?)	jlpt-n5
+弟　Kata benda	弟(おとうと)　Adik laki-laki (milik sendiri)<br><br>1. 弟は小学生です。<br>Adik laki-laki saya murid SD.<br><br>2. 弟と公園で遊びます。<br>Saya bermain dengan adik laki-laki di taman.	jlpt-n5
+魚　Kata benda	魚(さかな)　Ikan<br><br>1. 魚を食べます。<br>Saya makan ikan.<br><br>2. 川に魚がいます。<br>Di sungai ada ikan.	jlpt-n5
+今年　Kata benda / Kata keterangan	今年(ことし)　Tahun ini<br><br>1. 今年は日本へ行きます。<br>Tahun ini saya pergi ke Jepang.<br><br>2. 今年で二十歳になります。<br>Tahun ini saya berumur 20 tahun.	jlpt-n5
+お母さん　Kata benda	お母さん(おかあさん)　Ibu (orang lain/sopan)<br><br>1. お母さんは優しいです。<br>Ibumu baik hati.<br><br>2. お母さんはお元気ですか。<br>Apakah ibumu sehat?	jlpt-n5
+男の子　Ungkapan / Kata benda	男の子(おとこのこ)　Anak laki-laki<br><br>1. 男の子が公園で走っています。<br>Anak laki-laki berlari di taman.<br><br>2. あの男の子は私の弟です。<br>Anak laki-laki itu adik saya.	jlpt-n5
+飛ぶ　Kata kerja (Godan) - intransitif	飛ぶ(とぶ)　Terbang<br><br>1. 鳥が空を飛びます。<br>Burung terbang di langit.<br><br>2. 飛行機で東京へ飛びます。<br>Saya terbang ke Tokyo dengan pesawat.	jlpt-n5
+売る　Kata kerja (Godan) - transitif	売る(うる)　Menjual<br><br>1. この店で本を売っています。<br>Toko ini menjual buku.<br><br>2. 古い車を売りました。<br>Saya menjual mobil lama.	jlpt-n5
+静か　Kata sifat-na	静か(しずか)　Tenang, sunyi<br><br>1. 図書館は静かです。<br>Perpustakaan itu sunyi.<br><br>2. 静かにしてください。<br>Tolong tenang.	jlpt-n5
+休む　Kata kerja (Godan) - intransitif	休む(やすむ)　Beristirahat, libur<br><br>1. 今日は学校を休みます。<br>Hari ini saya tidak masuk sekolah.<br><br>2. 日曜日に家で休みます。<br>Hari Minggu saya beristirahat di rumah.	jlpt-n5
+食べ物　Kata benda	食べ物(たべもの)　Makanan<br><br>1. 日本の食べ物が好きです。<br>Saya suka makanan Jepang.<br><br>2. 食べ物を買いに行きます。<br>Saya pergi membeli makanan.	jlpt-n5
+大切　Kata sifat-na	大切(たいせつ)　Penting<br><br>1. 家族は大切です。<br>Keluarga itu penting.<br><br>2. この本を大切にします。<br>Saya menjaga buku ini dengan baik.	jlpt-n5
+来週　Kata benda / Kata keterangan	来週(らいしゅう)　Minggu depan<br><br>1. 来週、テストがあります。<br>Minggu depan ada ujian.<br><br>2. 来週、東京へ行きます。<br>Minggu depan saya pergi ke Tokyo.	jlpt-n5
+警官　Kata benda	警官(けいかん)　Polisi<br><br>1. 警官に道を聞きました。<br>Saya bertanya jalan kepada polisi.<br><br>2. あの人は警官です。<br>Orang itu adalah polisi.	jlpt-n5
+建物　Kata benda	建物(たてもの)　Gedung<br><br>1. あの建物は大きいです。<br>Gedung itu besar.<br><br>2. 駅の前に高い建物があります。<br>Di depan stasiun ada gedung tinggi.	jlpt-n5
+暖かい　Kata sifat-i	暖かい(あたたかい)　Hangat<br><br>1. 春は暖かいです。<br>Musim semi itu hangat.<br><br>2. 暖かい部屋で休みます。<br>Saya beristirahat di ruangan yang hangat.	jlpt-n5
+降りる　Kata kerja (Ichidan) - intransitif	降りる(おりる)　Turun<br><br>1. 電車を降ります。<br>Saya turun dari kereta.<br><br>2. 山から降ります。<br>Saya turun dari gunung.	jlpt-n5
+止まる　Kata kerja (Godan) - intransitif	止まる(とまる)　Berhenti<br><br>1. 電車が止まりました。<br>Kereta berhenti.<br><br>2. あの車は止まっています。<br>Mobil itu sedang berhenti.	jlpt-n5
+一緒　Kata keterangan / Kata benda	一緒(いっしょ)　Bersama<br><br>1. 友達と一緒に行きます。<br>Saya pergi bersama teman.<br><br>2. 一緒に食べましょう。<br>Mari makan bersama.	jlpt-n5
+先週　Kata benda / Kata keterangan	先週(せんしゅう)　Minggu lalu<br><br>1. 先週、東京へ行きました。<br>Minggu lalu saya pergi ke Tokyo.<br><br>2. 先週は忙しかったです。<br>Minggu lalu saya sibuk.	jlpt-n5
+白い　Kata sifat-i	白い(しろい)　Putih<br><br>1. 白い靴を買いました。<br>Saya membeli sepatu putih.<br><br>2. 雪は白いです。<br>Salju itu putih.	jlpt-n5
+二　Bilangan	二(に)　Dua<br><br>1. 二人で行きます。<br>Kami berdua pergi.<br><br>2. 二時に会いましょう。<br>Mari bertemu jam dua.	jlpt-n5
+少ない　Kata sifat-i	少ない(すくない)　Sedikit (jumlah)<br><br>1. 今日は人が少ないです。<br>Hari ini orangnya sedikit.<br><br>2. お金が少ないです。<br>Uangnya sedikit.	jlpt-n5
+赤い　Kata sifat-i	赤い(あかい)　Merah<br><br>1. 赤い花が咲いています。<br>Bunga merah mekar.<br><br>2. 赤い車が好きです。<br>Saya suka mobil merah.	jlpt-n5
+洗う　Kata kerja (Godan) - transitif	洗う(あらう)　Mencuci<br><br>1. 手を洗います。<br>Saya mencuci tangan.<br><br>2. 車を洗いました。<br>Saya mencuci mobil.	jlpt-n5
+嫌い　Kata sifat-na / Kata benda	嫌い(きらい)　Tidak suka<br><br>1. 野菜が嫌いです。<br>Saya tidak suka sayuran.<br><br>2. 雨は嫌いです。<br>Saya tidak suka hujan.	jlpt-n5
+立派　Kata sifat-na	立派(りっぱ)　Hebat, megah<br><br>1. 立派な家ですね。<br>Rumah yang megah ya.<br><br>2. あの人は立派な先生です。<br>Dia adalah guru yang hebat.	jlpt-n5
+暇　Kata benda / Kata sifat-na	暇(ひま)　Waktu luang<br><br>1. 今日は暇です。<br>Hari ini saya senggang.<br><br>2. 暇な時に来てください。<br>Datanglah saat senggang.	jlpt-n5
+お茶　Kata benda	お茶(おちゃ)　Teh (hijau)<br><br>1. お茶を飲みます。<br>Saya minum teh.<br><br>2. お茶をもう一杯どうですか。<br>Mau secangkir teh lagi?	jlpt-n5
+広い　Kata sifat-i	広い(ひろい)　Luas<br><br>1. この部屋は広いです。<br>Kamar ini luas.<br><br>2. 広い公園で遊びます。<br>Saya bermain di taman yang luas.	jlpt-n5
+去年　Kata benda / Kata keterangan	去年(きょねん)　Tahun lalu<br><br>1. 去年、日本へ行きました。<br>Tahun lalu saya pergi ke Jepang.<br><br>2. 去年は忙しかったです。<br>Tahun lalu saya sibuk.	jlpt-n5
+大好き　Kata sifat-na	大好き(だいすき)　Sangat suka<br><br>1. 犬が大好きです。<br>Saya sangat suka anjing.<br><br>2. 母の料理が大好きです。<br>Saya sangat suka masakan ibu.	jlpt-n5
+隣　Kata benda	隣(となり)　Sebelah<br><br>1. 隣の部屋は静かです。<br>Kamar sebelah tenang.<br><br>2. 私の隣に座ってください。<br>Tolong duduk di sebelah saya.	jlpt-n5
+女　Kata benda	女(おんな)　Perempuan, wanita<br><br>1. あの女の人は先生です。<br>Wanita itu adalah guru.<br><br>2. 女は二人います。<br>Ada dua orang perempuan.	jlpt-n5
+切る　Kata kerja (Godan) - transitif	切る(きる)　Memotong<br><br>1. ナイフでパンを切ります。<br>Saya memotong roti dengan pisau.<br><br>2. 紙を切ってください。<br>Tolong potong kertasnya.	jlpt-n5
+多分　Kata keterangan	多分(たぶん)　Mungkin<br><br>1. 明日は多分雨です。<br>Besok mungkin hujan.<br><br>2. 彼は多分来ません。<br>Dia mungkin tidak datang.	jlpt-n5
+嫌　Kata sifat-na / Kata benda	嫌(いや)　Tidak suka, enggan<br><br>1. 寒いのは嫌です。<br>Saya tidak suka dingin.<br><br>2. 行くのは嫌です。<br>Saya enggan pergi.	jlpt-n5
+毎朝　Kata benda / Kata keterangan	毎朝(まいあさ)　Setiap pagi<br><br>1. 毎朝、六時に起きます。<br>Setiap pagi saya bangun jam 6.<br><br>2. 毎朝、牛乳を飲みます。<br>Setiap pagi saya minum susu.	jlpt-n5
+荷物　Kata benda	荷物(にもつ)　Bagasi, barang bawaan<br><br>1. 荷物が重いです。<br>Bagasinya berat.<br><br>2. 荷物を持ちましょう。<br>Biar saya bawakan barangnya.	jlpt-n5
+番号　Kata benda	番号(ばんごう)　Nomor<br><br>1. 電話番号を教えてください。<br>Tolong beri tahu nomor telepon Anda.<br><br>2. 番号を書いてください。<br>Tolong tulis nomornya.	jlpt-n5
+返す　Kata kerja (Godan) - transitif	返す(かえす)　Mengembalikan<br><br>1. 本を返します。<br>Saya mengembalikan buku.<br><br>2. 借りたお金を返しました。<br>Saya mengembalikan uang yang dipinjam.	jlpt-n5
+来年　Kata benda / Kata keterangan	来年(らいねん)　Tahun depan<br><br>1. 来年、日本へ行きます。<br>Tahun depan saya pergi ke Jepang.<br><br>2. 来年、大学に入ります。<br>Tahun depan saya masuk universitas.	jlpt-n5
+明るい　Kata sifat-i	明るい(あかるい)　Terang<br><br>1. この部屋は明るいです。<br>Kamar ini terang.<br><br>2. 明るい色が好きです。<br>Saya suka warna cerah.	jlpt-n5
+近い　Kata sifat-i	近い(ちかい)　Dekat<br><br>1. 駅は近いです。<br>Stasiun dekat.<br><br>2. 学校は家から近いです。<br>Sekolah dekat dari rumah.	jlpt-n5
+向こう　Kata benda	向こう(むこう)　Seberang<br><br>1. 川の向こうに山があります。<br>Di seberang sungai ada gunung.<br><br>2. 向こうに銀行があります。<br>Di seberang sana ada bank.	jlpt-n5
+始め　Kata benda / Kata keterangan	始め(はじめ)　Awal, permulaan<br><br>1. 始めに名前を書いてください。<br>Pertama-tama tolong tulis nama.<br><br>2. 映画の始めは面白かったです。<br>Awal filmnya menarik.	jlpt-n5
+痛い　Kata sifat-i	痛い(いたい)　Sakit (terasa nyeri)<br><br>1. 頭が痛いです。<br>Kepala saya sakit.<br><br>2. 歯が痛いです。<br>Gigi saya sakit.	jlpt-n5
+休み　Kata benda	休み(やすみ)　Libur, istirahat<br><br>1. 明日は休みです。<br>Besok libur.<br><br>2. 休みに旅行へ行きます。<br>Saat libur saya bepergian.	jlpt-n5
+十　Bilangan	十(じゅう)　Sepuluh<br><br>1. 十人の学生がいます。<br>Ada sepuluh murid.<br><br>2. 十時に寝ます。<br>Saya tidur jam sepuluh.	jlpt-n5
+練習　Kata benda / Kata kerja-suru	練習(れんしゅう)　Latihan<br><br>1. 毎日、日本語を練習します。<br>Setiap hari saya berlatih bahasa Jepang.<br><br>2. ギターを練習します。<br>Saya berlatih gitar.	jlpt-n5
+上着　Kata benda	上着(うわぎ)　Jaket, mantel luar<br><br>1. 上着を着ます。<br>Saya memakai jaket.<br><br>2. 上着を忘れました。<br>Saya lupa jaket.	jlpt-n5
+先月　Kata benda / Kata keterangan	先月(せんげつ)　Bulan lalu<br><br>1. 先月、日本へ行きました。<br>Bulan lalu saya pergi ke Jepang.<br><br>2. 先月は忙しかったです。<br>Bulan lalu saya sibuk.	jlpt-n5
+結構　Kata sifat-na / Kata keterangan / Kata benda	結構(けっこう)　Bagus, cukup<br><br>1. 結構です。<br>Tidak usah, terima kasih. (Cukup.)<br><br>2. この店のコーヒーは結構おいしいです。<br>Kopi di toko ini lumayan enak.	jlpt-n5
+毎年　Kata keterangan / Kata benda	毎年(まいとし)　Setiap tahun<br><br>1. 毎年、日本へ行きます。<br>Setiap tahun saya pergi ke Jepang.<br><br>2. 毎年、海へ行きます。<br>Setiap tahun saya pergi ke laut.	jlpt-n5
+兄弟　Kata benda	兄弟(きょうだい)　Saudara kandung<br><br>1. 兄弟は何人ですか。<br>Kamu punya berapa saudara?<br><br>2. 私は兄弟が三人います。<br>Saya punya tiga saudara.	jlpt-n5
+来月　Kata benda / Kata keterangan	来月(らいげつ)　Bulan depan<br><br>1. 来月、日本へ行きます。<br>Bulan depan saya pergi ke Jepang.<br><br>2. 来月、テストがあります。<br>Bulan depan ada ujian.	jlpt-n5
+五　Bilangan	五(ご)　Lima<br><br>1. 五人で行きます。<br>Kami berlima pergi.<br><br>2. 五時に会いましょう。<br>Mari bertemu jam lima.	jlpt-n5
+飲み物　Kata benda	飲み物(のみもの)　Minuman<br><br>1. 飲み物は何がいいですか。<br>Minumannya mau apa?<br><br>2. 冷たい飲み物が欲しいです。<br>Saya ingin minuman dingin.	jlpt-n5
+弱い　Kata sifat-i	弱い(よわい)　Lemah<br><br>1. 私は体が弱いです。<br>Tubuh saya lemah.<br><br>2. 犬は寒さに弱いです。<br>Anjing lemah terhadap dingin.	jlpt-n5
+牛乳　Kata benda	牛乳(ぎゅうにゅう)　Susu<br><br>1. 毎朝、牛乳を飲みます。<br>Setiap pagi saya minum susu.<br><br>2. 冷蔵庫に牛乳があります。<br>Di kulkas ada susu.	jlpt-n5
+三　Bilangan	三(さん)　Tiga<br><br>1. 三人で行きます。<br>Kami bertiga pergi.<br><br>2. 三時に会いましょう。<br>Mari bertemu jam tiga.	jlpt-n5
+大丈夫　Kata sifat-na	大丈夫(だいじょうぶ)　Tidak apa-apa, aman<br><br>1. 大丈夫ですか。<br>Apakah kamu baik-baik saja?<br><br>2. はい、大丈夫です。<br>Ya, tidak apa-apa.	jlpt-n5
+黒い　Kata sifat-i	黒い(くろい)　Hitam<br><br>1. 黒い靴を買いました。<br>Saya membeli sepatu hitam.<br><br>2. 黒い犬がいます。<br>Ada anjing hitam.	jlpt-n5
+皆さん　Kata benda	皆さん(みなさん)　Semuanya (sopan)<br><br>1. 皆さん、こんにちは。<br>Halo semuanya.<br><br>2. 皆さん、元気ですか。<br>Apakah semuanya sehat?	jlpt-n5
+半分　Kata keterangan / Kata benda	半分(はんぶん)　Setengah<br><br>1. りんごを半分食べました。<br>Saya makan setengah apel.<br><br>2. 半分ください。<br>Tolong beri saya setengahnya.	jlpt-n5
+押す　Kata kerja (Godan) - transitif	押す(おす)　Mendorong, menekan<br><br>1. ボタンを押します。<br>Saya menekan tombol.<br><br>2. ドアを押してください。<br>Tolong dorong pintunya.	jlpt-n5
+勤める　Kata kerja (Ichidan) - transitif	勤める(つとめる)　Bekerja di (perusahaan)<br><br>1. 兄は銀行に勤めています。<br>Kakak laki-laki saya bekerja di bank.<br><br>2. 会社に勤めています。<br>Saya bekerja di perusahaan.	jlpt-n5
+熱い　Kata sifat-i	熱い(あつい)　Panas (disentuh)<br><br>1. このお茶は熱いです。<br>Teh ini panas.<br><br>2. お風呂が熱いです。<br>Air mandinya panas.	jlpt-n5
+三つ　Bilangan	三つ(みっつ)　Tiga (buah)<br><br>1. りんごを三つ買いました。<br>Saya membeli tiga apel.<br><br>2. 三つあります。<br>Ada tiga.	jlpt-n5
+果物　Kata benda	果物(くだもの)　Buah-buahan<br><br>1. 果物が好きです。<br>Saya suka buah-buahan.<br><br>2. 毎日、果物を食べます。<br>Setiap hari saya makan buah.	jlpt-n5
+今週　Kata benda / Kata keterangan	今週(こんしゅう)　Minggu ini<br><br>1. 今週は忙しいです。<br>Minggu ini saya sibuk.<br><br>2. 今週、テストがあります。<br>Minggu ini ada ujian.	jlpt-n5
+右　Kata benda	右(みぎ)　Kanan<br><br>1. 右に曲がってください。<br>Tolong belok kanan.<br><br>2. 右の手が痛いです。<br>Tangan kanan saya sakit.	jlpt-n5
+甘い　Kata sifat-i	甘い(あまい)　Manis<br><br>1. このケーキは甘いです。<br>Kue ini manis.<br><br>2. 甘い物が好きです。<br>Saya suka makanan manis.	jlpt-n5
+晩　Kata benda / Kata keterangan	晩(ばん)　Malam (sore hari)<br><br>1. 晩にテレビを見ます。<br>Saat malam saya menonton TV.<br><br>2. 今晩、友達に会います。<br>Malam ini saya bertemu teman.	jlpt-n5
+大勢　Kata benda	大勢(おおぜい)　Banyak orang<br><br>1. 駅に大勢の人がいます。<br>Di stasiun ada banyak orang.<br><br>2. 大勢で歌を歌いました。<br>Kami bernyanyi ramai-ramai.	jlpt-n5
+階段　Kata benda	階段(かいだん)　Tangga<br><br>1. 階段を上ります。<br>Saya naik tangga.<br><br>2. 階段は右にあります。<br>Tangganya ada di sebelah kanan.	jlpt-n5
+張る　Kata kerja (Godan) - transitif	張る(はる)　Menempel<br><br>1. 切手を張ります。<br>Saya menempelkan perangko.<br><br>2. 壁に紙を張ります。<br>Saya menempelkan kertas di dinding.	jlpt-n5
+夕方　Kata benda / Kata keterangan	夕方(ゆうがた)　Senja, sore hari<br><br>1. 夕方、散歩をします。<br>Saat sore saya berjalan-jalan.<br><br>2. 夕方に帰ります。<br>Saya pulang saat sore.	jlpt-n5
+低い　Kata sifat-i	低い(ひくい)　Rendah, pendek<br><br>1. この机は低いです。<br>Meja ini rendah.<br><br>2. あの山は低いです。<br>Gunung itu rendah.	jlpt-n5
+左　Kata benda	左(ひだり)　Kiri<br><br>1. 左に曲がってください。<br>Tolong belok kiri.<br><br>2. 左に銀行があります。<br>Di sebelah kiri ada bank.	jlpt-n5
+毎週　Kata benda / Kata keterangan	毎週(まいしゅう)　Setiap minggu<br><br>1. 毎週、日曜日に買い物をします。<br>Setiap minggu pada hari Minggu saya berbelanja.<br><br>2. 毎週、映画を見ます。<br>Setiap minggu saya menonton film.	jlpt-n5
+下手　Kata sifat-na / Kata benda	下手(へた)　Tidak pandai<br><br>1. 私は歌が下手です。<br>Saya tidak pandai bernyanyi.<br><br>2. 絵が下手です。<br>Saya tidak pandai menggambar.	jlpt-n5
+千　Bilangan	千(せん)　Seribu<br><br>1. この本は千円です。<br>Buku ini seribu yen.<br><br>2. 千人の学生がいます。<br>Ada seribu murid.	jlpt-n5
+渡す　Kata kerja (Godan) - transitif	渡す(わたす)　Menyerahkan, memberikan<br><br>1. 先生に手紙を渡します。<br>Saya menyerahkan surat kepada guru.<br><br>2. 切符を渡してください。<br>Tolong serahkan tiketnya.	jlpt-n5
+午前　Kata benda / Kata keterangan	午前(ごぜん)　Pagi (sebelum siang)<br><br>1. 午前九時に始まります。<br>Dimulai jam 9 pagi.<br><br>2. 午前中は忙しいです。<br>Pagi hari saya sibuk.	jlpt-n5
+丸い　Kata sifat-i	丸い(まるい)　Bulat<br><br>1. 月は丸いです。<br>Bulan itu bulat.<br><br>2. 丸い箱が欲しいです。<br>Saya ingin kotak yang bulat.	jlpt-n5
+便利　Kata sifat-na	便利(べんり)　Praktis<br><br>1. この辞書は便利です。<br>Kamus ini praktis.<br><br>2. 駅の近くは便利です。<br>Dekat stasiun itu praktis.	jlpt-n5
+今月　Kata benda / Kata keterangan	今月(こんげつ)　Bulan ini<br><br>1. 今月は忙しいです。<br>Bulan ini saya sibuk.<br><br>2. 今月、日本へ行きます。<br>Bulan ini saya pergi ke Jepang.	jlpt-n5
+浴びる　Kata kerja (Ichidan) - transitif	浴びる(あびる)　Mandi (mengguyur diri)<br><br>1. 毎朝、シャワーを浴びます。<br>Setiap pagi saya mandi dengan shower.<br><br>2. 朝、シャワーを浴びてから学校へ行きます。<br>Pagi hari setelah mandi saya pergi ke sekolah.	jlpt-n5
+半　Kata benda	半(はん)　Setengah<br><br>1. 三時半に会いましょう。<br>Mari bertemu jam setengah empat.<br><br>2. 半年待ちました。<br>Saya menunggu setengah tahun.	jlpt-n5
+洋服　Kata benda	洋服(ようふく)　Pakaian gaya Barat<br><br>1. 洋服を着ます。<br>Saya memakai pakaian gaya Barat.<br><br>2. 新しい洋服を買いました。<br>Saya membeli pakaian baru.	jlpt-n5
+撮る　Kata kerja (Godan) - transitif	撮る(とる)　Memotret<br><br>1. 写真を撮ります。<br>Saya memotret.<br><br>2. ここで写真を撮ってください。<br>Tolong ambil foto di sini.	jlpt-n5
+締める　Kata kerja (Ichidan) - transitif	締める(しめる)　Mengikat, mengencangkan<br><br>1. ネクタイを締めます。<br>Saya mengikat dasi.<br><br>2. ベルトを締めてください。<br>Tolong kencangkan sabuknya.	jlpt-n5
+文章　Kata benda	文章(ぶんしょう)　Karangan, tulisan<br><br>1. 文章を書きます。<br>Saya menulis karangan.<br><br>2. この文章は長いです。<br>Tulisan ini panjang.	jlpt-n5
+薄い　Kata sifat-i	薄い(うすい)　Tipis<br><br>1. この本は薄いです。<br>Buku ini tipis.<br><br>2. 薄いコートを着ます。<br>Saya memakai mantel tipis.	jlpt-n5
+八　Bilangan	八(はち)　Delapan<br><br>1. 八人で行きます。<br>Kami berdelapan pergi.<br><br>2. 八時に起きます。<br>Saya bangun jam delapan.	jlpt-n5
+横　Kata benda	横(よこ)　Samping, horizontal<br><br>1. 私の横に座ってください。<br>Tolong duduk di samping saya.<br><br>2. 横に長い箱です。<br>Kotaknya panjang ke samping.	jlpt-n5
+六　Bilangan	六(ろく)　Enam<br><br>1. 六人います。<br>Ada enam orang.<br><br>2. 六時に起きます。<br>Saya bangun jam enam.	jlpt-n5
+四つ　Bilangan	四つ(よっつ)　Empat (buah)<br><br>1. りんごを四つ買いました。<br>Saya membeli empat apel.<br><br>2. 四つあります。<br>Ada empat.	jlpt-n5
+丈夫　Kata sifat-na	丈夫(じょうぶ)　Kuat, sehat, awet<br><br>1. この箱は丈夫です。<br>Kotak ini kokoh.<br><br>2. 弟は丈夫な体をしています。<br>Adik laki-laki saya bertubuh sehat dan kuat.	jlpt-n5
+毎晩　Kata benda / Kata keterangan	毎晩(まいばん)　Setiap malam<br><br>1. 毎晩、十時に寝ます。<br>Setiap malam saya tidur jam 10.<br><br>2. 毎晩、日本語を勉強します。<br>Setiap malam saya belajar bahasa Jepang.	jlpt-n5
+東　Kata benda	東(ひがし)　Timur<br><br>1. 太陽は東から出ます。<br>Matahari terbit dari timur.<br><br>2. 駅の東に公園があります。<br>Di sebelah timur stasiun ada taman.	jlpt-n5
+五つ　Bilangan	五つ(いつ)　Lima (buah)<br><br>1. りんごを五つ買いました。<br>Saya membeli lima apel.<br><br>2. 五つあります。<br>Ada lima.	jlpt-n5
+晴れ　Kata benda	晴れ(はれ)　Cerah<br><br>1. 今日は晴れです。<br>Hari ini cerah.<br><br>2. 明日は晴れでしょう。<br>Besok mungkin cerah.	jlpt-n5
+細い　Kata sifat-i	細い(ほそい)　Kurus, ramping, halus<br><br>1. この道は細いです。<br>Jalan ini sempit.<br><br>2. あの人は足が細いです。<br>Orang itu kakinya kurus.	jlpt-n5
+廊下　Kata benda	廊下(ろうか)　Koridor<br><br>1. 廊下は静かです。<br>Koridor itu sunyi.<br><br>2. 廊下を走らないでください。<br>Tolong jangan berlari di koridor.	jlpt-n5
+太い　Kata sifat-i	太い(ふとい)　Tebal, gemuk<br><br>1. この木は太いです。<br>Pohon ini tebal (besar).<br><br>2. 太い線を書きます。<br>Saya menggambar garis tebal.	jlpt-n5
+縦　Kata benda	縦(たて)　Vertikal, panjang (tinggi)<br><br>1. 縦に線を書きます。<br>Saya menggambar garis vertikal.<br><br>2. 縦も横も五メートルです。<br>Panjang dan lebarnya sama-sama 5 meter.	jlpt-n5
+七つ　Bilangan	七つ(ななつ)　Tujuh (buah)<br><br>1. りんごを七つ買いました。<br>Saya membeli tujuh apel.<br><br>2. 七つあります。<br>Ada tujuh.	jlpt-n5
+九つ　Bilangan	九つ(ここのつ)　Sembilan (buah)<br><br>1. りんごを九つ買いました。<br>Saya membeli sembilan apel.<br><br>2. 九つあります。<br>Ada sembilan.	jlpt-n5
+留学生　Kata benda	留学生(りゅうがくせい)　Pelajar asing<br><br>1. 私は日本の留学生です。<br>Saya adalah pelajar asing di Jepang.<br><br>2. クラスに留学生が三人います。<br>Di kelas ada tiga pelajar asing.	jlpt-n5
+一昨年　Kata benda / Kata keterangan	一昨年(おととし)　Dua tahun lalu<br><br>1. 一昨年、日本へ行きました。<br>Dua tahun lalu saya pergi ke Jepang.<br><br>2. 一昨年は忙しかったです。<br>Dua tahun lalu saya sibuk.	jlpt-n5
+人　Kata benda	人(ひと)　Orang<br><br>1. あの人は先生です。<br>Orang itu adalah guru.<br><br>2. 部屋に人がいます。<br>Ada orang di kamar.	jlpt-n5
+物　Kata benda	物(もの)　Benda, barang<br><br>1. 机の上に物があります。<br>Ada barang di atas meja.<br><br>2. 買い物で食べ物を買いました。<br>Saat berbelanja saya membeli makanan.	jlpt-n5
+家　Kata benda	家(いえ)　Rumah<br><br>1. 私の家は駅の近くです。<br>Rumah saya dekat stasiun.<br><br>2. 家に帰ります。<br>Saya pulang ke rumah.	jlpt-n5
+本　Kata benda	本(ほん)　Buku<br><br>1. 本を読みます。<br>Saya membaca buku.<br><br>2. 机の上に本があります。<br>Di atas meja ada buku.	jlpt-n5
+会う　Kata kerja (Godan) - intransitif	会う(あう)　Bertemu<br><br>1. 友達に会います。<br>Saya bertemu teman.<br><br>2. 駅で先生に会いました。<br>Saya bertemu guru di stasiun.	jlpt-n5
+好き　Kata sifat-na / Kata benda	好き(すき)　Suka<br><br>1. 私は犬が好きです。<br>Saya suka anjing.<br><br>2. 日本の料理が好きです。<br>Saya suka masakan Jepang.	jlpt-n5
+聞く　Kata kerja (Godan) - transitif	聞く(きく)　Mendengar, bertanya<br><br>1. 音楽を聞きます。<br>Saya mendengarkan musik.<br><br>2. 先生に聞きます。<br>Saya bertanya kepada guru.	jlpt-n5
+所　Kata benda / Kata keterangan / Akhiran	所(ところ)　Tempat<br><br>1. いい所ですね。<br>Tempat yang bagus ya.<br><br>2. 私が住んでいる所は静かです。<br>Tempat saya tinggal itu tenang.	jlpt-n5
+先　Kata benda	先(さき)　Depan, ujung, selanjutnya<br><br>1. 先に行ってください。<br>Silakan pergi duluan.<br><br>2. 道の先に駅があります。<br>Di ujung jalan ada stasiun.	jlpt-n5
+書く　Kata kerja (Godan) - transitif	書く(かく)　Menulis<br><br>1. 手紙を書きます。<br>Saya menulis surat.<br><br>2. ここに名前を書いてください。<br>Tolong tulis nama di sini.	jlpt-n5
+入る　Kata kerja (Godan) - intransitif	入る(はいる)　Masuk<br><br>1. 部屋に入ります。<br>Saya masuk ke kamar.<br><br>2. お風呂に入ります。<br>Saya mandi berendam.	jlpt-n5
+置く　Kata kerja (Godan) - transitif	置く(おく)　Meletakkan<br><br>1. 机の上に本を置きます。<br>Saya meletakkan buku di atas meja.<br><br>2. ここに荷物を置いてください。<br>Tolong taruh barang di sini.	jlpt-n5
+住む　Kata kerja (Godan) - intransitif	住む(すむ)　Tinggal<br><br>1. 東京に住んでいます。<br>Saya tinggal di Tokyo.<br><br>2. 家族と一緒に住んでいます。<br>Saya tinggal bersama keluarga.	jlpt-n5
+食べる　Kata kerja (Ichidan) - transitif	食べる(たべる)　Makan<br><br>1. ご飯を食べます。<br>Saya makan nasi.<br><br>2. 朝ご飯を食べましたか。<br>Apakah kamu sudah sarapan?	jlpt-n5
+歩く　Kata kerja (Godan) - intransitif	歩く(あるく)　Berjalan<br><br>1. 学校まで歩きます。<br>Saya berjalan kaki ke sekolah.<br><br>2. 駅から十分歩きます。<br>Saya berjalan 10 menit dari stasiun.	jlpt-n5
+働く　Kata kerja (Godan) - intransitif	働く(はたらく)　Bekerja<br><br>1. 銀行で働いています。<br>Saya bekerja di bank.<br><br>2. 父は会社で働いています。<br>Ayah bekerja di perusahaan.	jlpt-n5
+着く　Kata kerja (Godan) - intransitif	着く(つく)　Tiba<br><br>1. 駅に着きました。<br>Saya tiba di stasiun.<br><br>2. 何時に着きますか。<br>Jam berapa tiba?	jlpt-n5
+上　Kata benda / Kata keterangan	上(うえ)　Atas<br><br>1. 机の上に本があります。<br>Di atas meja ada buku.<br><br>2. 上を見てください。<br>Tolong lihat ke atas.	jlpt-n5
+悪い　Kata sifat-i	悪い(わるい)　Buruk, jelek<br><br>1. 天気が悪いです。<br>Cuacanya buruk.<br><br>2. この薬は体に悪いです。<br>Obat ini buruk bagi tubuh.	jlpt-n5
+教える　Kata kerja (Ichidan) - transitif	教える(おしえる)　Mengajar<br><br>1. 学生に日本語を教えます。<br>Saya mengajar bahasa Jepang kepada murid.<br><br>2. 道を教えてください。<br>Tolong beri tahu saya jalannya.	jlpt-n5
+降る　Kata kerja (Godan) - intransitif	降る(ふる)　Turun (hujan, salju)<br><br>1. 雨が降っています。<br>Hujan sedang turun.<br><br>2. 明日は雪が降るでしょう。<br>Besok mungkin salju turun.	jlpt-n5
+死ぬ　Kata kerja (Godan) - intransitif	死ぬ(しぬ)　Meninggal<br><br>1. 犬が死にました。<br>Anjing saya mati.<br><br>2. 魚が死んでいます。<br>Ikannya mati.	jlpt-n5
+帰る　Kata kerja (Godan) - intransitif	帰る(かえる)　Pulang<br><br>1. 六時に家へ帰ります。<br>Saya pulang ke rumah jam 6.<br><br>2. もう帰りましょう。<br>Ayo kita pulang sekarang.	jlpt-n5
+忘れる　Kata kerja (Ichidan) - transitif	忘れる(わすれる)　Lupa<br><br>1. 宿題を忘れました。<br>Saya lupa PR.<br><br>2. 傘を忘れないでください。<br>Tolong jangan lupa payung.	jlpt-n5
+多い　Kata sifat-i	多い(おおい)　Banyak<br><br>1. この町は人が多いです。<br>Di kota ini banyak orang.<br><br>2. 宿題が多いです。<br>PR-nya banyak.	jlpt-n5
+出掛ける　Kata kerja (Ichidan) - intransitif	出掛ける(でかける)　Pergi keluar<br><br>1. 日曜日に出かけます。<br>Hari Minggu saya pergi keluar.<br><br>2. 母は買い物に出かけました。<br>Ibu pergi keluar berbelanja.	jlpt-n5
+若い　Kata sifat-i	若い(わかい)　Muda<br><br>1. 姉はまだ若いです。<br>Kakak perempuan saya masih muda.<br><br>2. 若い先生が来ました。<br>Guru yang muda datang.	jlpt-n5
+同じ　Kata benda	同じ(おなじ)　Sama<br><br>1. 私たちは同じ学校です。<br>Kami satu sekolah.<br><br>2. 同じ本を買いました。<br>Saya membeli buku yang sama.	jlpt-n5
+起きる　Kata kerja (Ichidan) - intransitif	起きる(おきる)　Bangun<br><br>1. 毎朝、六時に起きます。<br>Setiap pagi saya bangun jam 6.<br><br>2. 七時に起きました。<br>Saya bangun jam 7.	jlpt-n5
+座る　Kata kerja (Godan) - intransitif	座る(すわる)　Duduk<br><br>1. 椅子に座ります。<br>Saya duduk di kursi.<br><br>2. ここに座ってください。<br>Tolong duduk di sini.	jlpt-n5
+店　Kata benda	店(みせ)　Toko<br><br>1. 店でパンを買います。<br>Saya membeli roti di toko.<br><br>2. あの店は安いです。<br>Toko itu murah.	jlpt-n5
+入れる　Kata kerja (Ichidan) - transitif	入れる(いれる)　Memasukkan<br><br>1. かばんに本を入れます。<br>Saya memasukkan buku ke dalam tas.<br><br>2. コーヒーに砂糖を入れます。<br>Saya menambahkan gula ke kopi.	jlpt-n5
+疲れる　Kata kerja (Ichidan) - intransitif	疲れる(つかれる)　Capek<br><br>1. 今日は疲れました。<br>Hari ini saya capek.<br><br>2. 歩いて疲れました。<br>Saya capek karena berjalan.	jlpt-n5
+開ける　Kata kerja (Ichidan) - transitif	開ける(あける)　Membuka<br><br>1. 窓を開けます。<br>Saya membuka jendela.<br><br>2. ドアを開けてください。<br>Tolong buka pintunya.	jlpt-n5
+一日　Kata benda / Kata keterangan	一日(いちにち)　Satu hari<br><br>1. 一日、家にいました。<br>Saya di rumah seharian.<br><br>2. 一日に三回薬を飲みます。<br>Saya minum obat tiga kali sehari.	jlpt-n5
+寒い　Kata sifat-i	寒い(さむい)　Dingin (cuaca)<br><br>1. 今日は寒いです。<br>Hari ini dingin.<br><br>2. 冬は寒いです。<br>Musim dingin itu dingin.	jlpt-n5
+見せる　Kata kerja (Ichidan) - transitif	見せる(みせる)　Menunjukkan<br><br>1. 写真を見せてください。<br>Tolong tunjukkan fotonya.<br><br>2. 友達に絵を見せます。<br>Saya menunjukkan lukisan kepada teman.	jlpt-n5
+違う　Kata kerja (Godan) - intransitif	違う(ちがう)　Berbeda, salah<br><br>1. それは違います。<br>Itu salah (berbeda).<br><br>2. 私の意見は違います。<br>Pendapat saya berbeda.	jlpt-n5
+覚える　Kata kerja (Ichidan) - transitif	覚える(おぼえる)　Menghafal, mengingat<br><br>1. 漢字を覚えます。<br>Saya menghafal kanji.<br><br>2. 名前を覚えました。<br>Saya sudah mengingat namanya.	jlpt-n5
+近く　Kata benda / Kata keterangan	近く(ちかく)　Dekat, sekitar<br><br>1. 駅の近くに店があります。<br>Ada toko di dekat stasiun.<br><br>2. 近くの公園へ行きます。<br>Saya pergi ke taman terdekat.	jlpt-n5
+風　Kata benda	風(かぜ)　Angin<br><br>1. 今日は風が強いです。<br>Hari ini anginnya kencang.<br><br>2. 風が吹いています。<br>Angin sedang bertiup.	jlpt-n5
+困る　Kata kerja (Godan) - intransitif	困る(こまる)　Kesulitan, bingung<br><br>1. お金がなくて困りました。<br>Saya kesulitan karena tidak punya uang.<br><br>2. 道がわからなくて困っています。<br>Saya bingung karena tidak tahu jalan.	jlpt-n5
+生まれる　Kata kerja (Ichidan) - intransitif	生まれる(うまれる)　Lahir<br><br>1. 私は東京で生まれました。<br>Saya lahir di Tokyo.<br><br>2. 赤ちゃんが生まれます。<br>Bayi akan lahir.	jlpt-n5
+初めて　Kata keterangan	初めて(はじめて)　Pertama kali<br><br>1. 初めて日本へ行きました。<br>Saya pergi ke Jepang untuk pertama kalinya.<br><br>2. 初めてお会いします。<br>Senang bertemu Anda untuk pertama kali.	jlpt-n5
+始まる　Kata kerja (Godan) - intransitif	始まる(はじまる)　Mulai<br><br>1. 授業が始まります。<br>Pelajaran dimulai.<br><br>2. 映画は三時に始まります。<br>Film dimulai jam 3.	jlpt-n5
+貸す　Kata kerja (Godan) - transitif	貸す(かす)　Meminjamkan<br><br>1. 友達に本を貸します。<br>Saya meminjamkan buku kepada teman.<br><br>2. 辞書を貸してください。<br>Tolong pinjamkan kamus.	jlpt-n5
+空　Kata benda	空(そら)　Langit<br><br>1. 空は青いです。<br>Langit itu biru.<br><br>2. 空に鳥が飛んでいます。<br>Burung terbang di langit.	jlpt-n5
+弾く　Kata kerja (Godan) - transitif	弾く(ひく)　Memainkan (alat musik)<br><br>1. ギターを弾きます。<br>Saya memainkan gitar.<br><br>2. ピアノを弾くのが好きです。<br>Saya suka bermain piano.	jlpt-n5
+暑い　Kata sifat-i	暑い(あつい)　Panas (cuaca)<br><br>1. 夏は暑いです。<br>Musim panas itu panas.<br><br>2. 今日は暑いですね。<br>Hari ini panas ya.	jlpt-n5
+遊ぶ　Kata kerja (Godan) - intransitif	遊ぶ(あそぶ)　Bermain<br><br>1. 公園で遊びます。<br>Saya bermain di taman.<br><br>2. 友達と遊びました。<br>Saya bermain dengan teman.	jlpt-n5
+渡る　Kata kerja (Godan) - intransitif	渡る(わたる)　Menyeberang<br><br>1. 橋を渡ります。<br>Saya menyeberangi jembatan.<br><br>2. 道を渡ってください。<br>Tolong seberangi jalan.	jlpt-n5
+暗い　Kata sifat-i	暗い(くらい)　Gelap<br><br>1. 部屋が暗いです。<br>Kamarnya gelap.<br><br>2. 暗い所は嫌いです。<br>Saya tidak suka tempat gelap.	jlpt-n5
+重い　Kata sifat-i	重い(おもい)　Berat<br><br>1. この荷物は重いです。<br>Barang ini berat.<br><br>2. 重い箱を持ちます。<br>Saya membawa kotak yang berat.	jlpt-n5
+今晩　Kata benda / Kata keterangan	今晩(こんばん)　Malam ini<br><br>1. 今晩、友達に会います。<br>Malam ini saya bertemu teman.<br><br>2. 今晩は寒いです。<br>Malam ini dingin.	jlpt-n5
+消す　Kata kerja (Godan) - transitif	消す(けす)　Menghapus, mematikan<br><br>1. 電気を消します。<br>Saya mematikan lampu.<br><br>2. 黒板の字を消します。<br>Saya menghapus tulisan di papan tulis.	jlpt-n5
+閉める　Kata kerja (Ichidan) - transitif	閉める(しめる)　Menutup<br><br>1. 窓を閉めます。<br>Saya menutup jendela.<br><br>2. ドアを閉めてください。<br>Tolong tutup pintunya.	jlpt-n5
+安い　Kata sifat-i	安い(やすい)　Murah<br><br>1. この店は安いです。<br>Toko ini murah.<br><br>2. 安い靴を買いました。<br>Saya membeli sepatu murah.	jlpt-n5
+遠い　Kata sifat-i	遠い(とおい)　Jauh<br><br>1. 駅は遠いです。<br>Stasiun jauh.<br><br>2. 学校は家から遠いです。<br>Sekolah jauh dari rumah.	jlpt-n5
+短い　Kata sifat-i	短い(みじかい)　Pendek<br><br>1. 髪が短いです。<br>Rambutnya pendek.<br><br>2. 短い手紙を書きました。<br>Saya menulis surat pendek.	jlpt-n5
+晴れる　Kata kerja (Ichidan) - intransitif	晴れる(はれる)　Menjadi cerah<br><br>1. 明日は晴れるでしょう。<br>Besok mungkin cerah.<br><br>2. 雨がやんで、空が晴れました。<br>Hujan berhenti dan langit menjadi cerah.	jlpt-n5
+曲がる　Kata kerja (Godan) - intransitif	曲がる(まがる)　Berbelok, bengkok<br><br>1. 道を右に曲がります。<br>Saya belok kanan di jalan.<br><br>2. その角を曲がってください。<br>Tolong belok di tikungan itu.	jlpt-n5
+消える　Kata kerja (Ichidan) - intransitif	消える(きえる)　Menghilang, padam<br><br>1. 電気が消えました。<br>Lampunya padam.<br><br>2. 雪が消えました。<br>Salju sudah hilang.	jlpt-n5
+冷たい　Kata sifat-i	冷たい(つめたい)　Dingin (disentuh)<br><br>1. 水が冷たいです。<br>Airnya dingin.<br><br>2. 冷たい飲み物が欲しいです。<br>Saya ingin minuman dingin.	jlpt-n5
+青い　Kata sifat-i	青い(あおい)　Biru<br><br>1. 空は青いです。<br>Langit itu biru.<br><br>2. 青い靴を買いました。<br>Saya membeli sepatu biru.	jlpt-n5
+吹く　Kata kerja (Godan) - intransitif	吹く(ふく)　Bertiup (angin)<br><br>1. 風が吹いています。<br>Angin sedang bertiup.<br><br>2. 今日は強い風が吹きます。<br>Hari ini angin kencang bertiup.	jlpt-n5
+奥さん　Kata benda	奥さん(おくさん)　Istri (orang lain)<br><br>1. 田中さんの奥さんは先生です。<br>Istri Tanaka-san adalah guru.<br><br>2. 奥さんはお元気ですか。<br>Apakah istri Anda sehat?	jlpt-n5
+引く　Kata kerja (Godan) - transitif	引く(ひく)　Menarik<br><br>1. ドアを引いてください。<br>Tolong tarik pintunya.<br><br>2. 風邪を引きました。<br>Saya terkena flu.	jlpt-n5
+習う　Kata kerja (Godan) - transitif	習う(ならう)　Belajar (dari guru)<br><br>1. ピアノを習います。<br>Saya belajar piano.<br><br>2. 先生に日本語を習いました。<br>Saya belajar bahasa Jepang dari guru.	jlpt-n5
+狭い　Kata sifat-i	狭い(せまい)　Sempit<br><br>1. この部屋は狭いです。<br>Kamar ini sempit.<br><br>2. この道は狭いです。<br>Jalan ini sempit.	jlpt-n5
+軽い　Kata sifat-i	軽い(かるい)　Ringan<br><br>1. このかばんは軽いです。<br>Tas ini ringan.<br><br>2. 軽い荷物を持ちます。<br>Saya membawa barang yang ringan.	jlpt-n5
+脱ぐ　Kata kerja (Godan) - transitif	脱ぐ(ぬぐ)　Melepas (pakaian)<br><br>1. 玄関で靴を脱ぎます。<br>Saya melepas sepatu di pintu masuk.<br><br>2. コートを脱いでください。<br>Tolong lepas mantelnya.	jlpt-n5
+万　Bilangan	万(まん)　Sepuluh ribu<br><br>1. この本は一万円です。<br>Buku ini sepuluh ribu yen.<br><br>2. 一万人の人がいます。<br>Ada sepuluh ribu orang.	jlpt-n5
+並ぶ　Kata kerja (Godan) - intransitif	並ぶ(ならぶ)　Berbaris<br><br>1. 駅の前に並びます。<br>Saya mengantre di depan stasiun.<br><br>2. みんな並んでください。<br>Semuanya tolong berbaris.	jlpt-n5
+吸う　Kata kerja (Godan) - transitif	吸う(すう)　Menghirup, merokok<br><br>1. ここでたばこを吸わないでください。<br>Tolong jangan merokok di sini.<br><br>2. 新しい空気を吸います。<br>Saya menghirup udara segar.	jlpt-n5
+閉まる　Kata kerja (Godan) - intransitif	閉まる(しまる)　Tertutup<br><br>1. ドアが閉まりました。<br>Pintunya tertutup.<br><br>2. 店は九時に閉まります。<br>Toko tutup jam 9.	jlpt-n5
+咲く　Kata kerja (Godan) - intransitif	咲く(さく)　Mekar<br><br>1. 春に花が咲きます。<br>Bunga mekar pada musim semi.<br><br>2. 庭の花が咲きました。<br>Bunga di halaman sudah mekar.	jlpt-n5
+一　Bilangan / Awalan	一(いち)　Satu<br><br>1. 一人で行きます。<br>Saya pergi sendirian.<br><br>2. 一時に会いましょう。<br>Mari bertemu jam satu.	jlpt-n5
+涼しい　Kata sifat-i	涼しい(すずしい)　Sejuk<br><br>1. 秋は涼しいです。<br>Musim gugur itu sejuk.<br><br>2. 涼しい風が吹いています。<br>Angin sejuk bertiup.	jlpt-n5
+厚い　Kata sifat-i	厚い(あつい)　Tebal<br><br>1. この本は厚いです。<br>Buku ini tebal.<br><br>2. 厚いコートを着ます。<br>Saya memakai mantel tebal.	jlpt-n5
+お兄さん　Kata benda	お兄さん(おにいさん)　Kakak laki-laki (orang lain/panggilan)<br><br>1. お兄さんは何歳ですか。<br>Kakak laki-lakimu umur berapa?<br><br>2. お兄さんは学生ですか。<br>Apakah kakak laki-lakimu mahasiswa?	jlpt-n5
+お姉さん　Kata benda	お姉さん(おねえさん)　Kakak perempuan (orang lain/panggilan)<br><br>1. お姉さんはきれいですね。<br>Kakak perempuanmu cantik ya.<br><br>2. お姉さんは大学生ですか。<br>Apakah kakak perempuanmu mahasiswa?	jlpt-n5
+危ない　Kata sifat-i	危ない(あぶない)　Berbahaya<br><br>1. この道は危ないです。<br>Jalan ini berbahaya.<br><br>2. 危ないから、走らないでください。<br>Karena berbahaya, tolong jangan berlari.	jlpt-n5
+並べる　Kata kerja (Ichidan) - transitif	並べる(ならべる)　Menata berbaris<br><br>1. 机を並べます。<br>Saya menata meja berbaris.<br><br>2. 本を並べてください。<br>Tolong tata bukunya berjejer.	jlpt-n5
+汚い　Kata sifat-i	汚い(きたない)　Kotor<br><br>1. 部屋が汚いです。<br>Kamarnya kotor.<br><br>2. 手が汚いですから、洗います。<br>Karena tangan kotor, saya mencucinya.	jlpt-n5
+お腹　Kata benda	お腹(おなか)　Perut<br><br>1. お腹が痛いです。<br>Perut saya sakit.<br><br>2. お腹がすきました。<br>Saya lapar.	jlpt-n5
+曇る　Kata kerja (Godan) - intransitif	曇る(くもる)　Mendung<br><br>1. 空が曇ってきました。<br>Langit mulai mendung.<br><br>2. 明日は曇るでしょう。<br>Besok mungkin mendung.	jlpt-n5
+ご飯　Kata benda	ご飯(ごはん)　Nasi<br><br>1. ご飯を食べます。<br>Saya makan nasi.<br><br>2. ご飯ができました。<br>Nasinya sudah matang.	jlpt-n5
+黄色い　Kata sifat-i	黄色い(きいろい)　Kuning<br><br>1. 黄色い花を買いました。<br>Saya membeli bunga kuning.<br><br>2. 黄色いバナナがあります。<br>Ada pisang kuning.	jlpt-n5
+お菓子　Kata benda	お菓子(おかし)　Camilan manis, kue<br><br>1. お菓子を食べます。<br>Saya makan kue.<br><br>2. 子供にお菓子をあげます。<br>Saya memberi kue kepada anak.	jlpt-n5
+磨く　Kata kerja (Godan) - transitif	磨く(みがく)　Menggosok, mengasah<br><br>1. 歯を磨きます。<br>Saya menyikat gigi.<br><br>2. 靴を磨きます。<br>Saya menyemir sepatu.	jlpt-n5
+賑やか　Kata sifat-na	賑やか(にぎやか)　Ramai<br><br>1. この町は賑やかです。<br>Kota ini ramai.<br><br>2. 賑やかなパーティでした。<br>Pestanya meriah.	jlpt-n5
+鳴く　Kata kerja (Godan) - intransitif	鳴く(なく)　Berbunyi (hewan)<br><br>1. 犬が鳴いています。<br>Anjing sedang menggonggong.<br><br>2. 鳥が鳴いています。<br>Burung sedang berkicau.	jlpt-n5
+夕飯　Kata benda	夕飯(ゆうはん)　Makan malam<br><br>1. 夕飯を食べます。<br>Saya makan malam.<br><br>2. 夕飯は何ですか。<br>Makan malamnya apa?	jlpt-n5
+朝ご飯　Kata benda	朝ご飯(あさごはん)　Sarapan<br><br>1. 朝ご飯を食べます。<br>Saya sarapan.<br><br>2. 朝ご飯はパンです。<br>Sarapannya roti.	jlpt-n5
+六つ　Bilangan	六つ(むっつ)　Enam (buah)<br><br>1. りんごを六つ買いました。<br>Saya membeli enam apel.<br><br>2. 六つあります。<br>Ada enam.	jlpt-n5
+お手洗い　Kata benda	お手洗い(おてあらい)　Toilet<br><br>1. お手洗いはどこですか。<br>Toilet di mana?<br><br>2. お手洗いに行ってきます。<br>Saya permisi ke toilet.	jlpt-n5
+差す　Kata kerja (Godan) - intransitif	差す(さす)　Bersinar, menyinari<br><br>1. 窓から光が差します。<br>Cahaya menyinari dari jendela.<br><br>2. 傘をさします。<br>Saya membuka payung.	jlpt-n5
+零　Kata benda	零(れい)　Nol<br><br>1. 電話番号は零で始まります。<br>Nomor telepon dimulai dengan nol.<br><br>2. 零から始めます。<br>Mulai dari nol.	jlpt-n5
+二十日　Kata benda	二十日(はつか)　Tanggal 20<br><br>1. 二十日は私の誕生日です。<br>Tanggal 20 adalah ulang tahun saya.<br><br>2. 二十日に会いましょう。<br>Mari bertemu tanggal 20.	jlpt-n5
+八つ　Bilangan	八つ(やっつ)　Delapan (buah)<br><br>1. りんごを八つ買いました。<br>Saya membeli delapan apel.<br><br>2. 八つあります。<br>Ada delapan.	jlpt-n5
+再来年　Kata benda / Kata keterangan	再来年(さらいねん)　Dua tahun lagi<br><br>1. 再来年、日本へ行きます。<br>Dua tahun lagi saya pergi ke Jepang.<br><br>2. 再来年、大学を出ます。<br>Dua tahun lagi saya lulus universitas.	jlpt-n5
+小さな　Kata sifat prenominal (rentaishi)	小さな(ちいさな)　Kecil<br><br>1. 小さな犬がいます。<br>Ada anjing kecil.<br><br>2. 小さな声で話します。<br>Saya berbicara dengan suara kecil.	jlpt-n5
+答える　Kata kerja (Ichidan) - intransitif	答える(こたえる)　Menjawab<br><br>1. 先生の質問に答えます。<br>Saya menjawab pertanyaan guru.<br><br>2. 大きな声で答えてください。<br>Tolong jawab dengan suara keras.	jlpt-n5
+もう一度　Ungkapan	もう一度(もういちど)　Sekali lagi<br><br>1. もう一度言ってください。<br>Tolong katakan sekali lagi.<br><br>2. もう一度読みます。<br>Saya membaca sekali lagi.	jlpt-n5
+背　Kata benda	背(せ)　Punggung, tinggi badan<br><br>1. 背中が痛いです。<br>Punggung saya sakit.<br><br>2. 兄は背が高いです。<br>Kakak laki-laki saya tinggi.	jlpt-n5
+お弁当　Kata benda	お弁当(おべんとう)　Bekal makan (bento)<br><br>1. お弁当を作ります。<br>Saya membuat bekal makanan.<br><br>2. 昼にお弁当を食べます。<br>Saya makan bekal saat siang.	jlpt-n5
+晩御飯　Kata benda	晩御飯(ばんごはん)　Makan malam<br><br>1. 晩御飯を作ります。<br>Saya memasak makan malam.<br><br>2. 晩御飯は七時です。<br>Makan malam jam tujuh.	jlpt-n5
+昼ご飯　Kata benda	昼ご飯(ひるごはん)　Makan siang<br><br>1. 昼ご飯を食べます。<br>Saya makan siang.<br><br>2. 昼ご飯は何を食べますか。<br>Kamu makan apa untuk makan siang?	jlpt-n5
+でも　Kata sambung	でも　Tetapi, atau<br><br>1. コーヒーでも飲みませんか。<br>Bagaimana kalau minum kopi atau semacamnya?<br><br>2. 雨ですが、でも行きます。<br>Hujan, tetapi saya tetap pergi.	jlpt-n5
+クラス　Kata benda	クラス　Kelas<br><br>1. クラスに学生が二十人います。<br>Di kelas ada dua puluh murid.<br><br>2. 私のクラスは二階です。<br>Kelas saya di lantai dua.	jlpt-n5
+プール　Kata benda	プール　Kolam renang<br><br>1. プールで泳ぎます。<br>Saya berenang di kolam renang.<br><br>2. このプールは広いです。<br>Kolam renang ini luas.	jlpt-n5
+中　Kata benda	中(なか)　Dalam<br><br>1. かばんの中に本があります。<br>Di dalam tas ada buku.<br><br>2. 部屋の中は暖かいです。<br>Di dalam ruangan hangat.	jlpt-n5
+テレビ　Kata benda	テレビ　Televisi<br><br>1. テレビを見ます。<br>Saya menonton televisi.<br><br>2. テレビをつけてください。<br>Tolong nyalakan televisi.	jlpt-n5
+ホテル　Kata benda	ホテル　Hotel<br><br>1. ホテルに泊まります。<br>Saya menginap di hotel.<br><br>2. このホテルは大きいです。<br>Hotel ini besar.	jlpt-n5
+ニュース　Kata benda	ニュース　Berita<br><br>1. 毎朝、ニュースを見ます。<br>Setiap pagi saya menonton berita.<br><br>2. 今日のニュースは何ですか。<br>Apa berita hari ini?	jlpt-n5
+テーブル　Kata benda	テーブル　Meja<br><br>1. テーブルの上にコップがあります。<br>Di atas meja ada gelas.<br><br>2. 新しいテーブルを買いました。<br>Saya membeli meja baru.	jlpt-n5
+カメラ　Kata benda	カメラ　Kamera<br><br>1. カメラで写真を撮ります。<br>Saya memotret dengan kamera.<br><br>2. 新しいカメラが欲しいです。<br>Saya ingin kamera baru.	jlpt-n5
+タクシー　Kata benda	タクシー　Taksi<br><br>1. タクシーで駅へ行きます。<br>Saya pergi ke stasiun naik taksi.<br><br>2. タクシーを呼んでください。<br>Tolong panggilkan taksi.	jlpt-n5
+スポーツ　Kata benda	スポーツ　Olahraga<br><br>1. スポーツが好きです。<br>Saya suka olahraga.<br><br>2. どんなスポーツをしますか。<br>Kamu berolahraga apa?	jlpt-n5
+ラジオ　Kata benda	ラジオ　Radio<br><br>1. ラジオを聞きます。<br>Saya mendengarkan radio.<br><br>2. このラジオは古いです。<br>Radio ini tua.	jlpt-n5
+ペン　Kata benda	ペン　Pen<br><br>1. ペンで名前を書きます。<br>Saya menulis nama dengan pen.<br><br>2. ペンを貸してください。<br>Tolong pinjamkan pen.	jlpt-n5
+レストラン　Kata benda	レストラン　Restoran<br><br>1. レストランで晩御飯を食べます。<br>Saya makan malam di restoran.<br><br>2. あのレストランはおいしいです。<br>Restoran itu enak.	jlpt-n5
+テスト　Kata benda / Kata kerja-suru	テスト　Ujian, tes<br><br>1. 明日、テストがあります。<br>Besok ada ujian.<br><br>2. テストは難しかったです。<br>Ujiannya sulit.	jlpt-n5
+ベッド　Kata benda	ベッド　Tempat tidur<br><br>1. ベッドで寝ます。<br>Saya tidur di tempat tidur.<br><br>2. 新しいベッドを買いました。<br>Saya membeli tempat tidur baru.	jlpt-n5
+パン　Kata benda	パン　Roti<br><br>1. 朝ご飯にパンを食べます。<br>Saya makan roti untuk sarapan.<br><br>2. パンを二つ買いました。<br>Saya membeli dua roti.	jlpt-n5
+ナイフ　Kata benda	ナイフ　Pisau<br><br>1. ナイフで肉を切ります。<br>Saya memotong daging dengan pisau.<br><br>2. このナイフは危ないです。<br>Pisau ini berbahaya.	jlpt-n5
+シャツ　Kata benda	シャツ　Kaus dalam, kemeja<br><br>1. 白いシャツを着ます。<br>Saya memakai kemeja putih.<br><br>2. シャツを洗いました。<br>Saya mencuci kemeja.	jlpt-n5
+ネクタイ　Kata benda	ネクタイ　Dasi<br><br>1. ネクタイを締めます。<br>Saya mengikat dasi.<br><br>2. 父に新しいネクタイをあげました。<br>Saya memberi ayah dasi baru.	jlpt-n5
+ギター　Kata benda	ギター　Gitar<br><br>1. ギターを弾きます。<br>Saya bermain gitar.<br><br>2. 兄はギターが上手です。<br>Kakak laki-laki saya pandai bermain gitar.	jlpt-n5
+セーター　Kata benda	セーター　Sweter<br><br>1. セーターを着ます。<br>Saya memakai sweter.<br><br>2. 赤いセーターを買いました。<br>Saya membeli sweter merah.	jlpt-n5
+アパート　Kata benda	アパート　Apartemen<br><br>1. 私はアパートに住んでいます。<br>Saya tinggal di apartemen.<br><br>2. このアパートは古いです。<br>Apartemen ini tua.	jlpt-n5
+ポケット　Kata benda	ポケット　Saku<br><br>1. ポケットにお金が入っています。<br>Di saku ada uang.<br><br>2. ポケットに手を入れます。<br>Saya memasukkan tangan ke saku.	jlpt-n5
+バター　Kata benda	バター　Mentega<br><br>1. パンにバターをつけます。<br>Saya mengoleskan mentega pada roti.<br><br>2. バターを買いました。<br>Saya membeli mentega.	jlpt-n5
+キロ　Awalan	キロ　Kilo-<br><br>1. キロ、五百グラムです。<br>Setengah kilo adalah lima ratus gram.<br><br>2. この荷物は十キロです。<br>Barang ini beratnya 10 kilo.	jlpt-n5
+スカート　Kata benda	スカート　Rok<br><br>1. スカートをはきます。<br>Saya memakai rok.<br><br>2. この赤いスカートは私のです。<br>Rok merah ini milik saya.	jlpt-n5
+レコード　Kata benda	レコード　Piringan hitam, rekaman<br><br>1. 古いレコードを聞きます。<br>Saya mendengarkan piringan hitam lama.<br><br>2. レコードを買いました。<br>Saya membeli piringan hitam.	jlpt-n5
+エレベーター　Kata benda	エレベーター　Lift<br><br>1. エレベーターで三階へ行きます。<br>Saya naik lift ke lantai tiga.<br><br>2. エレベーターは右にあります。<br>Liftnya ada di sebelah kanan.	jlpt-n5
+ズボン　Kata benda	ズボン　Celana panjang<br><br>1. ズボンをはきます。<br>Saya memakai celana panjang.<br><br>2. 新しいズボンを買いました。<br>Saya membeli celana panjang baru.	jlpt-n5
+ポスト　Kata benda	ポスト　Kotak pos<br><br>1. ポストに手紙を入れます。<br>Saya memasukkan surat ke kotak pos.<br><br>2. ポストは駅の前にあります。<br>Kotak pos ada di depan stasiun.	jlpt-n5
+コピー　Kata benda / Kata kerja-suru	コピー　Fotokopi, menyalin<br><br>1. この紙をコピーしてください。<br>Tolong fotokopi kertas ini.<br><br>2. コピーは一枚十円です。<br>Fotokopi satu lembar sepuluh yen.	jlpt-n5
+シャワー　Kata benda	シャワー　Pancuran, mandi<br><br>1. 朝、シャワーを浴びます。<br>Pagi hari saya mandi dengan shower.<br><br>2. シャワーは熱いです。<br>Air showernya panas.	jlpt-n5
+ハンカチ　Kata benda	ハンカチ　Saputangan<br><br>1. ハンカチで手を拭きます。<br>Saya mengeringkan tangan dengan saputangan.<br><br>2. ハンカチを忘れました。<br>Saya lupa saputangan.	jlpt-n5
+一昨日　Kata benda / Kata keterangan	一昨日(おととい)　Kemarin lusa<br><br>1. 一昨日、映画を見ました。<br>Kemarin lusa saya menonton film.<br><br>2. 一昨日は雨でした。<br>Kemarin lusa hujan.	jlpt-n5
+テープ　Kata benda	テープ　Pita, kaset<br><br>1. テープで音楽を聞きます。<br>Saya mendengarkan musik dari kaset.<br><br>2. テープを買いました。<br>Saya membeli kaset.	jlpt-n5
+ストーブ　Kata benda	ストーブ　Pemanas ruangan<br><br>1. ストーブをつけます。<br>Saya menyalakan pemanas.<br><br>2. 冬はストーブを使います。<br>Saat musim dingin saya memakai pemanas.	jlpt-n5
+カップ　Kata benda	カップ　Cangkir<br><br>1. カップにコーヒーを入れます。<br>Saya menuang kopi ke cangkir.<br><br>2. このカップは小さいです。<br>Cangkir ini kecil.	jlpt-n5
+テープレコーダー　Kata benda	テープレコーダー　Perekam kaset<br><br>1. テープレコーダーで音楽を聞きます。<br>Saya mendengarkan musik dengan perekam kaset.<br><br>2. このテープレコーダーは古いです。<br>Perekam kaset ini tua.	jlpt-n5
+ボールペン　Kata benda	ボールペン　Pulpen<br><br>1. ボールペンで名前を書きます。<br>Saya menulis nama dengan pulpen.<br><br>2. ボールペンを貸してください。<br>Tolong pinjamkan pulpen.	jlpt-n5
+スプーン　Kata benda	スプーン　Sendok<br><br>1. スプーンでスープを飲みます。<br>Saya minum sup dengan sendok.<br><br>2. スプーンをください。<br>Tolong beri saya sendok.	jlpt-n5
+スリッパ　Kata benda	スリッパ　Sandal rumah<br><br>1. スリッパをはきます。<br>Saya memakai sandal rumah.<br><br>2. 玄関にスリッパがあります。<br>Di pintu masuk ada sandal rumah.	jlpt-n5
+醤油　Kata benda	醤油(しょうゆ)　Kecap asin Jepang<br><br>1. 醤油をかけます。<br>Saya menuangkan kecap asin.<br><br>2. 醤油を取ってください。<br>Tolong ambilkan kecap asin.	jlpt-n5
+はい　Interjeksi	はい　Ya<br><br>1. はい、わかりました。<br>Ya, saya mengerti.<br><br>2. はい、そうです。<br>Ya, benar.	jlpt-n5
+ペット　Kata benda	ペット　Hewan peliharaan<br><br>1. 家にペットがいます。<br>Di rumah ada hewan peliharaan.<br><br>2. ペットは犬です。<br>Hewan peliharaan saya anjing.	jlpt-n5
+三日　Kata benda	三日(みっか)　Tanggal 3<br><br>1. 三日に会いましょう。<br>Mari bertemu tanggal 3.<br><br>2. 三日は休みです。<br>Tanggal 3 libur.	jlpt-n5
+二日　Kata benda	二日(ふつか)　Tanggal 2<br><br>1. 二日に日本へ行きます。<br>Tanggal 2 saya pergi ke Jepang.<br><br>2. 二日は雨でした。<br>Tanggal 2 hujan.	jlpt-n5
+五日　Kata benda	五日(いつか)　Tanggal 5<br><br>1. 五日は誕生日です。<br>Tanggal 5 adalah ulang tahun.<br><br>2. 五日に会いましょう。<br>Mari bertemu tanggal 5.	jlpt-n5
+十日　Kata benda	十日(とおか)　Tanggal 10<br><br>1. 十日は休みです。<br>Tanggal 10 libur.<br><br>2. 十日に東京へ行きます。<br>Tanggal 10 saya pergi ke Tokyo.	jlpt-n5
+六日　Kata benda	六日(むいか)　Tanggal 6<br><br>1. 六日に会いましょう。<br>Mari bertemu tanggal 6.<br><br>2. 六日は忙しいです。<br>Tanggal 6 saya sibuk.	jlpt-n5
+八日　Kata benda	八日(ようか)　Tanggal 8<br><br>1. 八日にテストがあります。<br>Tanggal 8 ada ujian.<br><br>2. 八日は休みです。<br>Tanggal 8 libur.	jlpt-n5
+九日　Kata benda	九日(ここのか)　Tanggal 9<br><br>1. 九日に日本へ行きます。<br>Tanggal 9 saya pergi ke Jepang.<br><br>2. 九日は雨でした。<br>Tanggal 9 hujan.	jlpt-n5
+来る　Kata kerja (Kuru) - intransitif	来る(くる)　Datang<br><br>1. 友達が来ます。<br>Teman saya datang.<br><br>2. 明日、また来てください。<br>Tolong datang lagi besok.	jlpt-n5
+後　Kata benda	後(あと)　Setelah, belakang<br><br>1. 後で電話します。<br>Nanti saya telepon.<br><br>2. 食事の後で薬を飲みます。<br>Setelah makan saya minum obat.	jlpt-n5
+会社　Kata benda	会社(かいしゃ)　Perusahaan<br><br>1. 父は会社で働いています。<br>Ayah bekerja di perusahaan.<br><br>2. 会社は駅の近くです。<br>Perusahaan dekat stasiun.	jlpt-n5
+一人　Kata benda	一人(ひとり)　Satu orang<br><br>1. 一人で行きます。<br>Saya pergi sendirian.<br><br>2. 学生が一人います。<br>Ada satu murid.	jlpt-n5
+二人　Kata benda	二人(ふたり)　Dua orang<br><br>1. 二人で食べます。<br>Kami makan berdua.<br><br>2. 二人で住んでいます。<br>Kami tinggal berdua.	jlpt-n5
+辛い　Kata sifat-i	辛い(からい)　Pedas<br><br>1. このカレーは辛いです。<br>Kari ini pedas.<br><br>2. 辛い物が好きです。<br>Saya suka makanan pedas.	jlpt-n5
+門　Kata benda	門(もん)　Gerbang<br><br>1. 学校の門の前で待ちます。<br>Saya menunggu di depan gerbang sekolah.<br><br>2. 門が閉まっています。<br>Gerbangnya tertutup.	jlpt-n5
+角　Kata benda	角(かど)　Sudut, tikungan<br><br>1. その角を右に曲がります。<br>Saya belok kanan di sudut itu.<br><br>2. 角に郵便局があります。<br>Di sudut ada kantor pos.	jlpt-n5
+毎月　Kata keterangan / Kata benda	毎月(まいつき)　Setiap bulan<br><br>1. 毎月、日本へ行きます。<br>Setiap bulan saya pergi ke Jepang.<br><br>2. 毎月、本を三冊読みます。<br>Setiap bulan saya membaca tiga buku.	jlpt-n5
+七　Bilangan	七(しち)　Tujuh<br><br>1. 七人で行きます。<br>Kami bertujuh pergi.<br><br>2. 七時に起きます。<br>Saya bangun jam tujuh.	jlpt-n5
+四　Bilangan	四(し)　Empat<br><br>1. 四人います。<br>Ada empat orang.<br><br>2. 四時に会いましょう。<br>Mari bertemu jam empat.	jlpt-n5
+お風呂　Kata benda	お風呂(おふろ)　Mandi berendam<br><br>1. 毎晩、お風呂に入ります。<br>Setiap malam saya mandi berendam.<br><br>2. お風呂は熱いです。<br>Air mandinya panas.	jlpt-n5
+お酒　Kata benda	お酒(おさけ)　Alkohol, sake<br><br>1. お酒を飲みます。<br>Saya minum alkohol.<br><br>2. 父はお酒が好きです。<br>Ayah suka sake.	jlpt-n5
+入口　Kata benda	入口(いりぐち)　Pintu masuk<br><br>1. 入口はどこですか。<br>Pintu masuknya di mana?<br><br>2. 入口で待っています。<br>Saya menunggu di pintu masuk.	jlpt-n5
+出口　Kata benda	出口(でぐち)　Pintu keluar<br><br>1. 出口は右です。<br>Pintu keluarnya di sebelah kanan.<br><br>2. 駅の出口で会いましょう。<br>Mari bertemu di pintu keluar stasiun.	jlpt-n5
+お皿　Kata benda	お皿(おさら)　Piring<br><br>1. お皿を洗います。<br>Saya mencuci piring.<br><br>2. お皿に料理を入れます。<br>Saya menaruh masakan di piring.	jlpt-n5
+前　Kata benda	前(まえ)　Depan, sebelum<br><br>1. 駅の前で待ちます。<br>Saya menunggu di depan stasiun.<br><br>2. 寝る前に歯を磨きます。<br>Sebelum tidur saya menyikat gigi.	jlpt-n5
+もう　Kata keterangan	もう　Sudah, lagi<br><br>1. もう食べました。<br>Saya sudah makan.<br><br>2. もう一杯ください。<br>Tolong beri saya satu gelas lagi.	jlpt-n5
+方　Kata benda	方(かた)　Arah, pihak<br><br>1. 駅の方へ行きます。<br>Saya pergi ke arah stasiun.<br><br>2. あの方は先生です。<br>Beliau itu guru.	jlpt-n5
+もっと　Kata keterangan	もっと　Lebih<br><br>1. もっと食べてください。<br>Silakan makan lebih banyak.<br><br>2. もっと大きな声で話してください。<br>Tolong bicara lebih keras.	jlpt-n5
+パーティ　Kata benda	パーティ　Pesta<br><br>1. パーティに行きます。<br>Saya pergi ke pesta.<br><br>2. 昨日のパーティは楽しかったです。<br>Pesta kemarin menyenangkan.	jlpt-n5
+他　Kata benda	他(ほか)　Lain<br><br>1. 他に質問がありますか。<br>Apakah ada pertanyaan lain?<br><br>2. 他の人も来ます。<br>Orang lain juga datang.	jlpt-n5
+次　Kata benda	次(つぎ)　Berikutnya<br><br>1. 次の駅で降ります。<br>Saya turun di stasiun berikutnya.<br><br>2. 次は私の番です。<br>Berikutnya giliran saya.	jlpt-n5
+ドア　Kata benda	ドア　Pintu<br><br>1. ドアを開けてください。<br>Tolong buka pintunya.<br><br>2. ドアが閉まりました。<br>Pintunya tertutup.	jlpt-n5
+誰か　Kata ganti	誰か(だれか)　Seseorang<br><br>1. 誰かいますか。<br>Apakah ada seseorang?<br><br>2. 誰か来ました。<br>Seseorang datang.	jlpt-n5
+開く　Kata kerja (Godan) - intransitif	開く(あく)　Terbuka<br><br>1. ドアが開きます。<br>Pintunya terbuka.<br><br>2. 店は九時に開きます。<br>Toko buka jam 9.	jlpt-n5
+どうぞ　Kata keterangan	どうぞ　Silakan<br><br>1. どうぞ、座ってください。<br>Silakan, duduklah.<br><br>2. どうぞ、お茶を飲んでください。<br>Silakan minum tehnya.	jlpt-n5
+こんな　Kata sifat prenominal (rentaishi)	こんな　Seperti ini<br><br>1. こんな大きな犬は初めてです。<br>Ini pertama kalinya melihat anjing sebesar ini.<br><br>2. こんな本が欲しいです。<br>Saya ingin buku seperti ini.	jlpt-n5
+下　Kata benda	下(した)　Bawah<br><br>1. 机の下に猫がいます。<br>Ada kucing di bawah meja.<br><br>2. 木の下で休みます。<br>Saya beristirahat di bawah pohon.	jlpt-n5
+ゆっくり　Kata keterangan / Kata kerja-suru	ゆっくり　Pelan-pelan<br><br>1. ゆっくり話してください。<br>Tolong bicara pelan-pelan.<br><br>2. ゆっくり休んでください。<br>Silakan beristirahat dengan tenang.	jlpt-n5
+さあ　Kata sambung	さあ　Ayo<br><br>1. さあ、行きましょう。<br>Ayo, mari kita pergi.<br><br>2. さあ、食べましょう。<br>Ayo, mari kita makan.	jlpt-n5
+どうも　Interjeksi	どうも　Terima kasih<br><br>1. どうも、ありがとう。<br>Terima kasih banyak.<br><br>2. どうも。<br>Terima kasih. (singkat)	jlpt-n5
+じゃあ　Kata sambung	じゃあ　Kalau begitu<br><br>1. じゃあ、行きましょう。<br>Kalau begitu, ayo pergi.<br><br>2. じゃあ、また明日。<br>Kalau begitu, sampai besok.	jlpt-n5
+ええ　Interjeksi	ええ　Ya<br><br>1. ええ、そうです。<br>Ya, benar.<br><br>2. ええ、わかりました。<br>Ya, saya mengerti.	jlpt-n5
+ノート　Kata benda	ノート　Buku catatan<br><br>1. ノートに名前を書きます。<br>Saya menulis nama di buku catatan.<br><br>2. 新しいノートを買いました。<br>Saya membeli buku catatan baru.	jlpt-n5
+デパート　Kata benda	デパート　Mal, toserba<br><br>1. デパートで買い物をします。<br>Saya berbelanja di mal.<br><br>2. デパートは駅の前にあります。<br>Mal ada di depan stasiun.	jlpt-n5
+トイレ　Kata benda	トイレ　Toilet<br><br>1. トイレはどこですか。<br>Toilet di mana?<br><br>2. トイレに行きます。<br>Saya pergi ke toilet.	jlpt-n5
+それでは　Kata sambung	それでは　Kalau begitu<br><br>1. それでは、始めましょう。<br>Kalau begitu, mari kita mulai.<br><br>2. それでは、失礼します。<br>Kalau begitu, permisi.	jlpt-n5
+明後日　Kata benda / Kata keterangan	明後日(あさって)　Lusa<br><br>1. 明後日、日本へ行きます。<br>Lusa saya pergi ke Jepang.<br><br>2. 明後日は休みです。<br>Lusa libur.	jlpt-n5
+二十歳　Kata benda	二十歳(はたち)　Berumur 20 tahun<br><br>1. 私は二十歳です。<br>Saya berumur 20 tahun.<br><br>2. 二十歳になりました。<br>Saya sudah berumur 20 tahun.	jlpt-n5
+では　Kata sambung	では　Kalau begitu<br><br>1. では、始めます。<br>Kalau begitu, saya mulai.<br><br>2. では、また明日。<br>Kalau begitu, sampai besok.	jlpt-n5
+フィルム　Kata benda	フィルム　Film (rol), pita film<br><br>1. カメラのフィルムを買いました。<br>Saya membeli film kamera.<br><br>2. フィルムがありません。<br>Filmnya habis.	jlpt-n5
+四日　Kata benda	四日(よっか)　Tanggal 4<br><br>1. 四日に会いましょう。<br>Mari bertemu tanggal 4.<br><br>2. 四日は休みです。<br>Tanggal 4 libur.	jlpt-n5
+カレンダー　Kata benda	カレンダー　Kalender<br><br>1. カレンダーを見ます。<br>Saya melihat kalender.<br><br>2. 壁にカレンダーをかけます。<br>Saya menggantung kalender di dinding.	jlpt-n5
+七日　Kata benda	七日(なのか)　Tanggal 7<br><br>1. 七日に日本へ行きます。<br>Tanggal 7 saya pergi ke Jepang.<br><br>2. 七日は休みです。<br>Tanggal 7 libur.	jlpt-n5
+一月　Kata benda	一月(ひとつき)　Satu bulan<br><br>1. 一月、日本にいました。<br>Saya berada di Jepang selama satu bulan.<br><br>2. 一月、待ちました。<br>Saya menunggu selama satu bulan.	jlpt-n5
+あのう　Interjeksi	あのう　Permisi, anu<br><br>1. あのう、すみません。<br>Anu, permisi.<br><br>2. あのう、ちょっといいですか。<br>Anu, boleh saya minta waktu sebentar?	jlpt-n5
+秋　Kata benda / Kata keterangan	秋(あき)　Musim gugur<br><br>1. 秋は涼しいです。<br>Musim gugur itu sejuk.<br><br>2. 秋に山へ行きます。<br>Saat musim gugur saya pergi ke gunung.	jlpt-n5
+字引　Kata benda	字引(じびき)　Kamus<br><br>1. 字引で言葉を調べます。<br>Saya mencari kata di kamus.<br><br>2. この字引は古いです。<br>Kamus ini tua.	jlpt-n5
+バス　Kata benda	バス　Bus<br><br>1. バスで学校へ行きます。<br>Saya pergi ke sekolah naik bus.<br><br>2. バスは駅の前に止まります。<br>Bus berhenti di depan stasiun.	jlpt-n5
+コート　Kata benda	コート　Mantel<br><br>1. コートを着ます。<br>Saya memakai mantel.<br><br>2. 新しいコートを買いました。<br>Saya membeli mantel baru.	jlpt-n5
+フォーク　Kata benda	フォーク　Garpu<br><br>1. フォークで食べます。<br>Saya makan dengan garpu.<br><br>2. フォークをください。<br>Tolong beri saya garpu.	jlpt-n5
+ラジカセ　Kata benda	ラジカセ　Pemutar radio-kaset<br><br>1. ラジカセで音楽を聞きます。<br>Saya mendengarkan musik dengan radio-kaset.<br><br>2. 古いラジカセを使っています。<br>Saya memakai radio-kaset tua.	jlpt-n5
+マッチ　Kata benda	マッチ　Pertandingan<br><br>1. 今日のマッチは面白かったです。<br>Pertandingan hari ini seru.<br><br>2. 明日、マッチがあります。<br>Besok ada pertandingan.	jlpt-n5
+ＰＥＴ　Kata benda	ＰＥＴ　PET (botol plastik)<br><br>1. ＰＥＴボトルを捨てます。<br>Saya membuang botol PET.<br><br>2. ＰＥＴのお茶を買いました。<br>Saya membeli teh dalam botol PET.	jlpt-n5
+歯　Kata benda	歯(は)　Gigi<br><br>1. 歯を磨きます。<br>Saya menyikat gigi.<br><br>2. 歯が痛いです。<br>Gigi saya sakit.	jlpt-n5

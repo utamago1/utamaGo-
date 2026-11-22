@@ -1,0 +1,1965 @@
+================================================================
+MATERI BUNPOU JLPT N2
+Sumber: 新完全マスター 文法 日本語能力試験 N2 (Shin Kanzen Master Bunpou N2)
+Isi: setiap bunpou berisi arti, rumus sambungan, catatan pemakaian,
+     2 contoh kalimat, dan terjemahan Bahasa Indonesia.
+Catatan: contoh kalimat dibuat ulang (bukan salinan dari buku).
+================================================================
+
+[Keterangan singkat]
+N      = kata benda (meishi)
+V      = kata kerja (doushi)
+Adj-i  = kata sifat -i (i-keiyoushi)
+Adj-na = kata sifat -na (na-keiyoushi)
+V-kamus = bentuk kamus (jishokei), V-ta = bentuk lampau, V-nai = bentuk negatif
+V-masu stem = bentuk masu tanpa ます
+V-ke = bentuk -e / V-volitional = bentuk (よ)う
+硬い言い方 = ungkapan kaku/formal (lebih sering dipakai dalam tulisan/situasi resmi)
+
+
+################################################################
+第1部 文の文法 1  (BAGIAN 1: TATA BAHASA KALIMAT 1)
+I. ことがらを説明する  (Menjelaskan suatu hal)
+################################################################
+
+
+================================================================
+1課 ~とき・~直後に  (Saat / segera setelah)
+================================================================
+
+[1-1] ~際(に)   (sai (ni))
+Arti    : Saat / ketika ... (sama dengan ~とき, tetapi lebih formal)
+Ragam   : 硬い言い方 (formal)
+Rumus   : N-の / V-kamus / V-ta + 際(に)
+Catatan : Dipakai dengan kata kerja yang menyatakan tindakan atau kejadian
+          (使う, 完成する, dsb.) dan kata benda (搭乗, 外出, dsb.). Banyak dipakai
+          dalam situasi resmi, jarang untuk hal sehari-hari yang biasa.
+Contoh  :
+  1) 空港に到着した際に、パスポートを提示してください。
+     Saat tiba di bandara, harap tunjukkan paspor.
+  2) ご不明な点がある際は、いつでもお問い合わせください。
+     Jika ada hal yang kurang jelas, silakan hubungi kami kapan saja.
+
+[1-2] ~に際して・~にあたって   (ni saishite / ni atatte)
+Arti    : Pada saat akan melakukan (sesuatu yang istimewa) / dalam rangka ...
+Ragam   : 硬い言い方 (formal)
+Rumus   : N / V-kamus + に際して・にあたって
+Catatan : Dipakai untuk momen khusus yang sifatnya sekali waktu dan disengaja
+          (menikah, membuka toko, dsb.). Kalimat setelahnya biasanya berisi
+          tindakan. 「~にあたって」 dipakai untuk tindakan yang lebih positif,
+          sehingga tidak dipakai dengan hal bernuansa negatif
+          (perpisahan, rawat inap, kebangkrutan, dsb.).
+Contoh  :
+  1) 新しい会社を設立するに際して、多くの方にご協力いただきました。
+     Dalam rangka mendirikan perusahaan baru, kami mendapat bantuan dari banyak pihak.
+  2) 留学するにあたって、ビザの手続きを済ませておかなければならない。
+     Sebelum berangkat studi ke luar negeri, saya harus menyelesaikan urusan visa.
+
+[1-3] ~たとたん(に)   (ta totan (ni))
+Arti    : Begitu ... langsung (terjadi hal yang tak terduga)
+Rumus   : V-ta + とたん(に)
+Catatan : Dipakai untuk gerakan/perubahan yang terjadi sesaat. Kalimat setelahnya
+          adalah kejadian di luar dugaan. Tidak bisa diikuti kalimat keinginan,
+          ajakan, atau perintah pembicara (~よう, ~ませんか, ~なさい, dsb.).
+Contoh  :
+  1) 電車のドアが開いたとたん、大勢の人が降りてきた。
+     Begitu pintu kereta terbuka, banyak orang langsung turun.
+  2) 薬を飲んだとたんに、眠くなってしまった。
+     Begitu minum obat, saya langsung mengantuk.
+
+[1-4] ~(か)と思うと・~(か)と思ったら   ((ka) to omou to / omottara)
+Arti    : Baru saja ... eh langsung ... (setelah itu segera terjadi hal lain
+          atau perubahan besar)
+Rumus   : V-ta + (か)と思うと・(か)と思ったら
+Catatan : Tidak dipakai untuk tindakan pembicara sendiri. Kalimat setelahnya
+          berisi hal yang agak mengejutkan. Tidak diikuti kalimat keinginan
+          atau ajakan.
+Contoh  :
+  1) 彼は席に着いたかと思うと、すぐに寝てしまった。
+     Dia baru saja duduk, eh sudah langsung tertidur.
+  2) さっきまで晴れていたかと思ったら、急に雨が降ってきた。
+     Tadi masih cerah, eh tiba-tiba hujan turun.
+
+[1-5] ~か~ないかのうちに   (ka ~ nai ka no uchi ni)
+Arti    : Hampir bersamaan dengan ... (baru mulai/belum selesai sudah ...)
+Rumus   : V-kamus / V-ta + か + V-nai + かのうちに
+Catatan : Dipakai untuk kata kerja yang menyatakan gerakan/perubahan sesaat
+          (着く, 終わる, dsb.). Kalimat setelahnya tidak berisi keinginan atau
+          ajakan. Nuansa "hampir bersamaan" lebih kuat daripada
+          「~(か)と思うと」.
+Contoh  :
+  1) 家に着くか着かないかのうちに、電話が鳴った。
+     Hampir bersamaan dengan saya tiba di rumah, telepon berdering.
+  2) 試合開始のベルが鳴るか鳴らないかのうちに、彼がゴールを決めた。
+     Bel tanda mulai pertandingan baru saja berbunyi, dia sudah mencetak gol.
+
+
+================================================================
+2課 ~している(進行中)  (Sedang berlangsung)
+================================================================
+
+[2-1] ~最中だ   (saichuu da)
+Arti    : Tepat sedang di tengah-tengah melakukan ...
+Rumus   : N-の / V-te iru + 最中だ
+Catatan : Dipakai untuk tindakan yang berlangsung dalam waktu relatif singkat.
+          Pada pola 「~最中に」, kalimat setelahnya biasanya berisi kejadian
+          tak terduga yang mengganggu.
+Contoh  :
+  1) 会議をしている最中に、地震が起きた。
+     Di tengah-tengah rapat yang sedang berlangsung, terjadi gempa bumi.
+  2) 食事の最中に、知らない人が訪ねてきた。
+     Saat sedang makan, seseorang yang tidak dikenal datang bertamu.
+
+[2-2] ~うちに   (uchi ni)
+Arti    : A) Selagi masih ... (lakukan sebelum keadaan berubah)
+          B) Selagi ... tanpa terasa terjadi perubahan
+Rumus   : N-の / V-kamus / V-te iru / V-nai / Adj-i / Adj-na な + うちに
+Catatan : Dipakai dengan kata yang menyatakan rentang waktu.
+          Pada makna A, kalimat setelahnya berisi tindakan yang disengaja.
+          Pada makna B, kalimat setelahnya berisi hal/perubahan di luar kehendak.
+Contoh  :
+  1) 若いうちに、いろいろな国を旅行しておきたい。   (makna A)
+     Selagi masih muda, saya ingin berkeliling ke berbagai negara.
+  2) 本を読んでいるうちに、いつの間にか眠ってしまった。   (makna B)
+     Selagi membaca buku, tanpa terasa saya tertidur.
+
+[2-3] ~ばかりだ・~一方だ   (bakari da / ippou da)
+Arti    : Terus-menerus ... (perubahan berlangsung ke satu arah saja)
+Rumus   : V-kamus + ばかりだ・一方だ
+Catatan : Dipakai dengan kata kerja yang menyatakan perubahan (増える, 悪くなる,
+          dsb.). 「~ばかりだ」 terutama untuk perubahan ke arah yang tidak baik.
+Contoh  :
+  1) 物価は上がるばかりで、生活が苦しくなっている。
+     Harga-harga terus naik saja sehingga hidup jadi semakin sulit.
+  2) この町の人口は減る一方だ。
+     Jumlah penduduk kota ini terus berkurang.
+
+[2-4] ~(よ)うとしている   ((yo)u to shite iru)
+Arti    : Hampir / sebentar lagi akan ... (tepat sebelum perubahan terjadi)
+Ragam   : 硬い言い方 (formal)
+Rumus   : V-volitional + としている
+Catatan : Dipakai dengan kata kerja yang menyatakan hal yang terjadi sesaat
+          (始まる, 幕が開く, dsb.).
+Contoh  :
+  1) 太陽が山の向こうに沈もうとしている。
+     Matahari hampir terbenam di balik gunung.
+  2) 電車のドアが閉まろうとしているときに、駆け込んだ。
+     Saya menerobos masuk saat pintu kereta hampir menutup.
+
+[2-5] ~つつある   (tsutsu aru)
+Arti    : Sedang dalam proses berubah ke arah ...
+Ragam   : 硬い言い方 (formal)
+Rumus   : V-masu stem + つつある
+Catatan : Dipakai dengan kata kerja yang menyatakan perubahan (暖かくなる, 広がる, dsb.).
+Contoh  :
+  1) 地球の温暖化が進みつつある。
+     Pemanasan global sedang terus berlangsung.
+  2) 新しい技術が社会を変えつつある。
+     Teknologi baru sedang mengubah masyarakat.
+
+[2-6] ~つつ   (tsutsu)   → lihat juga pelajaran 14 no.4
+Arti    : Sambil ... (melakukan dua hal bersamaan)
+Ragam   : 硬い言い方 (formal)
+Rumus   : V-masu stem + つつ
+Catatan : Dipakai dengan kata kerja tindakan yang berlangsung dalam rentang waktu.
+          Subjek kalimat sebelum dan sesudah 「~つつ」 harus sama.
+Contoh  :
+  1) 景色を楽しみつつ、ゆっくり歩いた。
+     Sambil menikmati pemandangan, saya berjalan pelan-pelan.
+  2) 将来について考えつつ、仕事を探している。
+     Sambil memikirkan masa depan, saya mencari pekerjaan.
+
+
+================================================================
+3課 ~後で  (Setelah)
+================================================================
+
+[3-1] ~てはじめて   (te hajimete)
+Arti    : Baru setelah mengalami ... barulah (terjadi hal baru yang belum pernah ada)
+Rumus   : V-te + はじめて
+Catatan : Kalimat setelahnya berisi hal baru yang terjadi, hal yang disadari,
+          atau sesuatu yang akhirnya terwujud.
+Contoh  :
+  1) 病気になってはじめて、健康のありがたさがわかった。
+     Baru setelah jatuh sakit, saya menyadari betapa berharganya kesehatan.
+  2) 自分で料理をしてはじめて、親の苦労がわかった。
+     Baru setelah memasak sendiri, saya mengerti kerja keras orang tua.
+
+[3-2] ~上(で)   (ue (de))   → lihat juga pelajaran 6 no.5
+Arti    : Setelah melakukan ..., (baru) melakukan hal berikutnya
+Rumus   : V-ta / N-の + 上(で)
+Catatan : Subjek kalimat sebelum dan sesudahnya sama. Kalimat setelahnya berisi
+          tindakan disengaja yang melanjutkan tindakan sebelumnya. Jika
+          dipasangkan dengan kata benda, kadang berbentuk 「~上」 saja. Tidak
+          dipakai jika urutan tindakan memang sudah wajar terjadi berurutan
+          (seperti pada ~てから).
+Contoh  :
+  1) 内容をよく確認した上で、サインしてください。
+     Setelah memeriksa isinya dengan baik, silakan tanda tangan.
+  2) 両親と相談した上で、進学先を決めるつもりです。
+     Setelah berdiskusi dengan orang tua, saya berencana menentukan sekolah tujuan.
+
+[3-3] ~次第   (shidai)
+Arti    : Begitu ... (segera setelah itu saya lakukan ...)
+Ragam   : 硬い言い方 (formal)
+Rumus   : V-masu stem + 次第
+Catatan : Dipakai untuk hal yang pasti akan terjadi (waktunya saja yang belum
+          pasti). Kalimat setelahnya boleh berisi keinginan/niat pembicara
+          atau ajakan/permintaan.
+Contoh  :
+  1) 詳しいことがわかり次第、ご連絡いたします。
+     Begitu hal detailnya diketahui, saya akan segera menghubungi Anda.
+  2) 荷物が届き次第、お知らせします。
+     Begitu barangnya tiba, akan segera saya kabari.
+
+[3-4] ~て以来・~てこのかた   (te irai / te kono kata)
+Arti    : Sejak ... (terus-menerus sampai sekarang)
+Rumus   : V-te + 以来・このかた
+Catatan : Dipakai dengan titik waktu tertentu di masa lampau (bukan rentang waktu
+          yang masih sangat dekat). Kalimat setelahnya berisi keadaan yang
+          berlanjut "terus sampai sekarang". Tidak untuk hal di masa depan.
+Contoh  :
+  1) 日本に来て以来、一度も国に帰っていない。
+     Sejak datang ke Jepang, saya belum sekali pun pulang ke negara asal.
+  2) 去年大病をして以来、お酒をやめている。
+     Sejak sakit parah tahun lalu, saya berhenti minum alkohol.
+
+[3-5] ~てからでないと・~てからでなければ   (te kara de nai to / te kara de nakereba)
+Arti    : Kalau belum ... tidak bisa/tidak akan ...
+Rumus   : V-te + からでないと・からでなければ
+Catatan : Kalimat setelahnya berisi makna negatif (tidak bisa, tidak boleh, dsb.).
+Contoh  :
+  1) 契約書を読んでからでないと、サインはできません。
+     Kalau belum membaca kontrak, saya tidak bisa menandatanganinya.
+  2) 医者に相談してからでなければ、運動を始めないほうがいい。
+     Sebaiknya jangan mulai berolahraga sebelum berkonsultasi dengan dokter.
+
+
+================================================================
+4課 範囲の始まりと終わり・その間  (Awal & akhir suatu rentang, serta di antaranya)
+================================================================
+
+[4-1] ~をはじめ(として)   (o hajime (toshite))
+Arti    : Mulai dari ... (dan juga yang lainnya); dengan ... sebagai contoh utama
+Ragam   : 硬い言い方 (formal)
+Rumus   : N + をはじめ(として) / N + をはじめとする + N
+Catatan : Mengambil satu contoh yang paling mewakili dari sekian banyak hal.
+          Kalimat setelahnya berisi hal-hal jamak yang mencakup contoh tersebut.
+Contoh  :
+  1) この図書館では、小説をはじめ、雑誌やマンガも借りられる。
+     Di perpustakaan ini, mulai dari novel, majalah dan komik pun bisa dipinjam.
+  2) 社長をはじめとする役員たちが、記者会見に出席した。
+     Para direksi, termasuk direktur utama, menghadiri konferensi pers.
+
+[4-2] ~からして   (kara shite)
+Arti    : Dari ... saja sudah (begitu), apalagi yang lainnya
+Rumus   : N + からして
+Catatan : Mengambil contoh yang sebenarnya bukan inti permasalahan untuk
+          menunjukkan bahwa keseluruhannya pun demikian. Kalimat setelahnya
+          sering berisi penilaian negatif.
+Contoh  :
+  1) この店は、入り口からして汚い。
+     Toko ini, dari pintu masuknya saja sudah kotor.
+  2) 彼は、あいさつのしかたからして失礼だ。
+     Dia itu, dari cara memberi salamnya saja sudah tidak sopan.
+
+[4-3] ~にわたって   (ni watatte)
+Arti    : Sepanjang / meliputi / mencakup (rentang yang luas)
+Rumus   : N + にわたって / N + にわたる + N
+Catatan : Dipakai dengan kata yang menyatakan tempat, waktu, jumlah, atau
+          cakupan yang besar/luas.
+Contoh  :
+  1) 台風の影響で、三日間にわたって大雨が続いた。
+     Akibat topan, hujan deras berlangsung selama tiga hari.
+  2) この調査は、全国にわたって行われた。
+     Survei ini dilaksanakan di seluruh negeri.
+
+[4-4] ~を通じて・~を通して   (o tsuujite / o tooshite)
+Arti    : A) Sepanjang (suatu periode), terus-menerus dalam keadaan yang sama
+          B) Melalui (perantara/cara) ...
+Rumus   : N + を通じて・を通して
+Catatan : Makna A dipakai dengan kata yang menunjukkan periode waktu yang
+          cukup panjang; kalimat setelahnya berisi keadaan yang berlanjut.
+          Makna B dipakai dengan kata yang menjadi perantara (bukan cara
+          langsung/konkret), misalnya orang atau media.
+Contoh  :
+  1) この地域は、一年を通じて気温の変化が少ない。   (makna A)
+     Daerah ini perubahan suhunya kecil sepanjang tahun.
+  2) 友人を通じて、彼女と知り合った。   (makna B)
+     Saya berkenalan dengannya melalui seorang teman.
+
+[4-5] ~限り   (kagiri)   → lihat juga pelajaran 5 no.2
+Arti    : Sejauh/selama dalam batas ... ; sebisa mungkin ...
+Rumus   : N-の / V-kamus / V-te iru + 限り
+Catatan : Menyatakan bahwa dalam seluruh jangkauan tersebut, suatu tindakan
+          atau keadaan berlaku. Jika dengan kata kerja, sering memakai bentuk
+          ~ている atau bentuk potensial.
+Contoh  :
+  1) 私が知る限り、彼は一度も遅刻したことがない。
+     Sejauh yang saya tahu, dia tidak pernah sekali pun terlambat.
+  2) できる限り、お手伝いします。
+     Saya akan membantu sebisa mungkin.
+
+[4-6] ~だけ   (dake)
+Arti    : Sebanyak/sejauh yang ... (sampai batas maksimal)
+Rumus   : V-kamus + だけ   (juga: ~たい・欲しい・好きな・必要な + だけ)
+Catatan : Sering dipakai dengan kata kerja bentuk potensial; kata kerja yang
+          sama sering diulang sebelum dan sesudah だけ. Tidak dipakai dengan
+          kata kerja yang menyatakan kejadian sesaat.
+Contoh  :
+  1) 好きなだけ食べてください。
+     Silakan makan sebanyak yang Anda suka.
+  2) 今日は遊べるだけ遊ぼう。
+     Hari ini mari kita bermain sepuas-puasnya.
+
+
+================================================================
+5課 ~だけ  (Hanya / terbatas pada)
+================================================================
+
+[5-1] ~に限り   (ni kagiri)
+Arti    : Hanya/khusus untuk ... (pengecualian khusus)
+Ragam   : 硬い言い方 (formal)
+Rumus   : N + に限り
+Catatan : Dipakai saat menjelaskan aturan, yaitu untuk hal yang diperlakukan
+          secara pengecualian. Kalimat setelahnya menyatakan hal yang berlaku
+          hanya bagi pengecualian itu; biasanya bukan kalimat negatif atau
+          ajakan.
+Contoh  :
+  1) 本日ご来店のお客様に限り、全商品を1割引でお買い求めいただけます。
+     Khusus pelanggan yang datang hari ini, semua barang bisa dibeli dengan diskon 10 persen.
+  2) 事前に申し込んだ方に限り、会場に入ることができます。
+     Hanya orang yang mendaftar sebelumnya yang dapat masuk ke lokasi acara.
+
+[5-2] ~限り(は)   (kagiri (wa))   → lihat juga pelajaran 4 no.5
+Arti    : Selama ... (kondisi tersebut berlanjut, keadaan yang sama akan berlanjut)
+Rumus   : Bentuk biasa (nonpast) + 限り(は)
+          (Adj-na: な / である ; N: である)
+Catatan : Sebelum dan sesudahnya sama-sama kata yang menyatakan keadaan. Karena
+          bermakna syarat, kalimat setelahnya tidak berbentuk lampau.
+Contoh  :
+  1) 学生である限り、アルバイトの時間は制限される。
+     Selama masih berstatus mahasiswa, jam kerja paruh waktu dibatasi.
+  2) 健康である限り、働き続けたいと思っている。
+     Selama masih sehat, saya ingin terus bekerja.
+
+[5-3] ~限りでは   (kagiri de wa)
+Arti    : Sejauh yang ... (berdasarkan jangkauan sumber informasi), ...
+Rumus   : N-の / V-kamus / V-ta / V-te iru + 限りでは
+Catatan : Dipakai dengan kata yang berkaitan dengan memperoleh informasi
+          (見る, 聞く, 覚えている, 知っている, 調査, dsb.). Kalimat setelahnya
+          berisi penilaian atau informasi tertentu.
+Contoh  :
+  1) 私が調べた限りでは、この問題に関する資料はほとんどなかった。
+     Sejauh yang saya telusuri, hampir tidak ada materi mengenai masalah ini.
+  2) 聞いた限りでは、彼はもう会社を辞めたらしい。
+     Sejauh yang saya dengar, katanya dia sudah keluar dari perusahaan.
+
+[5-4] ~に限って   (ni kagitte)
+Arti    : A) Justru pada ... (berbeda dari biasanya)
+          B) Justru pada ... (kebetulan hal buruk bertepatan, sial)
+          C) Khusus ... (yang dipercaya) tidak mungkin begitu
+Rumus   : N + に限って
+Catatan : Makna A: kalimat setelahnya berisi hal yang berbeda dari biasanya.
+          Makna B: kalimat setelahnya berisi keadaan yang tidak baik; mengandung
+          rasa tidak puas pembicara.
+          Makna C: kalimat setelahnya memakai bentuk negatif seperti 「~はずがない」,
+          misalnya 「うちの子に限って、そんなことをするはずがない」
+          (= Khusus anak kami, tidak mungkin ia melakukan hal itu).
+Contoh  :
+  1) いつも遅刻しない彼が、今日に限って遅れてきた。   (makna A)
+     Dia yang biasanya tidak pernah terlambat, justru hari ini datang terlambat.
+  2) 急いでいる日に限って、電車が止まってしまう。   (makna B)
+     Justru pada hari ketika sedang terburu-buru, keretanya malah berhenti.
+
+
+================================================================
+6課 ~だけではなく・それに加えて  (Tidak hanya ... tetapi juga / ditambah lagi)
+================================================================
+
+[6-1] ~に限らず   (ni kagirazu)
+Arti    : Tidak terbatas pada ... saja, tetapi juga yang lebih luas
+Rumus   : N + に限らず
+Catatan : Kalimat setelahnya sering memakai 「も」 (juga) atau kata yang
+          menyatakan cakupan luas (みんな, さまざま, いつも, dsb.).
+Contoh  :
+  1) この店は、週末に限らず平日も混んでいる。
+     Toko ini tidak hanya pada akhir pekan, pada hari biasa pun ramai.
+  2) 日本に限らず、多くの国で少子化が問題になっている。
+     Tidak hanya di Jepang, di banyak negara penurunan angka kelahiran menjadi masalah.
+
+[6-2] ~のみならず   (nomi narazu)
+Arti    : Tidak hanya ..., tetapi juga ...
+Ragam   : 硬い言い方 (formal)
+Rumus   : N / Bentuk biasa (Adj-na: な・である ; N: である) + のみならず
+Catatan : Berbeda dengan 「~に限らず」, pola ini bisa dipakai juga untuk hal lain
+          yang levelnya sama. Kalimat setelahnya sering memakai 「も」.
+Contoh  :
+  1) 彼は国内のみならず、海外でも高く評価されている。
+     Dia tidak hanya di dalam negeri, di luar negeri pun dinilai tinggi.
+  2) この薬は効果が高いのみならず、副作用も少ない。
+     Obat ini tidak hanya sangat manjur, efek sampingnya pun sedikit.
+
+[6-3] ~ばかりか   (bakari ka)
+Arti    : Tidak hanya ..., bahkan juga ... (ditambah hal yang lebih)
+Rumus   : N / Bentuk biasa (Adj-na: な・である ; N: である) + ばかりか
+Catatan : Kalimat pertama berisi hal yang biasa saja, lalu kalimat berikutnya
+          menambahkan hal lain yang terasa lebih mengejutkan. Kalimat
+          setelahnya sering memakai 「も」 dan tidak berupa ajakan/perintah.
+Contoh  :
+  1) 彼女は英語ばかりか、フランス語も中国語も話せる。
+     Dia tidak hanya bisa bahasa Inggris, bahkan bahasa Prancis dan Mandarin pun bisa.
+  2) 大雨のせいで、電車が止まったばかりか、道路まで水につかってしまった。
+     Karena hujan deras, tidak hanya kereta berhenti, jalan pun sampai terendam air.
+
+[6-4] ~はもとより   (wa motoyori)
+Arti    : ... tentu saja (sudah jelas), dan juga yang lainnya
+Ragam   : 硬い言い方 (formal)
+Rumus   : N + はもとより
+Catatan : Menyebut contoh yang dianggap wajar/sudah pasti oleh pembicara,
+          lalu kalimat setelahnya menambahkan contoh lain. Sering memakai 「も」.
+Contoh  :
+  1) この製品は、国内はもとより、海外でも人気がある。
+     Produk ini, di dalam negeri tentu saja, di luar negeri pun populer.
+  2) 彼は英語はもとより、スペイン語も堪能だ。
+     Dia, bahasa Inggris tentu saja, bahasa Spanyol pun fasih.
+
+[6-5] ~上(に)   (ue (ni))   → lihat juga pelajaran 3 no.2
+Arti    : Selain itu / ditambah lagi ...
+Rumus   : Bentuk biasa (Adj-na: な・である ; N: の・である) + 上(に)
+Catatan : Kalimat sebelum dan sesudahnya sama-sama bernilai positif atau sama-sama
+          negatif. Tidak dipakai untuk hal yang berlawanan atau tidak
+          berhubungan. Kalimat setelahnya tidak berupa ajakan/perintah.
+Contoh  :
+  1) この店は安い上に、料理もおいしい。
+     Toko ini murah, ditambah lagi masakannya enak.
+  2) 今日は雨が降っている上に、風も強い。
+     Hari ini hujan turun, ditambah lagi anginnya kencang.
+
+
+================================================================
+7課 ~について・~を相手にして  (Mengenai / terhadap lawan atau objek)
+================================================================
+
+[7-1] ~に関して   (ni kanshite)
+Arti    : Mengenai / berkaitan dengan ... (memperoleh/menyampaikan informasi)
+Ragam   : 硬い言い方 (formal)
+Rumus   : N + に関して / N + に関する + N
+Catatan : Kalimat setelahnya sering berisi kata kerja yang berhubungan dengan
+          informasi (調べる, 説明する, dsb.). Berbeda dengan 「~について」,
+          pola ini dipakai untuk tema yang lebih besar/luas, bukan hal yang
+          jawabannya jelas langsung (seperti usia atau kewarganegaraan).
+Contoh  :
+  1) 今回の事故に関して、会社は謝罪会見を開いた。
+     Mengenai kecelakaan kali ini, perusahaan mengadakan konferensi pers permintaan maaf.
+  2) 環境問題に関する本を何冊か読んだ。
+     Saya membaca beberapa buku mengenai masalah lingkungan.
+
+[7-2] ~をめぐって   (o megutte)
+Arti    : Seputar ... (perdebatan, pertentangan, rumor, dsb.)
+Ragam   : 硬い言い方 (formal)
+Rumus   : N + をめぐって / N + をめぐる + N
+Catatan : Pelaku tindakan biasanya jamak. Kalimat setelahnya berisi kata kerja
+          yang melibatkan banyak orang (争う, 議論する, 対立する, dsb.).
+Contoh  :
+  1) 遺産をめぐって、兄弟が争っている。
+     Saudara-saudara itu bertikai seputar warisan.
+  2) 新しい空港の建設をめぐる議論が続いている。
+     Perdebatan seputar pembangunan bandara baru masih berlanjut.
+
+[7-3] ~にかけては   (ni kakete wa)
+Arti    : Dalam hal ... (tidak ada yang mengalahkan)
+Rumus   : N + にかけては
+Catatan : Dipakai dengan kata yang menyatakan teknik/kemampuan. Kalimat setelahnya
+          bermakna "paling mampu/nomor satu".
+Contoh  :
+  1) 料理にかけては、彼女の右に出る者はいない。
+     Dalam hal memasak, tidak ada yang bisa menandingi dia.
+  2) 計算の速さにかけては、クラスで彼が一番だ。
+     Dalam hal kecepatan menghitung, dia nomor satu di kelas.
+
+[7-4] ~に対して   (ni taishite)
+Arti    : A) Terhadap ... (tindakan atau perasaan yang ditujukan kepada lawan/objek)
+          B) Berbeda/berkebalikan dengan ... (membandingkan secara kontras)
+Rumus   : A) N + に対して / N + に対する + N
+          B) Bentuk biasa (Adj-na: な・である ; N: な・である) + の + に対して
+Catatan : Makna A dipakai dengan kata yang menunjukkan orang, organisasi, tema,
+          atau masalah. Makna B dipakai ketika kalimat depan dan belakang
+          menunjukkan perbedaan yang jelas.
+Contoh  :
+  1) お客様に対して、そのような言い方は失礼です。   (makna A)
+     Berbicara seperti itu terhadap pelanggan adalah tidak sopan.
+  2) 兄が社交的なのに対して、弟は内気な性格だ。   (makna B)
+     Kakak bersifat supel, sedangkan adik berkepribadian pemalu.
+
+[7-5] ~にこたえて   (ni kotaete)
+Arti    : Menanggapi / memenuhi (harapan, permintaan, dsb.)
+Rumus   : N + にこたえて / N + にこたえる + N
+Catatan : Dipakai dengan kata yang terbatas, seperti 期待, 要望, 希望, アンコール.
+          Kalimat setelahnya berisi kata kerja tindakan.
+Contoh  :
+  1) ファンの期待にこたえて、彼は新しい曲を発表した。
+     Menjawab harapan para penggemar, dia merilis lagu baru.
+  2) 住民の要望にこたえて、市は公園を増やすことにした。
+     Memenuhi permintaan warga, pemerintah kota memutuskan menambah jumlah taman.
+
+
+================================================================
+8課 ~を基準にして  (Berdasarkan / sesuai dengan standar)
+================================================================
+
+[8-1] ~をもとに(して)   (o moto ni (shite))
+Arti    : Dengan ... sebagai bahan/dasar/landasan (untuk menciptakan sesuatu)
+Rumus   : N + をもとに(して) / N + をもとにした + N
+Catatan : Tidak dipakai untuk bahan baku yang nyata (material fisik). Kalimat
+          setelahnya sering berisi kata kerja yang berarti menciptakan sesuatu
+          yang baru (作る, デザインする, 考え出す, dsb.).
+Contoh  :
+  1) 実際にあった事件をもとにして、この映画は作られた。
+     Film ini dibuat berdasarkan kejadian yang benar-benar terjadi.
+  2) 子どものころの経験をもとに、彼は童話を書いた。
+     Berdasarkan pengalaman masa kecilnya, dia menulis sebuah dongeng.
+
+[8-2] ~に基づいて   (ni motozuite)
+Arti    : Berdasarkan ... (sebagai patokan/dasar pertimbangan)
+Rumus   : N + に基づいて / に基づく・に基づいた + N
+Catatan : Dipakai dengan kata yang menjadi standar (hukum, data, rencana,
+          kebijakan, hasil survei, dsb.). Kalimat setelahnya berisi kata kerja.
+Contoh  :
+  1) 調査結果に基づいて、新しい計画を立てた。
+     Berdasarkan hasil survei, kami menyusun rencana baru.
+  2) 法律に基づいた手続きが必要だ。
+     Diperlukan prosedur yang berdasarkan hukum.
+
+[8-3] ~に沿って   (ni sotte)
+Arti    : Sesuai dengan / mengikuti ... (agar tidak menyimpang dari patokan)
+Rumus   : N + に沿って / に沿う・に沿った + N
+Catatan : Dipakai dengan kata yang berarti patokan (aturan, kebijakan, manual,
+          pemikiran, dsb.). Kalimat setelahnya berisi rangkaian tindakan yang
+          dijalankan mengikuti patokan tersebut.
+Contoh  :
+  1) マニュアルに沿って、作業を進めてください。
+     Silakan lanjutkan pekerjaan sesuai manual.
+  2) 会社の方針に沿った企画を考えなければならない。
+     Kita harus memikirkan rencana yang sejalan dengan kebijakan perusahaan.
+
+[8-4] ~のもとで・~のもとに   (no moto de / no moto ni)
+Arti    : Di bawah (pengaruh/bimbingan) ... ; di bawah kondisi/situasi ...
+Rumus   : N + のもとで・のもとに
+Catatan : 「~のもとで」 terutama dipakai dengan kata yang menunjukkan orang
+          (guru, orang tua, dsb.), bermakna "di bawah pengaruh orang itu";
+          kalimat setelahnya sering berisi tindakan/kehidupan (励む, 暮らす).
+          「~のもとに」 terutama dipakai dengan kata benda abstrak (管理, 了解,
+          dsb.), bermakna "di bawah kondisi/situasi tersebut".
+Contoh  :
+  1) 山田先生の指導のもとで、論文を書き上げた。
+     Di bawah bimbingan Prof. Yamada, saya menyelesaikan karya tulis ilmiah.
+  2) 厳しい条件のもとで、実験が行われた。
+     Eksperimen dilakukan di bawah kondisi yang ketat.
+
+[8-5] ~向けだ   (muke da)
+Arti    : Ditujukan untuk ... (sasaran tertentu)
+Rumus   : N + 向けだ / N + 向けの + N
+Catatan : Terutama dipakai dengan kata benda yang menunjukkan orang. Kalimat
+          setelahnya sering berisi kata kerja seperti 作る, 設計する, デザインする.
+Contoh  :
+  1) これは外国人向けの日本語教材です。
+     Ini adalah bahan ajar bahasa Jepang untuk orang asing.
+  2) この雑誌は、20代の女性向けに作られている。
+     Majalah ini dibuat untuk perempuan usia dua puluhan.
+
+
+================================================================
+9課 ~に関連して・~に対応して  (Berkaitan / menyesuaikan)
+================================================================
+
+[9-1] ~につれて・~にしたがって   (ni tsurete / ni shitagatte)
+Arti    : Seiring dengan ... (satu hal berubah, hal lain ikut berubah)
+Rumus   : N(する) / V-kamus + につれて・にしたがって
+Catatan : Bagian depan berisi kata yang menyatakan perubahan bertahap (進む,
+          上がる, 多くなる, dsb.). 「~にしたがって」 hanya untuk perubahan ke
+          satu arah. Kalimat setelah 「~につれて」 berisi perubahan yang terjadi
+          secara alami, bukan tindakan yang disengaja.
+Contoh  :
+  1) 年を取るにつれて、体力が落ちてきた。
+     Seiring bertambahnya usia, stamina saya menurun.
+  2) 季節が進むにしたがって、日が短くなる。
+     Seiring berjalannya musim, siang hari menjadi semakin pendek.
+
+[9-2] ~に伴って・~とともに   (ni tomonatte / to tomo ni)
+Arti    : Seiring dengan ... (satu hal berubah, hal lain ikut berubah/diubah)
+Ragam   : 硬い言い方 (formal)
+Rumus   : N(する) / V-kamus + に伴って・とともに
+Catatan : Bagian depan berisi kata yang menyatakan perubahan. 「~とともに」
+          dipakai untuk perubahan ke satu arah, sedangkan 「~に伴って」 dapat
+          dipakai juga untuk perubahan yang tidak searah. Keduanya cocok saat
+          pembicara melihat perubahan secara keseluruhan, bukan tahap demi tahap.
+Contoh  :
+  1) 人口の増加に伴って、交通渋滞が深刻になってきた。
+     Seiring bertambahnya penduduk, kemacetan lalu lintas semakin parah.
+  2) 技術が進歩するとともに、人々の生活は便利になった。
+     Seiring kemajuan teknologi, kehidupan masyarakat menjadi lebih mudah.
+
+[9-3] ~次第だ   (shidai da)
+Arti    : Tergantung pada ... (hasil berubah/ditentukan oleh hal tersebut)
+Rumus   : N + 次第だ
+Catatan : Dipakai dengan kata yang mengandung perbedaan atau rentang. Pada pola
+          「~次第では」, kalimat setelahnya menunjukkan salah satu kemungkinan
+          dari berbagai kemungkinan yang ada.
+Contoh  :
+  1) 成功するかどうかは、努力次第だ。
+     Berhasil atau tidaknya tergantung pada usaha.
+  2) 天気次第では、試合が延期になるかもしれない。
+     Tergantung cuaca, pertandingan mungkin ditunda.
+
+[9-4] ~に応じて   (ni oujite)
+Arti    : Sesuai dengan / menyesuaikan dengan ...
+Rumus   : N + に応じて / N + に応じた + N
+Catatan : Dipakai dengan hal yang diperkirakan berubah tidak tetap (kemampuan
+          fisik, usia, cuaca, dsb.). Kalimat setelahnya bermakna "melakukan
+          sesuatu yang disesuaikan" atau "berubah menyesuaikan".
+Contoh  :
+  1) 収入に応じて、税金の額が変わる。
+     Jumlah pajak berubah sesuai dengan penghasilan.
+  2) 季節に応じた服装を選ぶことが大切だ。
+     Penting untuk memilih pakaian yang sesuai dengan musim.
+
+[9-5] ~につけて   (ni tsukete)
+Arti    : Setiap kali ... (selalu timbul perasaan tertentu)
+Rumus   : V-kamus + につけて
+Catatan : Kalimat setelahnya berisi gerak hati/perasaan. Pola 「何かにつけて」
+          adalah ungkapan baku berarti "setiap ada kesempatan/apa saja"; pada
+          kasus ini kalimat setelahnya tidak harus berisi perasaan.
+Contoh  :
+  1) この写真を見るにつけて、亡くなった祖父を思い出す。
+     Setiap kali melihat foto ini, saya teringat kakek yang telah tiada.
+  2) 彼は何かにつけて、昔の自慢話をする。
+     Dia, setiap ada kesempatan, selalu menceritakan kebanggaannya di masa lalu.
+
+
+================================================================
+10課 ~や~など  (Contoh / daftar hal)
+================================================================
+
+[10-1] ~やら~やら   (yara ~ yara)
+Arti    : ... dan ... (macam-macam, ini dan itu; kesan berantakan/ramai)
+Rumus   : N / V-kamus / Adj-i + やら
+Catatan : Menyebut berderet kata dari kelompok yang sama untuk menekankan bahwa
+          ada banyak hal dan belum teratur. Sering dipakai saat pembicara
+          tidak bisa menentukan secara pasti, atau mengangkat hal yang
+          dirasa merepotkan karena banyak.
+Contoh  :
+  1) 引っ越しの前は、荷造りやら手続きやらで忙しい。
+     Menjelang pindahan, sibuk dengan berkemas, mengurus ini dan itu.
+  2) 試験に合格してうれしいやら、ほっとしたやらで、涙が出た。
+     Lulus ujian, antara senang dan lega, air mata pun keluar.
+
+[10-2] ~というか~というか   (to iu ka ~ to iu ka)
+Arti    : Apa ya ... atau ... (bisa dikatakan begini, bisa juga begitu)
+Rumus   : Bentuk biasa (Adj-na・N: tanpa だ) + というか
+Catatan : Menyebut dua ungkapan untuk menjelaskan situasi yang sama, ketika
+          pembicara tidak yakin mana yang lebih tepat.
+Contoh  :
+  1) 彼の話し方は、優しいというか、頼りないというか、不思議な感じだ。
+     Cara bicaranya, apa ya, lembut atau kurang bisa diandalkan, terasa aneh.
+  2) この料理は、辛いというか、苦いというか、変わった味だ。
+     Masakan ini, pedas atau pahit ya, rasanya aneh.
+
+[10-3] ~にしても~にしても・~にしろ~にしろ・~にせよ~にせよ
+        (ni shite mo ~ ni shite mo / ni shiro ~ ni shiro / ni seyo ~ ni seyo)
+        → lihat juga pelajaran 15 no.6
+Arti    : Baik ... maupun ... / Entah ... atau ... (hal yang sama berlaku untuk keduanya)
+Rumus   : N / V-kamus / V-nai / Adj + にしても・にしろ・にせよ
+Catatan : Menyebut contoh dari kelompok yang sama, atau dua hal yang
+          berlawanan (misalnya 行く・行かない). Kalimat setelahnya sering
+          berisi penilaian pembicara atau ajakan. 「~にせよ~にせよ」 terkesan
+          lebih kaku.
+Contoh  :
+  1) 電車にしても、バスにしても、通勤時間は混んでいる。
+     Baik kereta maupun bus, pada jam berangkat kerja sama-sama penuh.
+  2) 行くにしろ行かないにしろ、早めに連絡してください。
+     Entah pergi atau tidak, tolong beri kabar lebih awal.
+
+[10-4] ~といった   (to itta)
+Arti    : Seperti ... (menyebut contoh)
+Rumus   : N + といった + N
+Catatan : Dipakai setelah menyebut beberapa contoh lalu merangkumnya. Sering
+          dikombinasikan dengan 「や」 atau 「とか」. Bisa juga untuk mengangkat
+          satu contoh yang paling mewakili lalu menjelaskan garis besarnya.
+Contoh  :
+  1) 北海道や沖縄といった観光地は、一年中人気がある。
+     Tempat wisata seperti Hokkaido dan Okinawa populer sepanjang tahun.
+  2) 彼女は、ピアノ、バイオリンといった楽器が得意だ。
+     Dia mahir memainkan alat musik seperti piano dan biola.
+
+
+
+################################################################
+II. 主観を含めて説明する  (Menjelaskan dengan menyertakan penilaian/pandangan pembicara)
+################################################################
+
+
+================================================================
+11課 ~に関係なく・無視して  (Tanpa memandang / mengabaikan)
+================================================================
+
+[11-1] ~を問わず   (o towazu)
+Arti    : Tanpa memandang / tidak mempermasalahkan ... (berlaku sama untuk semuanya)
+Rumus   : N + を問わず
+Catatan : Dipakai dengan kata yang punya perbedaan atau rentang (usia,
+          kewarganegaraan, cuaca, dsb.) atau pasangan kata yang berlawanan
+          (男女, 内外, 有無, dsb.).
+Contoh  :
+  1) この大会には、年齢や経験を問わず、誰でも参加できる。
+     Siapa pun boleh ikut kompetisi ini, tanpa memandang usia dan pengalaman.
+  2) その店は、昼夜を問わず、いつも客でにぎわっている。
+     Toko itu, siang maupun malam, selalu ramai pengunjung.
+
+[11-2] ~にかかわらず・~にかかわりなく   (ni kakawarazu / ni kakawarinaku)
+Arti    : Terlepas dari ... / tanpa terpengaruh oleh ... (hasilnya sama)
+Rumus   : N + にかかわらず・にかかわりなく
+Catatan : Dipakai dengan kata yang punya rentang (jarak, jumlah, ukuran, dsb.),
+          pasangan kata berlawanan (行く・行かない, 多い・少ない, dsb.), atau
+          pola 「(kata tanya)~か」.
+Contoh  :
+  1) 天気にかかわらず、試合は予定どおり行われる。
+     Terlepas dari cuaca, pertandingan dilaksanakan sesuai jadwal.
+  2) 経験の有無にかかわりなく、どなたでも応募できます。
+     Terlepas ada tidaknya pengalaman, siapa pun dapat melamar.
+
+[11-3] ~もかまわず   (mo kamawazu)
+Arti    : Tanpa memedulikan ... (bertindak tanpa menghiraukan hal yang biasanya
+          diperhatikan)
+Rumus   : N / Bentuk biasa (Adj-na: な・である ; N: な・である) + の + もかまわず
+Catatan : Kalimat setelahnya berisi tindakan yang tidak biasa atau mengejutkan.
+          Tidak diikuti kalimat keinginan atau ajakan pembicara.
+Contoh  :
+  1) 彼女は周りの目もかまわず、大声で泣き出した。
+     Dia, tanpa peduli pandangan orang di sekitar, mulai menangis keras.
+  2) 母は雨にぬれるのもかまわず、走って迎えに来てくれた。
+     Ibu tanpa peduli basah kehujanan, berlari menjemput saya.
+
+[11-4] ~はともかく(として)   (wa tomokaku (toshite))
+Arti    : ... nanti saja dulu / lupakan dulu ... (ada hal lain yang lebih penting)
+Rumus   : N (+partikel) / Bentuk biasa nonpast (Adj-na: な ; N: な) + の + はともかく(として)
+Catatan : Menyatakan hal yang dianggap pembicara tidak sepenting hal setelahnya.
+          Bisa juga dipakai dengan pola 「(kata tanya)~か」. Kalimat setelahnya
+          berisi hal yang ingin ditekankan lebih dari bagian depan.
+Contoh  :
+  1) 味はともかく、見た目はとてもきれいなケーキだ。
+     Soal rasa nanti dulu, tampilan kue ini sangat cantik.
+  2) 試験に受かるかどうかはともかく、全力を尽くしたい。
+     Lulus atau tidaknya urusan nanti, saya ingin berusaha sekuat tenaga.
+
+[11-5] ~はさておき   (wa sate oki)
+Arti    : ... kita sisihkan dulu (ada hal yang lebih penting untuk dibahas)
+Rumus   : N (+partikel) + はさておき
+Catatan : Dipakai dengan hal yang sebelumnya menjadi bahan pembicaraan; juga
+          dengan pola 「(kata tanya)~か」. Kalimat setelahnya berisi hal yang
+          prioritasnya lebih tinggi atau lebih mendasar.
+Contoh  :
+  1) 冗談はさておき、本題に入りましょう。
+     Bercandanya kita sisihkan dulu, mari masuk ke pokok pembahasan.
+  2) 料金はさておき、まず場所を決めなければならない。
+     Soal biaya nanti dulu, pertama-tama kita harus menentukan tempatnya.
+
+
+================================================================
+12課 強く否定する・強く否定しない  (Menyangkal dengan tegas / tidak sepenuhnya)
+================================================================
+
+[12-1] ~わけがない   (wake ga nai)
+Arti    : Tidak mungkin ... (pembicara yakin sepenuhnya bahwa hal itu tidak terjadi)
+Rumus   : Bentuk biasa (Adj-na: な・である ; N: の・である) + わけがない
+Catatan : Dipakai ketika pembicara sangat yakin bahwa hal tersebut tidak mungkin.
+Contoh  :
+  1) あんなに親切な人が、うそをつくわけがない。
+     Orang yang sebaik itu tidak mungkin berbohong.
+  2) 一度も練習していないのに、上手に弾けるわけがない。
+     Belum pernah berlatih sama sekali, mustahil bisa bermain dengan bagus.
+
+[12-2] ~どころではない・~どころか   (dokoro de wa nai / dokoro ka)   → lihat juga pelajaran 18 no.5
+Arti    : Jangankan ... (kenyataannya jauh berbeda / justru sebaliknya)
+Rumus   : N / Bentuk biasa (Adj-na: な・である ; N: である) + どころではない・どころか
+Catatan : Bagian depan dan belakang berisi hal yang tingkatnya jauh berbeda atau
+          berlawanan. Sering dipakai untuk menyatakan keadaan yang lebih buruk
+          dari yang dibayangkan.
+Contoh  :
+  1) 仕事が忙しくて、旅行どころではない。
+     Pekerjaan begitu sibuk, jangankan berlibur (sama sekali tidak ada kesempatan).
+  2) 彼は謝るどころか、逆に私を責めた。
+     Jangankan meminta maaf, dia justru menyalahkan saya.
+
+[12-3] ~ものか   (mono ka)   → lihat juga pelajaran 24 no.6
+Arti    : Mana mungkin ...! (penyangkalan kuat; bahasa lisan)
+Ragam   : 話し言葉 (bahasa lisan)
+Rumus   : Bentuk biasa (Adj-na: な ; N: な) + ものか
+Catatan : Kalimat yang bernada emosional dan sangat menyangkal. 「~もんか」 adalah
+          bentuk yang lebih kasual. Perempuan biasanya memakai 「~ものですか」
+          atau 「~もんですか」.
+Contoh  :
+  1) あんな店、二度と行くものか。
+     Toko seperti itu, mana mau saya datang lagi!
+  2) こんな難しい問題が、私に解けるものか。
+     Mana mungkin saya bisa memecahkan soal sesulit ini!
+
+[12-4] ~わけではない・~というわけではない   (wake de wa nai / to iu wake de wa nai)
+Arti    : Bukan berarti ... (penyangkalan sebagian)
+Rumus   : Bentuk biasa (Adj-na: な・である ; N: の・な・である) + わけではない
+          Bentuk biasa (だ dihilangkan) + というわけではない
+Catatan : Untuk menyangkal sebagian saja. Sering dipakai bersama kata yang berarti
+          "semuanya" (いつも, だれでも, どこでも, dsb.) atau 「必ずしも」.
+Contoh  :
+  1) お金があれば幸せになれるというわけではない。
+     Bukan berarti kalau punya uang pasti bisa bahagia.
+  2) 日本語が嫌いなわけではないが、勉強する時間がない。
+     Bukan berarti saya benci bahasa Jepang, tetapi saya tidak punya waktu untuk belajar.
+
+[12-5] ~というものではない・~というものでもない   (to iu mono de wa nai / to iu mono demo nai)
+Arti    : Tidak bisa dikatakan bahwa ... / belum tentu ... (bukan begitu hakikatnya)
+Rumus   : Bentuk biasa (だ dihilangkan) + というものではない・というものでもない
+Catatan : Pernyataan atau pendapat pembicara mengenai hakikat suatu hal, bukan
+          fakta konkret. Sering dipakai dengan bentuk syarat (~ば) atau
+          「~からといって」. 「~というものでもない」 terdengar sedikit lebih lembut.
+Contoh  :
+  1) 高い商品なら必ず品質がいいというものではない。
+     Tidak bisa dikatakan bahwa barang yang mahal pasti berkualitas bagus.
+  2) 才能があれば成功するというものでもない。
+     Belum tentu kalau berbakat pasti akan sukses.
+
+
+================================================================
+13課 ~(話題)は  (Topik pembicaraan)
+================================================================
+
+[13-1] ~とは   (to wa)
+Arti    : Yang dimaksud dengan ... adalah ... (menjelaskan/mendefinisikan sebuah kata)
+Ragam   : 硬い言い方 (formal)
+Rumus   : N + とは
+Catatan : Bentuk yang lebih kaku dari 「~というのは」. Kalimat setelahnya
+          menjelaskan arti atau hakikat kata tersebut (~だ, ~である,
+          ~という意味である, ~のことである, dsb.).
+Contoh  :
+  1) 「恩返し」とは、受けた恩に対してお礼をすることである。
+     "Ongaeshi" adalah membalas budi atas kebaikan yang telah diterima.
+  2) 「著作権」とは、作品を作った人が持つ権利のことである。
+     "Hak cipta" adalah hak yang dimiliki oleh orang yang menciptakan suatu karya.
+
+[13-2] ~といえば   (to ieba)   → lihat juga 13-3
+Arti    : A) Ngomong-ngomong soal ... (mengangkat kata yang muncul, lalu beralih
+             ke topik terkait)
+          B) Memang ... (mengakui sekilas, lalu menyampaikan hal yang sebenarnya
+             ingin dikatakan)
+Rumus   : A) Kata yang diangkat + といえば
+          B) Bentuk biasa (Adj-na・N: だ dihilangkan) + といえば
+Catatan : Makna A: langsung mengikuti kata yang diucapkan lawan bicara,
+          diri sendiri, atau yang baru teringat. Makna B: kata yang sama
+          diulang sebelum dan sesudah, lalu diikuti 「~が」 atau 「~けれど」.
+Contoh  :
+  1) 京都といえば、来月友達と旅行に行く予定だ。   (makna A)
+     Ngomong-ngomong soal Kyoto, bulan depan saya berencana bepergian dengan teman.
+  2) このカメラは、高いといえば高いが、性能はとてもいい。   (makna B)
+     Kamera ini memang bisa dibilang mahal, tetapi performanya sangat bagus.
+
+[13-3] ~というと・~といえば・~といったら   (to iu to / to ieba / to ittara)
+        → lihat juga 13-2, 13-5
+Arti    : Kalau bicara soal ... (langsung teringat/terpikir pada hal tertentu)
+Rumus   : N・V・Adj (bentuk biasa) + というと・といえば・といったら
+Catatan : Bisa juga dipakai untuk memastikan apakah hal yang dikatakan lawan
+          bicara sama dengan yang dipikirkan pembicara (dengan 「~と
+          いうと」). Kalimat setelahnya sering berbentuk konfirmasi
+          (~ね, ~かなど).
+Contoh  :
+  1) 夏といえば、花火と海を思い浮かべる。
+     Kalau bicara soal musim panas, saya langsung teringat kembang api dan laut.
+  2) 鈴木さんというと、あの背の高い人ですか。
+     Kalau Suzuki-san, maksud Anda orang yang tinggi itu, ya?
+
+[13-4] ~(のこと)となると   ((no koto) to naru to)   → lihat juga pelajaran 15 no.1
+Arti    : Begitu sudah menyangkut ... (sikap berubah dari biasanya)
+Rumus   : N + (のこと)となると・となると
+Catatan : Menekankan bahwa jika sudah menyangkut topik tersebut, sikap/perilaku
+          seseorang menjadi lain dari biasanya. Kalimat setelahnya berisi hal
+          yang menunjukkan perubahan sikap.
+Contoh  :
+  1) 彼は仕事のこととなると、人が変わったように真剣になる。
+     Begitu menyangkut pekerjaan, dia menjadi serius seperti orang yang berbeda.
+  2) 子どものこととなると、母はとても心配性になる。
+     Begitu menyangkut anak-anak, ibu menjadi sangat mudah khawatir.
+
+[13-5] ~といったら   (to ittara)   → lihat juga 13-3
+Arti    : Soal ... (tingkatnya luar biasa, tidak biasa)
+Rumus   : N + といったら
+Catatan : Untuk menekankan bahwa tingkat/derajat sesuatu itu tidak biasa. Kalimat
+          setelahnya berisi hal yang menunjukkan tingkat luar biasa atau
+          ungkapan keterkejutan. Kalimat setelahnya kadang dihilangkan.
+Contoh  :
+  1) あの映画の怖さといったら、一晩中眠れなかった。
+     Soal seramnya film itu, sampai semalaman saya tidak bisa tidur.
+  2) 久しぶりに食べた母の料理のおいしさといったら……。
+     Betapa lezatnya masakan ibu yang sudah lama tidak saya makan...
+
+
+================================================================
+14課 ~けれど  (Meskipun / tetapi)
+================================================================
+
+[14-1] ~にもかかわらず   (ni mo kakawarazu)
+Arti    : Meskipun ... tetap/namun ... (tidak terpengaruh oleh hal tersebut)
+Rumus   : N / Bentuk biasa (Adj-na: である ; N: である) + にもかかわらず
+Catatan : Mengungkapkan keterkejutan atau kesan di luar dugaan terhadap fakta
+          di depan yang ternyata tidak berpengaruh. Kalimat setelahnya tidak
+          berupa keinginan/niat atau ajakan pembicara.
+Contoh  :
+  1) 大雨にもかかわらず、多くの人がコンサートに集まった。
+     Meskipun hujan deras, banyak orang berkumpul di konser.
+  2) 彼は病気であるにもかかわらず、会議に出席した。
+     Meskipun sedang sakit, dia tetap menghadiri rapat.
+
+[14-2] ~ものの・~とはいうものの   (mono no / to wa iu mono no)
+Arti    : Memang ... tetapi ... (tidak seperti yang dibayangkan)
+Rumus   : V・Adj bentuk biasa (Adj-na: な・である) + ものの
+          N / Bentuk biasa (だ dihilangkan) + とはいうものの
+Catatan : Dipakai untuk fakta atau hal yang pasti. Kalimat setelahnya
+          menyatakan bahwa hal yang wajar dibayangkan tidak terjadi atau masih
+          ada masalah. Tidak diikuti kalimat ajakan.
+Contoh  :
+  1) 車の免許は取ったものの、運転する自信がない。
+     Memang sudah punya SIM, tetapi saya tidak percaya diri untuk menyetir.
+  2) 春とはいうものの、まだ朝晩は冷える。
+     Memang sudah dibilang musim semi, tetapi pagi dan malam masih dingin.
+
+[14-3] ~ながら(も)   (nagara (mo))
+Arti    : Meskipun ... (berbeda dari yang diperkirakan)
+Rumus   : V-masu stem (kata kerja keadaan) / Adj-i / Adj-na (~でありながら) / N (~でありながら) + ながら(も)
+Catatan : Dipakai dengan kata yang menyatakan keadaan; subjek kalimat sebelum
+          dan sesudahnya sama. Dapat juga dipakai sebagai pengantar yang
+          mengakui keadaan negatif lebih dulu (小さい, わずか, dsb.).
+Contoh  :
+  1) 彼は貧しいながらも、いつも明るく暮らしている。
+     Meskipun miskin, dia selalu hidup dengan ceria.
+  2) この家は狭いながらも、庭があるので気に入っている。
+     Meskipun sempit, saya menyukai rumah ini karena ada halamannya.
+
+[14-4] ~つつ(も)   (tsutsu (mo))   → lihat juga pelajaran 2 no.6
+Arti    : Meskipun ... (tindakan berbeda dengan apa yang dirasakan/dipikirkan)
+Ragam   : 硬い言い方 (formal)
+Rumus   : V-masu stem + つつ(も)
+Catatan : Dipakai dengan kata kerja yang berkaitan dengan gerak hati atau
+          perkataan (思う, 知る, 言う, dsb.). Subjek sebelum dan sesudahnya
+          sama. Kalimat setelahnya tidak berisi dugaan, keinginan, niat
+          maupun ajakan pembicara.
+Contoh  :
+  1) 体に悪いと知りつつも、夜中にお菓子を食べてしまう。
+     Meskipun tahu itu buruk bagi tubuh, saya tetap makan camilan tengah malam.
+  2) 悪いと思いつつ、彼女との約束を破ってしまった。
+     Meskipun merasa tidak enak, saya sampai mengingkari janji dengannya.
+
+[14-5] ~といっても   (to itte mo)
+Arti    : Meskipun dikatakan ... (kenyataannya berbeda dari kesan/bayangan)
+Rumus   : N / Bentuk biasa + といっても
+Catatan : Kalimat setelahnya menyatakan bahwa kenyataan berbeda dari gambaran
+          yang biasanya muncul dari kata di depannya.
+Contoh  :
+  1) 日本語が話せるといっても、挨拶ができる程度です。
+     Meskipun dikatakan bisa berbahasa Jepang, hanya sebatas bisa menyapa.
+  2) 旅行といっても、近くの温泉に一泊するだけだ。
+     Meskipun disebut perjalanan, hanya menginap semalam di pemandian air panas terdekat.
+
+[14-6] ~からといって   (kara to itte)
+Arti    : Hanya karena ... bukan berarti ...
+Rumus   : Bentuk biasa + からといって
+Catatan : Menyangkal kesimpulan yang biasanya wajar dari sebuah alasan.
+          Kalimat setelahnya sering berbentuk penyangkalan sebagian
+          (~とは限らない, ~わけではない, ~とはいえない, dsb.).
+Contoh  :
+  1) 日本に住んでいるからといって、日本語が上手だとは限らない。
+     Hanya karena tinggal di Jepang, belum tentu pandai berbahasa Jepang.
+  2) 安いからといって、買いすぎてはいけない。
+     Walaupun murah, bukan berarti boleh membeli berlebihan.
+
+
+================================================================
+15課 もしそうなら・たとえそうでも  (Seandainya / walaupun begitu)
+================================================================
+
+[15-1] ~としたら・~とすれば・~とすると・~となったら・~となれば・~となると
+        (to shitara / to sureba / to suru to / to nattara / to nareba / to naru to)
+        → lihat juga pelajaran 13 no.4
+Arti    : Seandainya/jika ... (mengandaikan sesuatu atau membayangkan suatu
+          keadaan telah terjadi, lalu menyatakan akibatnya)
+Rumus   : Bentuk biasa + としたら・とすれば・とすると
+          N / Bentuk biasa + となったら・となれば・となると
+Catatan : 「~としたら・~とすれば・~とすると」 kuat bernuansa pengandaian.
+          「~となったら・~となれば・~となると」 dipakai untuk hal yang
+          kemungkinan terjadinya ada, lalu membayangkan keadaan jika hal itu
+          sungguh terjadi. Keduanya diikuti penilaian pembicara. Setelah
+          「~とすると・~となると」 tidak muncul kalimat keinginan/niat atau ajakan.
+Contoh  :
+  1) もし宝くじが当たったとしたら、世界旅行をしたい。
+     Seandainya menang lotre, saya ingin keliling dunia.
+  2) 引っ越しとなると、手続きが大変だ。
+     Kalau sudah soal pindahan, mengurus administrasinya merepotkan.
+
+[15-2] ~ものなら   (mono nara)
+Arti    : Kalau bisa ... (mengandaikan sesuatu yang sulit; berharap hal itu terjadi)
+Rumus   : V-kamus (biasanya bentuk potensial) + ものなら
+Catatan : Mengandaikan sesuatu yang tampaknya sulit/mustahil. Bagian depan
+          sering memakai kata kerja bentuk potensial. Kalimat setelahnya
+          berisi harapan atau permintaan pembicara. Kadang dipakai dengan
+          nada menantang lawan bicara.
+Contoh  :
+  1) できるものなら、もう一度学生時代に戻りたい。
+     Kalau bisa, saya ingin kembali ke masa sekolah sekali lagi.
+  2) 行けるものなら、今すぐ宇宙へ行ってみたい。
+     Kalau memang bisa pergi, saya ingin mencoba ke luar angkasa sekarang juga.
+
+[15-3] ~(よ)うものなら   ((yo)u mono nara)
+Arti    : Kalau sampai ... (pasti terjadi hal yang gawat)
+Rumus   : V-volitional + ものなら
+Catatan : Kalimat setelahnya berisi dugaan bahwa pasti akan terjadi hal yang
+          gawat/serius.
+Contoh  :
+  1) 父の前でそんなことを言おうものなら、大変なことになる。
+     Kalau sampai berkata begitu di depan ayah, bisa jadi masalah besar.
+  2) 少しでも遅れようものなら、先生にひどく叱られる。
+     Kalau terlambat sedikit saja, pasti dimarahi habis-habisan oleh guru.
+
+[15-4] ~ないことには   (nai koto ni wa)
+Arti    : Kalau tidak ..., (hal tersebut tidak akan terwujud)
+Rumus   : V-nai / Adj-i: ~くない / Adj-na: ~でない / N: ~でない + ことには
+Catatan : Kalimat setelahnya berisi makna negatif.
+Contoh  :
+  1) 実際に見てみないことには、本当のことはわからない。
+     Kalau tidak melihat langsung, kebenarannya tidak akan diketahui.
+  2) 本人に会わないことには、話が進まない。
+     Kalau tidak bertemu orangnya, pembicaraan tidak akan maju.
+
+[15-5] ~を抜きにしては   (o nuki ni shite wa)
+Arti    : Tanpa ... (tidak mungkin terwujud)
+Rumus   : N + を抜きにしては
+Catatan : Dipakai dengan kata yang dinilai penting/tinggi oleh pembicara.
+          Kalimat setelahnya bermakna "tidak terwujud".
+Contoh  :
+  1) 家族の協力を抜きにしては、この仕事は続けられない。
+     Tanpa bantuan keluarga, pekerjaan ini tidak bisa dilanjutkan.
+  2) 歴史を抜きにしては、この国の文化は語れない。
+     Tanpa menyinggung sejarah, budaya negeri ini tidak bisa dibicarakan.
+
+[15-6] ~としても・~にしても・~にしろ・~にせよ   (to shite mo / ni shite mo / ni shiro / ni seyo)
+        → lihat juga pelajaran 10 no.3 dan pelajaran 19 no.6
+Arti    : Meskipun/walaupun ... (perasaan atau penilaian pembicara tidak
+          terpengaruh oleh hal tersebut)
+Rumus   : Bentuk biasa + としても
+          N / Bentuk biasa (Adj-na: である ; N: である) + にしても・にしろ・にせよ
+Catatan : Bagian depan 「~としても」 berisi hal yang diandaikan, sedangkan
+          「~にしても・~にしろ・~にせよ」 bisa untuk hal andaian maupun fakta.
+          Bisa juga dipakai dengan kata tanya. Kalimat setelahnya terutama
+          berisi evaluasi, penilaian, atau kesan pembicara.
+Contoh  :
+  1) 忙しかったとしても、連絡くらいはしてほしかった。
+     Meskipun sedang sibuk sekalipun, setidaknya saya berharap dia memberi kabar.
+  2) 理由があるにせよ、暴力は許されない。
+     Meskipun ada alasan, kekerasan tidak bisa dimaafkan.
+
+
+================================================================
+16課 ~だから(理由) -1  (Alasan / sebab, bagian 1)
+================================================================
+
+[16-1] ~によって   (ni yotte)
+Arti    : A) Karena ... (sebab yang menimbulkan hasil tertentu)
+          B) Dengan/melalui ... (cara/sarana untuk melakukan sesuatu)
+Ragam   : 硬い言い方 (formal)
+Rumus   : N + によって / N + による + N
+Catatan : Untuk makna sarana, pola ini sulit dipakai jika alatnya adalah benda
+          sehari-hari yang dipakai secara pribadi (telepon, pena, kereta, dsb.).
+          Dapat juga dipakai dalam bentuk yang menjelaskan kata benda
+          (contoh: 電話による問い合わせ).
+Contoh  :
+  1) 地震によって、多くの建物が被害を受けた。   (makna A)
+     Akibat gempa bumi, banyak bangunan mengalami kerusakan.
+  2) 話し合いによって、問題を解決することができた。   (makna B)
+     Dengan berdiskusi, masalah dapat diselesaikan.
+
+[16-2] ~ものだから・~もので・~もの   (mono dakara / mono de / mono)
+Arti    : Karena ... (alasan/dalih; sering dipakai untuk membela diri atau
+          meminta maaf)
+Ragam   : 話し言葉 (bahasa lisan)
+Rumus   : Bentuk biasa (Adj-na: な ; N: な) + ものだから・もので
+          Bentuk biasa + もの
+Catatan : Menyatakan alasan yang bersifat pribadi/pembelaan diri. Kalimat
+          setelahnya tidak berupa perintah atau ajakan. 「~もの」 terutama
+          dipakai perempuan dan anak-anak. 「~もんだから・~もんで・~もん」
+          adalah bentuk yang lebih kasual.
+Contoh  :
+  1) 電車が遅れたものですから、会議に間に合いませんでした。
+     Karena keretanya terlambat, saya tidak sempat hadir tepat waktu di rapat.
+  2) 初めてなもので、やり方がよくわからないんです。
+     Karena ini yang pertama kali, saya kurang paham caranya.
+
+[16-3] ~おかげだ/~せいだ   (okage da / sei da)
+Arti    : Berkat ... (hasil baik) / Gara-gara ... (hasil buruk)
+Rumus   : N-の / V / Adj bentuk biasa (Adj-na: な) + おかげだ・せいだ
+Catatan : 「~おかげで」 diikuti hasil baik, 「~せいで」 diikuti hasil yang tidak
+          baik. Kalimat setelahnya tidak berupa keinginan/niat atau ajakan
+          pembicara.
+Contoh  :
+  1) 先生が教えてくださったおかげで、試験に合格できた。
+     Berkat guru yang mengajari saya, saya bisa lulus ujian.
+  2) 寝不足のせいで、頭が痛い。
+     Gara-gara kurang tidur, kepala saya sakit.
+
+[16-4] ~あまり・あまりの~に   (amari / amari no ~ ni)
+Arti    : Saking terlalu ... (sehingga terjadi hasil yang tidak biasa)
+Rumus   : N-の / V-kamus / Adj bentuk afirmatif (Adj-na: な) + あまり
+          あまりの + N + に
+Catatan : Kalimat setelahnya berisi hasil yang tidak biasa (sering hasil
+          buruk). Tidak diikuti keinginan/niat atau ajakan pembicara.
+Contoh  :
+  1) 緊張のあまり、頭が真っ白になってしまった。
+     Saking gugupnya, pikiran saya jadi kosong.
+  2) あまりの暑さに、気分が悪くなった。
+     Saking panasnya, saya jadi merasa tidak enak badan.
+
+[16-5] ~につき   (ni tsuki)
+Arti    : Karena ... (pengumuman resmi tentang alasan suatu keadaan)
+Ragam   : 硬い言い方・書き言葉 (formal, bahasa tulis)
+Rumus   : N + につき
+Catatan : Dipakai dengan kata yang menyatakan keadaan saat ini. Banyak muncul di
+          pengumuman yang ditempel atau dokumen resmi.
+Contoh  :
+  1) 工事中につき、通行できません。
+     Karena sedang ada pekerjaan konstruksi, jalan ini tidak dapat dilalui.
+  2) 本日は定休日につき、休業いたします。
+     Karena hari ini adalah hari libur tetap, kami tutup.
+
+
+================================================================
+17課 ~だから(理由) -2  (Alasan / sebab, bagian 2)
+================================================================
+
+[17-1] ~ことだし   (koto dashi)
+Arti    : Soalnya ... juga (menyebut alasan sambil menyiratkan ada alasan lain)
+Ragam   : 話し言葉 (bahasa lisan)
+Rumus   : Bentuk biasa (Adj-na: な・である ; N: の・である) + ことだし
+Catatan : Selain alasan ini, masih ada alasan lain, tetapi pembicara
+          menyebut ini sebagai salah satu alasan untuk melakukan sesuatu.
+          Kalimat setelahnya berisi penilaian, keinginan, atau ajakan.
+Contoh  :
+  1) 天気もいいことだし、散歩に行かない？
+     Cuacanya juga bagus, mau jalan-jalan?
+  2) 時間もあることだし、もう少しゆっくりしていこう。
+     Waktunya juga masih ada, mari kita santai sedikit lagi.
+
+[17-2] ~のことだから   (no koto dakara)
+Arti    : Mengingat ... (watak/kebiasaan orang itu), pasti ...
+Rumus   : N + のことだから
+Catatan : Dipakai terutama dengan kata yang menunjukkan orang. Kalimat
+          setelahnya berisi dugaan atau penilaian pembicara berdasarkan watak
+          atau sikap orang tersebut.
+Contoh  :
+  1) 時間にきびしい田中さんのことだから、もう会場に着いているだろう。
+     Mengingat Tanaka-san yang sangat disiplin waktu, dia pasti sudah tiba di lokasi.
+  2) 心配性の母のことだから、きっと何度も電話してくるよ。
+     Mengingat ibu saya yang pencemas, pasti dia akan menelepon berkali-kali.
+
+[17-3] ~だけに   (dake ni)
+Arti    : Justru karena ... (maka wajar demikian / lebih dari biasanya)
+Rumus   : N / Bentuk biasa (Adj-na: な・である ; N: である) + だけに
+Catatan : Kalimat setelahnya berisi keadaan atau tingkat yang sesuai dengan
+          alasan tersebut, dan tidak berupa keinginan/ajakan pembicara.
+Contoh  :
+  1) 彼は経験が豊富なだけに、判断が的確だ。
+     Justru karena pengalamannya kaya, penilaiannya tepat.
+  2) 期待していただけに、結果を聞いてがっかりした。
+     Justru karena sebelumnya sangat berharap, saya kecewa mendengar hasilnya.
+
+[17-4] ~ばかりに   (bakari ni)
+Arti    : Hanya gara-gara ... (terjadi hasil buruk yang tidak terduga) /
+          karena sangat ingin ... (sampai melakukan hal yang tidak biasa)
+Rumus   : Bentuk biasa (Adj-na: な・である ; N: である) + ばかりに
+Catatan : Pada makna pertama, hanya karena hal itu terjadilah hasil buruk yang
+          tak terduga; kalimat setelahnya tidak berupa keinginan/ajakan.
+          Jika diikuti ~たい (keinginan), kalimat setelahnya berisi hal yang
+          di luar kebiasaan (tidak harus bernuansa negatif).
+Contoh  :
+  1) 一度うそをついたばかりに、誰も信じてくれなくなった。
+     Hanya gara-gara sekali berbohong, tak seorang pun mau mempercayai saya lagi.
+  2) 彼女に会いたいばかりに、片道5時間かけて会いに行った。
+     Hanya karena ingin bertemu dengannya, saya menempuh perjalanan lima jam sekali jalan.
+
+[17-5] ~からには・~以上(は)・~上は   (kara ni wa / ijou (wa) / ue wa)
+Arti    : Karena sudah (memutuskan/menjadi) ..., maka tentu ...
+Rumus   : Bentuk biasa (Adj-na: である ; N: である) + からには・以上(は)
+          V-kamus / V-ta + 上は
+Catatan : Menyatakan hal yang umumnya dianggap wajar. Kalimat setelahnya
+          berisi penilaian, keinginan, niat, atau ajakan pembicara.
+Contoh  :
+  1) 引き受けたからには、最後まで責任を持ってやります。
+     Karena sudah menerimanya, saya akan melakukannya dengan tanggung jawab sampai akhir.
+  2) 社会人になった以上、自分の行動に責任を持つべきだ。
+     Karena sudah menjadi orang dewasa yang bekerja, kita harus bertanggung jawab atas tindakan sendiri.
+
+
+================================================================
+18課 ~できない・困難だ・~できる  (Tidak bisa / sulit / bisa)
+================================================================
+
+[18-1] ~がたい   (gatai)
+Arti    : Sulit untuk ... / tidak bisa ... (secara perasaan)
+Rumus   : V-masu stem + がたい
+Catatan : Tidak dipakai untuk ketidakmampuan secara kemampuan fisik/teknis.
+          Terutama dipakai dengan kata kerja yang menyatakan kerja hati
+          (想像する, 理解する, 信じる, dsb.) dan kata kerja ucapan
+          (言う, 表す, dsb.).
+Contoh  :
+  1) 彼がそんな嘘をついたとは信じがたい話だ。
+     Sulit dipercaya bahwa dia berbohong seperti itu.
+  2) 言葉では言い表しがたい感動を覚えた。
+     Saya merasakan keharuan yang sulit diungkapkan dengan kata-kata.
+
+[18-2] ~わけにはいかない・~わけにもいかない   (wake ni wa ikanai / wake ni mo ikanai)
+Arti    : Tidak bisa ... (karena ada alasan yang membuatnya tidak pantas
+          dilakukan)
+Rumus   : V-kamus + わけにはいかない・わけにもいかない
+Catatan : Dipakai ketika ada alasan seperti norma sosial atau beban
+          psikologis yang membuat suatu tindakan tidak bisa dilakukan.
+          Tidak dipakai untuk ketidakmampuan secara kemampuan. Subjeknya
+          biasanya orang pertama (saya).
+          Lihat juga 25課-4.
+Contoh  :
+  1) 大事な試験の前日だから、遊びに行くわけにはいかない。
+     Karena ini sehari sebelum ujian penting, saya tidak bisa pergi bermain.
+  2) 友達が作ってくれた料理を残すわけにもいかず、無理をして全部食べた。
+     Karena tidak enak meninggalkan masakan yang dibuatkan teman, saya
+     memaksakan diri menghabiskan semuanya.
+
+[18-3] ~かねる   (kaneru)
+Arti    : Tidak bisa ... (karena situasi, kondisi, atau posisi pembicara)
+Rumus   : V-masu stem + かねる
+Catatan : Tidak dipakai untuk ketidakmampuan secara kemampuan. Sering dipakai
+          untuk menolak dengan sopan. Berlawanan dengan 「~かねない」 (lihat 22-2).
+Contoh  :
+  1) 申し訳ありませんが、その件は私一人では決めかねます。
+     Mohon maaf, soal itu saya tidak bisa memutuskan sendirian.
+  2) 彼の意見には賛成しかねるが、気持ちはよくわかる。
+     Saya tidak bisa menyetujui pendapatnya, tetapi saya sangat paham perasaannya.
+
+[18-4] ~ようがない   (you ga nai)
+Arti    : Tidak ada cara untuk ... / sama sekali tidak mungkin ...
+Rumus   : V-masu stem + ようがない
+Catatan : Dipakai untuk makna "tidak ada cara sama sekali" atau "tidak mungkin
+          (~はずがない)". Menonjolkan nuansa ketidakmungkinan.
+Contoh  :
+  1) 住所も電話番号もわからないので、連絡のしようがない。
+     Karena alamat dan nomor teleponnya tidak diketahui, tidak ada cara
+     untuk menghubunginya.
+  2) こんなに壊れていては、もう直しようがありません。
+     Kalau sudah rusak separah ini, sudah tidak ada cara memperbaikinya.
+
+[18-5] ~どころではない   (dokoro dewa nai)
+Arti    : Tidak dalam keadaan bisa ... (apalagi untuk ...)
+Rumus   : N / V-kamus + どころではない
+Catatan : Dipakai ketika karena suatu keadaan (tidak ada uang, tidak ada waktu,
+          berisik, sakit, dsb.), hal yang diharapkan atau dibayangkan sama
+          sekali tidak bisa dilakukan.
+          Lihat juga 12課-2.
+Contoh  :
+  1) 明日が締め切りで、映画を見に行くどころではない。
+     Besok adalah tenggat, saya tidak dalam keadaan bisa pergi menonton film.
+  2) 風邪で熱が高く、勉強どころではなかった。
+     Demam tinggi karena flu, belajar pun sama sekali tidak mungkin.
+
+[18-6] ~得る/~得ない   (uru / enai)
+Arti    : Bisa terjadi / mungkin terjadi ; tidak mungkin terjadi
+Rumus   : V-masu stem + 得る・得ない
+Catatan : Sulit dipakai untuk kemampuan sehari-hari orang tertentu (mis. bisa
+          berbahasa Inggris) atau kemungkinan situasional (mis. karena tidak
+          minum, bisa mengemudi). 「得る」 punya dua cara baca (える・うる),
+          tetapi sebagai pola ini lebih sering dibaca 「うる」. Bentuk
+          negatifnya dibaca 「えない」.
+Contoh  :
+  1) 誰にでも起こり得る事故だから、注意が必要だ。
+     Karena ini kecelakaan yang bisa terjadi pada siapa saja, perlu waspada.
+  2) 約束を破るなんて、彼に限ってあり得ない。
+     Mengingkari janji, khusus dia itu tidak mungkin.
+
+
+================================================================
+19課 ~を見て評価すると・~の立場で評価すると  (Menilai dari ... / dari sudut pandang ...)
+================================================================
+
+[19-1] ~わりに(は)   (wari ni (wa))
+Arti    : Dibandingkan (standar) ... , ternyata ... (tidak sesuai dugaan)
+Rumus   : N-の / V・Adj bentuk biasa (Adj-na: な・である ; N: の・である)
+          + わりに(は)
+Catatan : Dipakai dengan kata yang punya rentang makna/tingkat (umur, harga,
+          mengkhawatirkan, muda, dsb.). Kalimat setelahnya berisi penilaian
+          bahwa hasilnya tidak sesuai dengan tingkat yang diperkirakan.
+Contoh  :
+  1) このホテルは料金が安いわりに、部屋が広くて清潔だ。
+     Untuk ukuran tarifnya yang murah, kamar hotel ini luas dan bersih.
+  2) 彼はあまり勉強しなかったわりには、いい点数を取った。
+     Dibandingkan dengan sedikitnya dia belajar, nilainya cukup bagus.
+
+[19-2] ~にしては   (ni shite wa)
+Arti    : Untuk ukuran ... (ternyata di luar dugaan)
+Rumus   : N / V・Adj bentuk biasa (Adj-na: だ→ー/である ; N: だ→ー/である)
+          + にしては
+Catatan : Cenderung dipakai pada hal tertentu yang tidak punya rentang
+          (mis. bulan Februari, 1.000 yen, dibuat oleh anak). Kalimat
+          setelahnya berisi penilaian bahwa kenyataannya berbeda dari
+          perkiraan.
+Contoh  :
+  1) 初めて作ったにしては、とても上手にできている。
+     Untuk ukuran pertama kali membuat, hasilnya sangat bagus.
+  2) 新人にしては、落ち着いて対応していたね。
+     Untuk ukuran karyawan baru, dia menanganinya dengan tenang ya.
+
+[19-3] ~だけ(のことは)ある   (dake (no koto wa) aru)
+Arti    : Pantas saja ... / memang sesuai dengan ... (hasil sesuai harapan)
+Rumus   : N / V・Adj bentuk biasa (Adj-na: な) + だけ(のことは)ある
+          * N tidak diikuti だ (tidak dipakai dalam bentuk N+だ)
+Catatan : Kalimat setelah 「~だけあって」 berisi penilaian tinggi. Tidak
+          diikuti kalimat tentang masa depan atau dugaan.
+Contoh  :
+  1) 一流のホテルだけあって、サービスが行き届いている。
+     Memang hotel kelas satu, pelayanannya sangat teliti.
+  2) さすがプロだけのことはあって、どんな質問にも的確に答えてくれた。
+     Pantas saja seorang profesional, ia menjawab setiap pertanyaan dengan tepat.
+
+[19-4] ~として   (to shite)
+Arti    : Sebagai ... (kedudukan, kualifikasi, peran, atau nama)
+Rumus   : N + として
+Catatan : Setelahnya muncul kata kerja yang menyatakan tindakan/keadaan, kata
+          bernilai (dikenal, terkenal, dsb.), serta kata yang menyatakan
+          penilaian (wajar, memalukan, dsb.).
+Contoh  :
+  1) 彼は医者として、また作家としても活躍している。
+     Dia berkiprah sebagai dokter, dan juga sebagai penulis.
+  2) 留学生として来日し、今は会社員として働いている。
+     Dia datang ke Jepang sebagai mahasiswa asing, dan kini bekerja sebagai
+     karyawan perusahaan.
+
+[19-5] ~にとって   (ni totte)
+Arti    : Bagi ... (menurut sudut pandang ...)
+Rumus   : N + にとって
+Catatan : Terutama dipakai dengan kata benda yang menunjukkan orang. Kalimat
+          setelahnya berisi penilaian orang tersebut (terutama kalimat
+          adjektiva). Tidak diikuti kalimat yang menyatakan tindakan.
+Contoh  :
+  1) 子どもにとって、遊びは大切な学びの場だ。
+     Bagi anak-anak, bermain adalah tempat belajar yang penting.
+  2) この仕事は私にとって、大きな挑戦です。
+     Pekerjaan ini bagi saya adalah tantangan besar.
+
+[19-6] ~にしたら・~にすれば・~にしてみれば・~にしても   (ni shitara / ni sureba / ni shite mireba / ni shite mo)
+Arti    : Kalau dilihat dari posisi/sudut pandang ... (menyatakan sesuatu dari
+          sisi orang tersebut)
+Rumus   : N + にしたら・にすれば・にしてみれば・にしても
+Catatan : Biasanya dipakai dengan kata yang menunjukkan orang selain pembicara.
+          Kalimat setelahnya berisi dugaan perasaan orang tersebut dengan
+          menempatkan diri pada posisinya.
+          Lihat juga 15課-6.
+Contoh  :
+  1) 親にしてみれば、子どもがいくつになっても心配なものだ。
+     Dari sudut pandang orang tua, anak berapa pun usianya tetap saja
+     mengkhawatirkan.
+  2) 突然転勤を言い渡された本人にすれば、納得できないだろう。
+     Bagi orang yang tiba-tiba diperintahkan pindah tugas, tentu sulit
+     menerimanya.
+
+
+================================================================
+20課 結果はどうなったか  (Bagaimana hasilnya)
+================================================================
+
+[20-1] ~たところ   (ta tokoro)
+Arti    : Ketika dicoba ..., ternyata ... (hasil/keadaan diketahui)
+Rumus   : V-ta + ところ
+Catatan : Dipakai untuk kejadian yang terjadi sekali di masa lalu. Kalimat
+          setelahnya berisi hasil. Dibandingkan pola 「~たら…た」, lebih
+          menitikberatkan pada bagaimana hasilnya.
+Contoh  :
+  1) 駅員に道を尋ねたところ、親切に案内してくれた。
+     Ketika saya menanyakan jalan kepada petugas stasiun, dia dengan ramah
+     menunjukkan arahnya.
+  2) 先生に相談してみたところ、留学を勧められた。
+     Ketika saya berkonsultasi dengan guru, saya disarankan untuk studi ke
+     luar negeri.
+
+[20-2] ~きり   (kiri)
+Arti    : Setelah ... (begitu saja, keadaan yang sama terus berlanjut)
+Rumus   : V-ta + きり
+Catatan : Setelahnya muncul kalimat yang menyatakan keadaan di mana hal yang
+          diperkirakan terjadi berikutnya belum terjadi. Banyak berupa
+          kalimat negatif. 「それきり」 adalah ungkapan yang sudah baku.
+Contoh  :
+  1) 兄は家を出たきり、連絡がない。
+     Kakak laki-laki saya pergi dari rumah dan sejak itu tidak ada kabar.
+  2) 彼とは卒業式で会ったきり、一度も会っていない。
+     Sejak bertemu dengannya di upacara kelulusan, saya belum pernah
+     bertemu lagi.
+
+[20-3] ~あげく   (ageku)
+Arti    : Setelah berbagai hal dilakukan, akhirnya ... (hasil yang disayangkan)
+Rumus   : N-の / V-ta + あげく
+Catatan : Dipakai untuk makna keadaan berat yang berlangsung lama. Kalimat
+          setelahnya jarang berisi hasil yang baik.
+Contoh  :
+  1) 長い間迷ったあげく、結局その仕事を断った。
+     Setelah lama bimbang, akhirnya saya menolak pekerjaan itu.
+  2) 口論のあげく、二人は別れてしまった。
+     Setelah adu mulut, akhirnya mereka berdua berpisah.
+
+[20-4] ~末(に)   (sue (ni))
+Arti    : Setelah berbagai hal ..., akhirnya (hasil akhir)
+Rumus   : N-の / V-ta + 末(に)
+Catatan : Dipakai untuk kalimat yang berarti keadaan berat yang berlangsung
+          lama. Kalimat setelahnya berisi akhir, kesimpulan, atau keputusan.
+Contoh  :
+  1) 何度も話し合った末に、引っ越しを決めた。
+     Setelah berkali-kali berdiskusi, akhirnya kami memutuskan pindah rumah.
+  2) 厳しい練習の末、ついに全国大会で優勝した。
+     Setelah latihan keras, akhirnya mereka menjuarai kejuaraan nasional.
+
+[20-5] ~ところだった   (tokoro datta)
+Arti    : Hampir saja ... (tetapi kenyataannya tidak jadi)
+Rumus   : V-kamus / V-nai + ところだった
+Catatan : Sering dipakai bersama kata keterangan seperti 「うっかり・危うく」
+          untuk kalimat yang menyatakan hampir terjadi situasi buruk. Dengan
+          「~のに」 juga bisa dipakai untuk menyatakan situasi baik yang
+          nyaris terjadi. Sulit dipakai untuk hal yang tidak bisa dihindari
+          meski sudah berhati-hati (misalnya fenomena alam).
+Contoh  :
+  1) 階段で足を滑らせて、もう少しで落ちるところだった。
+     Kaki saya terpeleset di tangga, nyaris saja jatuh.
+  2) 目覚ましが鳴らず、危うく飛行機に乗り遅れるところだった。
+     Alarm tidak berbunyi, nyaris saja saya ketinggalan pesawat.
+
+[20-6] ~ずじまいだ   (zu jimai da)
+Arti    : Akhirnya tidak jadi ... (padahal sudah berniat)
+Rumus   : V-nai (tanpa ない) + ずじまいだ
+          * Pengecualian: する → せずじまい
+Catatan : Secara keseluruhan menyatakan perasaan menyesal karena kehilangan
+          kesempatan. Banyak dipakai dalam bentuk lampau. Tidak dipakai jika
+          masih ada kesempatan.
+Contoh  :
+  1) 忙しくて、結局その映画は見ずじまいだった。
+     Karena sibuk, akhirnya saya tidak jadi menonton film itu.
+  2) 返事を待っていたが、先生からは何も言われずじまいだった。
+     Saya menunggu jawaban, tetapi akhirnya tidak ada apa pun dari guru.
+
+
+================================================================
+21課 強く言う・軽く言う  (Menyatakan dengan kuat / dengan ringan)
+================================================================
+
+[21-1] ~ぐらい・~くらい   (gurai / kurai)
+Arti    : Setidaknya / sekadar ... (tingkatnya ringan, batas minimum)
+Rumus   : N / V・Adj bentuk biasa (Adj-na: な) + ぐらい・くらい
+Catatan : Dipakai dengan kata yang oleh pembicara dianggap ringan tingkatnya.
+          Untuk kata benda, 「ぐらい」 lebih sering dipakai.
+Contoh  :
+  1) 挨拶ぐらい、ちゃんとしなさい。
+     Memberi salam saja, lakukan dengan benar.
+  2) 少し熱があるくらいなら、学校に行けるよ。
+     Kalau hanya demam sedikit, kamu masih bisa pergi ke sekolah.
+
+[21-2] ~など・~なんか・~なんて   (nado / nanka / nante)
+Arti    : Hal seperti ... (menganggap rendah nilainya / tidak penting)
+Ragam   : 「~なんか・~なんて」 adalah bahasa lisan
+Rumus   : N (+partikel) + など・なんか・なんて
+Catatan : Dipakai dengan kata yang dianggap pembicara bernilai rendah.
+          「~なんか・~なんて」 adalah ungkapan yang lebih kasar/santai. Kalimat
+          setelahnya sering berisi ungkapan negatif atau niat/saran
+          pembicara.
+Contoh  :
+  1) 私など、まだまだ未熟者です。
+     Orang seperti saya ini masih sangat belum matang.
+  2) あんな人の言うことなんか、気にしなくていいよ。
+     Tidak usah memikirkan omongan orang seperti itu.
+
+[21-3] ~まで・~までして・~てまで   (made / made shite / te made)
+Arti    : Bahkan sampai ... (tingkat ekstrem)
+Rumus   : N (+partikel) + まで・までして
+          V-te + まで
+Catatan : Dipakai dengan kata yang menyajikan contoh ekstrem dan tak terduga.
+          「~までして・~てまで」 menunjukkan cara/keadaan yang membuat
+          pembicara terkejut atau heran, dan secara keseluruhan menyatakan
+          celaan, keraguan, atau keterkejutan.
+Contoh  :
+  1) 親友にまで秘密にされていたなんて、ショックだ。
+     Sampai dirahasiakan bahkan oleh sahabat sendiri, saya syok.
+  2) 借金までして、高級時計を買う必要があるのだろうか。
+     Apakah perlu sampai berutang untuk membeli jam tangan mewah?
+
+[21-4] ~として~ない   (to shite ~ nai)
+Arti    : Tidak ada satu pun ... (menyangkal sampai batas minimum)
+Rumus   : (何・だれ +) 一 + penghitung + として~ない
+Catatan : Dipakai dengan satuan terkecil 「一 + penghitung」. Kalimat
+          setelahnya berupa kalimat negatif.
+Contoh  :
+  1) 今日は一人として遅刻した学生がいなかった。
+     Hari ini tidak ada seorang pun mahasiswa yang terlambat.
+  2) その店には、一つとして同じ商品はない。
+     Di toko itu tidak ada satu pun barang yang sama.
+
+[21-5] ~さえ   (sae)
+Arti    : A) Bahkan ... (contoh ekstrem; apalagi yang lain)
+          B) Asalkan ... saja (satu syarat terpenuhi, hal lain tidak masalah)
+Rumus   : N (+partikel) + さえ
+          B) ~さえ~ば・~さえ~なら・~さえ~たら
+Catatan : A) Dipakai dengan kata yang menyajikan contoh ekstrem dan tak
+          terduga. Kalimat setelahnya tidak berupa kalimat yang menyatakan
+          kehendak pembicara atau ajakan. 「でさえ」 berarti 「であっても」 dan
+          dipakai ketika subjek yang ditandai 「が」 bisa diungkapkan juga.
+          B) Dalam bentuk 「~さえ~ば・なら・たら」 menyatakan syarat minimum
+          yang diperlukan.
+Contoh  :
+  1) 子どもでさえ知っていることを、彼は知らなかった。   (makna A)
+     Dia tidak tahu hal yang bahkan anak kecil pun tahu.
+  2) 天気さえよければ、明日は出発できる。   (makna B)
+     Asalkan cuacanya bagus, besok kita bisa berangkat.
+
+[21-6] ~てでも   (te demo)
+Arti    : Bahkan dengan cara ... sekalipun (siap melakukan hal yang biasanya
+          tidak dilakukan)
+Rumus   : V-te + でも
+Catatan : Dipakai dengan kata kerja yang menyatakan cara yang ekstrem.
+          Kalimat setelahnya berisi harapan atau niat pembicara.
+Contoh  :
+  1) 徹夜してでも、この仕事を終わらせたい。
+     Meskipun harus begadang, saya ingin menyelesaikan pekerjaan ini.
+  2) 無理をしてでも、明日の試合には出場するつもりだ。
+     Meskipun harus memaksakan diri, saya berniat ikut pertandingan besok.
+
+
+################################################################
+III. 主観を述べる  (Menyatakan pandangan/perasaan pembicara)
+################################################################
+
+
+================================================================
+22課 ~だろうと思う  (Kurasa ... / dugaan)
+================================================================
+
+[22-1] ~とみえる   (to mieru)
+Arti    : Tampaknya ... (dugaan berdasarkan suatu bukti)
+Rumus   : Bentuk biasa + とみえる
+Catatan : Terutama dipakai pada kalimat yang menyatakan dugaan berdasarkan
+          bukti dari melihat keadaan orang lain. Orang yang menduga tidak
+          muncul dalam kalimat.
+Contoh  :
+  1) 道が濡れている。夜のうちに雨が降ったとみえる。
+     Jalannya basah. Tampaknya semalam hujan turun.
+  2) 彼は試験に落ちたとみえて、朝から元気がない。
+     Tampaknya dia gagal ujian, sejak pagi dia lesu.
+
+[22-2] ~かねない   (kanenai)
+Arti    : Bisa saja ... (ada kemungkinan hasil buruk)
+Rumus   : V-masu stem + かねない
+Catatan : Dipakai dengan makna "dari keadaan saat ini, bisa jadi berakibat
+          negatif". Penyebabnya lebih jelas dibandingkan 「~おそれがある」.
+Contoh  :
+  1) 睡眠不足のまま運転すると、事故を起こしかねない。
+     Kalau mengemudi dalam keadaan kurang tidur, bisa saja menyebabkan
+     kecelakaan.
+  2) そんなやり方では、お客さんを怒らせかねない。
+     Dengan cara seperti itu, bisa saja pelanggan jadi marah.
+
+[22-3] ~おそれがある   (osore ga aru)
+Arti    : Dikhawatirkan ... (ada kemungkinan hal buruk terjadi)
+Ragam   : 硬い言い方 (formal)
+Rumus   : N-の / V-kamus・V-nai + おそれがある
+Catatan : Dipakai untuk makna bahwa situasi bisa menjadi negatif. Dipakai
+          dalam berita, penjelasan, dsb.
+Contoh  :
+  1) 台風の影響で、明日は電車が止まるおそれがあります。
+     Karena pengaruh topan, dikhawatirkan besok kereta berhenti beroperasi.
+  2) このまま放置すると、川が氾濫するおそれがある。
+     Kalau dibiarkan begini, dikhawatirkan sungai akan meluap.
+
+[22-4] ~まい/~ではあるまいか   (mai / dewa arumai ka)
+Arti    : Tidak akan ... / bukankah ... (dugaan)
+Ragam   : 書き言葉 (bahasa tulis)
+Rumus   : V-kamus (V gol.I, I-adj く+ある, Adj-na ー+ではある, N ー+ではある)
+          + まい
+          Bentuk biasa + の (Adj-na: だ→なの ; N: だ→なの) + ではあるまいか
+          * V gol.II・III: V-kamus / V-nai(tanpa ない) + まい
+            する → するまい・すまい
+Catatan : Tidak dipakai dalam bentuk sopan atau lampau. Biasanya orang pertama
+          tidak menjadi subjek. 「~ではあるまいか」 berbentuk pertanyaan yang
+          menyatakan dugaan atau pendapat pembicara secara tidak langsung.
+          Lihat juga 24課-5.
+Contoh  :
+  1) 彼がこの約束を忘れることはあるまい。
+     Tidak mungkin dia lupa janji ini.
+  2) このまま値上がりが続けば、消費者の負担は限界を超えるのではあるまいか。
+     Kalau harga terus naik begini, bukankah beban konsumen akan melampaui batas?
+
+[22-5] ~に違いない・~に相違ない   (ni chigainai / ni souinai)
+Arti    : Pasti ... (yakin berdasarkan suatu bukti)
+Ragam   : 「~に相違ない」 → 硬い言い方 (formal)
+Rumus   : Bentuk biasa (Adj-na: だ→ー/である ; N: だ→ー/である)
+          + に違いない・に相違ない
+Catatan : Ada kalanya disambung dengan 「bentuk biasa + から」 sebelum
+          「に違いない」.
+Contoh  :
+  1) 電気がついているから、彼はまだ会社にいるに違いない。
+     Lampunya menyala, jadi dia pasti masih ada di kantor.
+  2) この手紙を書いたのは、本人に相違ない。
+     Yang menulis surat ini pasti orang yang bersangkutan sendiri.
+
+[22-6] ~にきまっている   (ni kimatte iru)
+Arti    : Sudah pasti ... (menurut pembicara, tidak mungkin lain)
+Ragam   : 話し言葉 (bahasa lisan)
+Rumus   : Bentuk biasa (Adj-na: だ ; N: だ) + にきまっている
+Catatan : Berbeda dengan 「~に違いない」, pola ini adalah cara bicara yang
+          subjektif/intuitif bahwa "siapa pun yang memikirkannya pasti ~".
+Contoh  :
+  1) そんな高い店、おいしいにきまっているよ。
+     Toko semahal itu, sudah pasti enak.
+  2) 練習しなければ、試合に負けるにきまっている。
+     Kalau tidak latihan, sudah pasti kalah dalam pertandingan.
+
+
+================================================================
+23課 感想を言う・主張する  (Menyatakan kesan / berpendapat)
+================================================================
+
+[23-1] ~ものだ   (mono da)
+Arti    : Memang pada dasarnya ... (kebenaran/kebiasaan umum)
+Rumus   : V-kamus・V-nai / Adj-i い / Adj-na な + ものだ
+Catatan : Tidak dipakai dalam bentuk lampau. Subjeknya bukan hal individual,
+          melainkan sesuatu yang bersifat umum (manusia, orang tua, dunia, dsb.).
+          Lihat juga 24課-3, 26課-2.
+Contoh  :
+  1) 子どもは、ほめられると嬉しいものだ。
+     Anak-anak itu memang senang kalau dipuji.
+  2) 年を取ると、体が思うように動かなくなるものだ。
+     Memang begitulah, kalau bertambah umur tubuh tidak bergerak sesuai
+     keinginan.
+
+[23-2] ~というものだ   (to iu mono da)
+Arti    : Itulah yang namanya ... (menurut akal sehat, memang begitu)
+Rumus   : Bentuk biasa (Adj-na: だ→ー ; N: だ→ー) + というものだ
+Catatan : Menyatakan penilaian "kalau dipikir secara akal sehat, memang
+          demikian" terhadap suatu keadaan. Tidak dipakai dengan kata yang
+          menyatakan perasaan pembicara.
+Contoh  :
+  1) 一晩で全部覚えろなんて、無茶というものだ。
+     Disuruh menghafal semuanya dalam semalam, itu namanya keterlaluan.
+  2) 人の日記を勝手に読むのは、失礼というものだ。
+     Membaca buku harian orang lain seenaknya itu namanya tidak sopan.
+
+[23-3] ~にすぎない   (ni suginai)
+Arti    : Hanyalah ... (tidak lebih dari itu)
+Rumus   : N / Bentuk biasa (Adj-na: だ→ー/である ; N: だ→ー/である)
+          + にすぎない
+Catatan : Dipakai untuk hal yang dianggap pembicara tidak istimewa, tidak
+          penting, atau sedikit.
+Contoh  :
+  1) 私はただの見物客にすぎません。
+     Saya hanyalah seorang penonton biasa.
+  2) それは単なるうわさにすぎない。
+     Itu hanyalah desas-desus belaka.
+
+[23-4] ~にほかならない   (ni hoka naranai)
+Arti    : Tidak lain adalah ... (tidak ada selain itu)
+Ragam   : 硬い言い方 (formal)
+Rumus   : N + にほかならない
+Catatan : Cara bicara yang menyatakan penilaian tegas pembicara. Ada kalanya
+          disambung dengan 「bentuk biasa + から」 sebelum 「にほかならない」.
+Contoh  :
+  1) 今回の成功は、チーム全員の努力の結果にほかならない。
+     Keberhasilan kali ini tidak lain adalah hasil kerja keras seluruh tim.
+  2) 彼が反対するのは、あなたのことを心配しているからにほかならない。
+     Dia menentang tidak lain karena mengkhawatirkan kamu.
+
+[23-5] ~に越したことはない   (ni koshita koto wa nai)
+Arti    : Tentu lebih baik ... (tidak ada yang lebih baik daripada itu)
+Rumus   : Bentuk biasa sekarang (Adj-na: だ→ー/である ; N: だ→ー/である)
+          + に越したことはない
+Catatan : Menyatakan penilaian "tidak harus seperti itu secara mutlak, tetapi
+          lebih baik begitu".
+Contoh  :
+  1) 旅行の予約は、早いに越したことはない。
+     Untuk pemesanan perjalanan, tentu lebih baik secepatnya.
+  2) 健康診断は、毎年受けるに越したことはない。
+     Pemeriksaan kesehatan tentu lebih baik dilakukan setiap tahun.
+
+[23-6] ~しかない・~よりほかない   (shika nai / yori hoka nai)
+Arti    : Tidak ada pilihan selain ... / hanya bisa ...
+Rumus   : V-kamus + しかない・よりほかない
+Catatan : Menyatakan perasaan pembicara "tidak ada ruang pilihan lain, jadi
+          terpaksa memilih ini". Dapat juga dipakai dengan perasaan memilih
+          pilihan itu secara aktif.
+Contoh  :
+  1) 終電に間に合わないから、タクシーで帰るしかない。
+     Karena tidak sempat kereta terakhir, tidak ada pilihan selain pulang
+     naik taksi.
+  2) ここまで来たら、最後までやり抜くよりほかない。
+     Sudah sampai sejauh ini, tidak ada jalan lain selain menyelesaikannya
+     sampai akhir.
+
+[23-7] ~べきだ/~べきではない   (beki da / beki dewa nai)
+Arti    : Seharusnya ... / tidak seharusnya ...
+Rumus   : V-kamus + べきだ・べきではない
+          V-kamus + べき・べきではない + N
+          * Pengecualian: する → するべき・すべき
+Catatan : Menyatakan pendapat/pendirian pembicara. Tidak dipakai untuk hal
+          yang sudah ditentukan oleh aturan. Sebaiknya tidak dipakai langsung
+          kepada orang yang kedudukannya lebih tinggi.
+Contoh  :
+  1) 約束した以上、守るべきだ。
+     Karena sudah berjanji, seharusnya ditepati.
+  2) 他人の悪口を言うべきではない。
+     Tidak seharusnya kita menjelek-jelekkan orang lain.
+
+
+================================================================
+24課 提案する・意志を表す  (Mengusulkan / menyatakan kehendak)
+================================================================
+
+[24-1] ~(よ)うではないか   ((yo)u de wa nai ka)
+Arti    : Mari kita ... (ajakan untuk bersama-sama melakukan)
+Ragam   : 硬い言い方 (formal)
+Rumus   : V-volitional (bentuk う・よう) + ではないか
+Catatan : Ungkapan ajakan kuat yang bernuansa maskulin, sering terdengar dalam
+          pidato politikus. Tidak banyak dipakai dalam percakapan sehari-hari.
+          Dipakai untuk menyeru banyak orang.
+Contoh  :
+  1) みんなで力を合わせて、町をきれいにしようではないか。
+     Mari kita bersama-sama bekerja sama membersihkan kota ini.
+  2) 困っている人がいれば、助けようじゃないか。
+     Kalau ada orang yang kesulitan, mari kita tolong.
+
+[24-2] ~ことだ   (koto da)
+Arti    : Yang penting/sebaiknya ... (nasihat)
+Rumus   : V-kamus / V-nai + ことだ
+Catatan : Tidak ada bentuk lampau, negatif, atau pertanyaan. Dipakai dengan
+          kata kerja yang menyatakan kehendak. Karena berupa ungkapan
+          peringatan/nasihat, sebaiknya tidak dipakai kepada orang yang
+          kedudukannya lebih tinggi.
+          Lihat juga 26課-5.
+Contoh  :
+  1) 日本語が上手になりたければ、毎日少しずつ練習することだ。
+     Kalau ingin mahir bahasa Jepang, yang penting berlatih sedikit demi
+     sedikit setiap hari.
+  2) 風邪をひきたくなければ、よく手を洗うことです。
+     Kalau tidak ingin masuk angin, sebaiknya rajin mencuci tangan.
+
+[24-3] ~ものだ/~ものではない   (mono da / mono dewa nai)
+Arti    : Sebaiknya ... / seharusnya ... ; sebaiknya tidak ... / tidak boleh ...
+Rumus   : V-kamus・V-nai + ものだ
+          V-kamus + ものではない
+Catatan : Menyatakan akal sehat/norma pada umumnya. Tidak dipakai jika
+          sasarannya sesuatu atau seseorang yang spesifik. Sebaiknya tidak
+          dipakai kepada orang yang kedudukannya lebih tinggi.
+          Lihat juga 23課-1, 26課-2.
+Contoh  :
+  1) 人から借りた物は、きちんと返すものだ。
+     Barang yang dipinjam dari orang lain itu seharusnya dikembalikan dengan
+     benar.
+  2) 人の秘密を勝手に話すものではない。
+     Tidak boleh membicarakan rahasia orang lain sembarangan.
+
+[24-4] ~ことはない   (koto wa nai)
+Arti    : Tidak perlu ...
+Rumus   : V-kamus + ことはない
+Catatan : Menyatakan penilaian pembicara. Tidak ada bentuk pertanyaan. Kurang
+          dipakai untuk hal yang menyangkut diri pembicara sendiri. Tidak
+          dipakai untuk kasus yang sejak awal sudah pasti tidak diperlukan.
+Contoh  :
+  1) まだ時間があるから、そんなに急ぐことはないよ。
+     Masih ada waktu, jadi tidak perlu terburu-buru seperti itu.
+  2) 一度失敗したくらいで、落ち込むことはない。
+     Tidak perlu putus asa hanya karena gagal sekali.
+
+[24-5] ~まい/~(よ)うか~まいか   (mai / (yo)u ka ~ mai ka)
+Arti    : Tidak akan ... (tidak berniat) / apakah akan ... atau tidak
+Rumus   : V-kamus (V gol.II・III: V-kamus / V-nai tanpa ない) + まい
+          * する → するまい・すまい
+          V-volitional + か + V-kamus + まいか (memakai kata kerja yang sama)
+Catatan : Jika yang dimaksud adalah kehendak orang selain pembicara, diperlukan
+          「~と思っているようだ・~としている」, dsb. Jika kata-kata ini
+          tidak ada, maknanya menjadi dugaan.
+          Lihat juga 22課-4.
+Contoh  :
+  1) もう二度と彼には頼むまいと心に決めた。
+     Saya bertekad dalam hati untuk tidak akan lagi meminta tolong padanya.
+  2) 新しいパソコンを買おうか買うまいか、まだ決められない。
+     Saya masih belum bisa memutuskan apakah akan membeli komputer baru atau
+     tidak.
+
+[24-6] ~ものか   (mono ka)
+Arti    : Mana mungkin ... / sama sekali tidak akan ...
+Rumus   : V-kamus + ものか
+Catatan : Menyatakan penyangkalan kehendak dengan sedikit emosional dan kuat.
+          「もんか」 adalah bentuk yang lebih santai.
+          Lihat juga 12課-3.
+Contoh  :
+  1) あんな店、二度と行くものか。
+     Toko seperti itu, mana mau saya datangi lagi.
+  2) 彼なんかに負けるものか。
+     Mana mungkin saya kalah dari orang seperti dia.
+
+
+================================================================
+25課 強くそう感じる・思いが強いられる  (Merasa kuat / dorongan perasaan yang tak tertahankan)
+================================================================
+
+[25-1] ~てしかたがない・~てしょうがない・~てたまらない   (te shikata ga nai / te shouga nai / te tamaranai)
+Arti    : ... sekali / tidak tertahankan (merasa sangat ...)
+Rumus   : V-te / Adj-i く + て / Adj-na で
+          + しかたがない・しょうがない・たまらない
+Catatan : Dipakai dengan kata yang menyatakan perasaan atau keinginan
+          pembicara. Terutama 「~てたまらない」 sering dipakai untuk hal yang
+          dirasakan oleh tubuh. Jika subjeknya orang ketiga, ditambahkan
+          「ようだ・らしい」, dsb.
+Contoh  :
+  1) 明日から旅行なので、楽しみでしかたがない。
+     Karena besok mulai bepergian, saya tidak sabar sekali.
+  2) 夏の暑さで、のどが渇いてたまらない。
+     Karena panasnya musim panas, saya haus sekali.
+
+[25-2] ~てならない   (te naranai)
+Arti    : ... sekali (perasaan sangat kuat tak tertahankan)
+Rumus   : V-te / Adj-i く + て / Adj-na で + ならない
+Catatan : Dipakai dengan kata kerja yang menyatakan perasaan yang muncul
+          secara alami (気がする, 思える, 感じられる, dsb.) dan dengan kata
+          yang menyatakan perasaan/sensasi tubuh pembicara. Sering menyatakan
+          perasaan negatif. Jika subjeknya orang ketiga tertentu, ditambahkan
+          「ようだ・らしい」, dsb.
+Contoh  :
+  1) あの日のことが、今でも悔やまれてならない。
+     Kejadian hari itu sampai sekarang masih sangat saya sesali.
+  2) 試験の結果が気になってならない。
+     Saya sangat gelisah memikirkan hasil ujian.
+
+[25-3] ~ないではいられない・~ずにはいられない   (nai de wa irarenai / zu ni wa irarenai)
+Arti    : Tidak bisa tidak ... (tak tertahankan melakukannya)
+Rumus   : V-nai + ではいられない
+          V-nai (tanpa ない) + ずにはいられない
+          * Pengecualian: する → せずにはいられない
+Catatan : Menyatakan perasaan atau tindakan pribadi yang muncul secara alami.
+          Jika subjeknya orang ketiga tertentu, ditambahkan 「そうだ・ようだ・
+          らしい」, dsb.
+Contoh  :
+  1) 感動的な話を聞いて、涙を流さずにはいられなかった。
+     Mendengar cerita yang mengharukan, saya tak bisa menahan air mata.
+  2) 困っている人を見ると、手を貸さないではいられない。
+     Kalau melihat orang kesulitan, saya tidak bisa tidak membantunya.
+
+[25-4] ~ないわけには(は)いかない   (nai wake ni (wa) ikanai)
+Arti    : Mau tidak mau harus ... (karena ada alasan)
+Rumus   : V-nai + わけに(は)いかない
+Catatan : Dipakai dengan kata kerja yang menyatakan kehendak. Subjeknya
+          cenderung orang pertama, bukan orang ketiga tertentu, dan jarang
+          muncul dalam kalimat. Sering ada kalimat yang menyatakan alasan
+          seperti norma sosial atau kewajiban di depan atau belakangnya.
+          Lihat juga 18課-2.
+Contoh  :
+  1) 親友の結婚式だから、忙しくても出席しないわけにはいかない。
+     Karena ini pernikahan sahabat, walau sibuk saya tidak bisa tidak hadir.
+  2) 上司の誘いなので、断らないわけにはいかない。
+     Karena ini ajakan atasan, saya tidak enak untuk tidak menerimanya.
+
+[25-5] ~ざるを得ない   (zaru o enai)
+Arti    : Terpaksa harus ... (tidak mau, tetapi tidak ada jalan lain)
+Rumus   : V-nai (tanpa ない) + ざるを得ない
+          * Pengecualian: する → せざるを得ない
+Catatan : Dipakai dengan kata kerja yang menyatakan kehendak. Subjeknya
+          cenderung orang pertama, bukan orang ketiga tertentu, dan jarang
+          muncul dalam kalimat.
+Contoh  :
+  1) 台風のため、旅行を中止せざるを得なかった。
+     Karena topan, kami terpaksa membatalkan perjalanan.
+  2) 状況が変わった以上、計画を見直さざるを得ない。
+     Karena situasinya sudah berubah, kita terpaksa meninjau ulang rencana.
+
+
+================================================================
+26課 願う・感動する  (Berharap / tersentuh)
+================================================================
+
+[26-1] ~たいものだ・~てほしいものだ   (tai mono da / te hoshii mono da)
+Arti    : Sungguh ingin ... / sungguh berharap ... (keinginan dari hati)
+Rumus   : V-masu stem + たいものだ
+          V-te / V-nai de + ほしいものだ
+Catatan : Dipakai untuk menyatakan harapan yang datang dari dalam hati atau
+          harapan yang bersifat umum. Tidak dipakai saat menyampaikan
+          harapan atau permintaan yang konkret secara langsung.
+Contoh  :
+  1) いつか世界中を旅してみたいものだ。
+     Suatu hari saya sungguh ingin berkeliling dunia.
+  2) 子どもたちには、平和な世界で育ってほしいものだ。
+     Saya sungguh berharap anak-anak tumbuh di dunia yang damai.
+
+[26-2] ~ものだ   (mono da)
+Arti    : A) Dulu biasa ... (mengenang kebiasaan masa lalu)
+          B) Sungguh ... (merasa sangat kagum / heran / jengkel)
+Rumus   : A) V-ta + ものだ
+          B) V・Adj bentuk biasa (Adj-na: だ→な) + ものだ
+Catatan : A) Tidak dipakai untuk hal yang hanya terjadi sekali.
+          B) Tidak dipakai untuk tindakan yang disengaja pembicara. Sering
+          dipakai bersama kata sifat yang menyatakan perasaan subjektif
+          pembicara dan kata keterangan (よく, ずいぶん, dsb.).
+          Lihat juga 23課-1, 24課-3.
+Contoh  :
+  1) 学生のころは、よく夜遅くまで友達と語り合ったものだ。   (makna A)
+     Waktu masih mahasiswa, saya dulu sering mengobrol dengan teman sampai
+     larut malam.
+  2) 月日がたつのは、本当に早いものだ。   (makna B)
+     Waktu berlalu, sungguh cepat sekali.
+
+[26-3] ~ないもの(だろう)か   (nai mono (darou) ka)
+Arti    : Tidak adakah cara agar ... (sulit terwujud, tetapi berharap
+          bagaimanapun caranya)
+Rumus   : V-nai + もの(だろう)か
+Catatan : Dipakai dengan kata kerja yang bukan bentuk potensial dan tidak
+          mengandung kehendak pembicara.
+Contoh  :
+  1) どうにかして母の病気が治らないものか。
+     Tidak adakah cara agar penyakit ibu saya bisa sembuh?
+  2) だれかこの仕事を引き受けてくれる人はいないものだろうか。
+     Apakah tidak ada seseorang yang mau menerima pekerjaan ini?
+
+[26-4] ~ものがある   (mono ga aru)
+Arti    : Ada kesan/rasa ... (merasa seperti ...)
+Rumus   : V・Adj bentuk biasa sekarang (Adj-na: だ→な) + ものがある
+Catatan : Dipakai dengan kata yang menyatakan kesan pembicara.
+Contoh  :
+  1) 彼女の歌には、人の心を打つものがある。
+     Lagu yang dinyanyikannya punya sesuatu yang menyentuh hati orang.
+  2) 毎日同じ作業の繰り返しは、正直つらいものがある。
+     Jujur saja, mengulang pekerjaan yang sama setiap hari itu terasa berat.
+
+[26-5] ~ことだ   (koto da)
+Arti    : Sungguh ... (menyatakan keterkejutan / keharuan / sindiran)
+Rumus   : Adj-i い / Adj-na な + ことだ
+Catatan : Dipakai dengan kata sifat yang menyatakan perasaan subjektif
+          pembicara. Bentuk 「た」 dari kata kerja yang berfungsi seperti
+          kata sifat juga dipakai.
+          Lihat juga 24課-2.
+Contoh  :
+  1) 約束を破って平気な顔をしているなんて、あきれたことだ。
+     Melanggar janji tetapi bersikap tak acuh, sungguh mengherankan.
+  2) 困ったとき助けてくれる友達がいる。ありがたいことだ。
+     Ada teman yang menolong saat kesusahan. Sungguh hal yang patut disyukuri.
+
+[26-6] ~ことだろう・~ことか   (koto darou / koto ka)
+Arti    : Betapa ... (sangat banyak / sangat merasa ...)
+Ragam   : 書き言葉 (bahasa tulis)
+Rumus   : Kata tanya + bentuk biasa (Adj-na: だ→な・である ; N: だ→である)
+          + ことだろう・ことか
+Catatan : Dipakai bersama kata tanya yang menyatakan tingkat (どんなに,
+          何回, dsb.) atau 「なんと・いったい」.
+Contoh  :
+  1) この城を完成させるのに、いったい何年かかったことだろう。
+     Entah berapa tahun yang dibutuhkan untuk menyelesaikan kastil ini.
+  2) 離れて暮らす家族のことを、母はどんなに心配していることか。
+     Betapa khawatirnya ibu terhadap keluarga yang tinggal berjauhan.
+

@@ -1,0 +1,570 @@
+#separator:tab
+#html:true
+#tags column:3
+ぶどう　Kata benda	ぶどう　Anggur<br><br>1. ぶどうを洗って食べます。<br>Saya mencuci anggur lalu memakannya.<br><br>2. このぶどうは甘いです。<br>Anggur ini manis.	jlpt-n4
+アメリカ　Kata benda	アメリカ　Amerika (Serikat)<br><br>1. 兄はアメリカに住んでいます。<br>Kakak laki-laki saya tinggal di Amerika.<br><br>2. アメリカへ旅行に行きたいです。<br>Saya ingin bepergian ke Amerika.	jlpt-n4
+ため　Kata benda / Kata keterangan	ため　Demi, untuk (tujuan/manfaat)<br><br>1. 健康のために毎日歩きます。<br>Demi kesehatan, saya berjalan kaki setiap hari.<br><br>2. 雨のために試合が中止になりました。<br>Karena hujan, pertandingan dibatalkan.	jlpt-n4
+いたす　Kata kerja (Godan) - transitif	いたす　Melakukan (bentuk rendah hati)<br><br>1. 私が致します。<br>Saya yang akan melakukannya.<br><br>2. ご案内致します。<br>Saya akan memandu Anda.	jlpt-n4
+だいたい　Kata keterangan	だいたい　Pada umumnya, kira-kira<br><br>1. 宿題はだいたい終わりました。<br>PR sudah hampir selesai.<br><br>2. だいたい三千円です。<br>Kira-kira tiga ribu yen.	jlpt-n4
+なくなる　Kata kerja (Godan) - intransitif	なくなる　Hilang, habis<br><br>1. 財布がなくなりました。<br>Dompet saya hilang.<br><br>2. 牛乳がなくなりました。<br>Susunya habis.	jlpt-n4
+とうとう　Kata keterangan	とうとう　Akhirnya<br><br>1. とうとう雨が降り出しました。<br>Akhirnya hujan mulai turun.<br><br>2. とうとう試験に合格しました。<br>Akhirnya saya lulus ujian.	jlpt-n4
+これから　Kata benda / Kata keterangan	これから　Mulai sekarang<br><br>1. これから勉強します。<br>Mulai sekarang saya akan belajar.<br><br>2. これからどうしますか。<br>Setelah ini kamu mau bagaimana?	jlpt-n4
+まいる　Kata kerja (Godan) - intransitif	まいる　Pergi, datang (bentuk rendah hati)<br><br>1. すぐ参ります。<br>Saya segera datang.<br><br>2. 明日、そちらへ参ります。<br>Besok saya akan datang ke sana.	jlpt-n4
+ガラス　Kata benda	ガラス　Kaca<br><br>1. 窓のガラスが割れました。<br>Kaca jendela pecah.<br><br>2. ガラスのコップを使います。<br>Saya memakai gelas kaca.	jlpt-n4
+ガス　Kata benda	ガス　Gas<br><br>1. ガスを止めてください。<br>Tolong matikan gasnya.<br><br>2. ガス代が高いです。<br>Biaya gas mahal.	jlpt-n4
+なるほど　Kata keterangan	なるほど　Oh begitu, memang<br><br>1. なるほど、よくわかりました。<br>Oh begitu, saya mengerti sekali.<br><br>2. なるほど、そうですね。<br>Memang benar begitu ya.	jlpt-n4
+アフリカ　Kata benda	アフリカ　Afrika<br><br>1. アフリカは暑い所が多いです。<br>Di Afrika banyak tempat yang panas.<br><br>2. アフリカの動物を見ました。<br>Saya melihat hewan Afrika.	jlpt-n4
+こう　Kata keterangan	こう　Begini, seperti ini<br><br>1. こうやってください。<br>Tolong lakukan seperti ini.<br><br>2. こう言いました。<br>Dia berkata begini.	jlpt-n4
+アジア　Kata benda	アジア　Asia<br><br>1. 日本はアジアの国です。<br>Jepang adalah negara Asia.<br><br>2. アジアを旅行したいです。<br>Saya ingin bepergian keliling Asia.	jlpt-n4
+わけ　Kata benda	わけ　Alasan, arti<br><br>1. そんなわけではありません。<br>Bukan seperti itu alasannya.<br><br>2. 遅れたわけを話します。<br>Saya akan menjelaskan alasan keterlambatan.	jlpt-n4
+もうすぐ　Ungkapan / Kata keterangan	もうすぐ　Sebentar lagi<br><br>1. もうすぐ春です。<br>Sebentar lagi musim semi.<br><br>2. 電車がもうすぐ来ます。<br>Kereta sebentar lagi datang.	jlpt-n4
+やっと　Kata keterangan	やっと　Akhirnya, dengan susah payah<br><br>1. やっと宿題が終わりました。<br>Akhirnya PR saya selesai.<br><br>2. やっと家に着きました。<br>Akhirnya saya sampai di rumah.	jlpt-n4
+さっき　Kata benda / Kata keterangan	さっき　Tadi<br><br>1. さっき友達に会いました。<br>Tadi saya bertemu teman.<br><br>2. さっきの電話は誰ですか。<br>Telepon tadi dari siapa?	jlpt-n4
+おもちゃ　Kata benda	おもちゃ　Mainan<br><br>1. 子供におもちゃを買いました。<br>Saya membelikan mainan untuk anak.<br><br>2. おもちゃで遊びます。<br>Saya bermain dengan mainan.	jlpt-n4
+おかしい　Kata sifat-i	おかしい　Aneh, lucu<br><br>1. この話はおかしいです。<br>Cerita ini lucu.<br><br>2. 機械の音がおかしいです。<br>Suara mesinnya aneh.	jlpt-n4
+くれる　Kata kerja (Ichidan) - transitif	くれる　Memberi (kepada saya)<br><br>1. 友達が本をくれました。<br>Teman memberi saya buku.<br><br>2. 母がお金をくれました。<br>Ibu memberi saya uang.	jlpt-n4
+つもり　Kata benda	つもり　Niat, rencana<br><br>1. 来年日本へ行くつもりです。<br>Saya berencana pergi ke Jepang tahun depan.<br><br>2. そんなつもりではありませんでした。<br>Saya tidak bermaksud begitu.	jlpt-n4
+ほとんど　Kata keterangan	ほとんど　Hampir semua<br><br>1. 宿題はほとんど終わりました。<br>PR hampir selesai semua.<br><br>2. ほとんど毎日泳ぎます。<br>Saya berenang hampir setiap hari.	jlpt-n4
+ひどい　Kata sifat-i	ひどい　Parah, kejam<br><br>1. ひどい雨ですね。<br>Hujan yang parah ya.<br><br>2. ひどいことを言わないでください。<br>Tolong jangan mengatakan hal yang kejam.	jlpt-n4
+きっと　Kata keterangan	きっと　Pasti<br><br>1. 明日はきっと晴れます。<br>Besok pasti cerah.<br><br>2. 彼はきっと来ます。<br>Dia pasti datang.	jlpt-n4
+はず　Interjeksi	はず　Seharusnya<br><br>1. 田中さんは来るはずです。<br>Tanaka-san seharusnya datang.<br><br>2. そんなはずはありません。<br>Tidak mungkin begitu.	jlpt-n4
+しばらく　Kata keterangan / Kata kerja-suru	しばらく　Sebentar, beberapa lama<br><br>1. しばらく待ってください。<br>Tolong tunggu sebentar.<br><br>2. しばらく会っていません。<br>Sudah lama saya tidak bertemu.	jlpt-n4
+しっかり　Kata keterangan / Kata kerja-suru	しっかり　Dengan kuat, kokoh<br><br>1. しっかり勉強してください。<br>Belajarlah dengan sungguh-sungguh.<br><br>2. 手をしっかりつかんでください。<br>Peganglah tangan dengan erat.	jlpt-n4
+なさる　Kata kerja (Godan) - transitif	なさる　Melakukan (bentuk hormat)<br><br>1. 先生は何をなさいますか。<br>Apa yang akan Bapak/Ibu guru lakukan?<br><br>2. どうなさいましたか。<br>Ada apa? (Apa yang terjadi?)	jlpt-n4
+それほど　Kata keterangan	それほど　Sampai segitu<br><br>1. それほど高くありません。<br>Tidak semahal itu.<br><br>2. それほど難しくないです。<br>Tidak sesulit itu.	jlpt-n4
+たまに　Kata keterangan	たまに　Sesekali<br><br>1. たまに映画を見ます。<br>Sesekali saya menonton film.<br><br>2. たまに友達と食事します。<br>Sesekali saya makan bersama teman.	jlpt-n4
+ちっとも　Kata keterangan	ちっとも　Sama sekali (tidak)<br><br>1. ちっとも疲れていません。<br>Saya sama sekali tidak capek.<br><br>2. ちっともわかりません。<br>Saya sama sekali tidak mengerti.	jlpt-n4
+なるべく　Kata keterangan	なるべく　Sebisa mungkin<br><br>1. なるべく早く来てください。<br>Tolong datang secepat mungkin.<br><br>2. なるべく毎日勉強します。<br>Sebisa mungkin saya belajar setiap hari.	jlpt-n4
+いじめる　Kata kerja (Ichidan) - transitif	いじめる　Menindas, mengganggu<br><br>1. 弱い子をいじめてはいけません。<br>Tidak boleh menindas anak yang lemah.<br><br>2. 犬をいじめないでください。<br>Tolong jangan mengganggu anjing.	jlpt-n4
+おかげ　Kata benda	おかげ　Berkat (jasa)<br><br>1. あなたのおかげで合格しました。<br>Berkat Anda, saya lulus.<br><br>2. おかげさまで元気です。<br>Berkat Anda, saya sehat.	jlpt-n4
+もし　Kata keterangan	もし　Jika, seandainya<br><br>1. もし雨なら、行きません。<br>Jika hujan, saya tidak pergi.<br><br>2. もし時間があれば、来てください。<br>Jika ada waktu, silakan datang.	jlpt-n4
+それで　Kata sambung	それで　Oleh karena itu, lalu<br><br>1. 頭が痛いです。それで、学校を休みました。<br>Kepala saya sakit. Karena itu, saya tidak masuk sekolah.<br><br>2. 道が込んでいました。それで、遅れました。<br>Jalanan macet. Karena itu, saya terlambat.	jlpt-n4
+それに　Kata sambung	それに　Selain itu<br><br>1. この店は安いです。それに、おいしいです。<br>Toko ini murah. Selain itu, enak.<br><br>2. 今日は寒いです。それに、雨も降っています。<br>Hari ini dingin. Selain itu, hujan juga turun.	jlpt-n4
+おっしゃる　Kata kerja (Godan) - transitif	おっしゃる　Berkata (bentuk hormat)<br><br>1. 先生がそうおっしゃいました。<br>Guru berkata begitu.<br><br>2. お名前は何とおっしゃいますか。<br>Siapa nama Anda?	jlpt-n4
+おいでになる　Ungkapan / Kata kerja (Godan)	おいでになる　Ada, datang (bentuk hormat)<br><br>1. 先生はお宅においでになりますか。<br>Apakah guru ada di rumah?<br><br>2. 社長がおいでになりました。<br>Direktur telah datang.	jlpt-n4
+ひげ　Kata benda	ひげ　Kumis, jenggot<br><br>1. 父はひげを生やしています。<br>Ayah memelihara kumis/jenggot.<br><br>2. 毎朝、ひげをそります。<br>Setiap pagi saya mencukur kumis/jenggot.	jlpt-n4
+または　Kata sambung	または　Atau<br><br>1. コーヒーまたは紅茶をどうぞ。<br>Silakan kopi atau teh.<br><br>2. 電話またはメールで連絡してください。<br>Hubungi saya lewat telepon atau email.	jlpt-n4
+スリ　Kata benda	スリ　Pencopet<br><br>1. 電車でスリにあいました。<br>Saya dicopet di kereta.<br><br>2. スリに気をつけてください。<br>Waspadalah terhadap pencopet.	jlpt-n4
+だいぶ　Kata keterangan	だいぶ　Cukup banyak<br><br>1. だいぶ寒くなりました。<br>Sudah menjadi cukup dingin.<br><br>2. 病気はだいぶよくなりました。<br>Penyakit saya sudah jauh membaik.	jlpt-n4
+たいてい　Kata sifat-na / Kata keterangan / Kata benda	たいてい　Biasanya<br><br>1. 朝はたいてい六時に起きます。<br>Biasanya saya bangun jam 6 pagi.<br><br>2. 日曜日はたいてい家にいます。<br>Biasanya hari Minggu saya di rumah.	jlpt-n4
+すごい　Kata sifat-i	すごい　Hebat, luar biasa<br><br>1. このビルはすごいですね。<br>Gedung ini luar biasa ya.<br><br>2. すごい雨ですね。<br>Hujannya deras sekali ya.	jlpt-n4
+周り　Kata benda	周り(まわり)　Sekeliling<br><br>1. 家の周りに木があります。<br>Di sekeliling rumah ada pohon.<br><br>2. 周りを見てください。<br>Tolong lihat sekeliling.	jlpt-n4
+腕　Kata benda	腕(うで)　Lengan<br><br>1. 腕が痛いです。<br>Lengan saya sakit.<br><br>2. 腕に時計をつけます。<br>Saya memakai jam di lengan.	jlpt-n4
+人形　Kata benda	人形(にんぎょう)　Boneka<br><br>1. 人形をもらいました。<br>Saya menerima boneka.<br><br>2. 日本の人形は有名です。<br>Boneka Jepang itu terkenal.	jlpt-n4
+文化　Kata benda	文化(ぶんか)　Budaya<br><br>1. 日本の文化を勉強します。<br>Saya mempelajari budaya Jepang.<br><br>2. いろいろな国の文化を知りたいです。<br>Saya ingin tahu budaya berbagai negara.	jlpt-n4
+海岸　Kata benda	海岸(かいがん)　Pantai, pesisir<br><br>1. 夏に海岸へ行きます。<br>Saat musim panas saya pergi ke pantai.<br><br>2. 海岸を散歩します。<br>Saya berjalan-jalan di pantai.	jlpt-n4
+産業　Kata benda	産業(さんぎょう)　Industri<br><br>1. この町は産業が盛んです。<br>Kota ini industrinya maju.<br><br>2. 日本の産業について勉強します。<br>Saya belajar tentang industri Jepang.	jlpt-n4
+動物園　Kata benda	動物園(どうぶつえん)　Kebun binatang<br><br>1. 日曜日に動物園へ行きました。<br>Hari Minggu saya pergi ke kebun binatang.<br><br>2. 動物園にパンダがいます。<br>Di kebun binatang ada panda.	jlpt-n4
+美術館　Kata benda	美術館(びじゅつかん)　Museum seni<br><br>1. 美術館で絵を見ました。<br>Saya melihat lukisan di museum seni.<br><br>2. この美術館は有名です。<br>Museum seni ini terkenal.	jlpt-n4
+飛行場　Kata benda	飛行場(ひこうじょう)　Bandara kecil, lapangan terbang<br><br>1. 飛行場は町の外にあります。<br>Lapangan terbang ada di luar kota.<br><br>2. 飛行場まで車で行きます。<br>Saya pergi ke lapangan terbang naik mobil.	jlpt-n4
+水道　Kata benda	水道(すいどう)　Saluran air, air ledeng<br><br>1. 水道の水を飲みます。<br>Saya minum air ledeng.<br><br>2. 水道を止めてください。<br>Tolong matikan keran air.	jlpt-n4
+事故　Kata benda	事故(じこ)　Kecelakaan<br><br>1. 電車が事故で止まりました。<br>Kereta berhenti karena kecelakaan.<br><br>2. 昨日、交通事故がありました。<br>Kemarin ada kecelakaan lalu lintas.	jlpt-n4
+息子　Kata benda	息子(むすこ)　Anak laki-laki (milik sendiri)<br><br>1. 息子は大学生です。<br>Anak laki-laki saya mahasiswa.<br><br>2. 息子は野球が好きです。<br>Anak laki-laki saya suka bisbol.	jlpt-n4
+生活　Kata benda / Kata kerja-suru	生活(せいかつ)　Kehidupan<br><br>1. 日本の生活に慣れました。<br>Saya sudah terbiasa dengan kehidupan di Jepang.<br><br>2. 毎日の生活は楽しいです。<br>Kehidupan sehari-hari menyenangkan.	jlpt-n4
+注意　Kata benda / Kata kerja-suru	注意(ちゅうい)　Perhatian, hati-hati<br><br>1. 車に注意してください。<br>Tolong hati-hati terhadap mobil.<br><br>2. 先生に注意されました。<br>Saya ditegur oleh guru.	jlpt-n4
+女性　Kata benda	女性(じょせい)　Perempuan, wanita<br><br>1. この会社は女性が多いです。<br>Di perusahaan ini banyak perempuan.<br><br>2. 女性の先生が来ました。<br>Guru perempuan datang.	jlpt-n4
+生きる　Kata kerja (Ichidan) - intransitif	生きる(いきる)　Hidup<br><br>1. 百歳まで生きたいです。<br>Saya ingin hidup sampai seratus tahun.<br><br>2. 魚は水の中で生きます。<br>Ikan hidup di dalam air.	jlpt-n4
+船　Kata benda	船(ふね)　Kapal<br><br>1. 船で島へ行きます。<br>Saya pergi ke pulau naik kapal.<br><br>2. 大きな船が港に着きました。<br>Kapal besar tiba di pelabuhan.	jlpt-n4
+説明　Kata benda / Kata kerja-suru	説明(せつめい)　Penjelasan<br><br>1. 先生が説明します。<br>Guru menjelaskan.<br><br>2. この言葉の説明をお願いします。<br>Tolong jelaskan kata ini.	jlpt-n4
+警察　Kata benda	警察(けいさつ)　Polisi (lembaga)<br><br>1. 警察に電話しました。<br>Saya menelepon polisi.<br><br>2. 警察は駅の近くにあります。<br>Kantor polisi dekat stasiun.	jlpt-n4
+危険　Kata benda / Kata sifat-na	危険(きけん)　Bahaya<br><br>1. ここは危険です。<br>Di sini berbahaya.<br><br>2. 危険ですから、入らないでください。<br>Karena berbahaya, tolong jangan masuk.	jlpt-n4
+世界　Kata benda	世界(せかい)　Dunia<br><br>1. 世界を旅行したいです。<br>Saya ingin bepergian keliling dunia.<br><br>2. 世界には多くの国があります。<br>Di dunia ada banyak negara.	jlpt-n4
+戦争　Kata benda / Kata kerja-suru	戦争(せんそう)　Perang<br><br>1. 戦争はいけません。<br>Perang itu tidak baik.<br><br>2. 祖父は戦争を知っています。<br>Kakek saya mengalami perang.	jlpt-n4
+小説　Kata benda	小説(しょうせつ)　Novel<br><br>1. この小説は面白いです。<br>Novel ini menarik.<br><br>2. 毎日、小説を読みます。<br>Setiap hari saya membaca novel.	jlpt-n4
+関係　Kata benda / Kata kerja-suru	関係(かんけい)　Hubungan<br><br>1. 二人はどんな関係ですか。<br>Apa hubungan mereka berdua?<br><br>2. 私には関係ありません。<br>Itu tidak ada hubungannya dengan saya.	jlpt-n4
+研究　Kata benda / Kata kerja-suru	研究(けんきゅう)　Penelitian<br><br>1. 大学で日本の歴史を研究しています。<br>Saya meneliti sejarah Jepang di universitas.<br><br>2. 兄は医学の研究をしています。<br>Kakak laki-laki saya melakukan penelitian kedokteran.	jlpt-n4
+会議　Kata benda / Kata kerja-suru	会議(かいぎ)　Rapat<br><br>1. 三時から会議があります。<br>Mulai jam 3 ada rapat.<br><br>2. 会議は長かったです。<br>Rapatnya panjang.	jlpt-n4
+音　Kata benda	音(おと)　Bunyi<br><br>1. 変な音が聞こえます。<br>Terdengar suara aneh.<br><br>2. 音が大きいです。<br>Suaranya keras.	jlpt-n4
+普通　Kata sifat-na	普通(ふつう)　Biasa, umum<br><br>1. 普通は七時に起きます。<br>Biasanya saya bangun jam 7.<br><br>2. これは普通の電車です。<br>Ini kereta biasa.	jlpt-n4
+湖　Kata benda	湖(みずうみ)　Danau<br><br>1. 山の上に湖があります。<br>Di atas gunung ada danau.<br><br>2. 湖はとてもきれいです。<br>Danaunya sangat indah.	jlpt-n4
+夢　Kata benda	夢(ゆめ)　Mimpi<br><br>1. 昨日、変な夢を見ました。<br>Kemarin saya bermimpi aneh.<br><br>2. 私の夢は医者になることです。<br>Impian saya adalah menjadi dokter.	jlpt-n4
+空港　Kata benda	空港(くうこう)　Bandara<br><br>1. 空港まで電車で行きます。<br>Saya pergi ke bandara naik kereta.<br><br>2. 空港で友達を待ちます。<br>Saya menunggu teman di bandara.	jlpt-n4
+数学　Kata benda	数学(すうがく)　Matematika<br><br>1. 数学は難しいです。<br>Matematika itu sulit.<br><br>2. 兄は数学が得意です。<br>Kakak laki-laki saya jago matematika.	jlpt-n4
+教育　Kata benda / Kata kerja-suru	教育(きょういく)　Pendidikan<br><br>1. 日本の教育について勉強します。<br>Saya belajar tentang pendidikan Jepang.<br><br>2. 教育は大切です。<br>Pendidikan itu penting.	jlpt-n4
+赤ちゃん　Kata benda	赤ちゃん(あかちゃん)　Bayi<br><br>1. 赤ちゃんが泣いています。<br>Bayi sedang menangis.<br><br>2. 姉に赤ちゃんが生まれました。<br>Kakak perempuan saya melahirkan bayi.	jlpt-n4
+自由　Kata benda / Kata sifat-na	自由(じゆう)　Kebebasan<br><br>1. ここでは自由に話せます。<br>Di sini kita bisa bicara dengan bebas.<br><br>2. 自由な時間がありません。<br>Saya tidak punya waktu bebas.	jlpt-n4
+火　Kata benda	火(ひ)　Api<br><br>1. 火を消してください。<br>Tolong padamkan apinya.<br><br>2. 火は危ないです。<br>Api itu berbahaya.	jlpt-n4
+森　Kata benda	森(もり)　Hutan<br><br>1. 森の中を歩きます。<br>Saya berjalan di dalam hutan.<br><br>2. この森には鳥がたくさんいます。<br>Di hutan ini ada banyak burung.	jlpt-n4
+法律　Kata benda	法律(ほうりつ)　Hukum<br><br>1. 法律を守ります。<br>Saya menaati hukum.<br><br>2. 兄は法律を勉強しています。<br>Kakak laki-laki saya belajar hukum.	jlpt-n4
+気分　Kata benda	気分(きぶん)　Perasaan, suasana hati<br><br>1. 今日は気分がいいです。<br>Hari ini suasana hati saya baik.<br><br>2. 気分が悪いので、休みます。<br>Karena merasa tidak enak badan, saya beristirahat.	jlpt-n4
+壁　Kata benda	壁(かべ)　Dinding<br><br>1. 壁に絵をかけます。<br>Saya menggantung lukisan di dinding.<br><br>2. 壁が白いです。<br>Dindingnya putih.	jlpt-n4
+田舎　Kata benda	田舎(いなか)　Pedesaan, kampung halaman<br><br>1. 夏に田舎へ帰ります。<br>Saat musim panas saya pulang kampung.<br><br>2. 田舎の生活は静かです。<br>Kehidupan di desa itu tenang.	jlpt-n4
+気　Kata benda	気(き)　Perasaan, semangat<br><br>1. 気をつけてください。<br>Tolong hati-hati.<br><br>2. 気がつきませんでした。<br>Saya tidak menyadarinya.	jlpt-n4
+男性　Kata benda	男性(だんせい)　Laki-laki, pria<br><br>1. 男性の先生が来ました。<br>Guru laki-laki datang.<br><br>2. この店は男性が多いです。<br>Di toko ini banyak laki-laki.	jlpt-n4
+地震　Kata benda	地震(じしん)　Gempa bumi<br><br>1. 昨日、地震がありました。<br>Kemarin ada gempa bumi.<br><br>2. 日本は地震が多いです。<br>Di Jepang banyak gempa bumi.	jlpt-n4
+人口　Kata benda	人口(じんこう)　Jumlah penduduk<br><br>1. この町は人口が多いです。<br>Kota ini jumlah penduduknya banyak.<br><br>2. 東京の人口は千万人以上です。<br>Penduduk Tokyo lebih dari sepuluh juta orang.	jlpt-n4
+故障　Kata benda / Kata kerja-suru	故障(こしょう)　Kerusakan<br><br>1. 車が故障しました。<br>Mobil saya rusak.<br><br>2. エレベーターが故障しています。<br>Lift sedang rusak.	jlpt-n4
+残念　Kata sifat-na / Kata benda	残念(ざんねん)　Sayang sekali<br><br>1. 残念ですね。<br>Sayang sekali ya.<br><br>2. 行けなくて残念です。<br>Sayang sekali saya tidak bisa pergi.	jlpt-n4
+島　Kata benda	島(しま)　Pulau<br><br>1. 小さな島に住んでいます。<br>Saya tinggal di pulau kecil.<br><br>2. 船で島へ行きます。<br>Saya pergi ke pulau naik kapal.	jlpt-n4
+歴史　Kata benda	歴史(れきし)　Sejarah<br><br>1. 日本の歴史が好きです。<br>Saya suka sejarah Jepang.<br><br>2. この町は歴史が長いです。<br>Kota ini punya sejarah panjang.	jlpt-n4
+教会　Kata benda	教会(きょうかい)　Gereja<br><br>1. 日曜日に教会へ行きます。<br>Hari Minggu saya pergi ke gereja.<br><br>2. あの教会は古いです。<br>Gereja itu tua.	jlpt-n4
+住所　Kata benda	住所(じゅうしょ)　Alamat<br><br>1. 住所を書いてください。<br>Tolong tulis alamat Anda.<br><br>2. 新しい住所を教えます。<br>Saya beri tahu alamat baru saya.	jlpt-n4
+社会　Kata benda	社会(しゃかい)　Masyarakat<br><br>1. 社会の問題を考えます。<br>Saya memikirkan masalah masyarakat.<br><br>2. 大学を出て、社会に出ます。<br>Setelah lulus universitas, saya terjun ke masyarakat.	jlpt-n4
+工場　Kata benda	工場(こうじょう)　Pabrik<br><br>1. 父は工場で働いています。<br>Ayah bekerja di pabrik.<br><br>2. この工場は大きいです。<br>Pabrik ini besar.	jlpt-n4
+趣味　Kata benda	趣味(しゅみ)　Hobi<br><br>1. 私の趣味は音楽です。<br>Hobi saya adalah musik.<br><br>2. 趣味は何ですか。<br>Apa hobimu?	jlpt-n4
+経済　Kata benda	経済(けいざい)　Ekonomi<br><br>1. 大学で経済を勉強しています。<br>Saya belajar ekonomi di universitas.<br><br>2. 日本の経済は大きいです。<br>Ekonomi Jepang itu besar.	jlpt-n4
+台風　Kata benda	台風(たいふう)　Topan<br><br>1. 台風が来ます。<br>Topan akan datang.<br><br>2. 台風で電車が止まりました。<br>Kereta berhenti karena topan.	jlpt-n4
+卒業　Kata benda / Kata kerja-suru	卒業(そつぎょう)　Kelulusan<br><br>1. 来年、大学を卒業します。<br>Tahun depan saya lulus dari universitas.<br><br>2. 卒業おめでとうございます。<br>Selamat atas kelulusannya.	jlpt-n4
+雲　Kata benda	雲(くも)　Awan<br><br>1. 空に白い雲があります。<br>Di langit ada awan putih.<br><br>2. 雲が多いです。<br>Banyak awan.	jlpt-n4
+贈り物　Kata benda	贈り物(おくりもの)　Hadiah<br><br>1. 友達に贈り物をします。<br>Saya memberi hadiah kepada teman.<br><br>2. 贈り物をありがとう。<br>Terima kasih atas hadiahnya.	jlpt-n4
+科学　Kata benda	科学(かがく)　Ilmu pengetahuan<br><br>1. 科学は面白いです。<br>Sains itu menarik.<br><br>2. 兄は科学者です。<br>Kakak laki-laki saya adalah ilmuwan.	jlpt-n4
+光　Kata benda	光(ひかり)　Cahaya<br><br>1. 窓から光が入ります。<br>Cahaya masuk dari jendela.<br><br>2. 光は速いです。<br>Cahaya itu cepat.	jlpt-n4
+政治　Kata benda	政治(せいじ)　Politik<br><br>1. 兄は政治に興味があります。<br>Kakak laki-laki saya tertarik pada politik.<br><br>2. 政治のニュースを見ます。<br>Saya menonton berita politik.	jlpt-n4
+特別　Kata sifat-na / Kata keterangan / Kata benda	特別(とくべつ)　Khusus<br><br>1. 今日は特別な日です。<br>Hari ini adalah hari spesial.<br><br>2. 特別な料理を作ります。<br>Saya membuat masakan spesial.	jlpt-n4
+水泳　Kata benda / Kata kerja-suru	水泳(すいえい)　Renang<br><br>1. 水泳が好きです。<br>Saya suka renang.<br><br>2. 毎週、水泳をします。<br>Setiap minggu saya berenang.	jlpt-n4
+講義　Kata benda / Kata kerja-suru	講義(こうぎ)　Kuliah<br><br>1. 今日の講義は面白かったです。<br>Kuliah hari ini menarik.<br><br>2. 九時から講義があります。<br>Mulai jam 9 ada kuliah.	jlpt-n4
+指　Kata benda	指(ゆび)　Jari<br><br>1. 指が痛いです。<br>Jari saya sakit.<br><br>2. 指に指輪をつけます。<br>Saya memakai cincin di jari.	jlpt-n4
+生産　Kata benda / Kata kerja-suru	生産(せいさん)　Produksi<br><br>1. この工場で車を生産します。<br>Mobil diproduksi di pabrik ini.<br><br>2. 生産が増えました。<br>Produksinya meningkat.	jlpt-n4
+会話　Kata benda / Kata kerja-suru	会話(かいわ)　Percakapan<br><br>1. 英語で会話をします。<br>Saya bercakap-cakap dalam bahasa Inggris.<br><br>2. 日本語の会話は難しいです。<br>Percakapan bahasa Jepang itu sulit.	jlpt-n4
+季節　Kata benda	季節(きせつ)　Musim<br><br>1. 日本は季節がきれいです。<br>Musim di Jepang itu indah.<br><br>2. どの季節が好きですか。<br>Kamu suka musim yang mana?	jlpt-n4
+翻訳　Kata benda / Kata kerja-suru	翻訳(ほんやく)　Terjemahan<br><br>1. この小説を翻訳します。<br>Saya menerjemahkan novel ini.<br><br>2. 翻訳の仕事をしています。<br>Saya bekerja sebagai penerjemah.	jlpt-n4
+貿易　Kata benda / Kata kerja-suru	貿易(ぼうえき)　Perdagangan luar negeri<br><br>1. 日本は貿易が盛んです。<br>Perdagangan luar negeri Jepang maju.<br><br>2. 貿易の会社で働いています。<br>Saya bekerja di perusahaan perdagangan.	jlpt-n4
+文学　Kata benda	文学(ぶんがく)　Sastra<br><br>1. 大学で日本の文学を勉強します。<br>Saya belajar sastra Jepang di universitas.<br><br>2. 文学が好きです。<br>Saya suka sastra.	jlpt-n4
+葉　Kata benda	葉(は)　Daun<br><br>1. 秋に葉が赤くなります。<br>Saat musim gugur daun menjadi merah.<br><br>2. 木の葉が落ちます。<br>Daun pohon berguguran.	jlpt-n4
+交通　Kata benda / Kata kerja-suru	交通(こうつう)　Lalu lintas, transportasi<br><br>1. ここは交通が便利です。<br>Di sini transportasinya praktis.<br><br>2. 朝は交通が込みます。<br>Pagi hari lalu lintas padat.	jlpt-n4
+遊び　Kata benda	遊び(あそび)　Bermain<br><br>1. 子供の遊びを見ます。<br>Saya melihat anak-anak bermain.<br><br>2. 遊びに来てください。<br>Silakan datang bermain.	jlpt-n4
+道具　Kata benda	道具(どうぐ)　Alat, perkakas<br><br>1. 道具を使って作ります。<br>Saya membuatnya menggunakan alat.<br><br>2. この道具は便利です。<br>Alat ini praktis.	jlpt-n4
+入学　Kata benda / Kata kerja-suru	入学(にゅうがく)　Masuk sekolah<br><br>1. 四月に大学に入学します。<br>Bulan April saya masuk universitas.<br><br>2. 入学おめでとうございます。<br>Selamat atas diterimanya Anda di sekolah.	jlpt-n4
+発音　Kata benda / Kata kerja-suru	発音(はつおん)　Pelafalan<br><br>1. 日本語の発音は難しいです。<br>Pelafalan bahasa Jepang itu sulit.<br><br>2. 発音を直してください。<br>Tolong perbaiki pelafalan saya.	jlpt-n4
+指輪　Kata benda	指輪(ゆびわ)　Cincin<br><br>1. 指輪を買いました。<br>Saya membeli cincin.<br><br>2. この指輪は高いです。<br>Cincin ini mahal.	jlpt-n4
+医学　Kata benda	医学(いがく)　Ilmu kedokteran<br><br>1. 兄は医学を勉強しています。<br>Kakak laki-laki saya belajar ilmu kedokteran.<br><br>2. 医学は進んでいます。<br>Ilmu kedokteran sudah maju.	jlpt-n4
+漫画　Kata benda	漫画(まんが)　Komik (manga)<br><br>1. 毎週、漫画を読みます。<br>Setiap minggu saya membaca manga.<br><br>2. 日本の漫画は有名です。<br>Manga Jepang itu terkenal.	jlpt-n4
+鏡　Kata benda	鏡(かがみ)　Cermin<br><br>1. 鏡を見ます。<br>Saya melihat cermin.<br><br>2. 鏡の前で髪をとかします。<br>Saya menyisir rambut di depan cermin.	jlpt-n4
+電報　Kata benda	電報(でんぽう)　Telegram<br><br>1. 電報を打ちます。<br>Saya mengirim telegram.<br><br>2. 昔は電報をよく使いました。<br>Dulu telegram sering dipakai.	jlpt-n4
+校長　Kata benda	校長(こうちょう)　Kepala sekolah<br><br>1. 校長先生の話を聞きます。<br>Saya mendengarkan pidato kepala sekolah.<br><br>2. 校長先生は優しいです。<br>Kepala sekolah itu baik hati.	jlpt-n4
+国際　Kata benda	国際(こくさい)　Internasional<br><br>1. 国際電話をかけます。<br>Saya melakukan panggilan telepon internasional.<br><br>2. ここは国際空港です。<br>Ini adalah bandara internasional.	jlpt-n4
+市民　Kata benda	市民(しみん)　Warga kota<br><br>1. 市民の意見を聞きます。<br>Kami mendengarkan pendapat warga kota.<br><br>2. 市民のための公園です。<br>Ini taman untuk warga kota.	jlpt-n4
+郊外　Kata benda	郊外(こうがい)　Pinggiran kota<br><br>1. 郊外に住んでいます。<br>Saya tinggal di pinggiran kota.<br><br>2. 郊外は静かです。<br>Pinggiran kota itu tenang.	jlpt-n4
+砂　Kata benda	砂(すな)　Pasir<br><br>1. 海岸の砂は白いです。<br>Pasir pantai berwarna putih.<br><br>2. 靴に砂が入りました。<br>Pasir masuk ke sepatu.	jlpt-n4
+手袋　Kata benda	手袋(てぶくろ)　Sarung tangan<br><br>1. 冬は手袋をします。<br>Saat musim dingin saya memakai sarung tangan.<br><br>2. 手袋を忘れました。<br>Saya lupa sarung tangan.	jlpt-n4
+日記　Kata benda	日記(にっき)　Buku harian<br><br>1. 毎日、日記を書きます。<br>Setiap hari saya menulis buku harian.<br><br>2. 日記を日本語で書きます。<br>Saya menulis buku harian dalam bahasa Jepang.	jlpt-n4
+絹　Kata benda	絹(きぬ)　Sutra<br><br>1. 絹のシャツを買いました。<br>Saya membeli kemeja sutra.<br><br>2. 絹は柔らかいです。<br>Sutra itu lembut.	jlpt-n4
+糸　Kata benda	糸(いと)　Benang<br><br>1. 針に糸を通します。<br>Saya memasukkan benang ke jarum.<br><br>2. 糸が切れました。<br>Benangnya putus.	jlpt-n4
+文法　Kata benda	文法(ぶんぽう)　Tata bahasa<br><br>1. 日本語の文法を勉強します。<br>Saya belajar tata bahasa Jepang.<br><br>2. 文法は難しいです。<br>Tata bahasa itu sulit.	jlpt-n4
+神社　Kata benda	神社(じんじゃ)　Kuil Shinto<br><br>1. お正月に神社へ行きます。<br>Saat Tahun Baru saya pergi ke kuil Shinto.<br><br>2. この神社は古いです。<br>Kuil ini tua.	jlpt-n4
+小学校　Kata benda	小学校(しょうがっこう)　Sekolah dasar<br><br>1. 弟は小学校に通っています。<br>Adik laki-laki saya bersekolah di SD.<br><br>2. 小学校は家の近くです。<br>SD dekat dengan rumah.	jlpt-n4
+展覧会　Kata benda	展覧会(てんらんかい)　Pameran<br><br>1. 美術館で展覧会があります。<br>Di museum seni ada pameran.<br><br>2. 昨日、展覧会を見に行きました。<br>Kemarin saya pergi melihat pameran.	jlpt-n4
+西洋　Kata benda	西洋(せいよう)　Dunia Barat<br><br>1. 西洋の文化に興味があります。<br>Saya tertarik pada budaya Barat.<br><br>2. 西洋の料理を作ります。<br>Saya memasak masakan Barat.	jlpt-n4
+先輩　Kata benda	先輩(せんぱい)　Senior<br><br>1. 先輩に相談します。<br>Saya berkonsultasi dengan senior.<br><br>2. 先輩は親切です。<br>Senior saya baik hati.	jlpt-n4
+注射　Kata benda / Kata kerja-suru	注射(ちゅうしゃ)　Suntikan<br><br>1. 病院で注射をしました。<br>Saya disuntik di rumah sakit.<br><br>2. 注射は痛いです。<br>Suntikan itu sakit.	jlpt-n4
+坂　Kata benda	坂(さか)　Tanjakan, lereng<br><br>1. この坂は急です。<br>Tanjakan ini curam.<br><br>2. 坂を上ると学校があります。<br>Kalau menaiki tanjakan, ada sekolah.	jlpt-n4
+乗り物　Kata benda	乗り物(のりもの)　Kendaraan<br><br>1. 電車やバスは乗り物です。<br>Kereta dan bus adalah kendaraan.<br><br>2. 乗り物に酔いました。<br>Saya mabuk kendaraan.	jlpt-n4
+旅館　Kata benda	旅館(りょかん)　Penginapan tradisional (ryokan)<br><br>1. 旅行で旅館に泊まりました。<br>Saat bepergian saya menginap di ryokan.<br><br>2. この旅館は温泉があります。<br>Ryokan ini punya pemandian air panas.	jlpt-n4
+林　Kata benda	林(はやし)　Hutan kecil<br><br>1. 家の近くに林があります。<br>Dekat rumah ada hutan kecil.<br><br>2. 林の中を歩きます。<br>Saya berjalan di dalam hutan kecil.	jlpt-n4
+布団　Kata benda	布団(ふとん)　Futon (kasur Jepang)<br><br>1. 布団で寝ます。<br>Saya tidur di atas futon.<br><br>2. 布団を干します。<br>Saya menjemur futon.	jlpt-n4
+中学校　Kata benda	中学校(ちゅうがっこう)　SMP<br><br>1. 姉は中学校の先生です。<br>Kakak perempuan saya guru SMP.<br><br>2. 中学校は家から遠いです。<br>SMP jauh dari rumah.	jlpt-n4
+柔道　Kata benda	柔道(じゅうどう)　Judo<br><br>1. 兄は柔道が上手です。<br>Kakak laki-laki saya pandai judo.<br><br>2. 柔道を習っています。<br>Saya belajar judo.	jlpt-n4
+研究室　Kata benda	研究室(けんきゅうしつ)　Laboratorium<br><br>1. 研究室で実験をします。<br>Saya melakukan eksperimen di laboratorium.<br><br>2. 先生は研究室にいます。<br>Guru ada di laboratorium.	jlpt-n4
+会議室　Kata benda	会議室(かいぎしつ)　Ruang rapat<br><br>1. 会議室で会議をします。<br>Kami rapat di ruang rapat.<br><br>2. 会議室は三階です。<br>Ruang rapat ada di lantai tiga.	jlpt-n4
+高等学校　Kata benda	高等学校(こうとうがっこう)　SMA<br><br>1. 高等学校を卒業しました。<br>Saya sudah lulus SMA.<br><br>2. 高等学校は駅の近くです。<br>SMA dekat stasiun.	jlpt-n4
+花見　Kata benda / Kata kerja-suru	花見(はなみ)　Melihat bunga sakura<br><br>1. 春に花見をします。<br>Saat musim semi kami melihat bunga sakura.<br><br>2. 公園で花見をしました。<br>Kami melihat bunga sakura di taman.	jlpt-n4
+公務員　Kata benda	公務員(こうむいん)　Pegawai negeri<br><br>1. 父は公務員です。<br>Ayah saya adalah pegawai negeri.<br><br>2. 公務員になりたいです。<br>Saya ingin menjadi pegawai negeri.	jlpt-n4
+辞典　Kata benda	辞典(じてん)　Kamus<br><br>1. 辞典で意味を調べます。<br>Saya mencari arti di kamus.<br><br>2. 新しい辞典を買いました。<br>Saya membeli kamus baru.	jlpt-n4
+心　Kata benda	心(こころ)　Hati, perasaan<br><br>1. 心が痛いです。<br>Hati saya sakit.<br><br>2. 心を込めて手紙を書きました。<br>Saya menulis surat dengan sepenuh hati.	jlpt-n4
+力　Kata benda	力(ちから)　Tenaga, kekuatan<br><br>1. 兄は力が強いです。<br>Kakak laki-laki saya kuat.<br><br>2. みんなで力を合わせます。<br>Kita semua menyatukan tenaga.	jlpt-n4
+喧嘩　Kata benda / Kata kerja-suru	喧嘩(けんか)　Pertengkaran<br><br>1. 兄と喧嘩をしました。<br>Saya bertengkar dengan kakak laki-laki.<br><br>2. 喧嘩はやめてください。<br>Tolong hentikan pertengkaran.	jlpt-n4
+天気予報　Kata benda	天気予報(てんきよほう)　Prakiraan cuaca<br><br>1. 天気予報を見ます。<br>Saya melihat prakiraan cuaca.<br><br>2. 天気予報によると、明日は雨です。<br>Menurut prakiraan cuaca, besok hujan.	jlpt-n4
+押し入れ　Kata benda	押し入れ(おしいれ)　Lemari tembok (oshiire)<br><br>1. 布団を押し入れに入れます。<br>Saya menaruh futon di lemari tembok.<br><br>2. 押し入れは広いです。<br>Lemari temboknya luas.	jlpt-n4
+味噌　Kata benda	味噌(みそ)　Miso<br><br>1. 朝ご飯に味噌汁を飲みます。<br>Saat sarapan saya minum sup miso.<br><br>2. 味噌を買いました。<br>Saya membeli miso.	jlpt-n4
+客　Kata benda	客(きゃく)　Tamu, pelanggan<br><br>1. お客さんが来ました。<br>Tamu datang.<br><br>2. 店にお客さんがたくさんいます。<br>Di toko ada banyak pelanggan.	jlpt-n4
+祖父　Kata benda	祖父(そふ)　Kakek (milik sendiri)<br><br>1. 祖父は八十歳です。<br>Kakek saya berumur 80 tahun.<br><br>2. 祖父は元気です。<br>Kakek saya sehat.	jlpt-n4
+高校　Kata benda	高校(こうこう)　SMA<br><br>1. 高校で英語を習いました。<br>Saya belajar bahasa Inggris di SMA.<br><br>2. 高校は楽しかったです。<br>Masa SMA menyenangkan.	jlpt-n4
+近所　Kata benda	近所(きんじょ)　Tetangga, lingkungan sekitar<br><br>1. 近所に店があります。<br>Di sekitar rumah ada toko.<br><br>2. 近所の人はみんな親切です。<br>Para tetangga semuanya baik hati.	jlpt-n4
+番組　Kata benda	番組(ばんぐみ)　Acara (TV)<br><br>1. この番組は面白いです。<br>Acara ini menarik.<br><br>2. 毎晩、テレビの番組を見ます。<br>Setiap malam saya menonton acara TV.	jlpt-n4
+見物　Kata benda / Kata kerja-suru	見物(けんぶつ)　Melihat-lihat (wisata)<br><br>1. 京都を見物します。<br>Saya berwisata melihat-lihat Kyoto.<br><br>2. 町を見物しました。<br>Saya berkeliling melihat kota.	jlpt-n4
+彼女　Kata ganti	彼女(かのじょ)　Dia (perempuan), pacar<br><br>1. 彼女は先生です。<br>Dia (perempuan) adalah guru.<br><br>2. 彼女は歌が上手です。<br>Dia pandai bernyanyi.	jlpt-n4
+思う　Kata kerja (Godan) - transitif	思う(おもう)　Berpikir, mengira<br><br>1. 明日は雨だと思います。<br>Saya kira besok hujan.<br><br>2. どう思いますか。<br>Bagaimana menurutmu?	jlpt-n4
+僕　Kata ganti	僕(ぼく)　Saya (laki-laki, akrab)<br><br>1. 僕は学生です。<br>Saya adalah pelajar.<br><br>2. 僕の家は駅の近くです。<br>Rumah saya dekat stasiun.	jlpt-n4
+必要　Kata sifat-na	必要(ひつよう)　Perlu<br><br>1. パスポートが必要です。<br>Paspor diperlukan.<br><br>2. お金が必要です。<br>Saya butuh uang.	jlpt-n4
+見える　Kata kerja (Ichidan) - intransitif	見える(みえる)　Terlihat<br><br>1. 山が見えます。<br>Gunung terlihat.<br><br>2. 窓から海が見えます。<br>Laut terlihat dari jendela.	jlpt-n4
+考える　Kata kerja (Ichidan) - transitif	考える(かんがえる)　Memikirkan<br><br>1. よく考えてください。<br>Tolong pikirkan baik-baik.<br><br>2. 将来のことを考えます。<br>Saya memikirkan masa depan.	jlpt-n4
+始める　Kata kerja (Ichidan) - transitif	始める(はじめる)　Memulai<br><br>1. 勉強を始めます。<br>Saya mulai belajar.<br><br>2. 日本語を勉強し始めました。<br>Saya mulai belajar bahasa Jepang.	jlpt-n4
+受ける　Kata kerja (Ichidan) - transitif	受ける(うける)　Menerima<br><br>1. 試験を受けます。<br>Saya mengikuti ujian.<br><br>2. 病院で注射を受けました。<br>Saya disuntik di rumah sakit.	jlpt-n4
+美しい　Kata sifat-i	美しい(うつくしい)　Indah<br><br>1. 富士山は美しいです。<br>Gunung Fuji itu indah.<br><br>2. 美しい花が咲いています。<br>Bunga indah sedang mekar.	jlpt-n4
+試験　Kata benda / Kata kerja-suru	試験(しけん)　Ujian<br><br>1. 明日、試験があります。<br>Besok ada ujian.<br><br>2. 試験に合格しました。<br>Saya lulus ujian.	jlpt-n4
+親切　Kata sifat-na / Kata benda	親切(しんせつ)　Baik hati, ramah<br><br>1. あの人は親切です。<br>Orang itu baik hati.<br><br>2. 親切に道を教えてくれました。<br>Dia dengan ramah menunjukkan jalan.	jlpt-n4
+失敗　Kata benda / Kata kerja-suru	失敗(しっぱい)　Kegagalan, kesalahan<br><br>1. 試験に失敗しました。<br>Saya gagal dalam ujian.<br><br>2. 失敗は成功のもとです。<br>Kegagalan adalah awal keberhasilan.	jlpt-n4
+以上　Kata benda / Kata keterangan	以上(いじょう)　Lebih dari, di atas<br><br>1. 十八歳以上の人が入れます。<br>Orang berusia 18 tahun ke atas boleh masuk.<br><br>2. 千円以上かかります。<br>Butuh biaya lebih dari seribu yen.	jlpt-n4
+意見　Kata benda / Kata kerja-suru	意見(いけん)　Pendapat<br><br>1. あなたの意見を聞かせてください。<br>Tolong beri tahu pendapat Anda.<br><br>2. 私は先生と意見が違います。<br>Pendapat saya berbeda dengan guru.	jlpt-n4
+決して　Kata keterangan	決して(けっして)　Sama sekali tidak, tidak akan pernah<br><br>1. 決して忘れません。<br>Saya tidak akan pernah melupakannya.<br><br>2. 決して嘘を言いません。<br>Saya tidak akan pernah berbohong.	jlpt-n4
+十分　Kata sifat-na	十分(じゅうぶん)　Cukup<br><br>1. 十分に休みました。<br>Saya sudah beristirahat dengan cukup.<br><br>2. 時間は十分あります。<br>Waktunya cukup.	jlpt-n4
+試合　Kata benda / Kata kerja-suru	試合(しあい)　Pertandingan<br><br>1. 明日、試合があります。<br>Besok ada pertandingan.<br><br>2. 試合に勝ちました。<br>Kami menang pertandingan.	jlpt-n4
+一生懸命　Kata keterangan / Kata sifat-na / Kata benda	一生懸命(いっしょうけんめい)　Dengan sungguh-sungguh<br><br>1. 一生懸命勉強します。<br>Saya belajar dengan sungguh-sungguh.<br><br>2. 一生懸命走りました。<br>Saya berlari sekuat tenaga.	jlpt-n4
+子　Kata benda	子(こ)　Anak<br><br>1. あの子は誰ですか。<br>Anak itu siapa?<br><br>2. 子が泣いています。<br>Anak sedang menangis.	jlpt-n4
+探す　Kata kerja (Godan) - transitif	探す(さがす)　Mencari<br><br>1. かぎを探します。<br>Saya mencari kunci.<br><br>2. 新しい家を探しています。<br>Saya sedang mencari rumah baru.	jlpt-n4
+急ぐ　Kata kerja (Godan) - intransitif/transitif	急ぐ(いそぐ)　Bergegas<br><br>1. 急いでください。<br>Tolong bergegas.<br><br>2. 急いで学校へ行きます。<br>Saya bergegas ke sekolah.	jlpt-n4
+選ぶ　Kata kerja (Godan) - transitif	選ぶ(えらぶ)　Memilih<br><br>1. 好きな色を選んでください。<br>Silakan pilih warna yang kamu suka.<br><br>2. プレゼントを選びます。<br>Saya memilih hadiah.	jlpt-n4
+送る　Kata kerja (Godan) - transitif	送る(おくる)　Mengirim<br><br>1. 友達に手紙を送ります。<br>Saya mengirim surat kepada teman.<br><br>2. 荷物を日本へ送りました。<br>Saya mengirim barang ke Jepang.	jlpt-n4
+必ず　Kata keterangan	必ず(かならず)　Pasti, harus<br><br>1. 必ず来てください。<br>Tolong pasti datang.<br><br>2. 宿題は必ずします。<br>Saya pasti mengerjakan PR.	jlpt-n4
+怒る　Kata kerja (Godan) - intransitif	怒る(おこる)　Marah<br><br>1. 母は怒っています。<br>Ibu sedang marah.<br><br>2. 先生に怒られました。<br>Saya dimarahi guru.	jlpt-n4
+最近　Kata benda / Kata keterangan	最近(さいきん)　Akhir-akhir ini<br><br>1. 最近、忙しいです。<br>Akhir-akhir ini saya sibuk.<br><br>2. 最近、映画を見ていません。<br>Akhir-akhir ini saya tidak menonton film.	jlpt-n4
+払う　Kata kerja (Godan) - transitif	払う(はらう)　Membayar<br><br>1. お金を払います。<br>Saya membayar uang.<br><br>2. レジで払ってください。<br>Tolong bayar di kasir.	jlpt-n4
+点　Kata benda	点(てん)　Nilai, titik<br><br>1. テストで八十点を取りました。<br>Saya mendapat nilai 80 dalam ujian.<br><br>2. ここに点を書いてください。<br>Tolong tulis titik di sini.	jlpt-n4
+合う　Kata kerja (Godan) - intransitif	合う(あう)　Cocok, bertemu<br><br>1. この靴は足に合います。<br>Sepatu ini cocok di kaki saya.<br><br>2. 友達と会う約束をしました。<br>Saya membuat janji bertemu teman.	jlpt-n4
+決める　Kata kerja (Ichidan) - transitif	決める(きめる)　Memutuskan<br><br>1. 行く日を決めます。<br>Kami menentukan hari pergi.<br><br>2. 大学を決めました。<br>Saya sudah memutuskan universitasnya.	jlpt-n4
+笑う　Kata kerja (Godan) - intransitif	笑う(わらう)　Tertawa<br><br>1. みんなで笑いました。<br>Kami semua tertawa.<br><br>2. あの人はよく笑います。<br>Orang itu sering tertawa.	jlpt-n4
+最初　Kata benda / Kata keterangan	最初(さいしょ)　Pertama kali, awal<br><br>1. 最初に名前を書いてください。<br>Pertama-tama tolong tulis nama.<br><br>2. 最初は難しかったです。<br>Awalnya sulit.	jlpt-n4
+反対　Kata benda / Kata kerja-suru / Kata sifat-na	反対(はんたい)　Penolakan, berlawanan<br><br>1. 私はその意見に反対です。<br>Saya menentang pendapat itu.<br><br>2. 反対の方向へ行きます。<br>Saya pergi ke arah yang berlawanan.	jlpt-n4
+妻　Kata benda	妻(つま)　Istri (milik sendiri)<br><br>1. 妻は先生です。<br>Istri saya adalah guru.<br><br>2. 妻と旅行に行きます。<br>Saya pergi bepergian dengan istri.	jlpt-n4
+娘　Kata benda	娘(むすめ)　Anak perempuan (milik sendiri)<br><br>1. 娘は五歳です。<br>Anak perempuan saya berumur 5 tahun.<br><br>2. 娘と公園へ行きます。<br>Saya pergi ke taman dengan anak perempuan saya.	jlpt-n4
+喜ぶ　Kata kerja (Godan)	喜ぶ(よろこぶ)　Senang, bergembira<br><br>1. プレゼントを喜びました。<br>Dia senang dengan hadiahnya.<br><br>2. みんなが喜んでいます。<br>Semua orang bergembira.	jlpt-n4
+理由　Kata benda	理由(りゆう)　Alasan<br><br>1. 遅れた理由を話してください。<br>Tolong ceritakan alasan keterlambatan.<br><br>2. 理由がわかりません。<br>Saya tidak tahu alasannya.	jlpt-n4
+昔　Kata benda / Kata keterangan	昔(むかし)　Dahulu kala<br><br>1. 昔、ここに家がありました。<br>Dahulu, di sini ada rumah.<br><br>2. 昔の話を聞きます。<br>Saya mendengar cerita zaman dulu.	jlpt-n4
+約束　Kata benda / Kata kerja-suru	約束(やくそく)　Janji<br><br>1. 友達と約束があります。<br>Saya punya janji dengan teman.<br><br>2. 約束を守ります。<br>Saya menepati janji.	jlpt-n4
+思い出す　Kata kerja (Godan) - transitif	思い出す(おもいだす)　Teringat, mengingat<br><br>1. 昔のことを思い出します。<br>Saya teringat hal di masa lalu.<br><br>2. 名前を思い出せません。<br>Saya tidak bisa mengingat namanya.	jlpt-n4
+変わる　Kata kerja (Godan) - intransitif	変わる(かわる)　Berubah<br><br>1. 天気が変わります。<br>Cuacanya berubah.<br><br>2. 信号が赤に変わりました。<br>Lampu lalu lintas berubah menjadi merah.	jlpt-n4
+正しい　Kata sifat-i	正しい(ただしい)　Benar<br><br>1. その答えは正しいです。<br>Jawaban itu benar.<br><br>2. 正しい意見だと思います。<br>Menurut saya itu pendapat yang benar.	jlpt-n4
+落ちる　Kata kerja (Ichidan) - intransitif	落ちる(おちる)　Jatuh<br><br>1. 木から葉が落ちます。<br>Daun jatuh dari pohon.<br><br>2. 試験に落ちました。<br>Saya gagal dalam ujian.	jlpt-n4
+場所　Kata benda	場所(ばしょ)　Tempat<br><br>1. 会う場所を決めましょう。<br>Mari tentukan tempat bertemu.<br><br>2. いい場所を見つけました。<br>Saya menemukan tempat yang bagus.	jlpt-n4
+楽しむ　Kata kerja (Godan) - transitif	楽しむ(たのしむ)　Menikmati<br><br>1. 旅行を楽しみます。<br>Saya menikmati perjalanan.<br><br>2. 音楽を楽しんでいます。<br>Saya menikmati musik.	jlpt-n4
+利用　Kata benda / Kata kerja-suru	利用(りよう)　Pemakaian<br><br>1. 図書館を利用します。<br>Saya menggunakan perpustakaan.<br><br>2. 電車を利用して会社へ行きます。<br>Saya pergi ke kantor dengan menggunakan kereta.	jlpt-n4
+間に合う　Kata kerja (Godan) - intransitif	間に合う(まにあう)　Tepat waktu<br><br>1. 電車に間に合いました。<br>Saya sempat naik kereta.<br><br>2. 九時に間に合いますか。<br>Apakah sempat sampai jam 9?	jlpt-n4
+今度　Kata benda / Kata keterangan	今度(こんど)　Kali ini, lain kali<br><br>1. 今度、一緒に行きましょう。<br>Lain kali, mari pergi bersama.<br><br>2. 今度の日曜日は暇です。<br>Hari Minggu ini saya senggang.	jlpt-n4
+予定　Kata benda / Kata kerja-suru	予定(よてい)　Rencana, jadwal<br><br>1. 明日の予定を教えてください。<br>Tolong beri tahu rencana besok.<br><br>2. 来週の予定はありません。<br>Minggu depan tidak ada rencana.	jlpt-n4
+訪ねる　Kata kerja (Ichidan) - transitif	訪ねる(たずねる)　Mengunjungi<br><br>1. 先生の家を訪ねます。<br>Saya mengunjungi rumah guru.<br><br>2. 友達を訪ねて東京へ行きます。<br>Saya pergi ke Tokyo untuk mengunjungi teman.	jlpt-n4
+赤ん坊　Kata benda	赤ん坊(あかんぼう)　Bayi<br><br>1. 赤ん坊が泣いています。<br>Bayi sedang menangis.<br><br>2. 赤ん坊は寝ています。<br>Bayi sedang tidur.	jlpt-n4
+進む　Kata kerja (Godan) - intransitif	進む(すすむ)　Maju<br><br>1. 時計が進みます。<br>Jam berjalan maju.<br><br>2. 工事が進んでいます。<br>Pekerjaannya berjalan terus.	jlpt-n4
+最後　Kata benda	最後(さいご)　Terakhir<br><br>1. 最後の電車に乗ります。<br>Saya naik kereta terakhir.<br><br>2. 最後まで読みます。<br>Saya membaca sampai akhir.	jlpt-n4
+向かう　Kata kerja (Godan) - intransitif	向かう(むかう)　Menuju, menghadap<br><br>1. 駅に向かいます。<br>Saya menuju stasiun.<br><br>2. 机に向かって勉強します。<br>Saya belajar menghadap meja.	jlpt-n4
+通る　Kata kerja (Godan) - intransitif	通る(とおる)　Melewati<br><br>1. この道を通ります。<br>Saya melewati jalan ini.<br><br>2. バスは駅の前を通ります。<br>Bus melewati depan stasiun.	jlpt-n4
+興味　Kata benda	興味(きょうみ)　Minat<br><br>1. 日本の文化に興味があります。<br>Saya tertarik pada budaya Jepang.<br><br>2. 音楽に興味がありません。<br>Saya tidak tertarik pada musik.	jlpt-n4
+時代　Kata benda	時代(じだい)　Zaman<br><br>1. 昔の時代の話を読みます。<br>Saya membaca cerita zaman dulu.<br><br>2. 新しい時代が来ました。<br>Zaman baru telah datang.	jlpt-n4
+返事　Kata benda / Kata kerja-suru	返事(へんじ)　Balasan, jawaban<br><br>1. 手紙の返事を書きます。<br>Saya menulis balasan surat.<br><br>2. 返事を待っています。<br>Saya menunggu jawabannya.	jlpt-n4
+気持ち　Kata benda	気持ち(きもち)　Perasaan<br><br>1. いい気持ちです。<br>Perasaannya enak.<br><br>2. 気持ちが悪いです。<br>Saya merasa mual.	jlpt-n4
+途中　Kata benda / Kata keterangan	途中(とちゅう)　Di tengah jalan<br><br>1. 途中で友達に会いました。<br>Di tengah jalan saya bertemu teman.<br><br>2. 帰る途中で買い物をします。<br>Saya berbelanja dalam perjalanan pulang.	jlpt-n4
+簡単　Kata sifat-na / Kata benda	簡単(かんたん)　Mudah, sederhana<br><br>1. この問題は簡単です。<br>Soal ini mudah.<br><br>2. 簡単な料理を作ります。<br>Saya membuat masakan sederhana.	jlpt-n4
+深い　Kata sifat-i	深い(ふかい)　Dalam<br><br>1. この川は深いです。<br>Sungai ini dalam.<br><br>2. 深い森を歩きました。<br>Saya berjalan di hutan yang lebat.	jlpt-n4
+起こす　Kata kerja (Godan) - transitif	起こす(おこす)　Membangunkan, menimbulkan<br><br>1. 朝、弟を起こします。<br>Pagi hari saya membangunkan adik laki-laki.<br><br>2. 事故を起こしました。<br>Saya menyebabkan kecelakaan.	jlpt-n4
+夫　Kata benda	夫(おっと)　Suami (milik sendiri)<br><br>1. 夫は会社員です。<br>Suami saya karyawan perusahaan.<br><br>2. 夫と買い物に行きます。<br>Saya berbelanja dengan suami.	jlpt-n4
+一度　Kata benda / Kata keterangan	一度(いちど)　Sekali<br><br>1. 一度日本へ行きたいです。<br>Saya ingin pergi ke Jepang sekali.<br><br>2. もう一度言ってください。<br>Tolong katakan sekali lagi.	jlpt-n4
+場合　Kata keterangan / Kata benda	場合(ばあい)　Kasus, keadaan<br><br>1. 雨の場合は中止します。<br>Jika hujan, dibatalkan.<br><br>2. 場合によって違います。<br>Tergantung keadaannya.	jlpt-n4
+運ぶ　Kata kerja (Godan) - transitif	運ぶ(はこぶ)　Membawa, mengangkut<br><br>1. 荷物を運びます。<br>Saya membawa barang.<br><br>2. 机を二階に運びます。<br>Saya mengangkut meja ke lantai dua.	jlpt-n4
+今夜　Kata benda / Kata keterangan	今夜(こんや)　Malam ini<br><br>1. 今夜は寒いです。<br>Malam ini dingin.<br><br>2. 今夜、友達に会います。<br>Malam ini saya bertemu teman.	jlpt-n4
+盗む　Kata kerja (Godan) - transitif	盗む(ぬすむ)　Mencuri<br><br>1. お金を盗まれました。<br>Uang saya dicuri.<br><br>2. 泥棒が車を盗みました。<br>Pencuri mencuri mobil.	jlpt-n4
+習慣　Kata benda	習慣(しゅうかん)　Kebiasaan<br><br>1. 朝走る習慣があります。<br>Saya punya kebiasaan berlari di pagi hari.<br><br>2. 習慣を変えます。<br>Saya mengubah kebiasaan.	jlpt-n4
+残る　Kata kerja (Godan) - intransitif	残る(のこる)　Tersisa<br><br>1. お金が少し残っています。<br>Uangnya masih tersisa sedikit.<br><br>2. 教室に三人残っています。<br>Tiga orang masih tertinggal di kelas.	jlpt-n4
+上がる　Kata kerja (Godan) - intransitif	上がる(あがる)　Naik, masuk<br><br>1. 二階に上がります。<br>Saya naik ke lantai dua.<br><br>2. どうぞ、上がってください。<br>Silakan masuk.	jlpt-n4
+席　Kata benda	席(せき)　Tempat duduk<br><br>1. 席に座ってください。<br>Tolong duduk di tempat duduk.<br><br>2. 電車で席を譲りました。<br>Saya memberikan tempat duduk di kereta.	jlpt-n4
+値段　Kata benda	値段(ねだん)　Harga<br><br>1. この靴の値段は高いです。<br>Harga sepatu ini mahal.<br><br>2. 値段を教えてください。<br>Tolong beri tahu harganya.	jlpt-n4
+将来　Kata benda / Kata keterangan	将来(しょうらい)　Masa depan<br><br>1. 将来、医者になりたいです。<br>Di masa depan saya ingin menjadi dokter.<br><br>2. 将来の夢は何ですか。<br>Apa impianmu di masa depan?	jlpt-n4
+優しい　Kata sifat-i	優しい(やさしい)　Baik hati, lembut<br><br>1. 先生はとても優しいです。<br>Guru sangat baik hati.<br><br>2. 優しい人が好きです。<br>Saya suka orang yang baik hati.	jlpt-n4
+逃げる　Kata kerja (Ichidan) - intransitif	逃げる(にげる)　Melarikan diri<br><br>1. 犬が逃げました。<br>Anjing lari.<br><br>2. 火事で逃げました。<br>Saya lari karena kebakaran.	jlpt-n4
+空気　Kata benda	空気(くうき)　Udara<br><br>1. 山の空気はきれいです。<br>Udara di gunung segar.<br><br>2. 部屋の空気が悪いです。<br>Udara di kamar pengap.	jlpt-n4
+役に立つ　Ungkapan / Kata kerja (Godan)	役に立つ(やくにたつ)　Berguna<br><br>1. この辞書は役に立ちます。<br>Kamus ini berguna.<br><br>2. 勉強は将来役に立ちます。<br>Belajar berguna di masa depan.	jlpt-n4
+答え　Kata benda	答え(こたえ)　Jawaban<br><br>1. 答えを書いてください。<br>Tolong tulis jawabannya.<br><br>2. 答えがわかりません。<br>Saya tidak tahu jawabannya.	jlpt-n4
+機会　Kata benda	機会(きかい)　Kesempatan<br><br>1. いい機会ですから、行きましょう。<br>Karena ini kesempatan bagus, ayo pergi.<br><br>2. 会う機会がありません。<br>Tidak ada kesempatan bertemu.	jlpt-n4
+予約　Kata benda / Kata kerja-suru	予約(よやく)　Reservasi<br><br>1. ホテルを予約します。<br>Saya memesan hotel.<br><br>2. レストランの予約をしました。<br>Saya sudah memesan tempat di restoran.	jlpt-n4
+原因　Kata benda / Kata kerja-suru	原因(げんいん)　Penyebab<br><br>1. 事故の原因を調べます。<br>Saya menyelidiki penyebab kecelakaan.<br><br>2. 病気の原因はわかりません。<br>Penyebab penyakitnya tidak diketahui.	jlpt-n4
+火事　Kata benda	火事(かじ)　Kebakaran<br><br>1. 近所で火事がありました。<br>Ada kebakaran di sekitar rumah.<br><br>2. 火事に気をつけてください。<br>Waspadalah terhadap kebakaran.	jlpt-n4
+泥棒　Kata benda	泥棒(どろぼう)　Pencuri<br><br>1. 泥棒が家に入りました。<br>Pencuri masuk ke rumah.<br><br>2. 泥棒を捕まえました。<br>Pencuri berhasil ditangkap.	jlpt-n4
+髪　Kata benda	髪(かみ)　Rambut<br><br>1. 髪が長いです。<br>Rambutnya panjang.<br><br>2. 髪を切りに行きます。<br>Saya pergi memotong rambut.	jlpt-n4
+規則　Kata benda	規則(きそく)　Peraturan<br><br>1. 学校の規則を守ります。<br>Saya menaati peraturan sekolah.<br><br>2. 規則が厳しいです。<br>Peraturannya ketat.	jlpt-n4
+行う　Kata kerja (Godan) - transitif	行う(おこなう)　Melaksanakan<br><br>1. 試験を行います。<br>Ujian akan dilaksanakan.<br><br>2. 会議は三階で行います。<br>Rapat dilaksanakan di lantai tiga.	jlpt-n4
+見つかる　Kata kerja (Godan) - intransitif	見つかる(みつかる)　Ditemukan<br><br>1. かぎが見つかりました。<br>Kuncinya ditemukan.<br><br>2. いい仕事が見つかりました。<br>Pekerjaan yang bagus ditemukan.	jlpt-n4
+代わり　Kata benda	代わり(かわり)　Pengganti<br><br>1. 私の代わりに行ってください。<br>Tolong pergi menggantikan saya.<br><br>2. コーヒーの代わりにお茶を飲みます。<br>Saya minum teh sebagai ganti kopi.	jlpt-n4
+打つ　Kata kerja (Godan) - transitif	打つ(うつ)　Memukul, mengetik<br><br>1. ボールを打ちます。<br>Saya memukul bola.<br><br>2. パソコンで文章を打ちます。<br>Saya mengetik tulisan di komputer.	jlpt-n4
+増える　Kata kerja (Ichidan) - intransitif	増える(ふえる)　Bertambah<br><br>1. 学生が増えました。<br>Jumlah murid bertambah.<br><br>2. 体重が増えました。<br>Berat badan saya bertambah.	jlpt-n4
+厳しい　Kata sifat-i	厳しい(きびしい)　Ketat, keras<br><br>1. 先生は厳しいです。<br>Guru itu ketat.<br><br>2. 厳しい寒さが続きます。<br>Dingin yang parah berlanjut.	jlpt-n4
+迎える　Kata kerja (Ichidan) - transitif	迎える(むかえる)　Menyambut<br><br>1. 駅で友達を迎えます。<br>Saya menjemput teman di stasiun.<br><br>2. お客さんを迎えます。<br>Saya menyambut tamu.	jlpt-n4
+怖い　Kata sifat-i	怖い(こわい)　Menakutkan<br><br>1. 犬が怖いです。<br>Saya takut anjing.<br><br>2. 怖い映画を見ました。<br>Saya menonton film seram.	jlpt-n4
+社長　Kata benda	社長(しゃちょう)　Direktur perusahaan<br><br>1. 社長は忙しいです。<br>Direktur sibuk.<br><br>2. 社長に会いました。<br>Saya bertemu direktur.	jlpt-n4
+紹介　Kata benda / Kata kerja-suru	紹介(しょうかい)　Perkenalan<br><br>1. 友達を紹介します。<br>Saya memperkenalkan teman.<br><br>2. 自己紹介をしてください。<br>Tolong perkenalkan diri.	jlpt-n4
+集める　Kata kerja (Ichidan) - transitif	集める(あつめる)　Mengumpulkan<br><br>1. 切手を集めます。<br>Saya mengumpulkan perangko.<br><br>2. みんなのお金を集めます。<br>Saya mengumpulkan uang semua orang.	jlpt-n4
+事務所　Kata benda	事務所(じむしょ)　Kantor<br><br>1. 事務所は二階にあります。<br>Kantornya di lantai dua.<br><br>2. 事務所に電話します。<br>Saya menelepon kantor.	jlpt-n4
+星　Kata benda	星(ほし)　Bintang<br><br>1. 夜、空に星が見えます。<br>Malam hari bintang terlihat di langit.<br><br>2. 星がきれいです。<br>Bintangnya indah.	jlpt-n4
+特に　Kata keterangan	特に(とくに)　Terutama<br><br>1. 特に数学が好きです。<br>Saya terutama suka matematika.<br><br>2. 今日は特に寒いです。<br>Hari ini terutama dingin.	jlpt-n4
+集まる　Kata kerja (Godan) - intransitif	集まる(あつまる)　Berkumpul<br><br>1. 駅に集まります。<br>Kami berkumpul di stasiun.<br><br>2. 人が集まっています。<br>Orang-orang berkumpul.	jlpt-n4
+比べる　Kata kerja (Ichidan) - transitif	比べる(くらべる)　Membandingkan<br><br>1. 二つの物を比べます。<br>Saya membandingkan dua barang.<br><br>2. 去年と比べて、暑いです。<br>Dibandingkan tahun lalu, lebih panas.	jlpt-n4
+無理　Kata sifat-na / Kata benda	無理(むり)　Tidak masuk akal, mustahil<br><br>1. 一日で終わるのは無理です。<br>Menyelesaikan dalam sehari itu mustahil.<br><br>2. 無理をしないでください。<br>Tolong jangan memaksakan diri.	jlpt-n4
+用意　Kata benda / Kata kerja-suru	用意(ようい)　Persiapan<br><br>1. 晩御飯の用意をします。<br>Saya menyiapkan makan malam.<br><br>2. 出かける用意ができました。<br>Persiapan untuk pergi sudah siap.	jlpt-n4
+落とす　Kata kerja (Godan) - transitif	落とす(おとす)　Menjatuhkan, menghilangkan<br><br>1. お皿を落としました。<br>Saya menjatuhkan piring.<br><br>2. 財布を落としました。<br>Saya menjatuhkan (kehilangan) dompet.	jlpt-n4
+壊れる　Kata kerja (Ichidan) - intransitif	壊れる(こわれる)　Rusak<br><br>1. 時計が壊れました。<br>Jam rusak.<br><br>2. エアコンが壊れています。<br>AC sedang rusak.	jlpt-n4
+具合　Kata benda	具合(ぐあい)　Kondisi<br><br>1. 体の具合が悪いです。<br>Kondisi tubuh saya kurang baik.<br><br>2. 機械の具合を見ます。<br>Saya memeriksa kondisi mesin.	jlpt-n4
+倒れる　Kata kerja (Ichidan) - intransitif	倒れる(たおれる)　Roboh, jatuh sakit<br><br>1. 地震で家が倒れました。<br>Rumah roboh karena gempa.<br><br>2. 疲れて倒れました。<br>Saya jatuh pingsan karena kelelahan.	jlpt-n4
+味　Kata benda	味(あじ)　Rasa<br><br>1. この料理は味がいいです。<br>Masakan ini rasanya enak.<br><br>2. 味はどうですか。<br>Bagaimana rasanya?	jlpt-n4
+安全　Kata benda / Kata sifat-na	安全(あんぜん)　Keamanan<br><br>1. 安全に気をつけてください。<br>Tolong perhatikan keselamatan.<br><br>2. ここは安全です。<br>Di sini aman.	jlpt-n4
+変　Kata sifat-na / Kata benda	変(へん)　Aneh<br><br>1. 変な音がします。<br>Terdengar suara aneh.<br><br>2. 変な夢を見ました。<br>Saya bermimpi aneh.	jlpt-n4
+連絡　Kata benda / Kata kerja-suru	連絡(れんらく)　Menghubungi<br><br>1. 友達に連絡します。<br>Saya menghubungi teman.<br><br>2. 後で連絡してください。<br>Tolong hubungi saya nanti.	jlpt-n4
+祖母　Kata benda	祖母(そぼ)　Nenek (milik sendiri)<br><br>1. 祖母は八十歳です。<br>Nenek saya berumur 80 tahun.<br><br>2. 祖母は料理が上手です。<br>Nenek saya pandai memasak.	jlpt-n4
+大事　Kata sifat-na	大事(だいじ)　Penting, serius<br><br>1. 大事な話があります。<br>Ada hal penting yang ingin dibicarakan.<br><br>2. 体を大事にしてください。<br>Tolong jaga kesehatan.	jlpt-n4
+壊す　Kata kerja (Godan) - transitif	壊す(こわす)　Merusak, memecahkan<br><br>1. コップを壊しました。<br>Saya memecahkan gelas.<br><br>2. おもちゃを壊さないでください。<br>Tolong jangan merusak mainan.	jlpt-n4
+下がる　Kata kerja (Godan) - intransitif	下がる(さがる)　Turun, menurun<br><br>1. 熱が下がりました。<br>Demam saya turun.<br><br>2. 気温が下がります。<br>Suhu udara turun.	jlpt-n4
+決まる　Kata kerja (Godan) - intransitif	決まる(きまる)　Diputuskan<br><br>1. 行く日が決まりました。<br>Hari keberangkatan sudah diputuskan.<br><br>2. 会議の時間が決まりました。<br>Waktu rapat sudah ditentukan.	jlpt-n4
+楽しみ　Kata sifat-na / Kata benda	楽しみ(たのしみ)　Hal yang dinantikan<br><br>1. 旅行が楽しみです。<br>Saya menantikan perjalanan.<br><br>2. 来週が楽しみです。<br>Saya menantikan minggu depan.	jlpt-n4
+確か　Kata sifat-na / Kata benda	確か(たしか)　Pasti, kalau tidak salah<br><br>1. 確か、あの人は先生です。<br>Kalau tidak salah, orang itu guru.<br><br>2. 確かに聞きました。<br>Saya memang mendengarnya dengan jelas.	jlpt-n4
+汽車　Kata benda	汽車(きしゃ)　Kereta api (uap)<br><br>1. 昔は汽車に乗りました。<br>Dulu saya naik kereta api.<br><br>2. 汽車の旅は楽しいです。<br>Perjalanan dengan kereta api menyenangkan.	jlpt-n4
+隅　Kata benda	隅(すみ)　Sudut<br><br>1. 部屋の隅に猫がいます。<br>Di sudut kamar ada kucing.<br><br>2. 隅から隅まで掃除します。<br>Saya membersihkan dari ujung ke ujung.	jlpt-n4
+競争　Kata benda / Kata kerja-suru	競争(きょうそう)　Persaingan<br><br>1. 競争は厳しいです。<br>Persaingannya ketat.<br><br>2. 友達と競争します。<br>Saya berlomba dengan teman.	jlpt-n4
+入院　Kata benda / Kata kerja-suru	入院(にゅういん)　Rawat inap<br><br>1. 母は入院しています。<br>Ibu sedang dirawat di rumah sakit.<br><br>2. 来週、入院します。<br>Minggu depan saya masuk rumah sakit.	jlpt-n4
+形　Kata benda	形(かたち)　Bentuk<br><br>1. この箱は形が面白いです。<br>Kotak ini bentuknya menarik.<br><br>2. 丸い形が好きです。<br>Saya suka bentuk bulat.	jlpt-n4
+景色　Kata benda	景色(けしき)　Pemandangan<br><br>1. ここは景色がいいです。<br>Pemandangan di sini bagus.<br><br>2. 山の景色を見ます。<br>Saya melihat pemandangan gunung.	jlpt-n4
+仕方　Kata benda	仕方(しかた)　Cara<br><br>1. 使い方がわかりません。<br>Saya tidak tahu cara pakainya.<br><br>2. 仕方がありません。<br>Mau bagaimana lagi.	jlpt-n4
+留守　Kata benda / Kata kerja-suru	留守(るす)　Tidak ada di rumah<br><br>1. 母は今、留守です。<br>Ibu sekarang tidak ada di rumah.<br><br>2. 留守にします。<br>Saya akan meninggalkan rumah.	jlpt-n4
+首　Kata benda	首(くび)　Leher<br><br>1. 首が痛いです。<br>Leher saya sakit.<br><br>2. 首にマフラーを巻きます。<br>Saya melilitkan syal di leher.	jlpt-n4
+君　Kata ganti	君(きみ)　Kamu (akrab)<br><br>1. 君は学生ですか。<br>Apakah kamu pelajar?<br><br>2. 君に会いたいです。<br>Saya ingin bertemu denganmu.	jlpt-n4
+以内　Kata benda / Kata keterangan	以内(いない)　Dalam, kurang dari<br><br>1. 十分以内に来てください。<br>Datanglah dalam 10 menit.<br><br>2. 千円以内で買います。<br>Saya membeli dengan harga di bawah seribu yen.	jlpt-n4
+血　Kata benda	血(ち)　Darah<br><br>1. 血が出ました。<br>Darah keluar.<br><br>2. 血を見るのが怖いです。<br>Saya takut melihat darah.	jlpt-n4
+例えば　Kata keterangan	例えば(たとえば)　Misalnya<br><br>1. 例えば、りんごやバナナです。<br>Misalnya apel dan pisang.<br><br>2. 例えば、どんな物が好きですか。<br>Misalnya, kamu suka barang seperti apa?	jlpt-n4
+別れる　Kata kerja (Ichidan) - intransitif	別れる(わかれる)　Berpisah<br><br>1. 駅で友達と別れました。<br>Saya berpisah dengan teman di stasiun.<br><br>2. 恋人と別れました。<br>Saya putus dengan pacar.	jlpt-n4
+棚　Kata benda	棚(たな)　Rak<br><br>1. 棚に本を置きます。<br>Saya menaruh buku di rak.<br><br>2. 台所に棚があります。<br>Di dapur ada rak.	jlpt-n4
+複雑　Kata sifat-na / Kata benda	複雑(ふくざつ)　Rumit<br><br>1. この問題は複雑です。<br>Masalah ini rumit.<br><br>2. 複雑な気持ちです。<br>Perasaan saya campur aduk.	jlpt-n4
+申し上げる　Kata kerja (Ichidan) - transitif	申し上げる(もうしあげる)　Mengatakan (bentuk rendah hati)<br><br>1. お礼を申し上げます。<br>Saya mengucapkan terima kasih.<br><br>2. 先生にご挨拶を申し上げます。<br>Saya menyampaikan salam kepada guru.	jlpt-n4
+引っ越す　Kata kerja (Godan) - intransitif	引っ越す(ひっこす)　Pindah rumah<br><br>1. 来月、引っ越します。<br>Bulan depan saya pindah rumah.<br><br>2. 東京へ引っ越しました。<br>Saya pindah ke Tokyo.	jlpt-n4
+品物　Kata benda	品物(しなもの)　Barang<br><br>1. 店でいろいろな品物を見ます。<br>Di toko saya melihat berbagai barang.<br><br>2. 品物が届きました。<br>Barangnya sudah sampai.	jlpt-n4
+技術　Kata benda	技術(ぎじゅつ)　Teknologi<br><br>1. 日本の技術は進んでいます。<br>Teknologi Jepang sudah maju.<br><br>2. 新しい技術を勉強します。<br>Saya mempelajari teknologi baru.	jlpt-n4
+ご存じ　Kata benda	ご存じ(ごぞんじ)　Mengetahui (hormat)<br><br>1. この店をご存じですか。<br>Apakah Anda tahu toko ini?<br><br>2. ご存じの通り、明日は休みです。<br>Seperti yang Anda ketahui, besok libur.	jlpt-n4
+草　Kata benda	草(くさ)　Rumput<br><br>1. 庭の草を取ります。<br>Saya mencabut rumput di halaman.<br><br>2. 草が生えています。<br>Rumput tumbuh.	jlpt-n4
+以下　Kata benda	以下(いか)　Ke bawah, di bawah<br><br>1. 十歳以下の子供は無料です。<br>Anak berusia 10 tahun ke bawah gratis.<br><br>2. 以下の問題に答えてください。<br>Jawablah soal-soal berikut.	jlpt-n4
+両方　Kata benda	両方(りょうほう)　Kedua-duanya<br><br>1. 両方好きです。<br>Saya suka keduanya.<br><br>2. 両方の手を上げてください。<br>Tolong angkat kedua tangan.	jlpt-n4
+倍　Kata benda	倍(ばい)　Dua kali lipat<br><br>1. 値段が倍になりました。<br>Harganya menjadi dua kali lipat.<br><br>2. 二倍の時間がかかります。<br>Butuh waktu dua kali lipat.	jlpt-n4
+安心　Kata benda / Kata sifat-na / Kata kerja-suru	安心(あんしん)　Lega, tenang<br><br>1. 無事に着いて安心しました。<br>Saya lega karena sampai dengan selamat.<br><br>2. 安心してください。<br>Tenang saja.	jlpt-n4
+港　Kata benda	港(みなと)　Pelabuhan<br><br>1. 船が港に着きました。<br>Kapal tiba di pelabuhan.<br><br>2. 港の近くに住んでいます。<br>Saya tinggal di dekat pelabuhan.	jlpt-n4
+線　Kata benda	線(せん)　Garis<br><br>1. 紙に線を引きます。<br>Saya menarik garis di kertas.<br><br>2. 白い線の内側に立ってください。<br>Tolong berdiri di dalam garis putih.	jlpt-n4
+下げる　Kata kerja (Ichidan) - transitif	下げる(さげる)　Menurunkan, menggantung<br><br>1. 頭を下げます。<br>Saya menundukkan kepala.<br><br>2. 値段を下げました。<br>Harganya diturunkan.	jlpt-n4
+虫　Kata benda	虫(むし)　Serangga<br><br>1. 庭に虫がいます。<br>Di halaman ada serangga.<br><br>2. 虫が好きです。<br>Saya suka serangga.	jlpt-n4
+小鳥　Kata benda	小鳥(ことり)　Burung kecil<br><br>1. 庭に小鳥が来ました。<br>Burung kecil datang ke halaman.<br><br>2. 小鳥が鳴いています。<br>Burung kecil sedang berkicau.	jlpt-n4
+高校生　Kata benda	高校生(こうこうせい)　Siswa SMA<br><br>1. 姉は高校生です。<br>Kakak perempuan saya siswa SMA.<br><br>2. 高校生のとき、野球をしました。<br>Saat SMA saya bermain bisbol.	jlpt-n4
+乗り換える　Kata kerja (Ichidan) - transitif	乗り換える(のりかえる)　Berganti (kereta)<br><br>1. 次の駅で電車を乗り換えます。<br>Saya berganti kereta di stasiun berikutnya.<br><br>2. 新宿でバスに乗り換えます。<br>Saya berganti bus di Shinjuku.	jlpt-n4
+枝　Kata benda	枝(えだ)　Cabang<br><br>1. 木の枝が折れました。<br>Cabang pohon patah.<br><br>2. 枝に鳥が止まっています。<br>Burung hinggap di cabang.	jlpt-n4
+寺　Kata benda	寺(てら)　Kuil (Buddha)<br><br>1. 京都のお寺へ行きました。<br>Saya pergi ke kuil di Kyoto.<br><br>2. この寺は古いです。<br>Kuil ini tua.	jlpt-n4
+着物　Kata benda	着物(きもの)　Kimono<br><br>1. 着物を着ます。<br>Saya memakai kimono.<br><br>2. 着物は高いです。<br>Kimono itu mahal.	jlpt-n4
+終わり　Kata benda	終わり(おわり)　Akhir<br><br>1. 授業の終わりに宿題を出します。<br>Di akhir pelajaran saya memberi PR.<br><br>2. 映画の終わりが悲しかったです。<br>Akhir filmnya sedih.	jlpt-n4
+帰り　Kata benda	帰り(かえり)　Pulang, kepulangan<br><br>1. 帰りに買い物をします。<br>Dalam perjalanan pulang saya berbelanja.<br><br>2. 帰りが遅くなりました。<br>Saya pulang terlambat.	jlpt-n4
+店員　Kata benda	店員(てんいん)　Pegawai toko<br><br>1. 店員に聞きます。<br>Saya bertanya kepada pegawai toko.<br><br>2. あの店員は親切です。<br>Pegawai toko itu ramah.	jlpt-n4
+通う　Kata kerja (Godan) - intransitif	通う(かよう)　Pulang-pergi (ke)<br><br>1. 学校に通っています。<br>Saya bersekolah di sana.<br><br>2. バスで会社に通います。<br>Saya pergi-pulang ke kantor naik bus.	jlpt-n4
+柔らかい　Kata sifat-i	柔らかい(やわらかい)　Lembut<br><br>1. このパンは柔らかいです。<br>Roti ini lembut.<br><br>2. 柔らかいベッドで寝ます。<br>Saya tidur di tempat tidur yang empuk.	jlpt-n4
+騒ぐ　Kata kerja (Godan) - intransitif	騒ぐ(さわぐ)　Berisik, ribut<br><br>1. 子供が騒いでいます。<br>Anak-anak sedang ribut.<br><br>2. 電車の中で騒がないでください。<br>Tolong jangan berisik di dalam kereta.	jlpt-n4
+丁寧　Kata sifat-na / Kata benda	丁寧(ていねい)　Sopan<br><br>1. 丁寧に話します。<br>Saya berbicara dengan sopan.<br><br>2. 丁寧な手紙を書きました。<br>Saya menulis surat yang sopan.	jlpt-n4
+踏む　Kata kerja (Godan) - transitif	踏む(ふむ)　Menginjak<br><br>1. 足を踏まれました。<br>Kaki saya terinjak.<br><br>2. ブレーキを踏みます。<br>Saya menginjak rem.	jlpt-n4
+冷える　Kata kerja (Ichidan) - intransitif	冷える(ひえる)　Menjadi dingin<br><br>1. ビールが冷えました。<br>Birnya sudah dingin.<br><br>2. 夜は体が冷えます。<br>Di malam hari tubuh menjadi dingin.	jlpt-n4
+真ん中　Kata benda	真ん中(まんなか)　Tengah<br><br>1. 道の真ん中に立ちます。<br>Saya berdiri di tengah jalan.<br><br>2. 部屋の真ん中にテーブルがあります。<br>Di tengah ruangan ada meja.	jlpt-n4
+裏　Kata benda	裏(うら)　Belakang, sisi sebaliknya<br><br>1. 紙の裏に名前を書きます。<br>Saya menulis nama di balik kertas.<br><br>2. 店の裏に駐車場があります。<br>Di belakang toko ada tempat parkir.	jlpt-n4
+飾る　Kata kerja (Godan) - transitif	飾る(かざる)　Menghias<br><br>1. 部屋に花を飾ります。<br>Saya menghias kamar dengan bunga.<br><br>2. 壁に絵を飾ります。<br>Saya memajang lukisan di dinding.	jlpt-n4
+表　Kata benda	表(おもて)　Permukaan, depan<br><br>1. 紙の表に名前を書きます。<br>Saya menulis nama di sisi depan kertas.<br><br>2. この表を見てください。<br>Tolong lihat bagian depan ini.	jlpt-n4
+遠慮　Kata benda / Kata kerja-suru	遠慮(えんりょ)　Sungkan, menahan diri<br><br>1. 遠慮しないで食べてください。<br>Silakan makan jangan sungkan.<br><br>2. 今日は遠慮します。<br>Hari ini saya tidak usah dulu.	jlpt-n4
+都合　Kata keterangan / Kata benda	都合(つごう)　Kondisi, kenyamanan waktu<br><br>1. 明日は都合が悪いです。<br>Besok saya kurang bisa.<br><br>2. 都合のいい日を教えてください。<br>Tolong beri tahu hari yang cocok bagi Anda.	jlpt-n4
+暮れる　Kata kerja (Ichidan) - intransitif	暮れる(くれる)　Menjadi gelap<br><br>1. 日が暮れました。<br>Hari sudah gelap.<br><br>2. 冬は早く日が暮れます。<br>Saat musim dingin hari cepat gelap.	jlpt-n4
+昼間　Kata benda / Kata keterangan	昼間(ひるま)　Siang hari<br><br>1. 昼間は暑いです。<br>Siang hari panas.<br><br>2. 昼間は仕事をします。<br>Siang hari saya bekerja.	jlpt-n4
+部長　Kata benda	部長(ぶちょう)　Kepala bagian<br><br>1. 部長は忙しいです。<br>Kepala bagian sibuk.<br><br>2. 部長に相談します。<br>Saya berkonsultasi dengan kepala bagian.	jlpt-n4
+久しぶり　Kata sifat-na / Kata benda	久しぶり(ひさしぶり)　Sudah lama (tidak bertemu)<br><br>1. 久しぶりに友達に会いました。<br>Saya bertemu teman setelah sekian lama.<br><br>2. 久しぶりですね。<br>Lama tidak berjumpa ya.	jlpt-n4
+引き出し　Kata benda	引き出し(ひきだし)　Laci<br><br>1. 引き出しにペンがあります。<br>Di laci ada pen.<br><br>2. 引き出しを開けます。<br>Saya membuka laci.	jlpt-n4
+急　Kata sifat-na	急(きゅう)　Mendadak<br><br>1. 急に雨が降り出しました。<br>Tiba-tiba hujan turun.<br><br>2. 急な用事ができました。<br>Tiba-tiba ada urusan mendadak.	jlpt-n4
+会場　Kata benda	会場(かいじょう)　Tempat acara<br><br>1. 会場は駅の近くです。<br>Tempat acara dekat stasiun.<br><br>2. 会場に人が集まりました。<br>Orang-orang berkumpul di tempat acara.	jlpt-n4
+急行　Kata benda / Kata kerja-suru	急行(きゅうこう)　Kereta ekspres<br><br>1. 急行に乗ります。<br>Saya naik kereta ekspres.<br><br>2. 急行は駅に止まりません。<br>Kereta ekspres tidak berhenti di stasiun.	jlpt-n4
+地理　Kata benda	地理(ちり)　Geografi<br><br>1. 地理の授業があります。<br>Ada pelajaran geografi.<br><br>2. 日本の地理を勉強します。<br>Saya belajar geografi Jepang.	jlpt-n4
+電灯　Kata benda	電灯(でんとう)　Lampu listrik<br><br>1. 電灯をつけます。<br>Saya menyalakan lampu listrik.<br><br>2. 電灯が明るいです。<br>Lampunya terang.	jlpt-n4
+適当　Kata sifat-na / Kata benda	適当(てきとう)　Cocok, sesuai<br><br>1. 適当な言葉を選んでください。<br>Pilihlah kata yang sesuai.<br><br>2. 適当に答えました。<br>Saya menjawab seadanya.	jlpt-n4
+細かい　Kata sifat-i	細かい(こまかい)　Halus, kecil<br><br>1. 細かいお金がありません。<br>Saya tidak punya uang receh.<br><br>2. 細かい字は読めません。<br>Saya tidak bisa membaca tulisan yang kecil.	jlpt-n4
+課長　Kata benda	課長(かちょう)　Kepala seksi<br><br>1. 課長は会議にいます。<br>Kepala seksi sedang di rapat.<br><br>2. 課長に会いました。<br>Saya bertemu kepala seksi.	jlpt-n4
+盛ん　Kata sifat-na	盛ん(さかん)　Berkembang pesat<br><br>1. この町は商業が盛んです。<br>Perdagangan di kota ini berkembang pesat.<br><br>2. 野球が盛んな国です。<br>Negara yang bisbolnya populer.	jlpt-n4
+割合　Kata benda	割合(わりあい)　Perbandingan, persentase<br><br>1. 女性の割合が多いです。<br>Persentase perempuannya banyak.<br><br>2. 割合に安いです。<br>Cukup murah.	jlpt-n4
+引き出す　Kata kerja (Godan) - transitif	引き出す(ひきだす)　Menarik keluar, mengambil uang<br><br>1. 銀行でお金を引き出します。<br>Saya menarik uang di bank.<br><br>2. 机の引き出しから紙を出します。<br>Saya mengeluarkan kertas dari laci meja.	jlpt-n4
+暖房　Kata benda / Kata kerja-suru	暖房(だんぼう)　Pemanas ruangan<br><br>1. 冬は暖房を使います。<br>Saat musim dingin saya memakai pemanas.<br><br>2. 暖房をつけてください。<br>Tolong nyalakan pemanasnya.	jlpt-n4
+申す　Kata kerja (Godan) - transitif	申す(もうす)　Berkata, bernama (rendah hati)<br><br>1. 私は田中と申します。<br>Nama saya Tanaka.<br><br>2. 先生にそう申しました。<br>Saya menyampaikan begitu kepada guru.	jlpt-n4
+売り場　Kata benda	売り場(うりば)　Bagian penjualan<br><br>1. おもちゃ売り場は五階です。<br>Bagian mainan ada di lantai lima.<br><br>2. 切符売り場はどこですか。<br>Di mana loket tiket?	jlpt-n4
+退院　Kata benda / Kata kerja-suru	退院(たいいん)　Keluar dari rumah sakit<br><br>1. 来週、退院します。<br>Minggu depan saya keluar dari rumah sakit.<br><br>2. 母は退院しました。<br>Ibu sudah keluar dari rumah sakit.	jlpt-n4
+受付　Kata benda	受付(うけつけ)　Resepsionis, meja penerima<br><br>1. 受付で名前を書きます。<br>Saya menulis nama di meja resepsionis.<br><br>2. 受付は一階です。<br>Resepsionis ada di lantai satu.	jlpt-n4
+食料品　Kata benda	食料品(しょくりょうひん)　Bahan makanan<br><br>1. 食料品を買います。<br>Saya membeli bahan makanan.<br><br>2. 食料品売り場は地下です。<br>Bagian bahan makanan ada di bawah tanah.	jlpt-n4
+新聞社　Kata benda	新聞社(しんぶんしゃ)　Perusahaan surat kabar<br><br>1. 新聞社で働いています。<br>Saya bekerja di perusahaan surat kabar.<br><br>2. 新聞社に電話します。<br>Saya menelepon perusahaan surat kabar.	jlpt-n4
+苦い　Kata sifat-i	苦い(にがい)　Pahit<br><br>1. このコーヒーは苦いです。<br>Kopi ini pahit.<br><br>2. 薬は苦いです。<br>Obat itu pahit.	jlpt-n4
+講堂　Kata benda	講堂(こうどう)　Aula<br><br>1. 講堂に学生が集まります。<br>Para murid berkumpul di aula.<br><br>2. 講堂は大きいです。<br>Aulanya besar.	jlpt-n4
+下宿　Kata benda / Kata kerja-suru	下宿(げしゅく)　Indekos<br><br>1. 大学の近くに下宿しています。<br>Saya tinggal indekos dekat universitas.<br><br>2. 下宿のおばさんは親切です。<br>Ibu kos itu baik hati.	jlpt-n4
+不便　Kata benda / Kata sifat-na	不便(ふべん)　Tidak praktis<br><br>1. この町は交通が不便です。<br>Transportasi di kota ini tidak praktis.<br><br>2. 不便な所に住んでいます。<br>Saya tinggal di tempat yang kurang praktis.	jlpt-n4
+写す　Kata kerja (Godan) - transitif	写す(うつす)　Menyalin, memotret<br><br>1. 黒板の字をノートに写します。<br>Saya menyalin tulisan di papan tulis ke buku catatan.<br><br>2. 写真を写します。<br>Saya memotret.	jlpt-n4
+湯　Kata benda	湯(ゆ)　Air panas<br><br>1. お湯を沸かします。<br>Saya merebus air.<br><br>2. お湯で顔を洗います。<br>Saya mencuci muka dengan air hangat.	jlpt-n4
+屋上　Kata benda	屋上(おくじょう)　Atap (rooftop)<br><br>1. 屋上から町が見えます。<br>Dari atap kota terlihat.<br><br>2. 屋上で昼ご飯を食べます。<br>Saya makan siang di atap.	jlpt-n4
+工業　Kata benda	工業(こうぎょう)　Industri<br><br>1. 工業が盛んな町です。<br>Kota dengan industri yang maju.<br><br>2. この辺は工業地帯です。<br>Daerah ini adalah kawasan industri.	jlpt-n4
+冷房　Kata benda / Kata kerja-suru	冷房(れいぼう)　AC (pendingin)<br><br>1. 夏は冷房をつけます。<br>Saat musim panas saya menyalakan AC.<br><br>2. 冷房が強すぎます。<br>AC-nya terlalu dingin.	jlpt-n4
+下着　Kata benda	下着(したぎ)　Pakaian dalam<br><br>1. 下着を洗います。<br>Saya mencuci pakaian dalam.<br><br>2. 下着を買いました。<br>Saya membeli pakaian dalam.	jlpt-n4
+畳　Kata benda	畳(たたみ)　Tatami<br><br>1. 畳の部屋で寝ます。<br>Saya tidur di kamar bertatami.<br><br>2. この部屋は畳が六枚です。<br>Kamar ini berukuran enam tatami.	jlpt-n4
+お嬢さん　Kata benda	お嬢さん(おじょうさん)　Putri (orang lain)<br><br>1. お嬢さんはおいくつですか。<br>Putri Anda berumur berapa?<br><br>2. 田中さんのお嬢さんは医者です。<br>Putri Tanaka-san adalah dokter.	jlpt-n4
+沸かす　Kata kerja (Godan) - transitif	沸かす(わかす)　Merebus<br><br>1. お湯を沸かします。<br>Saya memanaskan air.<br><br>2. お風呂を沸かします。<br>Saya memanaskan air mandi.	jlpt-n4
+漬ける　Kata kerja (Ichidan) - transitif	漬ける(つける)　Merendam, mengawetkan<br><br>1. 野菜を水に漬けます。<br>Saya merendam sayuran dalam air.<br><br>2. きゅうりを塩に漬けます。<br>Saya mengasinkan timun dengan garam.	jlpt-n4
+特急　Kata benda	特急(とっきゅう)　Kereta ekspres terbatas<br><br>1. 特急で東京へ行きます。<br>Saya pergi ke Tokyo naik kereta ekspres terbatas.<br><br>2. 特急は速いです。<br>Kereta ekspres terbatas itu cepat.	jlpt-n4
+過ぎる　Kata kerja (Ichidan) - intransitif	過ぎる(すぎる)　Terlalu, melewati<br><br>1. 食べ過ぎました。<br>Saya makan terlalu banyak.<br><br>2. もう十時を過ぎました。<br>Sudah lewat jam 10.	jlpt-n4
+止める　Kata kerja (Ichidan) - transitif	止める(とめる)　Menghentikan, mematikan<br><br>1. 車を止めます。<br>Saya menghentikan mobil.<br><br>2. エンジンを止めてください。<br>Tolong matikan mesinnya.	jlpt-n4
+遅れる　Kata kerja (Ichidan) - intransitif	遅れる(おくれる)　Terlambat<br><br>1. 電車に遅れました。<br>Saya ketinggalan kereta.<br><br>2. 約束の時間に遅れました。<br>Saya terlambat dari waktu janji.	jlpt-n4
+続ける　Kata kerja (Ichidan) - transitif	続ける(つづける)　Melanjutkan<br><br>1. 勉強を続けます。<br>Saya melanjutkan belajar.<br><br>2. 毎日、日本語を勉強し続けます。<br>Setiap hari saya terus belajar bahasa Jepang.	jlpt-n4
+手伝う　Kata kerja (Godan) - transitif	手伝う(てつだう)　Membantu<br><br>1. 母の料理を手伝います。<br>Saya membantu ibu memasak.<br><br>2. 引っ越しを手伝ってください。<br>Tolong bantu saya pindahan.	jlpt-n4
+見付ける　Kata kerja (Ichidan) - transitif	見付ける(みつける)　Menemukan<br><br>1. かぎを見付けました。<br>Saya menemukan kunci.<br><br>2. いい店を見付けました。<br>Saya menemukan toko yang bagus.	jlpt-n4
+驚く　Kata kerja (Godan) - intransitif	驚く(おどろく)　Terkejut<br><br>1. その話に驚きました。<br>Saya terkejut mendengar cerita itu.<br><br>2. 大きな音に驚きました。<br>Saya terkejut oleh suara keras.	jlpt-n4
+眠る　Kata kerja (Godan) - intransitif	眠る(ねむる)　Tidur<br><br>1. 赤ちゃんが眠っています。<br>Bayi sedang tidur.<br><br>2. 昨日はよく眠れました。<br>Kemarin saya bisa tidur nyenyak.	jlpt-n4
+勝つ　Kata kerja (Godan) - intransitif	勝つ(かつ)　Menang<br><br>1. 試合に勝ちました。<br>Kami menang pertandingan.<br><br>2. 私のチームが勝ちます。<br>Tim saya akan menang.	jlpt-n4
+聞こえる　Kata kerja (Ichidan) - intransitif	聞こえる(きこえる)　Terdengar<br><br>1. 鳥の声が聞こえます。<br>Terdengar suara burung.<br><br>2. 隣の部屋の音が聞こえます。<br>Terdengar suara dari kamar sebelah.	jlpt-n4
+尋ねる　Kata kerja (Ichidan) - transitif	尋ねる(たずねる)　Bertanya<br><br>1. 先生に道を尋ねます。<br>Saya bertanya jalan kepada guru.<br><br>2. 駅への行き方を尋ねました。<br>Saya bertanya cara pergi ke stasiun.	jlpt-n4
+慣れる　Kata kerja (Ichidan) - intransitif	慣れる(なれる)　Terbiasa<br><br>1. 日本の生活に慣れました。<br>Saya sudah terbiasa dengan kehidupan di Jepang.<br><br>2. この靴にはまだ慣れていません。<br>Saya belum terbiasa dengan sepatu ini.	jlpt-n4
+泣く　Kata kerja (Godan)	泣く(なく)　Menangis<br><br>1. 赤ちゃんが泣いています。<br>Bayi sedang menangis.<br><br>2. 悲しくて泣きました。<br>Saya menangis karena sedih.	jlpt-n4
+似る　Kata kerja (Ichidan) - intransitif	似る(にる)　Mirip<br><br>1. 私は母に似ています。<br>Saya mirip dengan ibu.<br><br>2. この二つは似ています。<br>Kedua ini mirip.	jlpt-n4
+戻る　Kata kerja (Godan) - intransitif	戻る(もどる)　Kembali<br><br>1. 家に戻ります。<br>Saya kembali ke rumah.<br><br>2. 忘れ物をしたので、戻ります。<br>Karena ada barang tertinggal, saya kembali.	jlpt-n4
+調べる　Kata kerja (Ichidan) - transitif	調べる(しらべる)　Memeriksa, mencari tahu<br><br>1. 辞書で意味を調べます。<br>Saya mencari arti di kamus.<br><br>2. 電車の時間を調べました。<br>Saya memeriksa jadwal kereta.	jlpt-n4
+伝える　Kata kerja (Ichidan) - transitif	伝える(つたえる)　Menyampaikan<br><br>1. 先生に伝えます。<br>Saya menyampaikan kepada guru.<br><br>2. 母によろしくお伝えください。<br>Tolong sampaikan salam kepada ibu Anda.	jlpt-n4
+動く　Kata kerja (Godan) - intransitif	動く(うごく)　Bergerak<br><br>1. 車が動きません。<br>Mobilnya tidak bergerak.<br><br>2. 時計が動いています。<br>Jam sedang berjalan.	jlpt-n4
+知らせる　Kata kerja (Ichidan) - transitif	知らせる(しらせる)　Memberi tahu<br><br>1. 結果を知らせます。<br>Saya memberi tahu hasilnya.<br><br>2. 時間を知らせてください。<br>Tolong beri tahu waktunya.	jlpt-n4
+続く　Kata kerja (Godan) - intransitif	続く(つづく)　Berlanjut<br><br>1. 雨が続いています。<br>Hujan terus berlanjut.<br><br>2. いい天気が続きます。<br>Cuaca bagus terus berlanjut.	jlpt-n4
+別　Kata benda	別(べつ)　Lain, terpisah<br><br>1. それは別の問題です。<br>Itu masalah yang lain.<br><br>2. 別々に払います。<br>Kami membayar terpisah.	jlpt-n4
+鳴る　Kata kerja (Godan) - intransitif	鳴る(なる)　Berbunyi<br><br>1. 電話が鳴ります。<br>Telepon berbunyi.<br><br>2. ベルが鳴りました。<br>Bel berbunyi.	jlpt-n4
+市　Kata benda	市(し)　Kota (administratif)<br><br>1. 私は市の図書館へ行きます。<br>Saya pergi ke perpustakaan kota.<br><br>2. 市の人口は十万人です。<br>Penduduk kota itu seratus ribu orang.	jlpt-n4
+負ける　Kata kerja (Ichidan) - intransitif	負ける(まける)　Kalah<br><br>1. 試合に負けました。<br>Kami kalah dalam pertandingan.<br><br>2. 兄に負けました。<br>Saya kalah dari kakak laki-laki.	jlpt-n4
+悲しい　Kata sifat-i	悲しい(かなしい)　Sedih<br><br>1. 悲しい話を聞きました。<br>Saya mendengar cerita sedih.<br><br>2. 友達が行ってしまって悲しいです。<br>Saya sedih karena teman pergi.	jlpt-n4
+亡くなる　Kata kerja (Godan) - intransitif	亡くなる(なくなる)　Meninggal (sopan)<br><br>1. 祖父が亡くなりました。<br>Kakek saya meninggal.<br><br>2. 去年、父が亡くなりました。<br>Tahun lalu ayah saya meninggal.	jlpt-n4
+以外　Kata benda / Kata keterangan	以外(いがい)　Selain, kecuali<br><br>1. 日曜日以外は働きます。<br>Saya bekerja selain hari Minggu.<br><br>2. 私以外はみんな来ました。<br>Semua datang kecuali saya.	jlpt-n4
+治す　Kata kerja (Godan) - transitif	治す(なおす)　Menyembuhkan<br><br>1. 病気を治します。<br>Saya menyembuhkan penyakit.<br><br>2. 歯を治しに行きます。<br>Saya pergi memperbaiki gigi.	jlpt-n4
+間違える　Kata kerja (Ichidan) - transitif	間違える(まちがえる)　Salah (membuat kesalahan)<br><br>1. 道を間違えました。<br>Saya salah jalan.<br><br>2. 電話番号を間違えました。<br>Saya salah nomor telepon.	jlpt-n4
+回る　Kata kerja (Godan) - intransitif	回る(まわる)　Berputar<br><br>1. 地球は回ります。<br>Bumi berputar.<br><br>2. 右へ回ってください。<br>Tolong putar ke kanan.	jlpt-n4
+捨てる　Kata kerja (Ichidan) - transitif	捨てる(すてる)　Membuang<br><br>1. ごみを捨てます。<br>Saya membuang sampah.<br><br>2. 古い本を捨てました。<br>Saya membuang buku lama.	jlpt-n4
+育てる　Kata kerja (Ichidan) - transitif	育てる(そだてる)　Membesarkan<br><br>1. 子供を育てます。<br>Saya membesarkan anak.<br><br>2. 花を育てます。<br>Saya menanam bunga.	jlpt-n4
+褒める　Kata kerja (Ichidan) - transitif	褒める(ほめる)　Memuji<br><br>1. 先生に褒められました。<br>Saya dipuji oleh guru.<br><br>2. 子供を褒めます。<br>Saya memuji anak.	jlpt-n4
+石　Kata benda	石(いし)　Batu<br><br>1. 道に石があります。<br>Di jalan ada batu.<br><br>2. 石を投げないでください。<br>Tolong jangan melempar batu.	jlpt-n4
+恥ずかしい　Kata sifat-i	恥ずかしい(はずかしい)　Malu<br><br>1. みんなの前で話すのは恥ずかしいです。<br>Saya malu bicara di depan semua orang.<br><br>2. 間違えて恥ずかしかったです。<br>Saya malu karena membuat kesalahan.	jlpt-n4
+塗る　Kata kerja (Godan) - transitif	塗る(ぬる)　Mengecat, mengoleskan<br><br>1. 壁を白く塗ります。<br>Saya mengecat dinding menjadi putih.<br><br>2. パンにバターを塗ります。<br>Saya mengoleskan mentega pada roti.	jlpt-n4
+泊まる　Kata kerja (Godan) - intransitif	泊まる(とまる)　Menginap<br><br>1. 友達の家に泊まります。<br>Saya menginap di rumah teman.<br><br>2. ホテルに泊まりました。<br>Saya menginap di hotel.	jlpt-n4
+片付ける　Kata kerja (Ichidan) - transitif	片付ける(かたづける)　Membereskan<br><br>1. 部屋を片付けます。<br>Saya membereskan kamar.<br><br>2. おもちゃを片付けてください。<br>Tolong rapikan mainannya.	jlpt-n4
+止む　Kata kerja (Godan) - intransitif	止む(やむ)　Berhenti (hujan)<br><br>1. 雨が止みました。<br>Hujan sudah berhenti.<br><br>2. 風が止みません。<br>Angin tidak berhenti.	jlpt-n4
+遠く　Kata benda / Kata keterangan	遠く(とおく)　Jauh, tempat yang jauh<br><br>1. 遠くに山が見えます。<br>Di kejauhan terlihat gunung.<br><br>2. 遠くへ行きたいです。<br>Saya ingin pergi jauh.	jlpt-n4
+済む　Kata kerja (Godan) - intransitif	済む(すむ)　Selesai<br><br>1. 宿題が済みました。<br>PR sudah selesai.<br><br>2. 用事が済みました。<br>Urusan saya sudah selesai.	jlpt-n4
+捕まえる　Kata kerja (Ichidan) - transitif	捕まえる(つかまえる)　Menangkap<br><br>1. 警察が泥棒を捕まえました。<br>Polisi menangkap pencuri.<br><br>2. 魚を捕まえます。<br>Saya menangkap ikan.	jlpt-n4
+踊る　Kata kerja (Godan) - intransitif	踊る(おどる)　Menari<br><br>1. パーティで踊ります。<br>Saya menari di pesta.<br><br>2. みんなで踊りました。<br>Kami semua menari.	jlpt-n4
+足りる　Kata kerja (Ichidan) - intransitif	足りる(たりる)　Cukup<br><br>1. お金が足りません。<br>Uangnya tidak cukup.<br><br>2. 時間が足りました。<br>Waktunya cukup.	jlpt-n4
+治る　Kata kerja (Godan) - intransitif	治る(なおる)　Sembuh<br><br>1. 風邪が治りました。<br>Flu saya sudah sembuh.<br><br>2. 病気はすぐ治ります。<br>Penyakitnya akan segera sembuh.	jlpt-n4
+硬い　Kata sifat-i	硬い(かたい)　Keras<br><br>1. この肉は硬いです。<br>Daging ini keras.<br><br>2. 硬いパンを食べました。<br>Saya makan roti keras.	jlpt-n4
+建てる　Kata kerja (Ichidan) - transitif	建てる(たてる)　Membangun<br><br>1. 新しい家を建てます。<br>Saya membangun rumah baru.<br><br>2. 駅の前にビルを建てます。<br>Mereka membangun gedung di depan stasiun.	jlpt-n4
+謝る　Kata kerja (Godan)	謝る(あやまる)　Meminta maaf<br><br>1. 先生に謝ります。<br>Saya meminta maaf kepada guru.<br><br>2. 遅れて謝りました。<br>Saya meminta maaf karena terlambat.	jlpt-n4
+立てる　Kata kerja (Ichidan) - transitif	立てる(たてる)　Menegakkan, mendirikan<br><br>1. 旗を立てます。<br>Saya menegakkan bendera.<br><br>2. 計画を立てます。<br>Saya menyusun rencana.	jlpt-n4
+寂しい　Kata sifat-i	寂しい(さびしい)　Kesepian<br><br>1. 一人で寂しいです。<br>Saya kesepian sendirian.<br><br>2. 寂しい町です。<br>Kota yang sepi.	jlpt-n4
+濡れる　Kata kerja (Ichidan) - intransitif	濡れる(ぬれる)　Basah<br><br>1. 雨で服が濡れました。<br>Pakaian saya basah karena hujan.<br><br>2. 濡れた傘を干します。<br>Saya menjemur payung yang basah.	jlpt-n4
+投げる　Kata kerja (Ichidan) - transitif	投げる(なげる)　Melempar<br><br>1. ボールを投げます。<br>Saya melempar bola.<br><br>2. 石を投げないでください。<br>Tolong jangan melempar batu.	jlpt-n4
+太る　Kata kerja (Godan) - intransitif	太る(ふとる)　Menjadi gemuk<br><br>1. 最近、太りました。<br>Akhir-akhir ini saya menjadi gemuk.<br><br>2. 食べ過ぎると太ります。<br>Kalau makan berlebihan, jadi gemuk.	jlpt-n4
+寄る　Kata kerja (Godan) - intransitif	寄る(よる)　Mampir<br><br>1. 帰りに店に寄ります。<br>Saat pulang saya mampir ke toko.<br><br>2. もう少し近くに寄ってください。<br>Tolong mendekat sedikit lagi.	jlpt-n4
+歯医者　Kata benda	歯医者(はいしゃ)　Dokter gigi<br><br>1. 歯医者へ行きます。<br>Saya pergi ke dokter gigi.<br><br>2. 歯医者は怖いです。<br>Dokter gigi itu menakutkan.	jlpt-n4
+召し上がる　Kata kerja (Godan) - transitif	召し上がる(めしあがる)　Makan, minum (bentuk hormat)<br><br>1. どうぞ召し上がってください。<br>Silakan dimakan.<br><br>2. 何を召し上がりますか。<br>Anda mau makan apa?	jlpt-n4
+珍しい　Kata sifat-i	珍しい(めずらしい)　Langka, jarang<br><br>1. 珍しい花を見ました。<br>Saya melihat bunga langka.<br><br>2. 雪が降るのは珍しいです。<br>Salju turun itu jarang.	jlpt-n4
+揺れる　Kata kerja (Ichidan) - intransitif	揺れる(ゆれる)　Bergoyang<br><br>1. 地震で家が揺れました。<br>Rumah bergoyang karena gempa.<br><br>2. 船が揺れています。<br>Kapal bergoyang.	jlpt-n4
+祈る　Kata kerja (Godan) - transitif	祈る(いのる)　Berdoa<br><br>1. 神社で祈ります。<br>Saya berdoa di kuil.<br><br>2. みんなの幸せを祈ります。<br>Saya mendoakan kebahagiaan semua orang.	jlpt-n4
+込む　Kata kerja (Godan) - intransitif	込む(こむ)　Penuh sesak<br><br>1. 電車が込んでいます。<br>Kereta penuh sesak.<br><br>2. 道が込んでいます。<br>Jalanan macet.	jlpt-n4
+折る　Kata kerja (Godan) - transitif	折る(おる)　Mematahkan<br><br>1. 木の枝を折ります。<br>Saya mematahkan cabang pohon.<br><br>2. 紙を折ります。<br>Saya melipat kertas.	jlpt-n4
+眠い　Kata sifat-i	眠い(ねむい)　Mengantuk<br><br>1. 眠いです。<br>Saya mengantuk.<br><br>2. 昼ご飯の後は眠くなります。<br>Setelah makan siang saya jadi mengantuk.	jlpt-n4
+大学生　Kata benda	大学生(だいがくせい)　Mahasiswa<br><br>1. 兄は大学生です。<br>Kakak laki-laki saya mahasiswa.<br><br>2. 大学生はアルバイトをします。<br>Mahasiswa bekerja paruh waktu.	jlpt-n4
+お礼　Kata benda	お礼(おれい)　Ucapan terima kasih<br><br>1. お礼を言います。<br>Saya mengucapkan terima kasih.<br><br>2. お礼の手紙を書きました。<br>Saya menulis surat ucapan terima kasih.	jlpt-n4
+痩せる　Kata kerja (Ichidan) - intransitif	痩せる(やせる)　Menjadi kurus<br><br>1. 毎日走って痩せました。<br>Karena berlari setiap hari, saya menjadi kurus.<br><br>2. もう少し痩せたいです。<br>Saya ingin lebih kurus lagi.	jlpt-n4
+噛む　Kata kerja (Godan) - transitif	噛む(かむ)　Menggigit<br><br>1. 犬に手を噛まれました。<br>Tangan saya digigit anjing.<br><br>2. よく噛んで食べます。<br>Saya makan dengan mengunyah baik-baik.	jlpt-n4
+億　Bilangan	億(おく)　Seratus juta<br><br>1. 人口は一億人です。<br>Penduduknya seratus juta orang.<br><br>2. 一億円ほしいです。<br>Saya ingin seratus juta yen.	jlpt-n4
+触る　Kata kerja (Godan) - intransitif/transitif	触る(さわる)　Menyentuh<br><br>1. 展覧会では触らないでください。<br>Di pameran tolong jangan menyentuh.<br><br>2. 犬に触ります。<br>Saya menyentuh anjing.	jlpt-n4
+拾う　Kata kerja (Godan) - transitif	拾う(ひろう)　Memungut<br><br>1. 道でお金を拾いました。<br>Saya menemukan uang di jalan.<br><br>2. ごみを拾います。<br>Saya memungut sampah.	jlpt-n4
+焼く　Kata kerja (Godan) - transitif	焼く(やく)　Memanggang, membakar<br><br>1. 魚を焼きます。<br>Saya memanggang ikan.<br><br>2. パンを焼きます。<br>Saya memanggang roti.	jlpt-n4
+滑る　Kata kerja (Godan) - intransitif	滑る(すべる)　Tergelincir<br><br>1. 雪道で滑りました。<br>Saya tergelincir di jalan bersalju.<br><br>2. スキーで滑ります。<br>Saya meluncur dengan ski.	jlpt-n4
+割れる　Kata kerja (Ichidan) - intransitif	割れる(われる)　Pecah<br><br>1. コップが割れました。<br>Gelasnya pecah.<br><br>2. 窓が割れています。<br>Jendelanya pecah.	jlpt-n4
+お宅　Kata benda	お宅(おたく)　Rumah Anda<br><br>1. お宅はどちらですか。<br>Rumah Anda di mana?<br><br>2. お宅に伺います。<br>Saya akan berkunjung ke rumah Anda.	jlpt-n4
+折れる　Kata kerja (Ichidan) - intransitif	折れる(おれる)　Patah<br><br>1. 枝が折れました。<br>Cabangnya patah.<br><br>2. 足の骨が折れました。<br>Tulang kaki saya patah.	jlpt-n4
+移る　Kata kerja (Godan) - intransitif	移る(うつる)　Pindah<br><br>1. 新しい家に移ります。<br>Saya pindah ke rumah baru.<br><br>2. 別の部署に移りました。<br>Saya dipindahkan ke bagian lain.	jlpt-n4
+植える　Kata kerja (Ichidan) - transitif	植える(うえる)　Menanam<br><br>1. 庭に花を植えます。<br>Saya menanam bunga di halaman.<br><br>2. 木を植えました。<br>Saya menanam pohon.	jlpt-n4
+光る　Kata kerja (Godan) - intransitif	光る(ひかる)　Bersinar<br><br>1. 星が光っています。<br>Bintang bersinar.<br><br>2. 海が光っています。<br>Laut berkilau.	jlpt-n4
+字　Kata benda	字(じ)　Huruf, tulisan<br><br>1. きれいな字を書きます。<br>Saya menulis dengan tulisan yang bagus.<br><br>2. この字が読めません。<br>Saya tidak bisa membaca huruf ini.	jlpt-n4
+差し上げる　Kata kerja (Ichidan) - transitif	差し上げる(さしあげる)　Memberi (rendah hati)<br><br>1. 先生にお土産を差し上げます。<br>Saya memberi oleh-oleh kepada guru.<br><br>2. これを差し上げます。<br>Ini untuk Anda.	jlpt-n4
+焼ける　Kata kerja (Ichidan) - intransitif	焼ける(やける)　Terbakar<br><br>1. 家が焼けました。<br>Rumahnya terbakar.<br><br>2. 日に焼けました。<br>Kulit saya terbakar matahari.	jlpt-n4
+お祝い　Kata benda	お祝い(おいわい)　Selamat, perayaan<br><br>1. 結婚のお祝いをします。<br>Kami merayakan pernikahan.<br><br>2. お祝いに花を贈ります。<br>Saya mengirim bunga sebagai ucapan selamat.	jlpt-n4
+取り替える　Kata kerja (Ichidan) - transitif	取り替える(とりかえる)　Menukar<br><br>1. 新しい物と取り替えます。<br>Saya menukarnya dengan yang baru.<br><br>2. 電球を取り替えます。<br>Saya mengganti bohlam.	jlpt-n4
+乾く　Kata kerja (Godan) - intransitif	乾く(かわく)　Kering<br><br>1. 洗濯物が乾きました。<br>Cucian sudah kering.<br><br>2. 喉が乾きました。<br>Saya haus.	jlpt-n4
+釣る　Kata kerja (Godan) - transitif	釣る(つる)　Memancing<br><br>1. 川で魚を釣ります。<br>Saya memancing ikan di sungai.<br><br>2. 釣りに行きます。<br>Saya pergi memancing.	jlpt-n4
+用事　Kata benda	用事(ようじ)　Urusan<br><br>1. 用事があります。<br>Saya ada urusan.<br><br>2. 用事があって行けません。<br>Saya ada urusan jadi tidak bisa pergi.	jlpt-n4
+浅い　Kata sifat-i	浅い(あさい)　Dangkal<br><br>1. この川は浅いです。<br>Sungai ini dangkal.<br><br>2. 浅い池で遊びます。<br>Saya bermain di kolam dangkal.	jlpt-n4
+届ける　Kata kerja (Ichidan) - transitif	届ける(とどける)　Mengantarkan<br><br>1. 荷物を届けます。<br>Saya mengantarkan barang.<br><br>2. 手紙を届けてください。<br>Tolong antarkan surat ini.	jlpt-n4
+床屋　Kata benda	床屋(とこや)　Tukang cukur<br><br>1. 床屋で髪を切ります。<br>Saya memotong rambut di tukang cukur.<br><br>2. 床屋は駅の前にあります。<br>Tukang cukur ada di depan stasiun.	jlpt-n4
+お土産　Kata benda	お土産(おみやげ)　Oleh-oleh<br><br>1. 友達にお土産を買います。<br>Saya membeli oleh-oleh untuk teman.<br><br>2. 京都のお土産をもらいました。<br>Saya menerima oleh-oleh dari Kyoto.	jlpt-n4
+拝見　Kata benda / Kata kerja-suru	拝見(はいけん)　Melihat (rendah hati)<br><br>1. 写真を拝見します。<br>Saya melihat foto Anda.<br><br>2. 手紙を拝見しました。<br>Saya sudah membaca surat Anda.	jlpt-n4
+予習　Kata benda / Kata kerja-suru	予習(よしゅう)　Persiapan pelajaran<br><br>1. 明日の授業の予習をします。<br>Saya mempersiapkan pelajaran besok.<br><br>2. 予習をしてから寝ます。<br>Setelah mempersiapkan pelajaran, saya tidur.	jlpt-n4
+お釣り　Kata benda	お釣り(おつり)　Uang kembalian<br><br>1. お釣りをください。<br>Tolong beri saya kembaliannya.<br><br>2. お釣りは五百円です。<br>Kembaliannya lima ratus yen.	jlpt-n4
+足す　Kata kerja (Godan) - transitif	足す(たす)　Menambah<br><br>1. 三に二を足します。<br>Saya menambahkan dua pada tiga.<br><br>2. 塩を足します。<br>Saya menambahkan garam.	jlpt-n4
+寝坊　Kata benda / Kata kerja-suru / Kata sifat-na	寝坊(ねぼう)　Bangun kesiangan<br><br>1. 今朝は寝坊しました。<br>Pagi ini saya bangun kesiangan.<br><br>2. 寝坊して遅れました。<br>Saya terlambat karena bangun kesiangan.	jlpt-n4
+忘れ物　Kata benda	忘れ物(わすれもの)　Barang tertinggal<br><br>1. 電車に忘れ物をしました。<br>Saya meninggalkan barang di kereta.<br><br>2. 忘れ物はありませんか。<br>Apakah tidak ada barang yang tertinggal?	jlpt-n4
+沸く　Kata kerja (Godan) - intransitif	沸く(わく)　Mendidih<br><br>1. お湯が沸きました。<br>Airnya sudah mendidih.<br><br>2. お風呂が沸きました。<br>Air mandi sudah panas.	jlpt-n4
+復習　Kata benda / Kata kerja-suru	復習(ふくしゅう)　Mengulang pelajaran<br><br>1. 授業の復習をします。<br>Saya mengulang pelajaran.<br><br>2. 毎日、復習します。<br>Setiap hari saya mengulang pelajaran.	jlpt-n4
+ご主人　Kata benda	ご主人(ごしゅじん)　Suami Anda<br><br>1. ご主人はお元気ですか。<br>Apakah suami Anda sehat?<br><br>2. ご主人は会社員ですか。<br>Apakah suami Anda karyawan perusahaan?	jlpt-n4
+再来週　Kata benda / Kata keterangan	再来週(さらいしゅう)　Dua minggu lagi<br><br>1. 再来週、日本へ行きます。<br>Dua minggu lagi saya pergi ke Jepang.<br><br>2. 再来週は休みです。<br>Dua minggu lagi libur.	jlpt-n4
+再来月　Kata benda / Kata keterangan	再来月(さらいげつ)　Dua bulan lagi<br><br>1. 再来月、結婚します。<br>Dua bulan lagi saya menikah.<br><br>2. 再来月、引っ越します。<br>Dua bulan lagi saya pindah rumah.	jlpt-n4
+付く　Kata kerja (Godan) - intransitif	付く(つく)　Menempel, menyala<br><br>1. 服に汚れが付きました。<br>Noda menempel di pakaian.<br><br>2. 電気が付きました。<br>Lampunya menyala.	jlpt-n4
+変える　Kata kerja (Ichidan) - transitif	変える(かえる)　Mengubah<br><br>1. 予定を変えます。<br>Saya mengubah rencana.<br><br>2. 髪の色を変えました。<br>Saya mengubah warna rambut.	jlpt-n4
+看護師　Kata benda	看護師(かんごし)　Perawat<br><br>1. 姉は看護師です。<br>Kakak perempuan saya perawat.<br><br>2. 看護師は忙しいです。<br>Perawat itu sibuk.	jlpt-n4
+降り出す　Kata kerja (Godan) - intransitif	降り出す(ふりだす)　Mulai turun (hujan)<br><br>1. 雨が降り出しました。<br>Hujan mulai turun.<br><br>2. 雪が降り出しました。<br>Salju mulai turun.	jlpt-n4
+けど　Kata sambung / Partikel	けど　Tetapi<br><br>1. 行きたいけど、時間がありません。<br>Saya ingin pergi, tetapi tidak ada waktu.<br><br>2. 高いけど、買います。<br>Mahal, tetapi saya beli.	jlpt-n4
+日　Kata benda	日(ひ)　Hari<br><br>1. いい日になりました。<br>Jadi hari yang baik.<br><br>2. 雨の日は家にいます。<br>Pada hari hujan saya di rumah.	jlpt-n4
+間　Kata benda	間(あいだ)　Selang waktu, antara<br><br>1. 二人の間に座ります。<br>Saya duduk di antara dua orang.<br><br>2. 夏休みの間、旅行しました。<br>Selama liburan musim panas saya bepergian.	jlpt-n4
+親　Kata benda	親(おや)　Orang tua<br><br>1. 親に手紙を書きます。<br>Saya menulis surat kepada orang tua.<br><br>2. 親は元気です。<br>Orang tua saya sehat.	jlpt-n4
+熱　Kata benda	熱(ねつ)　Demam, panas<br><br>1. 熱があります。<br>Saya demam.<br><br>2. 熱が下がりました。<br>Demam saya sudah turun.	jlpt-n4
+運転手　Kata benda	運転手(うんてんしゅ)　Sopir<br><br>1. タクシーの運転手と話します。<br>Saya berbicara dengan sopir taksi.<br><br>2. 運転手さんは親切でした。<br>Sopirnya ramah.	jlpt-n4
+木綿　Kata benda	木綿(もめん)　Katun<br><br>1. 木綿のシャツを着ます。<br>Saya memakai kemeja katun.<br><br>2. 木綿は夏に涼しいです。<br>Katun terasa sejuk di musim panas.	jlpt-n4
+消しゴム　Kata benda	消しゴム(けしゴム)　Penghapus<br><br>1. 消しゴムで字を消します。<br>Saya menghapus tulisan dengan penghapus.<br><br>2. 消しゴムを貸してください。<br>Tolong pinjamkan penghapus.	jlpt-n4
+テニス　Kata benda	テニス　Tenis<br><br>1. 日曜日にテニスをします。<br>Hari Minggu saya bermain tenis.<br><br>2. テニスが好きです。<br>Saya suka tenis.	jlpt-n4
+ピアノ　Kata benda	ピアノ　Piano<br><br>1. ピアノを弾きます。<br>Saya bermain piano.<br><br>2. 妹はピアノが上手です。<br>Adik perempuan saya pandai bermain piano.	jlpt-n4
+コンピュータ　Kata benda	コンピュータ　Komputer<br><br>1. コンピュータで仕事をします。<br>Saya bekerja dengan komputer.<br><br>2. 新しいコンピュータを買いました。<br>Saya membeli komputer baru.	jlpt-n4
+ケーキ　Kata benda	ケーキ　Kue<br><br>1. 誕生日にケーキを食べます。<br>Saat ulang tahun saya makan kue.<br><br>2. ケーキを作りました。<br>Saya membuat kue.	jlpt-n4
+ビル　Kata benda	ビル　Gedung bertingkat<br><br>1. 駅の前に大きなビルがあります。<br>Di depan stasiun ada gedung besar.<br><br>2. このビルは十階です。<br>Gedung ini sepuluh lantai.	jlpt-n4
+カーテン　Kata benda	カーテン　Gorden<br><br>1. カーテンを閉めます。<br>Saya menutup gorden.<br><br>2. 新しいカーテンを買いました。<br>Saya membeli gorden baru.	jlpt-n4
+ガソリン　Kata benda	ガソリン　Bensin<br><br>1. 車にガソリンを入れます。<br>Saya mengisi bensin ke mobil.<br><br>2. ガソリンが高いです。<br>Bensin mahal.	jlpt-n4
+アルコール　Kata benda	アルコール　Alkohol<br><br>1. アルコールは飲みません。<br>Saya tidak minum alkohol.<br><br>2. アルコールの入っていない飲み物です。<br>Minuman tanpa alkohol.	jlpt-n4
+サンドイッチ　Kata benda	サンドイッチ　Sandwich<br><br>1. 昼ご飯にサンドイッチを食べます。<br>Saya makan sandwich untuk makan siang.<br><br>2. サンドイッチを作りました。<br>Saya membuat sandwich.	jlpt-n4
+オートバイ　Kata benda	オートバイ　Sepeda motor<br><br>1. オートバイで会社へ行きます。<br>Saya pergi ke kantor naik sepeda motor.<br><br>2. オートバイは危ないです。<br>Sepeda motor itu berbahaya.	jlpt-n4
+サラダ　Kata benda	サラダ　Salad<br><br>1. 野菜のサラダを食べます。<br>Saya makan salad sayuran.<br><br>2. サラダを作ります。<br>Saya membuat salad.	jlpt-n4
+ガソリンスタンド　Kata benda	ガソリンスタンド　Pom bensin<br><br>1. ガソリンスタンドで働いています。<br>Saya bekerja di pom bensin.<br><br>2. ガソリンスタンドは駅の近くです。<br>Pom bensin dekat stasiun.	jlpt-n4
+ソフト　Kata sifat-na	ソフト　Lunak, perangkat lunak<br><br>1. このソフトは便利です。<br>Perangkat lunak ini praktis.<br><br>2. ソフトな色が好きです。<br>Saya suka warna yang lembut.	jlpt-n4
+テキスト　Kata benda	テキスト　Teks, buku teks<br><br>1. テキストを読みます。<br>Saya membaca buku teks.<br><br>2. テキストを開いてください。<br>Tolong buka buku teksnya.	jlpt-n4
+ステレオ　Kata benda	ステレオ　Stereo<br><br>1. ステレオで音楽を聞きます。<br>Saya mendengarkan musik dengan stereo.<br><br>2. 新しいステレオを買いました。<br>Saya membeli stereo baru.	jlpt-n4
+ジャム　Kata benda	ジャム　Selai<br><br>1. パンにジャムをつけます。<br>Saya mengoleskan selai pada roti.<br><br>2. いちごのジャムが好きです。<br>Saya suka selai stroberi.	jlpt-n4
+アナウンサー　Kata benda	アナウンサー　Penyiar<br><br>1. 姉はアナウンサーです。<br>Kakak perempuan saya adalah penyiar.<br><br>2. あのアナウンサーは有名です。<br>Penyiar itu terkenal.	jlpt-n4
+パート　Kata benda	パート　Paruh waktu, bagian<br><br>1. アルバイトでパートをしています。<br>Saya bekerja paruh waktu.<br><br>2. 母はスーパーでパートをしています。<br>Ibu bekerja paruh waktu di supermarket.	jlpt-n4
+アクセサリー　Kata benda	アクセサリー　Aksesori<br><br>1. アクセサリーを買いました。<br>Saya membeli aksesori.<br><br>2. このアクセサリーはかわいいです。<br>Aksesori ini lucu.	jlpt-n4
+エスカレーター　Kata benda	エスカレーター　Eskalator<br><br>1. エスカレーターで二階へ行きます。<br>Saya naik eskalator ke lantai dua.<br><br>2. エスカレーターは右です。<br>Eskalatornya di sebelah kanan.	jlpt-n4
+あっ　Interjeksi	あっ　Ah, oh<br><br>1. あっ、忘れました。<br>Ah, saya lupa.<br><br>2. あっ、雨ですよ。<br>Oh, hujan!	jlpt-n4
+スーツケース　Kata benda	スーツケース　Koper<br><br>1. スーツケースに服を入れます。<br>Saya memasukkan pakaian ke koper.<br><br>2. スーツケースが重いです。<br>Koper ini berat.	jlpt-n4
+ステーキ　Kata benda	ステーキ　Steik<br><br>1. 晩御飯にステーキを食べます。<br>Saya makan steik untuk makan malam.<br><br>2. このステーキはおいしいです。<br>Steik ini enak.	jlpt-n4
+チェック　Kata benda	チェック　Periksa, kotak-kotak<br><br>1. 名前をチェックします。<br>Saya memeriksa nama.<br><br>2. チェックのシャツを着ます。<br>Saya memakai kemeja kotak-kotak.	jlpt-n4
+サンダル　Kata benda	サンダル　Sandal<br><br>1. 夏はサンダルをはきます。<br>Saat musim panas saya memakai sandal.<br><br>2. 新しいサンダルを買いました。<br>Saya membeli sandal baru.	jlpt-n4
+スクリーン　Kata benda	スクリーン　Layar<br><br>1. 大きなスクリーンで映画を見ます。<br>Saya menonton film di layar besar.<br><br>2. スクリーンが見えません。<br>Layarnya tidak terlihat.	jlpt-n4
+一杯　Kata benda	一杯(いっぱい)　Satu gelas, penuh<br><br>1. ビールを一杯ください。<br>Tolong beri saya segelas bir.<br><br>2. おなかがいっぱいです。<br>Perut saya kenyang.	jlpt-n4
+用　Kata benda	用(よう)　Urusan, keperluan<br><br>1. 用があって来ました。<br>Saya datang karena ada keperluan.<br><br>2. 何か用ですか。<br>Ada keperluan apa?	jlpt-n4
+レジ　Kata benda	レジ　Kasir (mesin kasir)<br><br>1. レジでお金を払います。<br>Saya membayar di kasir.<br><br>2. レジは混んでいます。<br>Kasirnya ramai.	jlpt-n4
+内　Kata benda / Kata keterangan	内(うち)　Di dalam<br><br>1. 二日以内に来てください。<br>Datanglah dalam dua hari.<br><br>2. 家の内に入ります。<br>Saya masuk ke dalam rumah.	jlpt-n4
+包む　Kata kerja (Godan) - transitif	包む(つつむ)　Membungkus<br><br>1. プレゼントを包みます。<br>Saya membungkus hadiah.<br><br>2. これを包んでください。<br>Tolong bungkus ini.	jlpt-n4
+毛　Kata benda	毛(け)　Rambut, bulu<br><br>1. 犬の毛は白いです。<br>Bulu anjing itu putih.<br><br>2. 毛が長いです。<br>Rambutnya panjang.	jlpt-n4
+泳ぎ方　Kata benda	泳ぎ方(およぎかた)　Cara berenang<br><br>1. 泳ぎ方を教えてください。<br>Tolong ajari saya cara berenang.<br><br>2. 泳ぎ方を習います。<br>Saya belajar cara berenang.	jlpt-n4
+都　Kata benda	都(と)　Metropolitan (Tokyo)<br><br>1. 東京都に住んでいます。<br>Saya tinggal di Tokyo (Metropolitan).<br><br>2. 都の人口は多いです。<br>Penduduk Tokyo banyak.	jlpt-n4
+家内　Kata benda	家内(かない)　Istri (milik sendiri)<br><br>1. 家内は先生です。<br>Istri saya adalah guru.<br><br>2. 家内と旅行します。<br>Saya bepergian dengan istri.	jlpt-n4
+お見舞い　Kata benda	お見舞い(おみまい)　Menjenguk orang sakit<br><br>1. 友達のお見舞いに行きます。<br>Saya pergi menjenguk teman yang sakit.<br><br>2. お見舞いに花を持って行きます。<br>Saya membawa bunga untuk menjenguk.	jlpt-n4
+そう　Kata sifat-na	そう　Tampaknya<br><br>1. 雨が降りそうです。<br>Sepertinya akan hujan.<br><br>2. おいしそうですね。<br>Kelihatannya enak ya.	jlpt-n4
+そんな　Kata sifat prenominal (rentaishi)	そんな　Seperti itu<br><br>1. そんなことはありません。<br>Tidak begitu.<br><br>2. そんな話は聞いていません。<br>Saya tidak mendengar cerita seperti itu.	jlpt-n4
+非常に　Kata keterangan	非常に(ひじょうに)　Sangat<br><br>1. この料理は非常においしいです。<br>Masakan ini sangat enak.<br><br>2. 非常に疲れました。<br>Saya sangat capek.	jlpt-n4
+だから　Kata sambung	だから　Maka dari itu<br><br>1. 雨です。だから、行きません。<br>Hujan. Maka dari itu, saya tidak pergi.<br><br>2. 頭が痛いです。だから、休みます。<br>Kepala saya sakit. Maka dari itu, saya istirahat.	jlpt-n4
+はっきり　Kata keterangan	はっきり　Dengan jelas<br><br>1. はっきり言ってください。<br>Tolong katakan dengan jelas.<br><br>2. はっきり見えます。<br>Terlihat dengan jelas.	jlpt-n4
+すっかり　Kata keterangan	すっかり　Sepenuhnya<br><br>1. すっかり忘れました。<br>Saya benar-benar lupa.<br><br>2. 病気はすっかり治りました。<br>Penyakitnya sudah sembuh total.	jlpt-n4
+コンサート　Kata benda	コンサート　Konser<br><br>1. 日曜日にコンサートへ行きます。<br>Hari Minggu saya pergi ke konser.<br><br>2. コンサートは楽しかったです。<br>Konsernya menyenangkan.	jlpt-n4
+あんな　Kata sifat prenominal (rentaishi)	あんな　Seperti itu (jauh)<br><br>1. あんな大きな家に住みたいです。<br>Saya ingin tinggal di rumah sebesar itu.<br><br>2. あんな人は嫌いです。<br>Saya tidak suka orang seperti itu.	jlpt-n4
+プレゼント　Kata benda / Kata kerja-suru	プレゼント　Hadiah<br><br>1. 誕生日にプレゼントをあげます。<br>Saya memberi hadiah di hari ulang tahun.<br><br>2. プレゼントをありがとう。<br>Terima kasih atas hadiahnya.	jlpt-n4
+タイプ　Kata benda	タイプ　Tipe<br><br>1. あのタイプの車が好きです。<br>Saya suka mobil tipe itu.<br><br>2. 彼は私のタイプです。<br>Dia tipe saya.	jlpt-n4
+レポート　Kata benda / Kata kerja-suru	レポート　Laporan<br><br>1. レポートを書きます。<br>Saya menulis laporan.<br><br>2. 明日までにレポートを出します。<br>Saya mengumpulkan laporan sebelum besok.	jlpt-n4
+そろそろ　Kata keterangan	そろそろ　Sebentar lagi<br><br>1. そろそろ行きましょう。<br>Sebentar lagi ayo kita pergi.<br><br>2. そろそろ時間です。<br>Sudah hampir waktunya.	jlpt-n4
+ベル　Kata benda	ベル　Bel<br><br>1. ベルが鳴りました。<br>Bel berbunyi.<br><br>2. ドアのベルを押します。<br>Saya menekan bel pintu.	jlpt-n4
+いらっしゃる　Kata kerja (Godan) - intransitif	いらっしゃる　Ada, datang, pergi (hormat)<br><br>1. 先生はいらっしゃいますか。<br>Apakah guru ada?<br><br>2. どうぞいらっしゃいませ。<br>Selamat datang.	jlpt-n4
+どんどん　Kata keterangan	どんどん　Terus-menerus, cepat<br><br>1. 仕事がどんどん増えます。<br>Pekerjaan terus bertambah.<br><br>2. どんどん食べてください。<br>Silakan makan terus.	jlpt-n4
+スーツ　Kata benda	スーツ　Setelan jas<br><br>1. 新しいスーツを買いました。<br>Saya membeli setelan jas baru.<br><br>2. スーツを着て会社へ行きます。<br>Saya memakai setelan jas pergi ke kantor.	jlpt-n4
+ワープロ　Kata benda	ワープロ　Pengolah kata<br><br>1. ワープロで手紙を書きます。<br>Saya menulis surat dengan pengolah kata.<br><br>2. 昔はワープロをよく使いました。<br>Dulu pengolah kata sering dipakai.	jlpt-n4
+ちゃん　Akhiran	ちゃん　Akhiran akrab (-chan)<br><br>1. 田中さんのお子さんは、ゆうちゃんです。<br>Anak Tanaka-san bernama Yuu-chan.<br><br>2. みんなが「たろうちゃん」と呼びます。<br>Semua orang memanggilnya "Tarou-chan".	jlpt-n4
+汚れる　Kata kerja (Ichidan) - intransitif	汚れる(よごれる)　Menjadi kotor<br><br>1. 服が汚れました。<br>Pakaian saya kotor.<br><br>2. 汚れた手を洗います。<br>Saya mencuci tangan yang kotor.	jlpt-n4
+ごちそう　Kata benda / Kata kerja-suru	ごちそう　Traktiran, hidangan<br><br>1. 昨日、先輩にごちそうになりました。<br>Kemarin saya ditraktir senior.<br><br>2. ごちそうさまでした。<br>Terima kasih atas makanannya.	jlpt-n4
+パソコン　Kata benda	パソコン　Komputer pribadi<br><br>1. パソコンでメールを書きます。<br>Saya menulis email dengan komputer.<br><br>2. 新しいパソコンが欲しいです。<br>Saya ingin komputer baru.	jlpt-n4
+この頃　Kata keterangan / Kata benda	この頃(このごろ)　Akhir-akhir ini<br><br>1. この頃、忙しいです。<br>Akhir-akhir ini saya sibuk.<br><br>2. この頃、寒いですね。<br>Akhir-akhir ini dingin ya.	jlpt-n4
+ハンドバッグ　Kata benda	ハンドバッグ　Tas tangan<br><br>1. ハンドバッグを買いました。<br>Saya membeli tas tangan.<br><br>2. ハンドバッグに財布を入れます。<br>Saya memasukkan dompet ke tas tangan.	jlpt-n4
+アルバイト　Kata benda / Kata kerja-suru	アルバイト　Kerja paruh waktu<br><br>1. コンビニでアルバイトをします。<br>Saya bekerja paruh waktu di minimarket.<br><br>2. アルバイトで忙しいです。<br>Saya sibuk karena kerja paruh waktu.	jlpt-n4
+すると　Kata sambung	すると　Lalu, kemudian<br><br>1. ドアを開けた。すると、猫が出てきました。<br>Saya membuka pintu. Lalu, seekor kucing keluar.<br><br>2. 窓を開けると、風が入りました。<br>Begitu jendela dibuka, angin masuk.	jlpt-n4
+この間　Kata benda / Kata keterangan	この間(このあいだ)　Beberapa waktu lalu<br><br>1. この間、映画を見ました。<br>Beberapa waktu lalu saya menonton film.<br><br>2. この間はありがとうございました。<br>Terima kasih atas bantuan beberapa waktu lalu.	jlpt-n4
+ファックス　Kata benda / Kata kerja-suru	ファックス　Faks<br><br>1. ファックスを送ります。<br>Saya mengirim faks.<br><br>2. 会社にファックスがあります。<br>Di kantor ada mesin faks.	jlpt-n4
+すっと　Kata keterangan / Kata kerja-suru	すっと　Dengan cepat, tiba-tiba<br><br>1. 彼はすっと立ち上がりました。<br>Dia berdiri dengan sigap.<br><br>2. すっと部屋を出て行きました。<br>Dia keluar dari ruangan dengan diam-diam.	jlpt-n4
+そんなに　Kata keterangan	そんなに　Sebegitu banyak<br><br>1. そんなに食べませんでした。<br>Saya tidak makan sebanyak itu.<br><br>2. そんなに高くないです。<br>Tidak semahal itu.	jlpt-n4
+うん　Interjeksi	うん　Ya (akrab)<br><br>1. うん、わかった。<br>Ya, saya mengerti.<br><br>2. うん、いいよ。<br>Ya, boleh.	jlpt-n4
+ああ　Kata keterangan	ああ　Seperti itu<br><br>1. ああ、そうですか。<br>Oh, begitu ya.<br><br>2. ああ言えばこう言う。<br>Dia selalu membantah.	jlpt-n4
+ご覧になる　Ungkapan / Kata kerja (Godan)	ご覧になる(ごらんになる)　Melihat (hormat)<br><br>1. 先生がご覧になりました。<br>Guru melihatnya.<br><br>2. これをご覧ください。<br>Silakan lihat ini.	jlpt-n4
+二階建て　Kata benda	二階建て(にかいだて)　Bangunan dua lantai<br><br>1. 二階建ての家に住んでいます。<br>Saya tinggal di rumah dua lantai.<br><br>2. 二階建てのバスに乗りました。<br>Saya naik bus tingkat.	jlpt-n4
+昼休み　Kata benda / Kata keterangan	昼休み(ひるやすみ)　Istirahat siang<br><br>1. 昼休みに散歩します。<br>Saat istirahat siang saya berjalan-jalan.<br><br>2. 昼休みは一時間です。<br>Istirahat siang satu jam.	jlpt-n4
+お祭り　Kata benda	お祭り(おまつり)　Festival<br><br>1. 夏にお祭りがあります。<br>Saat musim panas ada festival.<br><br>2. お祭りに行きました。<br>Saya pergi ke festival.	jlpt-n4
+端　Kata benda	端(つま)　Ujung, tepi<br><br>1. 道の端を歩きます。<br>Saya berjalan di tepi jalan.<br><br>2. 紙の端を持ちます。<br>Saya memegang ujung kertas.	jlpt-n4
+背中　Kata benda	背中(せなか)　Punggung<br><br>1. 背中が痛いです。<br>Punggung saya sakit.<br><br>2. 背中を洗います。<br>Saya membasuh punggung.	jlpt-n4
+駐車場　Kata benda	駐車場(ちゅうしゃじょう)　Tempat parkir<br><br>1. 駐車場に車を止めます。<br>Saya memarkir mobil di tempat parkir.<br><br>2. 駐車場は無料です。<br>Tempat parkirnya gratis.	jlpt-n4
+踊り　Kata benda	踊り(おどり)　Tarian<br><br>1. 日本の踊りを見ました。<br>Saya melihat tarian Jepang.<br><br>2. この踊りは有名です。<br>Tarian ini terkenal.	jlpt-n4
