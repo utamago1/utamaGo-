@@ -171,8 +171,10 @@ function buildDriveDownloadUrl(fileId: string): string {
 // respond in <5ms instead of repeating multi-second Google Drive round-trips.
 const AUDIO_CACHE_DIR = path.join(os.tmpdir(), 'utamago-audio-cache');
 const AUDIO_CACHE_MAX_BYTES = 180 * 1024 * 1024; // Keep cache <= 180 MB (safe for Cloud Run tmpfs)
-// Cap every HTTP 206 chunk to 1 MB so 40-48 MB Choukai MP3s stay 32x below Cloud Run's response cap.
-const MAX_RANGE_CHUNK_BYTES = 1024 * 1024;
+// Cap every HTTP 206 chunk to 2 MB so 40-48 MB Choukai MP3s stay 16x below Cloud Run's 32 MB cap
+// while cutting mobile Range round-trips in half.
+const MAX_RANGE_CHUNK_BYTES = 2 * 1024 * 1024;
+const STATIC_AUDIO_LAST_MODIFIED = 'Mon, 01 Jan 2024 00:00:00 GMT';
 const PREWARM_DRIVE_AUDIO_IDS = ['1BijZlQrAGGx08Uuo0x49xLTQ63pzWE10']; // JLPT N2 Paket 1 (2010.07)
 
 interface ActiveAudioDownload {
@@ -185,6 +187,7 @@ interface ActiveAudioDownload {
 }
 
 const activeAudioDownloads = new Map<string, ActiveAudioDownload>();
+const audioCacheLastAccess = new Map<string, number>();
 const resolvedDriveUrlCache = new Map<
   string,
   { url: string; expiresAt: number }
@@ -203,6 +206,10 @@ function getAudioCachePath(fileId: string): string {
   return path.join(AUDIO_CACHE_DIR, `${safeId}.audio`);
 }
 
+function recordAudioCacheAccess(filePath: string) {
+  audioCacheLastAccess.set(filePath, Date.now());
+}
+
 function pruneAudioCacheIfNeeded(keepFilePath?: string) {
   try {
     ensureAudioCacheDir();
@@ -212,9 +219,10 @@ function pruneAudioCacheIfNeeded(keepFilePath?: string) {
       .map((name) => {
         const fullPath = path.join(AUDIO_CACHE_DIR, name);
         const stat = fs.statSync(fullPath);
-        return { fullPath, size: stat.size, mtimeMs: stat.mtimeMs };
+        const lastUsed = audioCacheLastAccess.get(fullPath) ?? stat.mtimeMs;
+        return { fullPath, size: stat.size, lastUsed };
       })
-      .sort((a, b) => a.mtimeMs - b.mtimeMs);
+      .sort((a, b) => a.lastUsed - b.lastUsed);
 
     let totalSize = entries.reduce((sum, e) => sum + e.size, 0);
     for (const entry of entries) {
@@ -222,6 +230,7 @@ function pruneAudioCacheIfNeeded(keepFilePath?: string) {
       if (keepFilePath && entry.fullPath === keepFilePath) continue;
       try {
         fs.unlinkSync(entry.fullPath);
+        audioCacheLastAccess.delete(entry.fullPath);
         totalSize -= entry.size;
       } catch {
         // Ignore eviction errors
@@ -239,12 +248,7 @@ function ensureDriveAudioCached(
   ensureAudioCacheDir();
   const finalPath = getAudioCachePath(fileId);
   if (fs.existsSync(finalPath)) {
-    try {
-      const now = new Date();
-      fs.utimesSync(finalPath, now, now);
-    } catch {
-      // Ignore touch errors
-    }
+    recordAudioCacheAccess(finalPath);
     return null;
   }
 
@@ -510,13 +514,13 @@ function sendLocalFileWithRanges(
       ? Math.min(parsed.end, start + MAX_RANGE_CHUNK_BYTES - 1)
       : parsed.end;
   const isPartial = parsed.isPartial;
-  const strongEtag = etag ?? `"utamago-${total}-${Math.floor(stat.mtimeMs)}"`;
+  const strongEtag = etag ?? `"utamago-${total}"`;
 
   res.setHeader('Content-Type', mimeType);
   res.setHeader('Accept-Ranges', 'bytes');
   res.setHeader('Vary', 'Range');
   res.setHeader('ETag', strongEtag);
-  res.setHeader('Last-Modified', stat.mtime.toUTCString());
+  res.setHeader('Last-Modified', STATIC_AUDIO_LAST_MODIFIED);
   res.setHeader(
     'Content-Disposition',
     fileName ? `inline; filename="${fileName}"` : 'inline',
@@ -559,15 +563,10 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
     return;
   }
 
-  // 1. Fast path: serve directly from local disk cache (<5ms latency, capped at 1 MB per 206 chunk)
+  // 1. Fast path: serve directly from local disk cache (<5ms latency, immutable ETag & Last-Modified)
   const cachedPath = getAudioCachePath(fileId);
   if (fs.existsSync(cachedPath)) {
-    try {
-      const now = new Date();
-      fs.utimesSync(cachedPath, now, now);
-    } catch {
-      // Ignore touch error
-    }
+    recordAudioCacheAccess(cachedPath);
     const stat = fs.statSync(cachedPath);
     sendLocalFileWithRanges(
       req,
@@ -595,6 +594,7 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
       res.setHeader('Accept-Ranges', 'bytes');
       res.setHeader('Vary', 'Range');
       res.setHeader('ETag', stableEtag);
+      res.setHeader('Last-Modified', STATIC_AUDIO_LAST_MODIFIED);
       res.setHeader('Content-Length', String(total));
       res.setHeader('Content-Disposition', `inline; filename="${meta.fileName}"`);
       res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
@@ -649,6 +649,7 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
         res.setHeader('Accept-Ranges', 'bytes');
         res.setHeader('Vary', 'Range');
         res.setHeader('ETag', stableEtag);
+        res.setHeader('Last-Modified', STATIC_AUDIO_LAST_MODIFIED);
         res.setHeader(
           'Content-Range',
           `bytes ${parsed.start}-${serveEnd}/${total}`,
@@ -774,6 +775,7 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
       if (stableEtag) {
         res.setHeader('ETag', stableEtag);
       }
+      res.setHeader('Last-Modified', STATIC_AUDIO_LAST_MODIFIED);
       if (totalLen) {
         res.setHeader('Content-Length', totalLen);
       }
@@ -802,6 +804,7 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
     if (stableEtag) {
       res.setHeader('ETag', stableEtag);
     }
+    res.setHeader('Last-Modified', STATIC_AUDIO_LAST_MODIFIED);
     const contentLength = upstream.headers.get('content-length');
     if (contentLength) {
       res.setHeader('Content-Length', contentLength);
@@ -907,8 +910,7 @@ async function handleDriveAudioChunk(req: Request, res: Response) {
   const cachedPath = getAudioCachePath(fileId);
   if (fs.existsSync(cachedPath)) {
     try {
-      const now = new Date();
-      fs.utimesSync(cachedPath, now, now);
+      recordAudioCacheAccess(cachedPath);
       const total = fs.statSync(cachedPath).size;
       if (sendSliceFromPath(cachedPath, total)) return;
     } catch {
