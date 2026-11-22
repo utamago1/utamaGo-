@@ -171,8 +171,8 @@ function buildDriveDownloadUrl(fileId: string): string {
 // respond in <5ms instead of repeating multi-second Google Drive round-trips.
 const AUDIO_CACHE_DIR = path.join(os.tmpdir(), 'utamago-audio-cache');
 const AUDIO_CACHE_MAX_BYTES = 180 * 1024 * 1024; // Keep cache <= 180 MB (safe for Cloud Run tmpfs)
-// Cap every HTTP 206 chunk to 2 MB so 40-48 MB Choukai MP3s never exceed Cloud Run's 32 MB response cap.
-const MAX_RANGE_CHUNK_BYTES = 2 * 1024 * 1024;
+// Cap every HTTP 206 chunk to 1 MB so 40-48 MB Choukai MP3s stay 32x below Cloud Run's response cap.
+const MAX_RANGE_CHUNK_BYTES = 1024 * 1024;
 const PREWARM_DRIVE_AUDIO_IDS = ['1BijZlQrAGGx08Uuo0x49xLTQ63pzWE10']; // JLPT N2 Paket 1 (2010.07)
 
 interface ActiveAudioDownload {
@@ -490,7 +490,8 @@ function sendLocalFileWithRanges(
   filePath: string,
   mimeType: string,
   fileName?: string,
-  cacheControl = 'public, max-age=3600',
+  cacheControl = 'private, no-cache, no-transform',
+  etag?: string,
 ) {
   const stat = fs.statSync(filePath);
   const total = stat.size;
@@ -501,19 +502,21 @@ function sendLocalFileWithRanges(
     return;
   }
 
-  // Cap single GET chunks to MAX_RANGE_CHUNK_BYTES so 40-48 MB audio files never hit Cloud Run's 32 MB limit.
-  const shouldChunk =
-    req.method !== 'HEAD' &&
-    (parsed.isPartial || total > MAX_RANGE_CHUNK_BYTES);
+  // Per RFC 9110: ONLY return 206 when the client sent a Range header.
+  // Cap open-ended Range chunks to 1 MB so 40-48 MB MP3s never exceed Cloud Run's 32 MB response limit.
   const start = parsed.start;
-  const end = shouldChunk
-    ? Math.min(parsed.end, start + MAX_RANGE_CHUNK_BYTES - 1)
-    : parsed.end;
-  const isPartial = parsed.isPartial || (shouldChunk && (start > 0 || end < total - 1));
+  const end =
+    req.method !== 'HEAD' && parsed.isPartial
+      ? Math.min(parsed.end, start + MAX_RANGE_CHUNK_BYTES - 1)
+      : parsed.end;
+  const isPartial = parsed.isPartial;
+  const strongEtag = etag ?? `"utamago-${total}-${Math.floor(stat.mtimeMs)}"`;
 
   res.setHeader('Content-Type', mimeType);
   res.setHeader('Accept-Ranges', 'bytes');
   res.setHeader('Vary', 'Range');
+  res.setHeader('ETag', strongEtag);
+  res.setHeader('Last-Modified', stat.mtime.toUTCString());
   res.setHeader(
     'Content-Disposition',
     fileName ? `inline; filename="${fileName}"` : 'inline',
@@ -556,7 +559,7 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
     return;
   }
 
-  // 1. Fast path: serve directly from local disk cache (<5ms latency, capped at 2 MB per 206 chunk)
+  // 1. Fast path: serve directly from local disk cache (<5ms latency, capped at 1 MB per 206 chunk)
   const cachedPath = getAudioCachePath(fileId);
   if (fs.existsSync(cachedPath)) {
     try {
@@ -565,13 +568,15 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
     } catch {
       // Ignore touch error
     }
+    const stat = fs.statSync(cachedPath);
     sendLocalFileWithRanges(
       req,
       res,
       cachedPath,
       meta.mimeType,
       meta.fileName,
-      'public, max-age=3600',
+      'private, no-cache, no-transform',
+      `"utamago-${fileId}-${stat.size}"`,
     );
     return;
   }
@@ -583,15 +588,17 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
   // so we never hit EOF early or mismatch Content-Length.
   if (downloadTask && downloadTask.totalBytes !== null) {
     const total = downloadTask.totalBytes;
+    const stableEtag = `"utamago-${fileId}-${total}"`;
     if (req.method === 'HEAD') {
       res.status(200);
       res.setHeader('Content-Type', meta.mimeType);
       res.setHeader('Accept-Ranges', 'bytes');
       res.setHeader('Vary', 'Range');
+      res.setHeader('ETag', stableEtag);
       res.setHeader('Content-Length', String(total));
       res.setHeader('Content-Disposition', `inline; filename="${meta.fileName}"`);
       res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
-      res.setHeader('Cache-Control', 'public, max-age=3600');
+      res.setHeader('Cache-Control', 'private, no-cache, no-transform');
       res.end();
       return;
     }
@@ -607,7 +614,8 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
           cachedPath,
           meta.mimeType,
           meta.fileName,
-          'public, max-age=3600',
+          'private, no-cache, no-transform',
+          stableEtag,
         );
         return;
       }
@@ -625,6 +633,7 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
     if (
       sourcePath &&
       parsed &&
+      parsed.isPartial &&
       safeFlushedEnd - parsed.start >= 131072
     ) {
       const serveEnd = Math.min(
@@ -639,6 +648,7 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
         res.setHeader('Content-Type', meta.mimeType);
         res.setHeader('Accept-Ranges', 'bytes');
         res.setHeader('Vary', 'Range');
+        res.setHeader('ETag', stableEtag);
         res.setHeader(
           'Content-Range',
           `bytes ${parsed.start}-${serveEnd}/${total}`,
@@ -649,7 +659,7 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
           `inline; filename="${meta.fileName}"`,
         );
         res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
-        res.setHeader('Cache-Control', 'public, max-age=3600');
+        res.setHeader('Cache-Control', 'private, no-cache, no-transform');
 
         const stream = fs.createReadStream('', {
           fd,
@@ -671,7 +681,8 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
             cachedPath,
             meta.mimeType,
             meta.fileName,
-            'public, max-age=3600',
+            'private, no-cache, no-transform',
+            stableEtag,
           );
           return;
         }
@@ -750,14 +761,19 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
     }
 
     const contentRange = upstream.headers.get('content-range');
+    const totalMatch = contentRange?.match(/\/(\d+)$/);
+    const totalLen =
+      totalMatch?.[1] ?? upstream.headers.get('content-length') ?? '';
+    const stableEtag = totalLen ? `"utamago-${fileId}-${totalLen}"` : undefined;
+
     if (req.method === 'HEAD') {
-      const totalMatch = contentRange?.match(/\/(\d+)$/);
-      const totalLen =
-        totalMatch?.[1] ?? upstream.headers.get('content-length') ?? '';
       res.status(200);
       res.setHeader('Content-Type', meta.mimeType);
       res.setHeader('Accept-Ranges', 'bytes');
       res.setHeader('Vary', 'Range');
+      if (stableEtag) {
+        res.setHeader('ETag', stableEtag);
+      }
       if (totalLen) {
         res.setHeader('Content-Length', totalLen);
       }
@@ -766,7 +782,7 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
         `inline; filename="${meta.fileName}"`,
       );
       res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
-      res.setHeader('Cache-Control', 'public, max-age=3600');
+      res.setHeader('Cache-Control', 'private, no-cache, no-transform');
       try {
         await upstream.body?.cancel();
       } catch {
@@ -783,6 +799,9 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
       upstream.headers.get('accept-ranges') ?? 'bytes',
     );
     res.setHeader('Vary', 'Range');
+    if (stableEtag) {
+      res.setHeader('ETag', stableEtag);
+    }
     const contentLength = upstream.headers.get('content-length');
     if (contentLength) {
       res.setHeader('Content-Length', contentLength);
@@ -795,7 +814,7 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
       `inline; filename="${meta.fileName}"`,
     );
     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
-    res.setHeader('Cache-Control', 'public, max-age=3600');
+    res.setHeader('Cache-Control', 'private, no-cache, no-transform');
 
     if (!upstream.body) {
       res.end();
@@ -819,6 +838,214 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
       res.status(502).json({
         error: 'Gagal menghubungi server streaming audio.',
       });
+    } else if (!res.writableEnded) {
+      res.end();
+    }
+  }
+}
+
+// Plain HTTP 200 OK binary chunk endpoint for MediaSource Extensions (MSE) streaming.
+// Bypasses browser/proxy HTTP 206 Range quirks on Android Chrome & Cloud Run completely.
+async function handleDriveAudioChunk(req: Request, res: Response) {
+  const fileId = (req.params.fileId ?? '').trim();
+  const meta = ALLOWED_DRIVE_AUDIO[fileId];
+  if (!meta) {
+    res.status(404).json({ error: 'Audio track not found in catalog.' });
+    return;
+  }
+
+  const rawStart = Number.parseInt(String(req.query.start ?? '0'), 10);
+  const rawLength = Number.parseInt(String(req.query.length ?? '524288'), 10);
+  const start = Number.isFinite(rawStart) && rawStart >= 0 ? rawStart : 0;
+  const length = Math.max(
+    16384,
+    Math.min(
+      MAX_RANGE_CHUNK_BYTES,
+      Number.isFinite(rawLength) && rawLength > 0 ? rawLength : 524288,
+    ),
+  );
+
+  const sendSliceFromPath = (filePath: string, total: number): boolean => {
+    if (start >= total) {
+      res.status(204);
+      res.setHeader('X-Audio-Total-Bytes', String(total));
+      res.setHeader('X-Audio-Mime-Type', meta.mimeType);
+      res.setHeader('Cache-Control', 'private, no-store, no-transform');
+      res.end();
+      return true;
+    }
+    const end = Math.min(total - 1, start + length - 1);
+    const chunkLen = end - start + 1;
+    try {
+      const fd = fs.openSync(filePath, 'r');
+      res.status(200);
+      res.setHeader('Content-Type', 'application/octet-stream');
+      res.setHeader('Content-Length', String(chunkLen));
+      res.setHeader('X-Audio-Total-Bytes', String(total));
+      res.setHeader('X-Audio-Chunk-Start', String(start));
+      res.setHeader('X-Audio-Chunk-End', String(end));
+      res.setHeader('X-Audio-Mime-Type', meta.mimeType);
+      res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+      res.setHeader('Cache-Control', 'private, no-store, no-transform');
+      const stream = fs.createReadStream('', {
+        fd,
+        start,
+        end,
+        autoClose: true,
+      });
+      stream.on('error', () => {
+        if (!res.writableEnded) res.end();
+      });
+      stream.pipe(res);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  // 1. Local disk cache (<5ms)
+  const cachedPath = getAudioCachePath(fileId);
+  if (fs.existsSync(cachedPath)) {
+    try {
+      const now = new Date();
+      fs.utimesSync(cachedPath, now, now);
+      const total = fs.statSync(cachedPath).size;
+      if (sendSliceFromPath(cachedPath, total)) return;
+    } catch {
+      // Fall through
+    }
+  }
+
+  // 2. Warm background cache + check flushed partial .tmp
+  const downloadTask = ensureDriveAudioCached(fileId, meta);
+  if (downloadTask && downloadTask.totalBytes !== null) {
+    const total = downloadTask.totalBytes;
+    if (start >= total) {
+      res.status(204);
+      res.setHeader('X-Audio-Total-Bytes', String(total));
+      res.setHeader('X-Audio-Mime-Type', meta.mimeType);
+      res.setHeader('Cache-Control', 'private, no-store, no-transform');
+      res.end();
+      return;
+    }
+    try {
+      if (fs.existsSync(cachedPath)) {
+        if (sendSliceFromPath(cachedPath, total)) return;
+      }
+      if (fs.existsSync(downloadTask.tmpPath)) {
+        const diskSize = fs.statSync(downloadTask.tmpPath).size;
+        const safeFlushedEnd = diskSize - 65536 - 1;
+        const targetEnd = Math.min(total - 1, start + length - 1);
+        if (safeFlushedEnd >= targetEnd) {
+          if (sendSliceFromPath(downloadTask.tmpPath, total)) return;
+        }
+      }
+    } catch {
+      // Fall through to upstream
+    }
+  }
+
+  // 3. Cold-miss fetch single <=1 MB range from Google Drive and return as HTTP 200
+  const controller = new AbortController();
+  res.on('close', () => {
+    if (!res.writableEnded) controller.abort();
+  });
+
+  try {
+    const end = start + length - 1;
+    const cachedDirect = resolvedDriveUrlCache.get(fileId);
+    const targetUrl =
+      cachedDirect && cachedDirect.expiresAt > Date.now()
+        ? cachedDirect.url
+        : buildDriveDownloadUrl(fileId);
+    const headers: Record<string, string> = {
+      'User-Agent':
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+      Accept: 'audio/*,*/*;q=0.9',
+      Range: `bytes=${start}-${end}`,
+    };
+
+    let upstream = await fetch(targetUrl, {
+      headers,
+      redirect: 'follow',
+      signal: controller.signal,
+    });
+    if (
+      !upstream.ok &&
+      upstream.status !== 206 &&
+      upstream.status !== 416 &&
+      targetUrl !== buildDriveDownloadUrl(fileId)
+    ) {
+      resolvedDriveUrlCache.delete(fileId);
+      upstream = await fetch(buildDriveDownloadUrl(fileId), {
+        headers,
+        redirect: 'follow',
+        signal: controller.signal,
+      });
+    }
+
+    if (upstream.status === 416) {
+      const cr = upstream.headers.get('content-range') ?? '';
+      const totalMatch = cr.match(/\/(\d+)$/);
+      res.status(204);
+      if (totalMatch?.[1]) {
+        res.setHeader('X-Audio-Total-Bytes', totalMatch[1]);
+      }
+      res.setHeader('X-Audio-Mime-Type', meta.mimeType);
+      res.setHeader('Cache-Control', 'private, no-store, no-transform');
+      res.end();
+      return;
+    }
+
+    if (!upstream.ok && upstream.status !== 206) {
+      res.status(502).json({ error: `Upstream status ${upstream.status}` });
+      return;
+    }
+    const upstreamType = upstream.headers.get('content-type') ?? '';
+    if (upstreamType.includes('text/html') || !upstream.body) {
+      res.status(502).json({ error: 'Upstream did not return audio binary.' });
+      return;
+    }
+
+    if (upstream.url && upstream.url.startsWith('https://')) {
+      resolvedDriveUrlCache.set(fileId, {
+        url: upstream.url,
+        expiresAt: Date.now() + 15 * 60 * 1000,
+      });
+    }
+
+    const cr = upstream.headers.get('content-range') ?? '';
+    const rangeMatch = /^bytes\s+(\d+)-(\d+)\/(\d+)$/i.exec(cr);
+    const cl = upstream.headers.get('content-length');
+    const actualStart = rangeMatch ? rangeMatch[1] : String(start);
+    const actualEnd = rangeMatch
+      ? rangeMatch[2]
+      : cl
+        ? String(start + Number.parseInt(cl, 10) - 1)
+        : String(end);
+    const totalBytes = rangeMatch ? rangeMatch[3] : (cl ?? '');
+
+    res.status(200);
+    res.setHeader('Content-Type', 'application/octet-stream');
+    if (cl) res.setHeader('Content-Length', cl);
+    if (totalBytes) res.setHeader('X-Audio-Total-Bytes', totalBytes);
+    res.setHeader('X-Audio-Chunk-Start', actualStart);
+    res.setHeader('X-Audio-Chunk-End', actualEnd);
+    res.setHeader('X-Audio-Mime-Type', meta.mimeType);
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+    res.setHeader('Cache-Control', 'private, no-store, no-transform');
+
+    const nodeStream = Readable.fromWeb(
+      upstream.body as unknown as WebReadableStream<Uint8Array>,
+    );
+    nodeStream.on('error', () => {
+      if (!res.writableEnded) res.end();
+    });
+    nodeStream.pipe(res);
+  } catch (err) {
+    if ((err as { name?: string })?.name === 'AbortError') return;
+    if (!res.headersSent) {
+      res.status(502).json({ error: 'Gagal mengambil potongan audio.' });
     } else if (!res.writableEnded) {
       res.end();
     }
@@ -925,6 +1152,10 @@ async function startServer() {
       downloadedBytes: task?.downloadedBytes ?? 0,
       totalBytes: task?.totalBytes ?? null,
     });
+  });
+
+  app.get('/api/audio/chunk/:fileId', (req, res) => {
+    void handleDriveAudioChunk(req, res);
   });
 
   app.get('/api/audio/drive/:fileId', (req, res) => {
