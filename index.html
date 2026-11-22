@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#fafaf8" />
+    <meta name="color-scheme" content="light only" />
     <link rel="icon" href="/favicon.ico" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -26,17 +27,11 @@
     <script>
       (function () {
         try {
-          var mode = localStorage.getItem('utamago_theme_mode_v1');
-          var prefersDark =
-            window.matchMedia &&
-            window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var isDark = mode === 'dark' || (mode !== 'light' && prefersDark);
-          if (isDark) {
-            document.documentElement.classList.add('dark');
-            document.documentElement.style.colorScheme = 'dark';
-            var meta = document.querySelector('meta[name="theme-color"]');
-            if (meta) meta.setAttribute('content', '#0d0d10');
-          }
+          document.documentElement.classList.remove('dark');
+          document.documentElement.style.colorScheme = 'light';
+          localStorage.setItem('utamago_theme_mode_v1', 'light');
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute('content', '#fafaf8');
           var scale = localStorage.getItem('utamago_text_scale_v1');
           if (scale === 'large') {
             document.documentElement.style.fontSize = '112.5%';

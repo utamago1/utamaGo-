@@ -171,6 +171,8 @@ function buildDriveDownloadUrl(fileId: string): string {
 // respond in <5ms instead of repeating multi-second Google Drive round-trips.
 const AUDIO_CACHE_DIR = path.join(os.tmpdir(), 'utamago-audio-cache');
 const AUDIO_CACHE_MAX_BYTES = 180 * 1024 * 1024; // Keep cache <= 180 MB (safe for Cloud Run tmpfs)
+// Cap every HTTP 206 chunk to 2 MB so 40-48 MB Choukai MP3s never exceed Cloud Run's 32 MB response cap.
+const MAX_RANGE_CHUNK_BYTES = 2 * 1024 * 1024;
 const PREWARM_DRIVE_AUDIO_IDS = ['1BijZlQrAGGx08Uuo0x49xLTQ63pzWE10']; // JLPT N2 Paket 1 (2010.07)
 
 interface ActiveAudioDownload {
@@ -451,13 +453,44 @@ function renderChoukaiWavSlice(
   return out;
 }
 
+function buildCappedUpstreamRangeHeader(
+  rawRangeHeader: string | undefined,
+): string {
+  if (!rawRangeHeader || !rawRangeHeader.trim()) {
+    return `bytes=0-${MAX_RANGE_CHUNK_BYTES - 1}`;
+  }
+  const match = /^bytes=(\d*)-(\d*)$/i.exec(rawRangeHeader.trim());
+  if (!match) {
+    return `bytes=0-${MAX_RANGE_CHUNK_BYTES - 1}`;
+  }
+  const [, rawStart, rawEnd] = match;
+  if (rawStart === '' && rawEnd !== '') {
+    const suffix = Math.min(
+      MAX_RANGE_CHUNK_BYTES,
+      Math.max(1, Number.parseInt(rawEnd, 10) || MAX_RANGE_CHUNK_BYTES),
+    );
+    return `bytes=-${suffix}`;
+  }
+  const start = Math.max(0, Number.parseInt(rawStart, 10) || 0);
+  const maxEnd = start + MAX_RANGE_CHUNK_BYTES - 1;
+  if (rawEnd === '') {
+    return `bytes=${start}-${maxEnd}`;
+  }
+  const requestedEnd = Number.parseInt(rawEnd, 10);
+  const end =
+    Number.isFinite(requestedEnd) && requestedEnd >= start
+      ? Math.min(requestedEnd, maxEnd)
+      : maxEnd;
+  return `bytes=${start}-${end}`;
+}
+
 function sendLocalFileWithRanges(
   req: Request,
   res: Response,
   filePath: string,
   mimeType: string,
   fileName?: string,
-  cacheControl = 'public, max-age=86400',
+  cacheControl = 'public, max-age=3600',
 ) {
   const stat = fs.statSync(filePath);
   const total = stat.size;
@@ -468,22 +501,30 @@ function sendLocalFileWithRanges(
     return;
   }
 
+  // Cap single GET chunks to MAX_RANGE_CHUNK_BYTES so 40-48 MB audio files never hit Cloud Run's 32 MB limit.
+  const shouldChunk =
+    req.method !== 'HEAD' &&
+    (parsed.isPartial || total > MAX_RANGE_CHUNK_BYTES);
+  const start = parsed.start;
+  const end = shouldChunk
+    ? Math.min(parsed.end, start + MAX_RANGE_CHUNK_BYTES - 1)
+    : parsed.end;
+  const isPartial = parsed.isPartial || (shouldChunk && (start > 0 || end < total - 1));
+
   res.setHeader('Content-Type', mimeType);
   res.setHeader('Accept-Ranges', 'bytes');
+  res.setHeader('Vary', 'Range');
   res.setHeader(
     'Content-Disposition',
     fileName ? `inline; filename="${fileName}"` : 'inline',
   );
-  res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
+  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
   res.setHeader('Cache-Control', cacheControl);
 
-  if (parsed.isPartial) {
+  if (isPartial) {
     res.status(206);
-    res.setHeader(
-      'Content-Range',
-      `bytes ${parsed.start}-${parsed.end}/${total}`,
-    );
-    res.setHeader('Content-Length', String(parsed.end - parsed.start + 1));
+    res.setHeader('Content-Range', `bytes ${start}-${end}/${total}`);
+    res.setHeader('Content-Length', String(end - start + 1));
   } else {
     res.status(200);
     res.setHeader('Content-Length', String(total));
@@ -494,14 +535,11 @@ function sendLocalFileWithRanges(
     return;
   }
 
-  const stream = fs.createReadStream(filePath, {
-    start: parsed.start,
-    end: parsed.end,
-  });
+  const stream = fs.createReadStream(filePath, { start, end });
   stream.on('error', () => {
     if (!res.headersSent) {
       res.status(500).end();
-    } else {
+    } else if (!res.writableEnded) {
       res.end();
     }
   });
@@ -518,7 +556,7 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
     return;
   }
 
-  // 1. Fast path: serve directly from local disk cache (<2ms latency for play & seek)
+  // 1. Fast path: serve directly from local disk cache (<5ms latency, capped at 2 MB per 206 chunk)
   const cachedPath = getAudioCachePath(fileId);
   if (fs.existsSync(cachedPath)) {
     try {
@@ -533,7 +571,7 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
       cachedPath,
       meta.mimeType,
       meta.fileName,
-      'public, max-age=604800, immutable',
+      'public, max-age=3600',
     );
     return;
   }
@@ -541,52 +579,107 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
   // 2. Kick off deduplicated background caching to disk immediately
   const downloadTask = ensureDriveAudioCached(fileId, meta);
 
-  // 3. Partial-cache fast path: if requested start byte is already downloaded on disk,
-  // serve an instant HTTP 206 chunk right away so playback starts without waiting!
-  if (
-    downloadTask &&
-    downloadTask.totalBytes !== null &&
-    fs.existsSync(downloadTask.tmpPath)
-  ) {
+  // 3. Partial-cache fast path: check ACTUAL flushed disk size (never buffered count!)
+  // so we never hit EOF early or mismatch Content-Length.
+  if (downloadTask && downloadTask.totalBytes !== null) {
     const total = downloadTask.totalBytes;
     if (req.method === 'HEAD') {
       res.status(200);
       res.setHeader('Content-Type', meta.mimeType);
       res.setHeader('Accept-Ranges', 'bytes');
+      res.setHeader('Vary', 'Range');
       res.setHeader('Content-Length', String(total));
       res.setHeader('Content-Disposition', `inline; filename="${meta.fileName}"`);
-      res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
-      res.setHeader('Cache-Control', 'public, max-age=604800, immutable');
+      res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+      res.setHeader('Cache-Control', 'public, max-age=3600');
       res.end();
       return;
     }
 
-    const parsed = parseSingleRange(req.headers.range, total);
-    const safeAvailableEnd = downloadTask.downloadedBytes - 1;
-    if (parsed && safeAvailableEnd - parsed.start >= 65536) {
-      const serveEnd = Math.min(parsed.end, safeAvailableEnd);
-      res.status(206);
-      res.setHeader('Content-Type', meta.mimeType);
-      res.setHeader('Accept-Ranges', 'bytes');
-      res.setHeader('Content-Range', `bytes ${parsed.start}-${serveEnd}/${total}`);
-      res.setHeader('Content-Length', String(serveEnd - parsed.start + 1));
-      res.setHeader('Content-Disposition', `inline; filename="${meta.fileName}"`);
-      res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
-      res.setHeader('Cache-Control', 'public, max-age=604800, immutable');
+    let diskSize = 0;
+    let sourcePath: string | null = null;
+    try {
+      if (fs.existsSync(cachedPath)) {
+        // Download just finished & renamed atomically!
+        sendLocalFileWithRanges(
+          req,
+          res,
+          cachedPath,
+          meta.mimeType,
+          meta.fileName,
+          'public, max-age=3600',
+        );
+        return;
+      }
+      if (fs.existsSync(downloadTask.tmpPath)) {
+        diskSize = fs.statSync(downloadTask.tmpPath).size;
+        sourcePath = downloadTask.tmpPath;
+      }
+    } catch {
+      diskSize = 0;
+      sourcePath = null;
+    }
 
-      const stream = fs.createReadStream(downloadTask.tmpPath, {
-        start: parsed.start,
-        end: serveEnd,
-      });
-      stream.on('error', () => {
-        if (!res.writableEnded) res.end();
-      });
-      stream.pipe(res);
-      return;
+    const parsed = parseSingleRange(req.headers.range, total);
+    const safeFlushedEnd = diskSize - 65536 - 1;
+    if (
+      sourcePath &&
+      parsed &&
+      safeFlushedEnd - parsed.start >= 131072
+    ) {
+      const serveEnd = Math.min(
+        parsed.end,
+        safeFlushedEnd,
+        parsed.start + MAX_RANGE_CHUNK_BYTES - 1,
+      );
+      try {
+        const fd = fs.openSync(sourcePath, 'r');
+        const chunkLen = serveEnd - parsed.start + 1;
+        res.status(206);
+        res.setHeader('Content-Type', meta.mimeType);
+        res.setHeader('Accept-Ranges', 'bytes');
+        res.setHeader('Vary', 'Range');
+        res.setHeader(
+          'Content-Range',
+          `bytes ${parsed.start}-${serveEnd}/${total}`,
+        );
+        res.setHeader('Content-Length', String(chunkLen));
+        res.setHeader(
+          'Content-Disposition',
+          `inline; filename="${meta.fileName}"`,
+        );
+        res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+        res.setHeader('Cache-Control', 'public, max-age=3600');
+
+        const stream = fs.createReadStream('', {
+          fd,
+          start: parsed.start,
+          end: serveEnd,
+          autoClose: true,
+        });
+        stream.on('error', () => {
+          if (!res.writableEnded) res.end();
+        });
+        stream.pipe(res);
+        return;
+      } catch {
+        // Fall through cleanly if tmpPath was renamed concurrently
+        if (fs.existsSync(cachedPath)) {
+          sendLocalFileWithRanges(
+            req,
+            res,
+            cachedPath,
+            meta.mimeType,
+            meta.fileName,
+            'public, max-age=3600',
+          );
+          return;
+        }
+      }
     }
   }
 
-  // 4. Cold-miss streaming pass-through while background cache downloads in parallel
+  // 4. Cold-miss streaming pass-through (always capped at 2 MB per request for Cloud Run!)
   const controller = new AbortController();
   res.on('close', () => {
     if (!res.writableEnded) {
@@ -599,10 +692,15 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
       'User-Agent':
         'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
       Accept: 'audio/*,*/*;q=0.9',
+      Range:
+        req.method === 'HEAD'
+          ? 'bytes=0-0'
+          : buildCappedUpstreamRangeHeader(
+              typeof req.headers.range === 'string'
+                ? req.headers.range
+                : undefined,
+            ),
     };
-    if (typeof req.headers.range === 'string' && req.headers.range.trim()) {
-      upstreamHeaders.Range = req.headers.range;
-    }
 
     const cachedDirect = resolvedDriveUrlCache.get(fileId);
     const targetUrl =
@@ -617,7 +715,8 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
     });
 
     if (
-      (!upstream.ok && upstream.status !== 206) &&
+      !upstream.ok &&
+      upstream.status !== 206 &&
       targetUrl !== buildDriveDownloadUrl(fileId)
     ) {
       resolvedDriveUrlCache.delete(fileId);
@@ -650,17 +749,44 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
       });
     }
 
+    const contentRange = upstream.headers.get('content-range');
+    if (req.method === 'HEAD') {
+      const totalMatch = contentRange?.match(/\/(\d+)$/);
+      const totalLen =
+        totalMatch?.[1] ?? upstream.headers.get('content-length') ?? '';
+      res.status(200);
+      res.setHeader('Content-Type', meta.mimeType);
+      res.setHeader('Accept-Ranges', 'bytes');
+      res.setHeader('Vary', 'Range');
+      if (totalLen) {
+        res.setHeader('Content-Length', totalLen);
+      }
+      res.setHeader(
+        'Content-Disposition',
+        `inline; filename="${meta.fileName}"`,
+      );
+      res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+      res.setHeader('Cache-Control', 'public, max-age=3600');
+      try {
+        await upstream.body?.cancel();
+      } catch {
+        // Ignore cancel errors
+      }
+      res.end();
+      return;
+    }
+
     res.status(upstream.status);
     res.setHeader('Content-Type', meta.mimeType);
     res.setHeader(
       'Accept-Ranges',
       upstream.headers.get('accept-ranges') ?? 'bytes',
     );
+    res.setHeader('Vary', 'Range');
     const contentLength = upstream.headers.get('content-length');
     if (contentLength) {
       res.setHeader('Content-Length', contentLength);
     }
-    const contentRange = upstream.headers.get('content-range');
     if (contentRange) {
       res.setHeader('Content-Range', contentRange);
     }
@@ -668,10 +794,10 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
       'Content-Disposition',
       `inline; filename="${meta.fileName}"`,
     );
-    res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
-    res.setHeader('Cache-Control', 'public, max-age=604800, immutable');
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+    res.setHeader('Cache-Control', 'public, max-age=3600');
 
-    if (req.method === 'HEAD' || !upstream.body) {
+    if (!upstream.body) {
       res.end();
       return;
     }

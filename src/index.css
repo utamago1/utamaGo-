@@ -2,6 +2,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
+  color-scheme: light only;
   --m3-surface: #fafaf8;
   --m3-surface-dim: #f3f3ef;
   --m3-surface-container-low: #ffffff;
@@ -28,35 +29,6 @@
   --m3-outline-variant: #e6e6e0;
   --m3-elevation-1: 0 1px 2px 0 rgb(0 0 0 / 0.03);
   --m3-elevation-2: 0 6px 18px -4px rgb(0 0 0 / 0.07), 0 1px 3px 0 rgb(0 0 0 / 0.03);
-}
-
-html.dark {
-  --m3-surface: #0d0d10;
-  --m3-surface-dim: #070709;
-  --m3-surface-container-low: #151519;
-  --m3-surface-container: #1c1c22;
-  --m3-surface-container-high: #26262e;
-  --m3-on-surface: #f4f4f6;
-  --m3-on-surface-variant: #a8a8b3;
-  --m3-primary: #ef4444;
-  --m3-primary-hover: #dc2626;
-  --m3-on-primary: #ffffff;
-  --m3-primary-container: #450a0a;
-  --m3-on-primary-container: #fecaca;
-  --m3-secondary-container: #26262e;
-  --m3-on-secondary-container: #e4e4e7;
-  --m3-inverse-surface: #f4f4f5;
-  --m3-inverse-on-surface: #141417;
-  --m3-success: #34d399;
-  --m3-success-container: #052e22;
-  --m3-on-success-container: #a7f3d0;
-  --m3-warning: #fbbf24;
-  --m3-warning-container: #3b2306;
-  --m3-on-warning-container: #fde68a;
-  --m3-outline: #383842;
-  --m3-outline-variant: #25252d;
-  --m3-elevation-1: 0 1px 3px 0 rgb(0 0 0 / 0.35);
-  --m3-elevation-2: 0 8px 20px -4px rgb(0 0 0 / 0.55);
 }
 
 @theme {
@@ -98,6 +70,7 @@ html.dark {
   }
 
   html {
+    color-scheme: light only;
     max-width: 100%;
     overflow-x: clip;
     font-family: var(--font-sans);

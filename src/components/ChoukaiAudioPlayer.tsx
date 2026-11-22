@@ -52,8 +52,14 @@ export function ChoukaiAudioPlayer({
   const [duration, setDuration] = useState(0);
   const [playbackRate, setPlaybackRate] = useState<number>(initialPlaybackRate);
   const [hasError, setHasError] = useState(false);
+  const [reloadNonce, setReloadNonce] = useState(0);
+  const pendingAutoPlayRef = useRef(false);
 
   const isDriveStream = src.includes('/api/audio/drive/') || src.startsWith('http');
+  const effectiveSrc =
+    reloadNonce > 0
+      ? `${src}${src.includes('?') ? '&' : '?'}r=${reloadNonce}`
+      : src;
 
   // Trigger non-blocking server-side cache warm-up so playback & seeking become instant
   useEffect(() => {
@@ -78,11 +84,13 @@ export function ChoukaiAudioPlayer({
     const nextInitialTime = initialTimeRef.current;
     const nextInitialRate = initialPlaybackRateRef.current;
     restoredPositionRef.current = false;
+    pendingAutoPlayRef.current = false;
     lastSavedSecRef.current = Math.floor(nextInitialTime);
     setIsPlaying(false);
     setIsLoading(true);
     setDuration(0);
     setHasError(false);
+    setReloadNonce(0);
     setCurrentTime(nextInitialTime);
     setPlaybackRate(nextInitialRate);
   }, [src]);
@@ -149,27 +157,49 @@ export function ChoukaiAudioPlayer({
     });
   };
 
+  const triggerFreshReload = (autoPlayAfterReload: boolean) => {
+    pendingAutoPlayRef.current = autoPlayAfterReload;
+    setHasError(false);
+    setIsLoading(true);
+    setReloadNonce((n) => n + 1);
+  };
+
   const togglePlay = async () => {
     vibrateTap();
     const audio = audioRef.current;
     if (!audio) return;
 
-    if (hasError) {
-      setHasError(false);
-      setIsLoading(true);
-      audio.load();
+    if (hasError || audio.error) {
+      triggerFreshReload(true);
+      return;
     }
 
     if (audio.paused) {
       try {
+        if (audio.readyState === 0) {
+          setIsLoading(true);
+          audio.load();
+        }
         audio.playbackRate = playbackRate;
         await audio.play();
         setIsPlaying(true);
         setIsLoading(false);
-      } catch {
+        setHasError(false);
+      } catch (err) {
+        const name = (err as { name?: string })?.name ?? '';
+        if (name === 'AbortError') {
+          return;
+        }
         setIsPlaying(false);
+        if (reloadNonce === 0) {
+          triggerFreshReload(true);
+        } else {
+          setIsLoading(false);
+          setHasError(true);
+        }
       }
     } else {
+      pendingAutoPlayRef.current = false;
       audio.pause();
       setIsPlaying(false);
       emitAudioState(audio.currentTime || currentTime, playbackRate);
@@ -219,10 +249,11 @@ export function ChoukaiAudioPlayer({
       onContextMenu={(e) => e.preventDefault()}
     >
       <audio
-        key={src}
+        key={effectiveSrc}
         ref={audioRef}
-        src={src}
+        src={effectiveSrc}
         preload={preload}
+        playsInline
         controlsList="nodownload noplaybackrate"
         aria-label={title}
         onLoadStart={() => {
@@ -252,9 +283,17 @@ export function ChoukaiAudioPlayer({
           setIsLoading(false);
           setHasError(false);
         }}
-        onCanPlay={() => {
+        onCanPlay={(e) => {
           setIsLoading(false);
           setHasError(false);
+          if (pendingAutoPlayRef.current) {
+            pendingAutoPlayRef.current = false;
+            const el = e.currentTarget;
+            el.playbackRate = playbackRate;
+            void el.play().catch(() => {
+              setIsPlaying(false);
+            });
+          }
         }}
         onCanPlayThrough={() => {
           setIsLoading(false);
@@ -350,9 +389,7 @@ export function ChoukaiAudioPlayer({
               type="button"
               onClick={() => {
                 vibrateTap();
-                setHasError(false);
-                setIsLoading(true);
-                audioRef.current?.load();
+                triggerFreshReload(true);
               }}
               className="m3-tactile inline-flex min-h-[48px] items-center gap-1.5 whitespace-nowrap rounded-xl bg-primary px-3.5 py-2 text-xs font-bold text-on-primary hover:bg-primary-hover"
             >

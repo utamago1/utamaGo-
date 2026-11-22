@@ -3,10 +3,8 @@ import {
   ClipboardCheck,
   Home,
   Layers,
-  Moon,
   Settings,
   Star,
-  Sun,
   User,
   WifiOff,
 } from 'lucide-react';
@@ -47,8 +45,6 @@ const TAB_ITEMS: Array<{
 
 export function MobileTopAppBar({
   activeTab,
-  isDark,
-  onToggleDarkLight,
   onOpenSettings,
 }: Pick<
   AppShellNavProps,
@@ -96,23 +92,6 @@ export function MobileTopAppBar({
             className="m3-tactile inline-flex h-11 w-11 items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
           >
             <Settings className="h-5 w-5" aria-hidden="true" />
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              vibrateTap();
-              onToggleDarkLight();
-            }}
-            aria-label={isDark ? 'Aktifkan mode terang' : 'Aktifkan mode gelap'}
-            title={isDark ? 'Mode Terang' : 'Mode Gelap'}
-            className="m3-tactile inline-flex h-11 w-11 items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
-          >
-            {isDark ? (
-              <Sun className="h-5 w-5 text-amber-400" aria-hidden="true" />
-            ) : (
-              <Moon className="h-5 w-5" aria-hidden="true" />
-            )}
           </button>
         </div>
       </div>
@@ -197,8 +176,6 @@ export function DesktopNavigationRail({
   maxStars,
   totalDeckCards,
   dueAnkiCount,
-  isDark,
-  onToggleDarkLight,
   onOpenSettings,
 }: AppShellNavProps) {
   const isOnline = useOnlineStatus();
@@ -242,20 +219,6 @@ export function DesktopNavigationRail({
               className="m3-tactile inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
             >
               <Settings className="h-4.5 w-4.5" aria-hidden="true" />
-            </button>
-
-            <button
-              type="button"
-              onClick={onToggleDarkLight}
-              aria-label={isDark ? 'Aktifkan mode terang' : 'Aktifkan mode gelap'}
-              title={isDark ? 'Mode Terang' : 'Mode Gelap'}
-              className="m3-tactile inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
-            >
-              {isDark ? (
-                <Sun className="h-4.5 w-4.5 text-amber-400" aria-hidden="true" />
-              ) : (
-                <Moon className="h-4.5 w-4.5" aria-hidden="true" />
-              )}
             </button>
           </div>
         </div>

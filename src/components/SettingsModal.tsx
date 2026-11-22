@@ -5,11 +5,8 @@ import {
   GraduationCap,
   LogOut,
   MessageCircle,
-  Monitor,
-  Moon,
   RotateCcw,
   Smartphone,
-  Sun,
   Type,
   Upload,
   X,
@@ -53,15 +50,6 @@ interface SettingsModalProps {
   onLogout?: () => void;
 }
 
-const THEME_OPTIONS: Array<{
-  id: ThemeMode;
-  label: string;
-  icon: typeof Sun;
-}> = [
-  { id: 'light', label: 'Terang', icon: Sun },
-  { id: 'dark', label: 'Gelap', icon: Moon },
-  { id: 'system', label: 'Sistem', icon: Monitor },
-];
 
 const TEXT_SCALE_OPTIONS: Array<{ id: TextScale; label: string }> = [
   { id: 'normal', label: 'Normal' },
@@ -74,11 +62,9 @@ const TARGET_LEVELS: JlptLevel[] = ['N5', 'N4', 'N3', 'N2', 'N1'];
 export function SettingsModal({
   open,
   onClose,
-  themeMode,
   textScale,
   onboarding,
   reminder,
-  onChangeThemeMode,
   onChangeTextScale,
   onUpdateOnboarding,
   onUpdateReminder,
@@ -314,48 +300,12 @@ export function SettingsModal({
                   Tampilan, Aksesibilitas &amp; Target
                 </h3>
                 <p className="mt-1 text-xs leading-relaxed text-on-surface-variant">
-                  Sesuaikan tema warna, ukuran huruf untuk kenyamanan baca,
-                  serta target level JLPT harianmu.
+                  Sesuaikan ukuran huruf untuk kenyamanan baca serta target
+                  level JLPT harianmu.
                 </p>
               </div>
 
               <div>
-                <p className="mb-2 text-xs font-semibold text-on-surface-variant">
-                  Tema Tampilan Aplikasi
-                </p>
-                <div
-                  role="radiogroup"
-                  aria-label="Pilih tema tampilan"
-                  className="grid grid-cols-3 gap-1.5 rounded-2xl bg-surface-container p-1"
-                >
-                  {THEME_OPTIONS.map((opt) => {
-                    const Icon = opt.icon;
-                    const active = themeMode === opt.id;
-                    return (
-                      <button
-                        key={opt.id}
-                        type="button"
-                        role="radio"
-                        aria-checked={active}
-                        onClick={() => {
-                          vibrateTap();
-                          onChangeThemeMode(opt.id);
-                        }}
-                        className={`m3-tactile inline-flex min-h-[48px] items-center justify-center gap-1.5 whitespace-nowrap rounded-xl px-2.5 py-2 text-xs font-bold ${
-                          active
-                            ? 'bg-surface-container-low text-on-surface shadow-xs'
-                            : 'text-on-surface-variant hover:text-on-surface'
-                        }`}
-                      >
-                        <Icon className="h-3.5 w-3.5" aria-hidden="true" />
-                        <span>{opt.label}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div className="border-t border-outline-variant pt-4">
                 <p className="mb-2 inline-flex items-center gap-1.5 text-xs font-semibold text-on-surface-variant">
                   <Type className="h-3.5 w-3.5" aria-hidden="true" />
                   <span>Ukuran Huruf Aplikasi</span>
