@@ -167,15 +167,184 @@ function buildDriveDownloadUrl(fileId: string): string {
   return `https://drive.usercontent.google.com/download?id=${encodeURIComponent(fileId)}&export=download&confirm=t`;
 }
 
-// Local disk cache for Choukai MP3/M4A files so play, pause, and -15s/+15s seeking
-// respond in <5ms instead of repeating multi-second Google Drive round-trips.
+// Official JLPT N2 Choukai audio tracks hosted on Catbox.moe (2010.07 - 2018.12, 18 files).
+// Hardcoded allowlist prevents SSRF and guarantees all 18 files receive monthly access
+// so Catbox's 2-year inactivity expiration never removes any audio file.
+const CATBOX_N2_CHOUKAI_AUDIO: ReadonlyArray<{
+  examCode: string;
+  fileName: string;
+  url: string;
+}> = [
+  { examCode: '2010.07', fileName: '2010年7月N2.mp3', url: 'https://files.catbox.moe/9xbz7l.mp3' },
+  { examCode: '2010.12', fileName: '2010年12月N2.mp3', url: 'https://files.catbox.moe/asvevt.mp3' },
+  { examCode: '2011.07', fileName: '2011年7月N2.mp3', url: 'https://files.catbox.moe/jenpw0.mp3' },
+  { examCode: '2011.12', fileName: '2011年12月N2.mp3', url: 'https://files.catbox.moe/3pnhbw.mp3' },
+  { examCode: '2012.07', fileName: '2012年7月N2.mp3', url: 'https://files.catbox.moe/mrwty8.mp3' },
+  { examCode: '2012.12', fileName: '2012年12月N2.mp3', url: 'https://files.catbox.moe/vo21e8.mp3' },
+  { examCode: '2013.07', fileName: '2013年7月N2.mp3', url: 'https://files.catbox.moe/ry6rwd.mp3' },
+  { examCode: '2013.12', fileName: '2013年12月N2.mp3', url: 'https://files.catbox.moe/8pmmgd.mp3' },
+  { examCode: '2014.07', fileName: '2014年7月N2.mp3', url: 'https://files.catbox.moe/xvu6e9.mp3' },
+  { examCode: '2014.12', fileName: '2014年12月N2.mp3', url: 'https://files.catbox.moe/esi007.mp3' },
+  { examCode: '2015.07', fileName: '2015年7月N2.mp3', url: 'https://files.catbox.moe/kmeji2.mp3' },
+  { examCode: '2015.12', fileName: '2015年12月N2.mp3', url: 'https://files.catbox.moe/aq12c6.mp3' },
+  { examCode: '2016.07', fileName: '2016年7月N2.mp3', url: 'https://files.catbox.moe/07shiy.mp3' },
+  { examCode: '2016.12', fileName: '2016年12月N2.mp3', url: 'https://files.catbox.moe/rkpxrk.mp3' },
+  { examCode: '2017.07', fileName: '2017年7月N2.mp3', url: 'https://files.catbox.moe/oh7lfi.mp3' },
+  { examCode: '2017.12', fileName: '2017年12月N2.mp3', url: 'https://files.catbox.moe/odph8a.mp3' },
+  { examCode: '2018.07', fileName: '2018年7月N2.mp3', url: 'https://files.catbox.moe/iw65xx.mp3' },
+  { examCode: '2018.12', fileName: '2018年12月N2.mp3', url: 'https://files.catbox.moe/n1uprt.mp3' },
+];
+
+// Touch every Catbox MP3 once every 25 days (< 1 month) via lightweight 64-byte Range GET
+// to register genuine download activity and prevent 2-year inactivity deletion.
+const CATBOX_KEEPALIVE_INTERVAL_MS = 25 * 24 * 60 * 60 * 1000;
+const CATBOX_KEEPALIVE_CHECK_MS = 24 * 60 * 60 * 1000;
+const CATBOX_KEEPALIVE_STATE_PATH = path.join(
+  os.tmpdir(),
+  'utamago-catbox-keepalive.json',
+);
+
+interface CatboxKeepAliveState {
+  lastRunAt: number;
+  nextDueAt: number;
+  totalFiles: number;
+  touchedCount: number;
+  failedCount: number;
+}
+
+let activeCatboxKeepAlive: Promise<CatboxKeepAliveState> | null = null;
+
+function readCatboxKeepAliveState(): CatboxKeepAliveState {
+  try {
+    if (fs.existsSync(CATBOX_KEEPALIVE_STATE_PATH)) {
+      const parsed = JSON.parse(
+        fs.readFileSync(CATBOX_KEEPALIVE_STATE_PATH, 'utf8'),
+      ) as Partial<CatboxKeepAliveState>;
+      const lastRunAt =
+        typeof parsed.lastRunAt === 'number' && Number.isFinite(parsed.lastRunAt)
+          ? parsed.lastRunAt
+          : 0;
+      return {
+        lastRunAt,
+        nextDueAt:
+          lastRunAt > 0 ? lastRunAt + CATBOX_KEEPALIVE_INTERVAL_MS : 0,
+        totalFiles: CATBOX_N2_CHOUKAI_AUDIO.length,
+        touchedCount:
+          typeof parsed.touchedCount === 'number' ? parsed.touchedCount : 0,
+        failedCount:
+          typeof parsed.failedCount === 'number' ? parsed.failedCount : 0,
+      };
+    }
+  } catch {
+    // Ignore corrupt state file and re-initialize
+  }
+  return {
+    lastRunAt: 0,
+    nextDueAt: 0,
+    totalFiles: CATBOX_N2_CHOUKAI_AUDIO.length,
+    touchedCount: 0,
+    failedCount: 0,
+  };
+}
+
+function writeCatboxKeepAliveState(state: CatboxKeepAliveState): void {
+  try {
+    fs.writeFileSync(
+      CATBOX_KEEPALIVE_STATE_PATH,
+      JSON.stringify(state),
+      'utf8',
+    );
+  } catch {
+    // Ignore tmpfs write errors
+  }
+}
+
+async function touchSingleCatboxAudio(url: string): Promise<boolean> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 12000);
+  try {
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+        Accept: 'audio/mpeg,audio/*;q=0.9,*/*;q=0.8',
+        Range: 'bytes=0-63',
+      },
+      redirect: 'follow',
+      signal: controller.signal,
+    });
+    if (!res.ok && res.status !== 206) {
+      return false;
+    }
+    // Drain the 64-byte slice so the request completes cleanly on upstream nginx
+    await res.arrayBuffer();
+    return true;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function runCatboxKeepAliveIfDue(force = false): {
+  triggered: boolean;
+  state: CatboxKeepAliveState;
+  promise: Promise<CatboxKeepAliveState>;
+} {
+  const current = readCatboxKeepAliveState();
+  const now = Date.now();
+  const isDue =
+    current.lastRunAt === 0 ||
+    now - current.lastRunAt >= CATBOX_KEEPALIVE_INTERVAL_MS;
+  const allowForce = force && now - current.lastRunAt >= 60 * 1000;
+
+  if (activeCatboxKeepAlive) {
+    return { triggered: false, state: current, promise: activeCatboxKeepAlive };
+  }
+
+  if (!isDue && !allowForce) {
+    return {
+      triggered: false,
+      state: current,
+      promise: Promise.resolve(current),
+    };
+  }
+
+  const job = (async (): Promise<CatboxKeepAliveState> => {
+    let touchedCount = 0;
+    let failedCount = 0;
+    for (const item of CATBOX_N2_CHOUKAI_AUDIO) {
+      const ok = await touchSingleCatboxAudio(item.url);
+      if (ok) touchedCount += 1;
+      else failedCount += 1;
+      await new Promise((resolve) => setTimeout(resolve, 200));
+    }
+    const completedAt = Date.now();
+    const nextState: CatboxKeepAliveState = {
+      lastRunAt: completedAt,
+      nextDueAt: completedAt + CATBOX_KEEPALIVE_INTERVAL_MS,
+      totalFiles: CATBOX_N2_CHOUKAI_AUDIO.length,
+      touchedCount,
+      failedCount,
+    };
+    writeCatboxKeepAliveState(nextState);
+    return nextState;
+  })().finally(() => {
+    activeCatboxKeepAlive = null;
+  });
+
+  activeCatboxKeepAlive = job;
+  return { triggered: true, state: current, promise: job };
+}
+
+// Local disk cache for Google Drive fallback Choukai audio files (N1)
 const AUDIO_CACHE_DIR = path.join(os.tmpdir(), 'utamago-audio-cache');
 const AUDIO_CACHE_MAX_BYTES = 180 * 1024 * 1024; // Keep cache <= 180 MB (safe for Cloud Run tmpfs)
 // Cap every HTTP 206 chunk to 1 MB so 40-48 MB Choukai MP3s stay far below Cloud Run's 32 MB cap
 // and respond rapidly over mobile & reverse-proxy connections.
 const MAX_RANGE_CHUNK_BYTES = 1024 * 1024;
 const STATIC_AUDIO_LAST_MODIFIED = 'Mon, 01 Jan 2024 00:00:00 GMT';
-const PREWARM_DRIVE_AUDIO_IDS = ['1BijZlQrAGGx08Uuo0x49xLTQ63pzWE10']; // JLPT N2 Paket 1 (2010.07)
 
 interface ActiveAudioDownload {
   fileId: string;
@@ -1458,6 +1627,21 @@ async function startServer() {
     res.json({ ok: true });
   });
 
+  // Monthly Catbox.moe keep-alive endpoint (touches all 18 N2 MP3s at least once every 25 days)
+  const handleAudioKeepAlive = (req: Request, res: Response) => {
+    const force = String(req.query.force ?? '') === '1';
+    const { triggered, state } = runCatboxKeepAliveIfDue(force);
+    res.setHeader('Cache-Control', 'no-store');
+    res.status(triggered ? 202 : 200).json({
+      ok: true,
+      triggered,
+      intervalDays: Math.round(CATBOX_KEEPALIVE_INTERVAL_MS / (24 * 60 * 60 * 1000)),
+      ...state,
+    });
+  };
+  app.get('/api/audio/keepalive', handleAudioKeepAlive);
+  app.post('/api/audio/keepalive', handleAudioKeepAlive);
+
   app.get('/api/audio/prefetch/:fileId', (req, res) => {
     const fileId = (req.params.fileId ?? '').trim();
     const meta = ALLOWED_DRIVE_AUDIO[fileId];
@@ -1538,13 +1722,14 @@ async function startServer() {
 
   app.listen(port, '0.0.0.0', () => {
     console.log(`UtamaGo! server listening on http://0.0.0.0:${port}`);
-    // Gently pre-warm JLPT N2 Paket 1 (2010.07) Choukai audio into local cache
+    // Run monthly Catbox.moe keep-alive check on startup and once per day thereafter
+    // so all 18 JLPT N2 Choukai MP3 files stay active (< 25 days between accesses).
     setTimeout(() => {
-      for (const fileId of PREWARM_DRIVE_AUDIO_IDS) {
-        const meta = ALLOWED_DRIVE_AUDIO[fileId];
-        if (meta) ensureDriveAudioCached(fileId, meta);
-      }
-    }, 1000);
+      runCatboxKeepAliveIfDue(false);
+    }, 3000);
+    setInterval(() => {
+      runCatboxKeepAliveIfDue(false);
+    }, CATBOX_KEEPALIVE_CHECK_MS).unref();
   });
 }
 

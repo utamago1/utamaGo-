@@ -30,7 +30,7 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
           <h2 className="font-display text-xl font-bold tracking-tight text-on-surface sm:text-2xl">
             Tentang UtamaGo!
           </h2>
-          <p className="mt-1 text-[13px] text-[#4b4b53] dark:text-[#b4b4c0]">
+          <p className="mt-1 text-[13px] text-[#4b4b53]">
             Informasi aplikasi dan tim pengajar di balik UtamaGo!.
           </p>
         </div>
@@ -98,14 +98,18 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
 
         <div className="grid grid-cols-1 divide-y divide-outline-variant rounded-2xl border border-outline-variant bg-surface-container-low md:grid-cols-2 md:divide-x md:divide-y-0">
           <div className="space-y-4 p-4 sm:p-6">
-            <div className="flex items-center gap-3.5">
-              <img
-                src="/assets/founders/founder-ryan.gif"
-                alt="Animasi pendiri UtamaGo!, Ryan Alief Utama"
-                decoding="async"
-                draggable={false}
-                className="h-24 w-24 shrink-0 object-contain drop-shadow-xs select-none"
-              />
+            <div className="flex items-center gap-4">
+              <div className="flex h-24 w-24 shrink-0 items-end justify-center overflow-hidden rounded-2xl border border-outline-variant/80 bg-white shadow-2xs sm:h-28 sm:w-28">
+                <img
+                  src="/assets/founders/founder-ryan.gif?v=2"
+                  alt="Animasi pendiri UtamaGo!, Ryan Alief Utama"
+                  width={112}
+                  height={112}
+                  decoding="async"
+                  draggable={false}
+                  className="h-full w-full select-none bg-white object-contain object-bottom"
+                />
+              </div>
               <div className="min-w-0">
                 <h4 className="font-display text-base font-bold text-on-surface">
                   Ryan Alief Utama
@@ -125,14 +129,18 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
           </div>
 
           <div className="space-y-4 p-4 sm:p-6">
-            <div className="flex items-center gap-3.5">
-              <img
-                src="/assets/founders/founder-annisa.gif"
-                alt="Animasi partner UtamaGo!, Annisa Maulidiyah Rohmawati"
-                decoding="async"
-                draggable={false}
-                className="h-24 w-24 shrink-0 object-contain drop-shadow-xs select-none"
-              />
+            <div className="flex items-center gap-4">
+              <div className="flex h-24 w-24 shrink-0 items-end justify-center overflow-hidden rounded-2xl border border-outline-variant/80 bg-white shadow-2xs sm:h-28 sm:w-28">
+                <img
+                  src="/assets/founders/founder-annisa.gif?v=2"
+                  alt="Animasi partner UtamaGo!, Annisa Maulidiyah Rohmawati"
+                  width={112}
+                  height={112}
+                  decoding="async"
+                  draggable={false}
+                  className="h-full w-full select-none bg-white object-contain object-bottom"
+                />
+              </div>
               <div className="min-w-0">
                 <h4 className="font-display text-base font-bold text-on-surface">
                   Annisa Maulidiyah Rohmawati

@@ -80,6 +80,7 @@ import {
 } from '../utils/levelProgression';
 import { getLocalDateKey } from '../utils/studyAnalytics';
 import { ConfirmDialog } from './ConfirmDialog';
+import { BunpouExplanation } from './BunpouExplanation';
 import { HighlightedJapaneseText } from './HighlightedJapaneseText';
 import { RubyReading } from './RubyReading';
 import { AnkiDeckSkeleton } from './SkeletonLoaders';
@@ -2463,9 +2464,10 @@ export function AnkiN5Section({
                               <p className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">
                                 Catatan Pemakaian
                               </p>
-                              <p className="mt-1 text-xs leading-relaxed text-on-surface-variant sm:text-sm">
-                                {activeCard.note}
-                              </p>
+                              <BunpouExplanation
+                                text={activeCard.note}
+                                className="mt-1.5 text-xs sm:text-sm"
+                              />
                             </div>
                           )}
 

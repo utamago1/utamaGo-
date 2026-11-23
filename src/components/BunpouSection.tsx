@@ -14,7 +14,14 @@ import {
 import type { JlptLevel } from '../data/utamagoContent';
 import {
   buildCrossLevelBunpouComparisonGroups,
+  getEntriesForFilterLevel,
+  getTopicLevelAvailability,
+  resolvePartnerIdOnLeftChange,
+  selectDefaultComparisonPair,
+  sortComparisonOptionsForPartner,
   type BunpouComparisonEntry,
+  type ComparisonRelevanceTier,
+  type RankedComparisonOption,
 } from '../utils/bunpouComparison';
 import {
   filterBunpouN2Items,
@@ -27,6 +34,7 @@ import {
   isJlptLevelUnlocked,
   JLPT_LEVELS_ASC,
 } from '../utils/levelProgression';
+import { BunpouExplanation } from './BunpouExplanation';
 import { HighlightedJapaneseText } from './HighlightedJapaneseText';
 
 interface BunpouSectionProps {
@@ -72,13 +80,13 @@ function formatBunpouLessonLabel(item: BunpouN2Item): string {
 function getLevelTagClasses(level: JlptLevel): string {
   switch (level) {
     case 'N5':
-      return 'bg-emerald-500/12 text-emerald-700 dark:text-emerald-300 border-emerald-500/30';
+      return 'bg-emerald-500/12 text-emerald-700 border-emerald-500/30';
     case 'N4':
-      return 'bg-sky-500/12 text-sky-700 dark:text-sky-300 border-sky-500/30';
+      return 'bg-sky-500/12 text-sky-700 border-sky-500/30';
     case 'N3':
-      return 'bg-amber-500/12 text-amber-800 dark:text-amber-300 border-amber-500/30';
+      return 'bg-amber-500/12 text-amber-800 border-amber-500/30';
     case 'N2':
-      return 'bg-orange-500/12 text-orange-800 dark:text-orange-300 border-orange-500/30';
+      return 'bg-orange-500/12 text-orange-800 border-orange-500/30';
     case 'N1':
       return 'bg-primary-container text-on-primary-container border-primary/30';
   }
@@ -109,12 +117,12 @@ export function BunpouSection({
   const [filterSheetOpen, setFilterSheetOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string>('');
 
-  // Cross-level comparison state
+  // Cross-level comparison state (ID-based & taxonomy-aware)
+  const [compareTopicId, setCompareTopicId] = useState<string>('');
   const [compareLevelFilter, setCompareLevelFilter] =
     useState<ComparisonLevelFilter>('ALL');
-  const [compareGroupIndex, setCompareGroupIndex] = useState(0);
-  const [compareLeftIndex, setCompareLeftIndex] = useState(0);
-  const [compareRightIndex, setCompareRightIndex] = useState(1);
+  const [compareLeftId, setCompareLeftId] = useState<string>('');
+  const [compareRightId, setCompareRightId] = useState<string>('');
 
   useEffect(() => {
     if (!filterSheetOpen) return;
@@ -227,6 +235,7 @@ export function BunpouSection({
   );
 
   // Unified cross-level comparison groups across ALL levels (N5–N1)
+  // Classified strictly by Core Syntactic & Semantic Function with 2-tier sub-clusters
   const allCrossLevelGroups = useMemo(
     () =>
       buildCrossLevelBunpouComparisonGroups({
@@ -239,99 +248,164 @@ export function BunpouSection({
     [bunpouN5Items, bunpouN4Items, bunpouN3Items, bunpouN2Items, bunpouN1Items],
   );
 
-  const filteredComparisonGroups = useMemo(() => {
-    if (compareLevelFilter === 'ALL') return allCrossLevelGroups;
-    return allCrossLevelGroups
-      .map((group) => {
-        const matchingEntries = group.entries.filter(
-          (entry) => entry.level === compareLevelFilter,
-        );
-        if (matchingEntries.length < 2) return null;
-        return {
-          ...group,
-          levels: [compareLevelFilter] as JlptLevel[],
-          entries: matchingEntries,
-        };
-      })
-      .filter((g): g is NonNullable<typeof g> => g !== null);
-  }, [allCrossLevelGroups, compareLevelFilter]);
+  const activeCompareGroupIdx = useMemo(() => {
+    if (allCrossLevelGroups.length === 0) return 0;
+    const found = allCrossLevelGroups.findIndex((g) => g.id === compareTopicId);
+    return found >= 0 ? found : 0;
+  }, [allCrossLevelGroups, compareTopicId]);
 
-  const safeCompareGroupIdx =
-    filteredComparisonGroups.length > 0
-      ? Math.min(compareGroupIndex, filteredComparisonGroups.length - 1)
-      : 0;
   const activeComparisonGroup =
-    filteredComparisonGroups[safeCompareGroupIdx] ?? null;
+    allCrossLevelGroups[activeCompareGroupIdx] ?? null;
 
-  const comparisonEntries = activeComparisonGroup?.entries ?? [];
-  const safeLeftIdx =
-    comparisonEntries.length > 0
-      ? Math.min(compareLeftIndex, comparisonEntries.length - 1)
-      : 0;
-  const safeRightIdx =
-    comparisonEntries.length > 1
-      ? Math.min(
-          compareRightIndex === safeLeftIdx
-            ? (safeLeftIdx + 1) % comparisonEntries.length
-            : compareRightIndex,
-          comparisonEntries.length - 1,
-        )
-      : 0;
+  // Rule #2: Dynamic Level Availability — NEVER show empty levels (count === 0)
+  const activeTopicLevelAvailability = useMemo(
+    () => getTopicLevelAvailability(activeComparisonGroup),
+    [activeComparisonGroup],
+  );
 
-  const leftComparisonEntry: BunpouComparisonEntry | null =
-    comparisonEntries[safeLeftIdx] ?? null;
-  const rightComparisonEntry: BunpouComparisonEntry | null =
-    comparisonEntries[safeRightIdx] ?? null;
+  const availableTopicLevels = useMemo(
+    () => activeTopicLevelAvailability.filter((item) => item.isAvailable),
+    [activeTopicLevelAvailability],
+  );
 
-  // Pick a cross-level default pair whenever topic changes in ALL mode
-  const pickDefaultComparisonPair = (entries: BunpouComparisonEntry[]) => {
-    if (entries.length < 2) return [0, 0] as const;
-    const firstLevel = entries[0].level;
-    const diffLevelIdx = entries.findIndex((e) => e.level !== firstLevel);
-    if (diffLevelIdx > 0) {
-      return [0, diffLevelIdx] as const;
+  // If the current level filter is unavailable or has < 2 entries for the active topic, fall back cleanly to 'ALL'
+  const effectiveCompareLevelFilter: ComparisonLevelFilter = useMemo(() => {
+    if (compareLevelFilter === 'ALL') return 'ALL';
+    const meta = activeTopicLevelAvailability.find(
+      (item) => item.level === compareLevelFilter,
+    );
+    return meta && meta.canFilterStandalone ? compareLevelFilter : 'ALL';
+  }, [activeTopicLevelAvailability, compareLevelFilter]);
+
+  const comparisonEntries = useMemo(
+    () =>
+      getEntriesForFilterLevel(
+        activeComparisonGroup,
+        effectiveCompareLevelFilter,
+      ),
+    [activeComparisonGroup, effectiveCompareLevelFilter],
+  );
+
+  // Rule #3 & #4: Default pair selection (same sub-cluster / confusable, cross-level in ALL mode)
+  const defaultPair = useMemo(
+    () =>
+      selectDefaultComparisonPair(
+        comparisonEntries,
+        effectiveCompareLevelFilter,
+      ),
+    [comparisonEntries, effectiveCompareLevelFilter],
+  );
+
+  const leftComparisonEntry: BunpouComparisonEntry | null = useMemo(() => {
+    if (comparisonEntries.length === 0) return null;
+    const found = comparisonEntries.find((e) => e.id === compareLeftId);
+    return found ?? defaultPair?.[0] ?? comparisonEntries[0] ?? null;
+  }, [comparisonEntries, compareLeftId, defaultPair]);
+
+  // Rule #4.4: Sort Dropdown B options by semantic relevance & exclude Pola A strictly
+  const rankedRightOptions: RankedComparisonOption[] = useMemo(
+    () =>
+      sortComparisonOptionsForPartner(
+        comparisonEntries,
+        leftComparisonEntry,
+        effectiveCompareLevelFilter,
+      ),
+    [comparisonEntries, leftComparisonEntry, effectiveCompareLevelFilter],
+  );
+
+  const rightComparisonEntry: BunpouComparisonEntry | null = useMemo(() => {
+    if (rankedRightOptions.length === 0) return null;
+    const found = rankedRightOptions.find(
+      (opt) => opt.entry.id === compareRightId,
+    );
+    if (found) return found.entry;
+    if (
+      defaultPair &&
+      leftComparisonEntry &&
+      defaultPair[0].id === leftComparisonEntry.id &&
+      defaultPair[1].id !== leftComparisonEntry.id
+    ) {
+      return defaultPair[1];
     }
-    return [0, 1] as const;
-  };
+    return rankedRightOptions[0]?.entry ?? null;
+  }, [rankedRightOptions, compareRightId, defaultPair, leftComparisonEntry]);
 
-  // Initialize cross-level pair when groups load or filter changes
+  // Synchronize default pair whenever topic or effective level filter changes
   useEffect(() => {
-    if (!activeComparisonGroup) return;
-    const [l, r] = pickDefaultComparisonPair(activeComparisonGroup.entries);
-    setCompareLeftIndex(l);
-    setCompareRightIndex(r);
+    if (!activeComparisonGroup || !defaultPair) return;
+    setCompareLeftId(defaultPair[0].id);
+    setCompareRightId(defaultPair[1].id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeComparisonGroup?.id, compareLevelFilter]);
+  }, [activeComparisonGroup?.id, effectiveCompareLevelFilter]);
 
-  const selectComparisonGroup = (nextIndex: number) => {
-    if (filteredComparisonGroups.length === 0) return;
+  const selectComparisonTopicByIndex = (nextIndex: number) => {
+    if (allCrossLevelGroups.length === 0) return;
     vibrateTap();
     const wrapped =
-      (nextIndex + filteredComparisonGroups.length) %
-      filteredComparisonGroups.length;
-    setCompareGroupIndex(wrapped);
-    const nextGroup = filteredComparisonGroups[wrapped];
-    if (nextGroup) {
-      const [l, r] = pickDefaultComparisonPair(nextGroup.entries);
-      setCompareLeftIndex(l);
-      setCompareRightIndex(r);
+      (nextIndex + allCrossLevelGroups.length) % allCrossLevelGroups.length;
+    const nextGroup = allCrossLevelGroups[wrapped];
+    if (!nextGroup) return;
+    setCompareTopicId(nextGroup.id);
+
+    // Check if current level filter still has >= 2 valid entries on nextGroup; otherwise reset to ALL
+    const nextAvailability = getTopicLevelAvailability(nextGroup);
+    const keepCurrentLevel =
+      compareLevelFilter !== 'ALL' &&
+      Boolean(
+        nextAvailability.find(
+          (a) => a.level === compareLevelFilter && a.canFilterStandalone,
+        ),
+      );
+    const nextFilter: ComparisonLevelFilter = keepCurrentLevel
+      ? compareLevelFilter
+      : 'ALL';
+    if (!keepCurrentLevel && compareLevelFilter !== 'ALL') {
+      setCompareLevelFilter('ALL');
+    }
+
+    const nextEntries = getEntriesForFilterLevel(nextGroup, nextFilter);
+    const nextPair = selectDefaultComparisonPair(nextEntries, nextFilter);
+    if (nextPair) {
+      setCompareLeftId(nextPair[0].id);
+      setCompareRightId(nextPair[1].id);
     }
   };
 
-  const handleChangeCompareLeft = (nextIdx: number) => {
+  const handleSelectCompareLevelFilter = (nextLevel: ComparisonLevelFilter) => {
     vibrateTap();
-    if (nextIdx === safeRightIdx) {
-      setCompareRightIndex(safeLeftIdx);
+    setCompareLevelFilter(nextLevel);
+    if (!activeComparisonGroup) return;
+    const nextEntries = getEntriesForFilterLevel(
+      activeComparisonGroup,
+      nextLevel,
+    );
+    const nextPair = selectDefaultComparisonPair(nextEntries, nextLevel);
+    if (nextPair) {
+      setCompareLeftId(nextPair[0].id);
+      setCompareRightId(nextPair[1].id);
     }
-    setCompareLeftIndex(nextIdx);
   };
 
-  const handleChangeCompareRight = (nextIdx: number) => {
+  const handleChangeCompareLeft = (nextLeftId: string) => {
     vibrateTap();
-    if (nextIdx === safeLeftIdx) {
-      setCompareLeftIndex(safeRightIdx);
+    const nextLeft = comparisonEntries.find((e) => e.id === nextLeftId);
+    if (!nextLeft) return;
+    setCompareLeftId(nextLeft.id);
+    const nextRightId = resolvePartnerIdOnLeftChange(
+      comparisonEntries,
+      nextLeft,
+      rightComparisonEntry?.id ?? null,
+      effectiveCompareLevelFilter,
+    );
+    if (nextRightId) {
+      setCompareRightId(nextRightId);
     }
-    setCompareRightIndex(nextIdx);
+  };
+
+  const handleChangeCompareRight = (nextRightId: string) => {
+    vibrateTap();
+    if (leftComparisonEntry && nextRightId === leftComparisonEntry.id) return;
+    setCompareRightId(nextRightId);
   };
 
   const openChapter = (lessonNumber: number) => {
@@ -481,13 +555,14 @@ export function BunpouSection({
           )}
 
           {activeItem.note && (
-            <div className="space-y-1.5 border-t border-outline-variant pt-5">
+            <div className="space-y-2 border-t border-outline-variant pt-5">
               <p className="text-xs font-medium text-on-surface-variant">
                 Penjelasan &amp; Nuansa
               </p>
-              <p className="text-sm leading-relaxed text-on-surface-variant sm:text-[15px]">
-                {activeItem.note}
-              </p>
+              <BunpouExplanation
+                text={activeItem.note}
+                className="sm:text-[15px]"
+              />
             </div>
           )}
 
@@ -578,6 +653,30 @@ export function BunpouSection({
       rightComparisonEntry &&
       leftComparisonEntry.level !== rightComparisonEntry.level;
 
+    const isSameSubClusterPair =
+      leftComparisonEntry &&
+      rightComparisonEntry &&
+      leftComparisonEntry.subClusterId === rightComparisonEntry.subClusterId;
+
+    const groupedRightOptions: Record<
+      ComparisonRelevanceTier,
+      RankedComparisonOption[]
+    > = {
+      direct_similar: [],
+      same_sub_cluster: [],
+      other_sub_cluster: [],
+    };
+    for (const opt of rankedRightOptions) {
+      groupedRightOptions[opt.tier].push(opt);
+    }
+
+    const semanticGroups = allCrossLevelGroups.filter(
+      (g) => g.categoryType === 'semantic',
+    );
+    const structuralGroups = allCrossLevelGroups.filter(
+      (g) => g.categoryType === 'structural_base',
+    );
+
     return (
       <section
         aria-label="Komparasi Pola Mirip Semua Level"
@@ -589,44 +688,14 @@ export function BunpouSection({
               <h3 className="font-display text-base font-bold text-on-surface sm:text-lg">
                 Komparasi Pola Mirip · Lintas Level (N5–N1)
               </h3>
-              <p className="mt-1 text-[13px] leading-relaxed text-[#4b4b53] dark:text-[#b4b4c0] sm:text-sm">
-                Bandingkan pola bunpou yang mirip dari semua level (misalnya N3
-                dengan N1) lengkap dengan tanda levelnya.
+              <p className="mt-1 text-[13px] leading-relaxed text-[#4b4b53] sm:text-sm">
+                Bandingkan pola bunpou berdasarkan fungsi gramatikal &amp;
+                sub-nuansa yang benar-benar sepadan.
               </p>
             </div>
-            <span className="font-mono text-xs tabular-nums text-[#4b4b53] dark:text-[#b4b4c0]">
-              Topik {safeCompareGroupIdx + 1} / {filteredComparisonGroups.length}
+            <span className="font-mono text-xs tabular-nums text-[#4b4b53]">
+              Topik {activeCompareGroupIdx + 1} / {allCrossLevelGroups.length}
             </span>
-          </div>
-
-          {/* Interactive level filter for comparison */}
-          <div
-            role="group"
-            aria-label="Filter level komparasi"
-            className="flex flex-wrap items-center gap-1.5"
-          >
-            {(['ALL', ...JLPT_LEVELS_ASC] as const).map((lvl) => {
-              const active = compareLevelFilter === lvl;
-              return (
-                <button
-                  key={lvl}
-                  type="button"
-                  aria-pressed={active}
-                  onClick={() => {
-                    vibrateTap();
-                    setCompareLevelFilter(lvl);
-                    setCompareGroupIndex(0);
-                  }}
-                  className={`inline-flex min-h-[36px] items-center justify-center rounded-lg border px-2.5 py-1 font-mono text-xs font-semibold transition-colors ${
-                    active
-                      ? 'border-primary bg-primary text-on-primary'
-                      : 'border-outline-variant bg-surface-container-low text-[#4b4b53] hover:border-outline hover:text-on-surface dark:text-[#b4b4c0]'
-                  }`}
-                >
-                  {lvl === 'ALL' ? 'Semua Level' : lvl}
-                </button>
-              );
-            })}
           </div>
 
           {/* Topic selector + prev/next buttons */}
@@ -636,22 +705,48 @@ export function BunpouSection({
             </label>
             <select
               id="bunpou-compare-topic"
-              value={safeCompareGroupIdx}
-              onChange={(e) => selectComparisonGroup(Number(e.target.value))}
+              value={activeCompareGroupIdx}
+              onChange={(e) =>
+                selectComparisonTopicByIndex(Number(e.target.value))
+              }
               className="min-h-[44px] min-w-0 flex-1 rounded-xl border border-outline-variant bg-surface-container-low px-3.5 py-2 text-sm font-medium text-on-surface focus:border-primary focus:outline-none"
             >
-              {filteredComparisonGroups.map((group, idx) => (
-                <option key={group.id} value={idx}>
-                  {group.label} ({group.levels.join('·')} ·{' '}
-                  {group.entries.length} pola)
-                </option>
-              ))}
+              <optgroup label="Topik Semantik & Fungsi Gramatikal">
+                {semanticGroups.map((group) => {
+                  const idx = allCrossLevelGroups.findIndex(
+                    (g) => g.id === group.id,
+                  );
+                  return (
+                    <option key={group.id} value={idx}>
+                      {group.label} ({group.levels.join('·')} ·{' '}
+                      {group.entries.length} pola)
+                    </option>
+                  );
+                })}
+              </optgroup>
+              {structuralGroups.length > 0 && (
+                <optgroup label="Kategori Dasar & Struktural (Terpisah)">
+                  {structuralGroups.map((group) => {
+                    const idx = allCrossLevelGroups.findIndex(
+                      (g) => g.id === group.id,
+                    );
+                    return (
+                      <option key={group.id} value={idx}>
+                        {group.label} ({group.levels.join('·')} ·{' '}
+                        {group.entries.length} pola)
+                      </option>
+                    );
+                  })}
+                </optgroup>
+              )}
             </select>
 
             <div className="flex shrink-0 items-center gap-2">
               <button
                 type="button"
-                onClick={() => selectComparisonGroup(safeCompareGroupIdx - 1)}
+                onClick={() =>
+                  selectComparisonTopicByIndex(activeCompareGroupIdx - 1)
+                }
                 aria-label="Topik perbandingan sebelumnya"
                 className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-outline-variant bg-surface-container-low text-on-surface transition-colors hover:border-outline hover:bg-surface"
               >
@@ -659,7 +754,9 @@ export function BunpouSection({
               </button>
               <button
                 type="button"
-                onClick={() => selectComparisonGroup(safeCompareGroupIdx + 1)}
+                onClick={() =>
+                  selectComparisonTopicByIndex(activeCompareGroupIdx + 1)
+                }
                 aria-label="Topik perbandingan berikutnya"
                 className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-outline-variant bg-surface-container-low text-on-surface transition-colors hover:border-outline hover:bg-surface"
               >
@@ -668,18 +765,84 @@ export function BunpouSection({
             </div>
           </div>
 
-          {/* Clear cross-level indicator when comparing two different JLPT levels */}
-          {isCrossLevelPair && leftComparisonEntry && rightComparisonEntry && (
-            <p className="text-xs font-medium text-[#4b4b53] dark:text-[#b4b4c0]">
-              Perbandingan lintas level:{' '}
-              <span className="font-mono font-bold text-on-surface">
-                Bunpou {leftComparisonEntry.level}
-              </span>{' '}
-              vs{' '}
-              <span className="font-mono font-bold text-on-surface">
-                Bunpou {rightComparisonEntry.level}
+          {/* Dynamic Level Filter: ONLY displays levels that actually exist in this topic (count > 0) */}
+          <div
+            role="group"
+            aria-label="Filter level tersedia pada topik ini"
+            className="flex flex-wrap items-center gap-1.5"
+          >
+            <button
+              type="button"
+              aria-pressed={effectiveCompareLevelFilter === 'ALL'}
+              onClick={() => handleSelectCompareLevelFilter('ALL')}
+              className={`inline-flex min-h-[36px] items-center justify-center gap-1.5 rounded-lg border px-2.5 py-1 font-mono text-xs font-semibold transition-colors ${
+                effectiveCompareLevelFilter === 'ALL'
+                  ? 'border-primary bg-primary text-on-primary'
+                  : 'border-outline-variant bg-surface-container-low text-[#4b4b53] hover:border-outline hover:text-on-surface'
+              }`}
+            >
+              <span>Semua Level</span>
+              <span className="opacity-80">
+                ({activeComparisonGroup.entries.length})
               </span>
-            </p>
+            </button>
+
+            {availableTopicLevels.map(({ level, count, canFilterStandalone }) => {
+              const active = effectiveCompareLevelFilter === level;
+              return (
+                <button
+                  key={level}
+                  type="button"
+                  disabled={!canFilterStandalone}
+                  aria-pressed={active}
+                  title={
+                    canFilterStandalone
+                      ? `Bandingkan pola sesama level ${level} (${count} pola)`
+                      : `Hanya tersedia 1 pola di ${level} — gunakan Semua Level untuk perbandingan lintas level`
+                  }
+                  onClick={() => handleSelectCompareLevelFilter(level)}
+                  className={`inline-flex min-h-[36px] items-center justify-center gap-1 rounded-lg border px-2.5 py-1 font-mono text-xs font-semibold transition-colors ${
+                    active
+                      ? 'border-primary bg-primary text-on-primary'
+                      : canFilterStandalone
+                        ? 'border-outline-variant bg-surface-container-low text-[#4b4b53] hover:border-outline hover:text-on-surface'
+                        : 'cursor-not-allowed border-outline-variant/60 bg-surface text-on-surface-variant/60'
+                  }`}
+                >
+                  <span>{level}</span>
+                  <span className="opacity-80">({count})</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Pair context banner (Cross-level / Same-level + Sub-cluster nuance) */}
+          {leftComparisonEntry && rightComparisonEntry && (
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-medium text-[#4b4b53]">
+              <span>
+                {isCrossLevelPair ? 'Lintas level:' : 'Sesama level:'}{' '}
+                <span className="font-mono font-bold text-on-surface">
+                  Bunpou {leftComparisonEntry.level}
+                </span>{' '}
+                vs{' '}
+                <span className="font-mono font-bold text-on-surface">
+                  Bunpou {rightComparisonEntry.level}
+                </span>
+              </span>
+              {isSameSubClusterPair && (
+                <>
+                  <span aria-hidden="true" className="opacity-50">
+                    ·
+                  </span>
+                  <span>
+                    Sub-nuansa:{' '}
+                    <span className="font-semibold text-on-surface">
+                      {leftComparisonEntry.subClusterLabel}
+                    </span>
+                  </span>
+                </>
+              )}
+            </div>
           )}
 
           {/* Side-by-side comparison container */}
@@ -689,27 +852,24 @@ export function BunpouSection({
                 {
                   slot: 'Pola A',
                   selectId: 'bunpou-compare-left',
-                  selectedIndex: safeLeftIdx,
                   entry: leftComparisonEntry,
-                  onChange: handleChangeCompareLeft,
                 },
                 {
                   slot: 'Pola B',
                   selectId: 'bunpou-compare-right',
-                  selectedIndex: safeRightIdx,
                   entry: rightComparisonEntry,
-                  onChange: handleChangeCompareRight,
                 },
               ] as const
-            ).map(({ slot, selectId, selectedIndex, entry, onChange }) => {
+            ).map(({ slot, selectId, entry }) => {
               if (!entry) return null;
+              const isRightSlot = slot === 'Pola B';
               return (
                 <div key={slot} className="min-w-0 space-y-4 p-4 sm:p-6">
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between gap-2">
                       <label
                         htmlFor={selectId}
-                        className="text-[13px] font-medium text-[#4b4b53] dark:text-[#b4b4c0]"
+                        className="text-[13px] font-medium text-[#4b4b53]"
                       >
                         {slot}
                       </label>
@@ -720,24 +880,90 @@ export function BunpouSection({
                         {entry.lessonLabel ? ` · ${entry.lessonLabel}` : ''}
                       </span>
                     </div>
-                    <select
-                      id={selectId}
-                      value={selectedIndex}
-                      onChange={(e) => onChange(Number(e.target.value))}
-                      className="min-h-[44px] w-full rounded-xl border border-outline-variant bg-surface px-3 py-2 font-display text-sm font-bold text-on-surface focus:border-primary focus:outline-none"
-                    >
-                      {comparisonEntries.map((opt, idx) => (
-                        <option key={opt.id} value={idx}>
-                          [{opt.level}] {opt.pattern}
-                        </option>
-                      ))}
-                    </select>
+
+                    {isRightSlot ? (
+                      <select
+                        id={selectId}
+                        value={entry.id}
+                        onChange={(e) =>
+                          handleChangeCompareRight(e.target.value)
+                        }
+                        className="min-h-[44px] w-full rounded-xl border border-outline-variant bg-surface px-3 py-2 font-display text-sm font-bold text-on-surface focus:border-primary focus:outline-none"
+                      >
+                        {groupedRightOptions.direct_similar.length > 0 && (
+                          <optgroup label="Paling Mirip / Sering Tertukar">
+                            {groupedRightOptions.direct_similar.map(
+                              ({ entry: opt }) => (
+                                <option key={opt.id} value={opt.id}>
+                                  [{opt.level}] {opt.pattern}
+                                </option>
+                              ),
+                            )}
+                          </optgroup>
+                        )}
+                        {groupedRightOptions.same_sub_cluster.length > 0 && (
+                          <optgroup
+                            label={`Sub-Nuansa Sama (${leftComparisonEntry?.subClusterLabel ?? ''})`}
+                          >
+                            {groupedRightOptions.same_sub_cluster.map(
+                              ({ entry: opt }) => (
+                                <option key={opt.id} value={opt.id}>
+                                  [{opt.level}] {opt.pattern}
+                                </option>
+                              ),
+                            )}
+                          </optgroup>
+                        )}
+                        {groupedRightOptions.other_sub_cluster.length > 0 && (
+                          <optgroup label="Sub-Nuansa Lain di Topik Ini">
+                            {groupedRightOptions.other_sub_cluster.map(
+                              ({ entry: opt }) => (
+                                <option key={opt.id} value={opt.id}>
+                                  [{opt.level}] {opt.pattern} ·{' '}
+                                  {opt.subClusterLabel}
+                                </option>
+                              ),
+                            )}
+                          </optgroup>
+                        )}
+                      </select>
+                    ) : (
+                      <select
+                        id={selectId}
+                        value={entry.id}
+                        onChange={(e) =>
+                          handleChangeCompareLeft(e.target.value)
+                        }
+                        className="min-h-[44px] w-full rounded-xl border border-outline-variant bg-surface px-3 py-2 font-display text-sm font-bold text-on-surface focus:border-primary focus:outline-none"
+                      >
+                        {activeComparisonGroup.subClusters.map((cluster) => {
+                          const clusterItems = comparisonEntries.filter(
+                            (opt) => opt.subClusterId === cluster.id,
+                          );
+                          if (clusterItems.length === 0) return null;
+                          return (
+                            <optgroup key={cluster.id} label={cluster.label}>
+                              {clusterItems.map((opt) => (
+                                <option key={opt.id} value={opt.id}>
+                                  [{opt.level}] {opt.pattern}
+                                </option>
+                              ))}
+                            </optgroup>
+                          );
+                        })}
+                      </select>
+                    )}
                   </div>
 
                   <div>
-                    <h4 className="font-display text-lg font-bold leading-snug text-primary sm:text-xl">
-                      {entry.pattern}
-                    </h4>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h4 className="font-display text-lg font-bold leading-snug text-primary sm:text-xl">
+                        {entry.pattern}
+                      </h4>
+                    </div>
+                    <p className="mt-1 text-[11px] font-medium text-on-surface-variant">
+                      {entry.subClusterLabel}
+                    </p>
                     {(entry.romaji || entry.register) && (
                       <p className="mt-0.5 text-xs text-on-surface-variant">
                         {entry.romaji}
@@ -761,13 +987,11 @@ export function BunpouSection({
                   </div>
 
                   {entry.nuance && entry.nuance !== entry.meaning && (
-                    <div className="space-y-1">
+                    <div className="space-y-1.5">
                       <p className="text-xs font-medium text-on-surface-variant">
                         Perbedaan Nuansa
                       </p>
-                      <p className="text-sm leading-relaxed text-on-surface-variant">
-                        {entry.nuance}
-                      </p>
+                      <BunpouExplanation text={entry.nuance} />
                     </div>
                   )}
 

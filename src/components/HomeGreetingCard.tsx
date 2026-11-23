@@ -1,346 +1,111 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { vibrateTap } from '../utils/haptics';
-import type { LevelProgressInfo } from '../utils/levelProgression';
+import type { LearnerGender, LevelProgressInfo } from '../utils/levelProgression';
+import {
+  MASCOT_ERROR_OR_EMPTY_LINES,
+  MASCOT_EXPRESSION_LABELS,
+  MASCOT_EXPRESSION_ORDER,
+  MASCOT_LOADING_LINES,
+  MASCOT_SLEEPY_IDLE_LINES,
+  MASCOT_TAP_ENCOURAGEMENTS,
+  MASCOT_WAKE_UP_LINES,
+  type MascotExpression,
+} from '../utils/mascotAssets';
 import {
   computeDaysSinceLastStudy,
   getMoodPreviewVariants,
-  MASCOT_ANGRY_VARIANTS,
-  MASCOT_MOOD_LABELS,
-  MASCOT_MOOD_ORDER,
-  MASCOT_SOOTHE_VARIANTS,
-  MASCOT_WAVE_VARIANTS,
   pickNextMascotLine,
   resolveMascotDialogState,
-  resolveTransparentMascotSrc,
-  type MascotMood,
 } from '../utils/mascotDialog';
 import { getLocalDateKey, type StudyActivityLog } from '../utils/studyAnalytics';
+import { MascotAvatar } from './MascotAvatar';
 
 export interface HomeGreetingCardProps {
   levelProgress: LevelProgressInfo;
   shortRankName: string;
   learnerName?: string;
+  /** Preferensi gender karakter maskot (default: 'cowok') */
+  gender?: LearnerGender;
   activityLog: StudyActivityLog;
   dailyDoneCards: number;
   isTargetReached: boolean;
   dueAnkiCount: number;
   streakDays: number;
-  /** Optional custom high-resolution transparent mascot image URL */
+  /** Sedang memuat data Beranda (ekspresi mikir_loading) */
+  isLoading?: boolean;
+  /** Terjadi error pengambilan data atau kartu gagal dimuat (ekspresi bingung_sedih) */
+  hasError?: boolean;
+  /** Pengguna baru menyelesaikan sesi Anki / tantangan level (ekspresi happy) */
+  justCompletedSession?: boolean;
+  /** Durasi inaktivitas sebelum maskot mengantuk (default 45 detik) */
+  inactivitySleepMs?: number;
+  /** Optional custom fallback image URL */
   src?: string;
-  /** Optional hour override (0-23) for testing time-of-day states */
+  /** Optional hour override (0-23) for testing time-of-day dialog lines */
   hourOverride?: number;
 }
 
-type MascotReaction = 'none' | 'wave' | 'spin' | 'angry';
+const TAP_COOLDOWN_MS = 280;
+const TAP_REACTION_DURATION_MS = 1800;
+const WAKE_REACTION_DURATION_MS = 1600;
+const DEFAULT_INACTIVITY_SLEEP_MS = 45_000;
 
-const COOLDOWN_MS = 450;
-const LONG_PRESS_MS = 500;
-const WAVE_DURATION_MS = 820;
-const SPIN_DURATION_MS = 680;
-const ANGRY_DURATION_MS = 4200;
-const RAPID_TAP_WINDOW_MS = 4500;
-const RAPID_TAP_THRESHOLD = 4;
+const SESSION_COMPLETE_LINES: readonly string[] = [
+  'Yatta! Sesi belajarmu selesai! Keren banget!',
+  'Otsukaresama! Progres belajarmu makin mantap!',
+  'Mantap! Satu langkah lebih dekat lulus JLPT!',
+];
 
-function prefersReducedMotion(): boolean {
-  if (typeof window === 'undefined' || !window.matchMedia) return false;
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-}
-
-function getMoodIdleClass(mood: MascotMood): string {
-  switch (mood) {
-    case 'happy':
-      return 'utamago-mascot-happy';
-    case 'sleepy':
-      return 'utamago-mascot-sleepy';
-    case 'gloomy':
-      return 'utamago-mascot-gloomy';
-    case 'sick':
-      return 'utamago-mascot-sick';
-    case 'angry':
-      return 'utamago-mascot-angry';
-    default:
-      return 'utamago-mascot-idle';
-  }
-}
-
-function getMoodBadgeTone(mood: MascotMood): string {
-  switch (mood) {
+function getExpressionBadgeTone(expression: MascotExpression): string {
+  switch (expression) {
     case 'happy':
       return 'text-success';
-    case 'angry':
+    case 'tap_kaget':
       return 'text-primary';
-    case 'sick':
-      return 'text-sky-600 dark:text-sky-400';
-    case 'gloomy':
-      return 'text-indigo-600 dark:text-indigo-400';
-    case 'sleepy':
-      return 'text-amber-600 dark:text-amber-400';
+    case 'mikir_loading':
+      return 'text-sky-700';
+    case 'bingung_sedih':
+      return 'text-indigo-700';
+    case 'ngantuk_tidur':
+      return 'text-amber-700';
     default:
-      return 'text-[#4b4b53] dark:text-[#b4b4c0]';
+      return 'text-[#4b4b53]';
   }
-}
-
-function MascotExpressionOverlays({
-  mood,
-  reaction,
-  reactionNonce,
-}: {
-  mood: MascotMood;
-  reaction: MascotReaction;
-  reactionNonce: number;
-}) {
-  const showWaveHand = reaction === 'wave';
-  const showHearts = reaction === 'spin';
-  const showAngry = reaction === 'angry' || mood === 'angry';
-  const showSick = !showAngry && mood === 'sick';
-  const showGloomy = !showAngry && mood === 'gloomy';
-  const showSleepy = !showAngry && mood === 'sleepy';
-  const showHappySparkles =
-    !showAngry && !showSick && !showGloomy && !showSleepy && (mood === 'happy' || showWaveHand);
-
-  return (
-    <span
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-0 overflow-visible"
-    >
-      {/* Waving hand + motion arcs when tapped */}
-      {showWaveHand && (
-        <svg
-          key={`wave-${reactionNonce}`}
-          viewBox="0 0 40 40"
-          className="utamago-mascot-wave-hand absolute top-6 -right-1.5 z-20 h-9 w-9 drop-shadow-xs"
-        >
-          {/* Motion arcs */}
-          <path
-            d="M27 7 C31 9, 33 13, 33 17"
-            fill="none"
-            stroke="#f59e0b"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
-          <path
-            d="M31 4 C35 7, 37 11, 37 15"
-            fill="none"
-            stroke="#f59e0b"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-            opacity="0.7"
-          />
-          {/* Cute chibi waving wing/paw matching UtamaGo ink outline */}
-          <path
-            d="M9 30 C7 24, 9 15, 14 12 C16.5 10.5, 19.5 12, 19.5 15 C21 12.5, 24.5 13.5, 24 17 C26 16.5, 28 19.5, 25.5 23 C23 27, 17 32, 11 32 Z"
-            fill="#fde047"
-            stroke="#161618"
-            strokeWidth="2.4"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M14 23 C16 21, 18.5 21, 20 22.5"
-            fill="none"
-            stroke="#f59e0b"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-          />
-        </svg>
-      )}
-
-      {/* Floating hearts when long-pressed / soothed */}
-      {showHearts && (
-        <span key={`hearts-${reactionNonce}`} className="absolute inset-0 z-20">
-          <svg
-            viewBox="0 0 24 24"
-            className="utamago-mascot-heart absolute -top-1 right-2 h-5 w-5 text-rose-500"
-            fill="currentColor"
-          >
-            <path d="M12 21s-6.7-4.35-9.2-8.2C.9 9.8 2.2 5.8 5.8 5c2.1-.5 4.2.5 5.2 2.2C12 5.5 14.1 4.5 16.2 5c3.6.8 4.9 4.8 3 7.8C18.7 16.65 12 21 12 21z" />
-          </svg>
-          <svg
-            viewBox="0 0 24 24"
-            style={{ animationDelay: '120ms' }}
-            className="utamago-mascot-heart absolute top-2 left-1 h-3.5 w-3.5 text-amber-500"
-            fill="currentColor"
-          >
-            <path d="M12 21s-6.7-4.35-9.2-8.2C.9 9.8 2.2 5.8 5.8 5c2.1-.5 4.2.5 5.2 2.2C12 5.5 14.1 4.5 16.2 5c3.6.8 4.9 4.8 3 7.8C18.7 16.65 12 21 12 21z" />
-          </svg>
-        </span>
-      )}
-
-      {/* Angry anime vein + rising steam puffs */}
-      {showAngry && (
-        <span className="absolute inset-0 z-20">
-          <svg
-            viewBox="0 0 28 28"
-            className="utamago-mascot-angry-vein absolute top-0.5 right-0.5 h-6 w-6"
-          >
-            <path
-              d="M6 12 C9.5 12, 12 9.5, 12 6 M22 12 C18.5 12, 16 9.5, 16 6 M6 16 C9.5 16, 12 18.5, 12 22 M22 16 C18.5 16, 16 18.5, 16 22"
-              fill="none"
-              stroke="#ef4444"
-              strokeWidth="2.8"
-              strokeLinecap="round"
-            />
-          </svg>
-          <svg
-            viewBox="0 0 20 20"
-            className="utamago-mascot-steam absolute -top-1 left-2 h-4 w-4 text-rose-400"
-            fill="currentColor"
-          >
-            <circle cx="8" cy="12" r="4" opacity="0.85" />
-            <circle cx="13" cy="9" r="3.2" opacity="0.7" />
-          </svg>
-        </span>
-      )}
-
-      {/* Sick: cooling forehead patch + cold sweat drop */}
-      {showSick && (
-        <span className="absolute inset-0 z-20">
-          {/* Forehead cooling gel patch */}
-          <svg
-            viewBox="0 0 36 18"
-            className="absolute top-[22px] left-1/2 h-4 w-8 -translate-x-1/2 -rotate-6 drop-shadow-xs"
-          >
-            <rect
-              x="2"
-              y="2"
-              width="32"
-              height="14"
-              rx="4"
-              fill="#e0f2fe"
-              stroke="#0284c7"
-              strokeWidth="2"
-            />
-            <line
-              x1="8"
-              y1="6.5"
-              x2="28"
-              y2="6.5"
-              stroke="#7dd3fc"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-            />
-            <line
-              x1="10"
-              y1="11"
-              x2="24"
-              y2="11"
-              stroke="#7dd3fc"
-              strokeWidth="1.4"
-              strokeLinecap="round"
-            />
-          </svg>
-          {/* Animated cold sweat drop */}
-          <svg
-            viewBox="0 0 16 22"
-            className="utamago-mascot-sweat absolute top-5 right-2 h-4 w-3"
-          >
-            <path
-              d="M8 2 C8 2, 14 10, 14 14.5 C14 17.8, 11.3 20, 8 20 C4.7 20, 2 17.8, 2 14.5 C2 10, 8 2, 8 2 Z"
-              fill="#38bdf8"
-              stroke="#0369a1"
-              strokeWidth="1.6"
-            />
-          </svg>
-        </span>
-      )}
-
-      {/* Gloomy / Sad: little raincloud + falling droplets + anime gloom lines */}
-      {showGloomy && (
-        <span className="absolute inset-0 z-20">
-          <svg
-            viewBox="0 0 36 24"
-            className="absolute -top-1 left-1 h-6 w-9 drop-shadow-xs"
-          >
-            <path
-              d="M9 19 H26 C29.5 19, 32 16.5, 32 13.5 C32 10.7, 29.8 8.5, 27 8.3 C26 4.7, 22.7 2.5, 19 2.5 C14.9 2.5, 11.6 5.4, 11 9.3 C7.8 9.6, 5.5 12, 5.5 14.8 C5.5 17.2, 7 19, 9 19 Z"
-              fill="#94a3b8"
-              stroke="#475569"
-              strokeWidth="1.8"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span className="utamago-mascot-rain absolute top-4 left-3.5 h-2 w-0.5 rounded-full bg-sky-500/80" />
-          <span
-            style={{ animationDelay: '450ms' }}
-            className="utamago-mascot-rain absolute top-4 left-6 h-2 w-0.5 rounded-full bg-sky-500/80"
-          />
-          <svg
-            viewBox="0 0 18 22"
-            className="absolute top-3 right-1 h-5 w-4 opacity-75"
-          >
-            <line x1="4" y1="2" x2="4" y2="18" stroke="#6366f1" strokeWidth="1.8" strokeLinecap="round" />
-            <line x1="9" y1="4" x2="9" y2="20" stroke="#6366f1" strokeWidth="1.8" strokeLinecap="round" />
-            <line x1="14" y1="2" x2="14" y2="16" stroke="#6366f1" strokeWidth="1.8" strokeLinecap="round" />
-          </svg>
-        </span>
-      )}
-
-      {/* Sleepy: floating zZ */}
-      {showSleepy && (
-        <span className="utamago-mascot-zzz absolute top-0.5 right-0.5 z-20 font-display text-xs font-extrabold tracking-tight text-primary/80">
-          zZ
-        </span>
-      )}
-
-      {/* Happy sparkles */}
-      {showHappySparkles && (
-        <span className="absolute inset-0 z-10">
-          <svg
-            viewBox="0 0 16 16"
-            className="utamago-mascot-sparkle absolute top-1 left-1 h-3.5 w-3.5 text-amber-400"
-            fill="currentColor"
-          >
-            <path d="M8 0 L9.8 6.2 L16 8 L9.8 9.8 L8 16 L6.2 9.8 L0 8 L6.2 6.2 Z" />
-          </svg>
-          <svg
-            viewBox="0 0 16 16"
-            style={{ animationDelay: '700ms' }}
-            className="utamago-mascot-sparkle absolute bottom-2 right-1 h-2.5 w-2.5 text-primary/70"
-            fill="currentColor"
-          >
-            <path d="M8 0 L9.8 6.2 L16 8 L9.8 9.8 L8 16 L6.2 9.8 L0 8 L6.2 6.2 Z" />
-          </svg>
-        </span>
-      )}
-    </span>
-  );
 }
 
 export function HomeGreetingCard({
   levelProgress,
   shortRankName,
   learnerName,
+  gender = 'cowok',
   activityLog,
   dailyDoneCards,
   isTargetReached,
   dueAnkiCount,
   streakDays,
+  isLoading = false,
+  hasError = false,
+  justCompletedSession = false,
+  inactivitySleepMs = DEFAULT_INACTIVITY_SLEEP_MS,
   src,
   hourOverride,
 }: HomeGreetingCardProps) {
-  const [failedPrimary, setFailedPrimary] = useState(false);
-  const [failedFallback, setFailedFallback] = useState(false);
-  const [reaction, setReaction] = useState<MascotReaction>('none');
-  const [reactionNonce, setReactionNonce] = useState(0);
-  const [previewMood, setPreviewMood] = useState<MascotMood | null>(null);
-
-  const lastInteractionMsRef = useRef<number>(0);
-  const recentTapTimestampsRef = useRef<number[]>([]);
-  const longPressTimerRef = useRef<number | null>(null);
-  const reactionResetTimerRef = useRef<number | null>(null);
-  const longPressFiredRef = useRef<boolean>(false);
-  const suppressNextClickRef = useRef<boolean>(false);
-
-  const primarySrc = useMemo(
-    () => resolveTransparentMascotSrc(levelProgress.rank.illustrationPath, src),
-    [levelProgress.rank.illustrationPath, src],
+  const [tapReaction, setTapReaction] = useState<'tap_kaget' | 'happy' | null>(
+    null,
   );
-  const fallbackSrc = levelProgress.rank.illustrationPath;
-  const activeImgSrc = failedPrimary ? fallbackSrc : primarySrc;
+  const [isIdleAsleep, setIsIdleAsleep] = useState(false);
+  const [previewExpression, setPreviewExpression] =
+    useState<MascotExpression | null>(null);
+
+  const lastTapMsRef = useRef<number>(0);
+  const tapCountRef = useRef<number>(0);
+  const reactionTimerRef = useRef<number | null>(null);
+  const inactivityTimerRef = useRef<number | null>(null);
+  const isIdleAsleepRef = useRef<boolean>(false);
 
   useEffect(() => {
-    setFailedPrimary(false);
-    setFailedFallback(false);
-  }, [primarySrc, fallbackSrc]);
+    isIdleAsleepRef.current = isIdleAsleep;
+  }, [isIdleAsleep]);
 
   const hasAnyHistory = useMemo(() => {
     if (levelProgress.totalXp > 0) return true;
@@ -378,284 +143,237 @@ export function HomeGreetingCard({
     ],
   );
 
-  const activeMood: MascotMood =
-    reaction === 'angry' ? 'angry' : (previewMood ?? autoDialogState.mood);
+  const isEmptyReviewError =
+    hasError || (dueAnkiCount === 0 && !isTargetReached && !hasAnyHistory);
 
-  const activeVariants = useMemo(() => {
-    if (previewMood) {
-      return getMoodPreviewVariants(previewMood, dueAnkiCount, streakDays);
+  // Determine automatic base expression when no tap reaction or manual preview is active
+  const baseExpression: MascotExpression = useMemo(() => {
+    if (isLoading) return 'mikir_loading';
+    if (isEmptyReviewError) return 'bingung_sedih';
+    if (isIdleAsleep) return 'ngantuk_tidur';
+    if (isTargetReached || justCompletedSession || streakDays >= 3) {
+      return 'happy';
     }
+    if (autoDialogState.mood === 'gloomy' || autoDialogState.mood === 'sick') {
+      return 'bingung_sedih';
+    }
+    return 'idle';
+  }, [
+    isLoading,
+    isEmptyReviewError,
+    isIdleAsleep,
+    isTargetReached,
+    justCompletedSession,
+    streakDays,
+    autoDialogState.mood,
+  ]);
+
+  const activeExpression: MascotExpression =
+    previewExpression ?? tapReaction ?? baseExpression;
+
+  const baseDialogVariants = useMemo<readonly string[]>(() => {
+    if (previewExpression) {
+      switch (previewExpression) {
+        case 'happy':
+          return getMoodPreviewVariants('happy', dueAnkiCount, streakDays);
+        case 'tap_kaget':
+          return MASCOT_TAP_ENCOURAGEMENTS;
+        case 'mikir_loading':
+          return MASCOT_LOADING_LINES;
+        case 'bingung_sedih':
+          return MASCOT_ERROR_OR_EMPTY_LINES;
+        case 'ngantuk_tidur':
+          return MASCOT_SLEEPY_IDLE_LINES;
+        default:
+          return autoDialogState.variants;
+      }
+    }
+    if (isLoading) return MASCOT_LOADING_LINES;
+    if (isEmptyReviewError) return MASCOT_ERROR_OR_EMPTY_LINES;
+    if (isIdleAsleep) return MASCOT_SLEEPY_IDLE_LINES;
+    if (justCompletedSession && !isTargetReached) return SESSION_COMPLETE_LINES;
     return autoDialogState.variants;
-  }, [previewMood, autoDialogState.variants, dueAnkiCount, streakDays]);
+  }, [
+    previewExpression,
+    isLoading,
+    isEmptyReviewError,
+    isIdleAsleep,
+    justCompletedSession,
+    isTargetReached,
+    dueAnkiCount,
+    streakDays,
+    autoDialogState.variants,
+  ]);
 
   const [bubbleLine, setBubbleLine] = useState<string>(
-    () => activeVariants[0] ?? '',
+    () => baseDialogVariants[0] ?? 'Halo! Aku teman belajarmu di sini.',
   );
 
-  const variantsKey = activeVariants.join('\u0001');
+  const variantsKey = baseDialogVariants.join('\u0001');
   useEffect(() => {
+    if (tapReaction !== null) return;
     setBubbleLine((prev) =>
-      activeVariants.includes(prev) ? prev : (activeVariants[0] ?? ''),
+      baseDialogVariants.includes(prev)
+        ? prev
+        : (baseDialogVariants[0] ?? 'Halo! Aku teman belajarmu di sini.'),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoDialogState.condition, previewMood, variantsKey]);
+  }, [baseExpression, previewExpression, variantsKey]);
+
+  const clearReactionTimer = useCallback(() => {
+    if (reactionTimerRef.current !== null) {
+      window.clearTimeout(reactionTimerRef.current);
+      reactionTimerRef.current = null;
+    }
+  }, []);
+
+  const scheduleReaction = useCallback(
+    (expr: 'tap_kaget' | 'happy', durationMs: number) => {
+      clearReactionTimer();
+      setTapReaction(expr);
+      reactionTimerRef.current = window.setTimeout(() => {
+        setTapReaction(null);
+        reactionTimerRef.current = null;
+      }, durationMs);
+    },
+    [clearReactionTimer],
+  );
+
+  const wakeUpFromSleep = useCallback(() => {
+    setIsIdleAsleep(false);
+    isIdleAsleepRef.current = false;
+    setPreviewExpression(null);
+    setBubbleLine((prev) => pickNextMascotLine(MASCOT_WAKE_UP_LINES, prev));
+    scheduleReaction('tap_kaget', WAKE_REACTION_DURATION_MS);
+  }, [scheduleReaction]);
+
+  // Inactivity detector: falls asleep after 30–60s (default 45s), wakes immediately on touch/key
+  useEffect(() => {
+    if (typeof window === 'undefined' || inactivitySleepMs <= 0) return;
+
+    const resetInactivityTimer = () => {
+      if (inactivityTimerRef.current !== null) {
+        window.clearTimeout(inactivityTimerRef.current);
+      }
+      inactivityTimerRef.current = window.setTimeout(() => {
+        setIsIdleAsleep(true);
+        isIdleAsleepRef.current = true;
+      }, inactivitySleepMs);
+    };
+
+    const handleUserActivity = () => {
+      if (isIdleAsleepRef.current) {
+        wakeUpFromSleep();
+      }
+      resetInactivityTimer();
+    };
+
+    const handlePassiveScroll = () => {
+      if (!isIdleAsleepRef.current) {
+        resetInactivityTimer();
+      }
+    };
+
+    resetInactivityTimer();
+    window.addEventListener('pointerdown', handleUserActivity, { passive: true });
+    window.addEventListener('keydown', handleUserActivity, { passive: true });
+    window.addEventListener('touchstart', handleUserActivity, { passive: true });
+    window.addEventListener('scroll', handlePassiveScroll, { passive: true });
+
+    return () => {
+      if (inactivityTimerRef.current !== null) {
+        window.clearTimeout(inactivityTimerRef.current);
+        inactivityTimerRef.current = null;
+      }
+      window.removeEventListener('pointerdown', handleUserActivity);
+      window.removeEventListener('keydown', handleUserActivity);
+      window.removeEventListener('touchstart', handleUserActivity);
+      window.removeEventListener('scroll', handlePassiveScroll);
+    };
+  }, [inactivitySleepMs, wakeUpFromSleep]);
 
   useEffect(() => {
     return () => {
-      if (longPressTimerRef.current !== null) {
-        window.clearTimeout(longPressTimerRef.current);
-      }
-      if (reactionResetTimerRef.current !== null) {
-        window.clearTimeout(reactionResetTimerRef.current);
-      }
+      clearReactionTimer();
     };
-  }, []);
+  }, [clearReactionTimer]);
 
-  const clearLongPressTimer = () => {
-    if (longPressTimerRef.current !== null) {
-      window.clearTimeout(longPressTimerRef.current);
-      longPressTimerRef.current = null;
-    }
-  };
-
-  const triggerInteraction = (kind: 'wave' | 'spin') => {
+  const handleMascotTap = useCallback(() => {
     const now = Date.now();
-    if (now - lastInteractionMsRef.current < COOLDOWN_MS) {
-      return;
-    }
-    lastInteractionMsRef.current = now;
-
-    // Long press soothes angry/gloomy/sick or plays happy spin
-    if (kind === 'spin') {
-      recentTapTimestampsRef.current = [];
-      if (previewMood === 'angry' || previewMood === 'gloomy' || previewMood === 'sick') {
-        setPreviewMood('happy');
-      }
-      const soothePool =
-        reaction === 'angry' ||
-        activeMood === 'angry' ||
-        activeMood === 'gloomy' ||
-        activeMood === 'sick'
-          ? MASCOT_SOOTHE_VARIANTS
-          : activeVariants;
-      setBubbleLine((prev) => pickNextMascotLine(soothePool, prev));
-
-      if (prefersReducedMotion()) {
-        setReaction('none');
-        return;
-      }
-
-      vibrateTap();
-      if (reactionResetTimerRef.current !== null) {
-        window.clearTimeout(reactionResetTimerRef.current);
-      }
-      setReaction('spin');
-      setReactionNonce((n) => n + 1);
-      reactionResetTimerRef.current = window.setTimeout(() => {
-        setReaction('none');
-        reactionResetTimerRef.current = null;
-      }, SPIN_DURATION_MS);
-      return;
-    }
-
-    // Track rapid taps -> playful angry reaction when poked repeatedly
-    const recent = recentTapTimestampsRef.current.filter(
-      (ts) => now - ts <= RAPID_TAP_WINDOW_MS,
-    );
-    recent.push(now);
-    recentTapTimestampsRef.current = recent;
-
-    if (recent.length >= RAPID_TAP_THRESHOLD) {
-      recentTapTimestampsRef.current = [];
-      setBubbleLine((prev) => pickNextMascotLine(MASCOT_ANGRY_VARIANTS, prev));
-
-      if (prefersReducedMotion()) {
-        setReaction('none');
-        return;
-      }
-
-      vibrateTap();
-      if (reactionResetTimerRef.current !== null) {
-        window.clearTimeout(reactionResetTimerRef.current);
-      }
-      setReaction('angry');
-      setReactionNonce((n) => n + 1);
-      reactionResetTimerRef.current = window.setTimeout(() => {
-        setReaction('none');
-        reactionResetTimerRef.current = null;
-      }, ANGRY_DURATION_MS);
-      return;
-    }
-
-    // Standard tap -> wave hand + pick reactive line
-    const tapPool =
-      activeMood === 'angry'
-        ? MASCOT_ANGRY_VARIANTS
-        : activeMood === 'sick' || activeMood === 'gloomy' || activeMood === 'sleepy'
-          ? activeVariants
-          : [...activeVariants, ...MASCOT_WAVE_VARIANTS];
-
-    setBubbleLine((prev) => pickNextMascotLine(tapPool, prev));
-
-    if (prefersReducedMotion()) {
-      setReaction('none');
-      return;
-    }
+    if (now - lastTapMsRef.current < TAP_COOLDOWN_MS) return;
+    lastTapMsRef.current = now;
 
     vibrateTap();
-    if (reactionResetTimerRef.current !== null) {
-      window.clearTimeout(reactionResetTimerRef.current);
-    }
 
-    setReaction('wave');
-    setReactionNonce((n) => n + 1);
-    reactionResetTimerRef.current = window.setTimeout(() => {
-      setReaction('none');
-      reactionResetTimerRef.current = null;
-    }, WAVE_DURATION_MS);
-  };
-
-  const handleCycleMoodPreview = () => {
-    vibrateTap();
-    if (reactionResetTimerRef.current !== null) {
-      window.clearTimeout(reactionResetTimerRef.current);
-      reactionResetTimerRef.current = null;
-    }
-    setReaction('none');
-    recentTapTimestampsRef.current = [];
-
-    if (previewMood === null) {
-      const autoIdx = MASCOT_MOOD_ORDER.indexOf(autoDialogState.mood);
-      const nextMood =
-        MASCOT_MOOD_ORDER[(autoIdx + 1) % MASCOT_MOOD_ORDER.length];
-      setPreviewMood(nextMood);
+    if (isIdleAsleepRef.current || previewExpression === 'ngantuk_tidur') {
+      wakeUpFromSleep();
       return;
     }
 
-    const currentIdx = MASCOT_MOOD_ORDER.indexOf(previewMood);
+    if (previewExpression !== null) {
+      setPreviewExpression(null);
+    }
+
+    tapCountRef.current += 1;
+    // First tap always shows tap_kaget; subsequent taps alternate randomly with happy (~35%)
+    const nextReaction: 'tap_kaget' | 'happy' =
+      tapCountRef.current > 1 && Math.random() < 0.35 ? 'happy' : 'tap_kaget';
+
+    setBubbleLine((prev) => pickNextMascotLine(MASCOT_TAP_ENCOURAGEMENTS, prev));
+    scheduleReaction(nextReaction, TAP_REACTION_DURATION_MS);
+  }, [previewExpression, scheduleReaction, wakeUpFromSleep]);
+
+  const handleCycleExpressionPreview = () => {
+    vibrateTap();
+    clearReactionTimer();
+    setTapReaction(null);
+    setIsIdleAsleep(false);
+    isIdleAsleepRef.current = false;
+
+    if (previewExpression === null) {
+      const currentIdx = MASCOT_EXPRESSION_ORDER.indexOf(baseExpression);
+      const nextExpr =
+        MASCOT_EXPRESSION_ORDER[
+          (currentIdx + 1) % MASCOT_EXPRESSION_ORDER.length
+        ];
+      setPreviewExpression(nextExpr);
+      return;
+    }
+
+    const currentIdx = MASCOT_EXPRESSION_ORDER.indexOf(previewExpression);
     const nextIdx = currentIdx + 1;
-    if (nextIdx >= MASCOT_MOOD_ORDER.length) {
-      setPreviewMood(null);
+    if (nextIdx >= MASCOT_EXPRESSION_ORDER.length) {
+      setPreviewExpression(null);
     } else {
-      setPreviewMood(MASCOT_MOOD_ORDER[nextIdx]);
+      setPreviewExpression(MASCOT_EXPRESSION_ORDER[nextIdx]);
     }
   };
 
-  const handlePointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
-    if (e.button !== 0 && e.pointerType === 'mouse') return;
-    clearLongPressTimer();
-    longPressFiredRef.current = false;
-    suppressNextClickRef.current = false;
-    longPressTimerRef.current = window.setTimeout(() => {
-      longPressTimerRef.current = null;
-      longPressFiredRef.current = true;
-      suppressNextClickRef.current = true;
-      triggerInteraction('spin');
-    }, LONG_PRESS_MS);
-  };
-
-  const scheduleSuppressReset = () => {
-    if (!suppressNextClickRef.current && !longPressFiredRef.current) return;
-    window.setTimeout(() => {
-      suppressNextClickRef.current = false;
-      longPressFiredRef.current = false;
-    }, 60);
-  };
-
-  const handlePointerUp = () => {
-    clearLongPressTimer();
-    scheduleSuppressReset();
-  };
-
-  const handlePointerCancelOrLeave = () => {
-    clearLongPressTimer();
-    scheduleSuppressReset();
-  };
-
-  const handleClick = () => {
-    if (suppressNextClickRef.current || longPressFiredRef.current) {
-      suppressNextClickRef.current = false;
-      longPressFiredRef.current = false;
-      return;
-    }
-    triggerInteraction('wave');
-  };
-
-  const handleContextMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-  };
-
-  const reactionClass =
-    reaction === 'wave'
-      ? 'utamago-mascot-wave'
-      : reaction === 'spin'
-        ? 'utamago-mascot-spin'
-        : reaction === 'angry'
-          ? 'utamago-mascot-angry'
-          : getMoodIdleClass(activeMood);
-
-  const moodLabel =
-    reaction === 'wave' ? 'Melambai' : MASCOT_MOOD_LABELS[activeMood];
+  const expressionLabel = MASCOT_EXPRESSION_LABELS[activeExpression];
 
   return (
     <section
       aria-label="Sapaan dan Level Belajar"
       className="w-full min-w-0 rounded-2xl border border-outline-variant bg-surface-container-low p-4"
     >
-      {/* Top row: 104px interactive borderless mascot on left + greeting, chip & speech bubble on right */}
-      <div className="flex min-w-0 items-center gap-3">
-        <button
-          type="button"
-          aria-label="Maskot UtamaGo, ketuk untuk berinteraksi"
-          data-mascot-mood={activeMood}
-          data-mascot-condition={autoDialogState.condition}
-          data-mascot-reaction={reaction}
-          onPointerDown={handlePointerDown}
-          onPointerUp={handlePointerUp}
-          onPointerCancel={handlePointerCancelOrLeave}
-          onPointerLeave={handlePointerCancelOrLeave}
-          onClick={handleClick}
-          onContextMenu={handleContextMenu}
-          className="relative flex h-[104px] w-[104px] shrink-0 cursor-pointer touch-manipulation select-none items-center justify-center rounded-2xl border-0 bg-transparent p-0 [-webkit-tap-highlight-color:transparent] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-        >
-          <MascotExpressionOverlays
-            mood={activeMood}
-            reaction={reaction}
-            reactionNonce={reactionNonce}
-          />
-
-          {!failedFallback ? (
-            <img
-              key={reaction === 'none' ? `idle-${activeMood}` : `${reaction}-${reactionNonce}`}
-              src={activeImgSrc}
-              alt=""
-              aria-hidden="true"
-              width={104}
-              height={104}
-              decoding="async"
-              draggable={false}
-              referrerPolicy="no-referrer"
-              onError={() => {
-                if (!failedPrimary && primarySrc !== fallbackSrc) {
-                  setFailedPrimary(true);
-                } else {
-                  setFailedFallback(true);
-                }
-              }}
-              className={`h-[104px] w-[104px] object-contain will-change-transform ${reactionClass}`}
-            />
-          ) : (
-            <span
-              aria-hidden="true"
-              className={`flex h-20 w-20 items-center justify-center rounded-full bg-primary-container font-display text-sm font-extrabold text-on-primary-container ${reactionClass}`}
-            >
-              {shortRankName}
-            </span>
-          )}
-        </button>
+      {/* Top row: prominent interactive animated GIF mascot on left + greeting, badge & speech bubble on right */}
+      <div className="flex min-w-0 items-center gap-3.5 sm:gap-4">
+        <MascotAvatar
+          stage={levelProgress.rank.stage}
+          gender={gender}
+          expression={activeExpression}
+          size={136}
+          sizeClassName="h-[126px] w-[126px] sm:h-[144px] sm:w-[144px]"
+          fallbackSrc={src ?? levelProgress.rank.illustrationPath}
+          fallbackLabel={shortRankName}
+          ariaLabel="Maskot UtamaGo, ketuk untuk berinteraksi"
+          onTap={handleMascotTap}
+          dataMood={activeExpression}
+          dataCondition={autoDialogState.condition}
+        />
 
         <div className="min-w-0 flex-1">
-          <h2 className="truncate font-display text-[15px] font-bold leading-snug tracking-tight text-on-surface">
+          <h2 className="truncate font-display text-base font-bold leading-snug tracking-tight text-on-surface sm:text-[17px]">
             {learnerName ? `Halo, ${learnerName}!` : 'Halo, Pelajar!'}
           </h2>
 
@@ -670,13 +388,13 @@ export function HomeGreetingCard({
 
             <button
               type="button"
-              onClick={handleCycleMoodPreview}
-              aria-label={`Ekspresi maskot: ${moodLabel}. Ketuk untuk ganti ekspresi`}
+              onClick={handleCycleExpressionPreview}
+              aria-label={`Ekspresi maskot: ${expressionLabel}. Ketuk untuk ganti ekspresi`}
               title="Ketuk untuk ganti ekspresi maskot"
-              className={`inline-flex shrink-0 items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-semibold transition-colors hover:bg-surface-container ${getMoodBadgeTone(activeMood)}`}
+              className={`inline-flex shrink-0 items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-semibold transition-colors hover:bg-surface-container ${getExpressionBadgeTone(activeExpression)}`}
             >
               <span aria-hidden="true">·</span>
-              <span>{moodLabel}</span>
+              <span>{expressionLabel}</span>
             </button>
           </div>
 
@@ -702,7 +420,7 @@ export function HomeGreetingCard({
       {/* Bottom full-width XP progress bar */}
       <div className="mt-3 space-y-1.5">
         <div className="flex items-center justify-between gap-2 text-[13px]">
-          <span className="text-[#4b4b53] dark:text-[#b4b4c0]">
+          <span className="text-[#4b4b53]">
             Menuju Level{' '}
             <span className="font-mono tabular-nums">
               {levelProgress.level + 1}

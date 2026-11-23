@@ -1,4 +1,5 @@
 import type { AnkiCard } from './ankiParser';
+import { formatBunpouExplanation } from './bunpouExplanationFormatter';
 
 export const BUNPOU_N5_TEXT_URL =
   '/assets/aistudio/Bunpou_N5_Try_0fefe20b.txt';
@@ -314,7 +315,7 @@ export function parseBunpouDeck(
       (currentEntry.sectionDasar
         ? `${currentEntry.lessonTitle.replace(/^.+?\((.+)\)$/, '$1')} (${currentEntry.pattern})`
         : `${currentEntry.lessonTitle} — ${currentEntry.pattern}`);
-    const note = rawNote || currentEntry.sectionDasar;
+    const note = formatBunpouExplanation(rawNote || currentEntry.sectionDasar);
 
     items.push({
       id: `${level.toLowerCase()}-bunpou-${currentEntry.code}`,

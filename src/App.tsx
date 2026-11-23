@@ -162,7 +162,9 @@ const LazyReportAndSimSection = lazy(() =>
   })),
 );
 
-const DECK_CACHE_VERSION = '2026-11-22-v6';
+const DECK_CACHE_VERSION = '2026-11-23-v7';
+const AUDIO_KEEPALIVE_STORAGE_KEY = 'utamago_catbox_keepalive_at';
+const AUDIO_KEEPALIVE_INTERVAL_MS = 25 * 24 * 60 * 60 * 1000;
 
 function resolveInitialTab(storedLastTab: AppTab): AppTab {
   if (typeof window === 'undefined') return storedLastTab;
@@ -236,6 +238,7 @@ export default function App() {
   const [deckStatus, setDeckStatus] = useState<'loading' | 'ready' | 'fallback'>(
     'loading',
   );
+  const [justCompletedSession, setJustCompletedSession] = useState(false);
 
   const [showSplash, setShowSplash] = useState(() => !autostartMode);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -311,6 +314,22 @@ export default function App() {
   // Global tactile haptic feedback on all interactive buttons, tabs, and controls
   useEffect(() => {
     return attachGlobalHapticsListener();
+  }, []);
+
+  // Silent monthly keep-alive trigger so Catbox.moe N2 Choukai MP3s receive
+  // lightweight access at least once every 25 days even on scale-to-zero hosting.
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(AUDIO_KEEPALIVE_STORAGE_KEY);
+      const lastPing = raw ? Number.parseInt(raw, 10) : 0;
+      const now = Date.now();
+      if (!Number.isFinite(lastPing) || now - lastPing >= AUDIO_KEEPALIVE_INTERVAL_MS) {
+        window.localStorage.setItem(AUDIO_KEEPALIVE_STORAGE_KEY, String(now));
+        void fetch('/api/audio/keepalive', { method: 'POST' }).catch(() => {});
+      }
+    } catch {
+      // Ignore storage/network restrictions silently
+    }
   }, []);
 
   const applyAuthenticatedProfile = useCallback(
@@ -1569,6 +1588,7 @@ export default function App() {
       const nowMs = Date.now();
       const uid = activeUserIdRef.current ?? undefined;
       const xpAwarded = ANKI_RATING_XP[rating];
+      setJustCompletedSession(true);
 
       setAppState((prev) => {
         const settings = getEffectiveDeckSettings(prev.ankiEngine, deckId);
@@ -2211,6 +2231,7 @@ export default function App() {
       if (!evaluation.passed || evaluation.stars === 0) return;
 
       const earnedStars = evaluation.stars as 1 | 2 | 3;
+      setJustCompletedSession(true);
 
       setAppState((prev) => {
         const existing = prev.gameProgress.completedLevels[stage.id];
@@ -2469,6 +2490,10 @@ export default function App() {
                   equivalentEstimate={equivalentEstimate}
                   dailyMinutes={appState.onboarding.dailyMinutes}
                   learnerName={appState.onboarding.name || authProfile.username}
+                  gender={appState.onboarding.gender}
+                  isHomeLoading={deckStatus === 'loading'}
+                  hasHomeError={deckStatus === 'fallback'}
+                  justCompletedSession={justCompletedSession}
                   unlockedAnkiCards={unlockedAnkiCards}
                   ankiSrs={appState.ankiSrs}
                   againIds={appState.ankiProgress.againIds}

@@ -13,7 +13,7 @@ export interface TryOutPacketPart {
   audioFileName?: string;
 }
 
-export const CHOUKAI_N2_AUDIO_URL = '/api/audio/drive/1M9hANkTMe_HQDG2a0T6ebkHEE5D5dJgg';
+export const CHOUKAI_N2_AUDIO_URL = 'https://files.catbox.moe/rkpxrk.mp3';
 
 function driveAudioProxyUrl(fileId: string): string {
   return `/api/audio/drive/${fileId}`;
@@ -136,6 +136,7 @@ interface SessionSeedSpec {
   examCode: string;
   yearLabel: string;
   fileId: string;
+  directAudioUrl?: string;
   choukaiCount?: number;
   choukaiMinutes?: number;
   audioDurationLabel?: string;
@@ -147,6 +148,7 @@ const N2_SESSIONS: SessionSeedSpec[] = [
     examCode: '2010.07',
     yearLabel: 'Juli 2010',
     fileId: '1BijZlQrAGGx08Uuo0x49xLTQ63pzWE10',
+    directAudioUrl: 'https://files.catbox.moe/9xbz7l.mp3',
     choukaiCount: 32,
     audioDurationLabel: '50:35',
     choukaiMinutes: 51,
@@ -156,6 +158,7 @@ const N2_SESSIONS: SessionSeedSpec[] = [
     examCode: '2010.12',
     yearLabel: 'Desember 2010',
     fileId: '1UEsUFDoJdGY8oX4eQfWqByaRb78Mm2ee',
+    directAudioUrl: 'https://files.catbox.moe/asvevt.mp3',
     choukaiCount: 32,
   },
   {
@@ -163,6 +166,7 @@ const N2_SESSIONS: SessionSeedSpec[] = [
     examCode: '2011.07',
     yearLabel: 'Juli 2011',
     fileId: '17mCy0CaTGTS8s9mvfSFyJNfSP3doSPDP',
+    directAudioUrl: 'https://files.catbox.moe/jenpw0.mp3',
     choukaiCount: 31,
   },
   {
@@ -170,6 +174,7 @@ const N2_SESSIONS: SessionSeedSpec[] = [
     examCode: '2011.12',
     yearLabel: 'Desember 2011',
     fileId: '1kn8VnS_zvXdmpHWqww1YiU9bOFkdjc92',
+    directAudioUrl: 'https://files.catbox.moe/3pnhbw.mp3',
     choukaiCount: 31,
   },
   {
@@ -177,6 +182,7 @@ const N2_SESSIONS: SessionSeedSpec[] = [
     examCode: '2012.07',
     yearLabel: 'Juli 2012',
     fileId: '1Le-Gd5r0g90jBXBVlVyF5m3BXwtQKDvC',
+    directAudioUrl: 'https://files.catbox.moe/mrwty8.mp3',
     choukaiCount: 31,
   },
   {
@@ -184,6 +190,7 @@ const N2_SESSIONS: SessionSeedSpec[] = [
     examCode: '2012.12',
     yearLabel: 'Desember 2012',
     fileId: '1BHvKVgeVPC-BNM_wuXiocYcmhZHFlK40',
+    directAudioUrl: 'https://files.catbox.moe/vo21e8.mp3',
     choukaiCount: 32,
   },
   {
@@ -191,48 +198,56 @@ const N2_SESSIONS: SessionSeedSpec[] = [
     examCode: '2013.07',
     yearLabel: 'Juli 2013',
     fileId: '1ao2afARgAExKJ-J9fMGqKvF3TFkPKw5H',
+    directAudioUrl: 'https://files.catbox.moe/ry6rwd.mp3',
   },
   {
     id: 'n2-9',
     examCode: '2013.12',
     yearLabel: 'Desember 2013',
     fileId: '1Kv-yRdC2_4nU3n40gXtj8kLLa-5U6pOz',
+    directAudioUrl: 'https://files.catbox.moe/8pmmgd.mp3',
   },
   {
     id: 'n2-10',
     examCode: '2014.07',
     yearLabel: 'Juli 2014',
     fileId: '1lL625WsBGMnjUeCO_B0sYPsx6VggRsZ_',
+    directAudioUrl: 'https://files.catbox.moe/xvu6e9.mp3',
   },
   {
     id: 'n2-11',
     examCode: '2014.12',
     yearLabel: 'Desember 2014',
     fileId: '1qmLFyWy8ViferPZGmp0JpYH8NnLesgmR',
+    directAudioUrl: 'https://files.catbox.moe/esi007.mp3',
   },
   {
     id: 'n2-12',
     examCode: '2015.07',
     yearLabel: 'Juli 2015',
     fileId: '1yiA_Mq1TNapFgVB-myFrdXSNZWhUJUY_',
+    directAudioUrl: 'https://files.catbox.moe/kmeji2.mp3',
   },
   {
     id: 'n2-13',
     examCode: '2015.12',
     yearLabel: 'Desember 2015',
     fileId: '1bK2Xf2-6fFzO_9zdxWihJndiDbtWrLo2',
+    directAudioUrl: 'https://files.catbox.moe/aq12c6.mp3',
   },
   {
     id: 'n2-14',
     examCode: '2016.07',
     yearLabel: 'Juli 2016',
     fileId: '11iDebYEputE9JC_S7F9Tm_qSH6w14ky7',
+    directAudioUrl: 'https://files.catbox.moe/07shiy.mp3',
   },
   {
     id: 'n2-1',
     examCode: '2016.12',
     yearLabel: 'Desember 2016',
     fileId: '1M9hANkTMe_HQDG2a0T6ebkHEE5D5dJgg',
+    directAudioUrl: 'https://files.catbox.moe/rkpxrk.mp3',
     choukaiMinutes: 53,
   },
   {
@@ -240,20 +255,34 @@ const N2_SESSIONS: SessionSeedSpec[] = [
     examCode: '2017.07',
     yearLabel: 'Juli 2017',
     fileId: '1YjRhfuuUyx-Ri0zkZfPhoh51G7_Lhi7u',
+    directAudioUrl: 'https://files.catbox.moe/oh7lfi.mp3',
   },
   {
     id: 'n2-16',
     examCode: '2017.12',
     yearLabel: 'Desember 2017',
     fileId: '14pIase7lYswPr4juFyJXOUZq6FwsHI-T',
+    directAudioUrl: 'https://files.catbox.moe/odph8a.mp3',
   },
   {
     id: 'n2-17',
     examCode: '2018.07',
     yearLabel: 'Juli 2018',
     fileId: '1R1KCOqFFSw4nLfTQZAYzUSv7YiH6wIFH',
+    directAudioUrl: 'https://files.catbox.moe/iw65xx.mp3',
+  },
+  {
+    id: 'n2-18',
+    examCode: '2018.12',
+    yearLabel: 'Desember 2018',
+    fileId: '17qRZ8B8RXHo-tDhs9-O3vR3gYEs3Q4fH',
+    directAudioUrl: 'https://files.catbox.moe/n1uprt.mp3',
   },
 ];
+
+export const CATBOX_N2_CHOUKAI_URLS: readonly string[] = N2_SESSIONS.map(
+  (s) => s.directAudioUrl,
+).filter((url): url is string => Boolean(url));
 
 export const TRYOUT_N2_PACKETS: TryOutPacketCatalogItem[] = [...N2_SESSIONS]
   .sort((a, b) => a.examCode.localeCompare(b.examCode))
@@ -282,7 +311,7 @@ export const TRYOUT_N2_PACKETS: TryOutPacketCatalogItem[] = [...N2_SESSIONS]
       xpReward: 150,
       hasQuestions: verified,
       isFullText: verified,
-      audioSrc: driveAudioProxyUrl(spec.fileId),
+      audioSrc: spec.directAudioUrl ?? driveAudioProxyUrl(spec.fileId),
       audioFileName: `JLPT_N2_${codeFile}_Choukai.mp3`,
       audioDurationLabel: spec.audioDurationLabel ?? '52:00',
       choukaiMinutes,

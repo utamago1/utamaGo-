@@ -137,7 +137,9 @@ export function ChoukaiAudioPlayer({
   initialPlaybackRateRef.current = initialPlaybackRate;
 
   const driveFileId = extractDriveFileId(src);
-  const isDriveStream = Boolean(driveFileId) || src.startsWith('http');
+  const isDirectCdnStream = src.startsWith('https://');
+  const isDriveStream = Boolean(driveFileId) || isDirectCdnStream;
+  const effectivePreload = isDirectCdnStream ? 'metadata' : preload;
 
   const [streamMode, setStreamMode] = useState<StreamMode>('native');
   const [mseObjectUrl, setMseObjectUrl] = useState<string | null>(null);
@@ -888,7 +890,7 @@ export function ChoukaiAudioPlayer({
           key={`${streamMode}-${effectiveSrc}`}
           ref={audioRef}
           src={effectiveSrc}
-          preload={streamMode === 'native' ? preload : 'auto'}
+          preload={streamMode === 'native' ? effectivePreload : 'auto'}
           playsInline
           controlsList="nodownload noplaybackrate"
           aria-label={title}

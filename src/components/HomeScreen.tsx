@@ -38,6 +38,7 @@ import {
   isJlptLevelUnlocked,
   isStageUnlocked,
   type CompletedLevelRecord,
+  type LearnerGender,
   type LevelProgressInfo,
 } from '../utils/levelProgression';
 import {
@@ -63,6 +64,10 @@ interface HomeScreenProps {
   equivalentEstimate: EquivalentJlptEstimate;
   dailyMinutes: number;
   learnerName?: string;
+  gender?: LearnerGender;
+  isHomeLoading?: boolean;
+  hasHomeError?: boolean;
+  justCompletedSession?: boolean;
   unlockedAnkiCards?: AnkiCard[];
   ankiSrs?: AnkiSrsMap;
   againIds?: string[];
@@ -89,6 +94,10 @@ export function HomeScreen({
   unlockedLevel,
   dailyMinutes,
   learnerName,
+  gender = 'cowok',
+  isHomeLoading = false,
+  hasHomeError = false,
+  justCompletedSession = false,
   unlockedAnkiCards = [],
   ankiSrs = {},
   againIds = [],
@@ -494,11 +503,15 @@ export function HomeScreen({
         levelProgress={levelProgress}
         shortRankName={shortRankName}
         learnerName={learnerName}
+        gender={gender}
         activityLog={activityLog}
         dailyDoneCards={dailyGoal.doneCards}
         isTargetReached={dailyGoal.isTargetReached}
         dueAnkiCount={dueAnkiCount}
         streakDays={streakDays}
+        isLoading={isHomeLoading}
+        hasError={hasHomeError}
+        justCompletedSession={justCompletedSession}
       />
 
       {/* 3. CTA Utama (satu-satunya tombol besar / kartu perayaan / 0 kartu) */}
