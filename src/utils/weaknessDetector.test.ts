@@ -10,26 +10,32 @@ import { analyzeJlptWeaknesses } from './weaknessDetector';
 const SAMPLE_VOCAB: AnkiCard[] = [
   {
     id: 'v1',
+    index: 1,
     deckId: 'N2',
     jlptLevel: 'N2',
     word: '影響',
     furigana: 'えいきょう',
+    readingTerm: 'えいきょう',
     romaji: 'eikyou',
     meaning: 'pengaruh',
     partOfSpeech: 'Kata Benda',
     categoryGroup: 'Kata benda',
+    tag: 'n2',
     examples: [],
   },
   {
     id: 'v2',
+    index: 2,
     deckId: 'N2',
     jlptLevel: 'N2',
     word: '解決',
     furigana: 'かいけつ',
+    readingTerm: 'かいけつ',
     romaji: 'kaiketsu',
     meaning: 'penyelesaian',
     partOfSpeech: 'Kata Benda',
     categoryGroup: 'Kata benda',
+    tag: 'n2',
     examples: [],
   },
 ];
@@ -46,7 +52,7 @@ const SAMPLE_BUNPOU: BunpouN2Item[] = [
     lessonNumber: 1,
     lessonTitle: 'Bab 1',
     lessonFullTitle: 'Bab 1 · Penjelasan',
-    groupId: 'G1',
+    groupId: 'I',
     groupTitle: 'Penjelasan',
     meaning: 'pantas saja',
     register: 'Netral',
@@ -65,7 +71,7 @@ const SAMPLE_BUNPOU: BunpouN2Item[] = [
     lessonNumber: 1,
     lessonTitle: 'Bab 1',
     lessonFullTitle: 'Bab 1 · Penjelasan',
-    groupId: 'G1',
+    groupId: 'I',
     groupTitle: 'Penjelasan',
     meaning: 'bukan berarti',
     register: 'Netral',
@@ -84,6 +90,7 @@ function makePacketState(
   return {
     packetProgress: {
       completedIds: [...submittedIds],
+      awardedIds: [...submittedIds],
       submittedIds: [...submittedIds],
       answersByPart: {
         'moji-bunpou': answersByPart['moji-bunpou'] ?? {},
@@ -115,6 +122,7 @@ test('analyzeJlptWeaknesses gives starter recommendations for brand-new users', 
 
 test('analyzeJlptWeaknesses flags difficult vocab, difficult kanji, and bunpou gap', () => {
   const nowIso = new Date().toISOString();
+  const todayKey = nowIso.slice(0, 10);
   const srs: AnkiSrsMap = {
     v1: {
       state: 'relearning',
@@ -122,9 +130,9 @@ test('analyzeJlptWeaknesses flags difficult vocab, difficult kanji, and bunpou g
       intervalDays: 0,
       easeFactor: 1.7,
       lapses: 3,
-      dueAt: nowIso,
+      dueDate: todayKey,
+      dueAt: Date.now(),
       lastReviewedAt: nowIso,
-      lastRating: 'again',
     },
     v2: {
       state: 'relearning',
@@ -132,9 +140,9 @@ test('analyzeJlptWeaknesses flags difficult vocab, difficult kanji, and bunpou g
       intervalDays: 0,
       easeFactor: 1.8,
       lapses: 2,
-      dueAt: nowIso,
+      dueDate: todayKey,
+      dueAt: Date.now(),
       lastReviewedAt: nowIso,
-      lastRating: 'again',
     },
   };
 
@@ -169,8 +177,10 @@ test('analyzeJlptWeaknesses detects JLPT N2 section below 19/60 cutoff and weake
   // Answer every question intentionally wrong so scaled score is 0/60 (< 19 cutoff)
   const wrongAnswers: Record<string, string> = {};
   for (const page of mojiPages) {
-    for (const field of page.fields) {
-      wrongAnswers[field.id] = field.answerKey === '1' ? '2' : '1';
+    for (const item of page.items) {
+      if (item.kind === 'choice') {
+        wrongAnswers[item.id] = item.correctAnswer === '1' ? '2' : '1';
+      }
     }
   }
 

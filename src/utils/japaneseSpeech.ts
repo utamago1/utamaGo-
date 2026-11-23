@@ -28,7 +28,7 @@ export const SPEECH_PREFS_STORAGE_KEY = 'utamago_speech_prefs_v1';
 export const SPEECH_RATE_PRESETS = [0.6, 0.75, 0.9, 1.0, 1.15, 1.3] as const;
 
 export const DEFAULT_SPEECH_PREFERENCES: SpeechPreferences = {
-  rate: 0.95,
+  rate: 1.0,
   voiceStyle: 'auto',
   voiceURI: '',
   autoPlayAnki: false,

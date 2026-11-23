@@ -558,7 +558,7 @@ export function SettingsModal({
                                 : 'border-outline-variant bg-surface text-on-surface-variant hover:border-outline hover:text-on-surface'
                             }`}
                           >
-                            {rateOpt}x
+                            {formatSpeechRateLabel(rateOpt)}
                           </button>
                         );
                       })}

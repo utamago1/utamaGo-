@@ -209,6 +209,20 @@ export function WritingStudioModal({
     return () => window.removeEventListener('resize', handleResize);
   }, [open, redrawCanvas, strokes]);
 
+  useEffect(() => {
+    if (!open) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        if (masteredIds.length > 0) {
+          onCompletePractice?.(masteredIds.length);
+        }
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [masteredIds.length, onClose, onCompletePractice, open]);
+
   if (!open) return null;
 
   const getPointerPoint = (

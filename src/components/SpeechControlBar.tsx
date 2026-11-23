@@ -296,7 +296,7 @@ export function SpeechControlBar({
                         : 'border-outline-variant bg-surface-container-low text-on-surface-variant hover:border-outline hover:text-on-surface'
                     }`}
                   >
-                    {rateOpt}x
+                    {formatSpeechRateLabel(rateOpt)}
                   </button>
                 );
               })}
