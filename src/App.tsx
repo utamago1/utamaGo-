@@ -35,6 +35,12 @@ import { SettingsModal } from './components/SettingsModal';
 import { TryOutSectionSkeleton } from './components/SkeletonLoaders';
 import { SplashWelcomeScreen } from './components/SplashWelcomeScreen';
 import { VocabDictionaryModal } from './components/VocabDictionaryModal';
+import { WritingStudioModal } from './components/WritingStudioModal';
+import {
+  analyzeJlptWeaknesses,
+  type WeaknessActionTarget,
+} from './utils/weaknessDetector';
+import type { WritingPracticeMode } from './utils/writingPractice';
 import {
   CHALLENGE_STAGES,
   type ChallengeStage,
@@ -296,6 +302,11 @@ export default function App() {
   const [challengeHasProgress, setChallengeHasProgress] = useState(false);
   const [dictionaryOpen, setDictionaryOpen] = useState(false);
   const [difficultDrillOpen, setDifficultDrillOpen] = useState(false);
+  const [writingStudioState, setWritingStudioState] = useState<{
+    open: boolean;
+    mode: WritingPracticeMode;
+    seedText?: string;
+  }>({ open: false, mode: 'kanji' });
   const [activeDailyDrill, setActiveDailyDrill] = useState<{
     stage: ChallengeStage;
     count: 5 | 10;
@@ -1202,6 +1213,45 @@ export default function App() {
         appState.ankiProgress.againIds,
       ),
     [unlockedAnkiCards, appState.ankiSrs, appState.ankiProgress.againIds],
+  );
+
+  const difficultCardIdSet = useMemo(
+    () => new Set(difficultCards.map((entry) => entry.card.id)),
+    [difficultCards],
+  );
+
+  const weaknessReport = useMemo(
+    () =>
+      analyzeJlptWeaknesses({
+        unlockedLevel: appState.onboarding.selfAssessedLevel,
+        unlockedAnkiCards,
+        ankiSrs: appState.ankiSrs,
+        againIds: appState.ankiProgress.againIds,
+        packetsProgress: appState.packetsProgress,
+        fallbackFirstPacket: firstPacketState,
+        bunpouByLevel: {
+          N5: bunpouN5Items,
+          N4: bunpouN4Items,
+          N3: bunpouN3Items,
+          N2: bunpouN2Items,
+          N1: bunpouN1Items,
+        },
+        reviewedLessonIds: appState.activityLog.reviewedLessonIds,
+      }),
+    [
+      appState.onboarding.selfAssessedLevel,
+      unlockedAnkiCards,
+      appState.ankiSrs,
+      appState.ankiProgress.againIds,
+      appState.packetsProgress,
+      firstPacketState,
+      bunpouN5Items,
+      bunpouN4Items,
+      bunpouN3Items,
+      bunpouN2Items,
+      bunpouN1Items,
+      appState.activityLog.reviewedLessonIds,
+    ],
   );
 
   const totalStars = useMemo(
@@ -2679,6 +2729,36 @@ export default function App() {
                   bunpouN1Items={bunpouN1Items}
                   showChallengesView={homeFocusView === 'challenges'}
                   dailyDrillDoneToday={dailyDrillDoneDate === getLocalDateKey()}
+                  weaknessReport={weaknessReport}
+                  onExecuteWeaknessAction={(action: WeaknessActionTarget) => {
+                    if (action.type === 'difficult-drill') {
+                      setDifficultDrillOpen(true);
+                      return;
+                    }
+                    if (action.type === 'writing-studio') {
+                      setWritingStudioState({ open: true, mode: action.mode });
+                      return;
+                    }
+                    if (action.type === 'bunpou') {
+                      handleSelectTab('learn');
+                      return;
+                    }
+                    if (action.type === 'anki') {
+                      handleSelectTab('anki');
+                      return;
+                    }
+                    if (action.type === 'tryout-packet') {
+                      setSelectedPacketId(action.packetId);
+                      setSelectedTryOutLevel('N2');
+                      setPacketOpened(true);
+                      setActiveFormPartId(action.partId ?? null);
+                      setActiveReportTab('n2-official');
+                      handleSelectTab('tryout');
+                    }
+                  }}
+                  onOpenWritingStudio={() =>
+                    setWritingStudioState({ open: true, mode: 'kanji' })
+                  }
                   onOpenChallenges={() => handleOpenHomeFocus('challenges')}
                   onCloseChallenges={handleCloseHomeFocus}
                   onOpenTryOut={handleOpenTryOut}
@@ -2726,6 +2806,13 @@ export default function App() {
                   onToggleSuspendCard={handleToggleSuspendAnkiCard}
                   onResetDeckProgress={handleResetDeckProgress}
                   onOpenProfile={() => handleSelectTab('profile')}
+                  onOpenWritingForWord={(word) =>
+                    setWritingStudioState({
+                      open: true,
+                      mode: 'kanji',
+                      seedText: word,
+                    })
+                  }
                 />
               )}
 
@@ -2914,7 +3001,36 @@ export default function App() {
         ankiSrs={appState.ankiSrs}
         againIds={appState.ankiProgress.againIds}
         onToggleDifficultCard={handleToggleDifficultCard}
+        onOpenWritingForWord={(word) => {
+          setDictionaryOpen(false);
+          setWritingStudioState({
+            open: true,
+            mode: 'kanji',
+            seedText: word,
+          });
+        }}
         onClose={() => setDictionaryOpen(false)}
+      />
+
+      <WritingStudioModal
+        open={writingStudioState.open}
+        cards={allVocabCards}
+        difficultCardIds={difficultCardIdSet}
+        unlockedLevel={appState.onboarding.selfAssessedLevel}
+        initialMode={writingStudioState.mode}
+        initialSeedText={writingStudioState.seedText}
+        onCompletePractice={(practicedCount) => {
+          if (practicedCount >= 1) {
+            handleAwardPracticeXp(Math.min(30, practicedCount * 5), 'learn');
+          }
+        }}
+        onClose={() =>
+          setWritingStudioState((prev) => ({
+            ...prev,
+            open: false,
+            seedText: undefined,
+          }))
+        }
       />
 
       <ConfirmDialog

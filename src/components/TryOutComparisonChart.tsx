@@ -370,8 +370,25 @@ export function TryOutComparisonChart({
             </div>
 
             <div className="flex flex-wrap items-center gap-5 font-mono text-xs tabular-nums">
+              {effectiveSelectedPoint.level === 'N2' &&
+                effectiveSelectedPoint.n2TotalScaled !== null && (
+                  <div>
+                    <p className="text-[11px] text-on-surface-variant">
+                      Skor N2
+                    </p>
+                    <p
+                      className={`text-sm font-bold ${
+                        effectiveSelectedPoint.n2PassStatus === 'passed'
+                          ? 'text-success'
+                          : 'text-primary'
+                      }`}
+                    >
+                      {effectiveSelectedPoint.n2TotalScaled}/180
+                    </p>
+                  </div>
+                )}
               <div>
-                <p className="text-[11px] text-on-surface-variant">Total</p>
+                <p className="text-[11px] text-on-surface-variant">Akurasi</p>
                 <p className="text-sm font-bold text-primary">
                   {effectiveSelectedPoint.overallScore !== null
                     ? `${effectiveSelectedPoint.overallScore}%`
@@ -381,25 +398,34 @@ export function TryOutComparisonChart({
               <div>
                 <p className="text-[11px] text-on-surface-variant">Moji/Bun</p>
                 <p className="text-sm font-bold text-on-surface">
-                  {effectiveSelectedPoint.mojiBunpouScore !== null
-                    ? `${effectiveSelectedPoint.mojiBunpouScore}%`
-                    : '—'}
+                  {effectiveSelectedPoint.level === 'N2' &&
+                  effectiveSelectedPoint.n2MojiBunpouScaled !== null
+                    ? `${effectiveSelectedPoint.n2MojiBunpouScaled}/60`
+                    : effectiveSelectedPoint.mojiBunpouScore !== null
+                      ? `${effectiveSelectedPoint.mojiBunpouScore}%`
+                      : '—'}
                 </p>
               </div>
               <div>
                 <p className="text-[11px] text-on-surface-variant">Dokkai</p>
                 <p className="text-sm font-bold text-on-surface">
-                  {effectiveSelectedPoint.dokkaiScore !== null
-                    ? `${effectiveSelectedPoint.dokkaiScore}%`
-                    : '—'}
+                  {effectiveSelectedPoint.level === 'N2' &&
+                  effectiveSelectedPoint.n2DokkaiScaled !== null
+                    ? `${effectiveSelectedPoint.n2DokkaiScaled}/60`
+                    : effectiveSelectedPoint.dokkaiScore !== null
+                      ? `${effectiveSelectedPoint.dokkaiScore}%`
+                      : '—'}
                 </p>
               </div>
               <div>
                 <p className="text-[11px] text-on-surface-variant">Choukai</p>
                 <p className="text-sm font-bold text-on-surface">
-                  {effectiveSelectedPoint.choukaiScore !== null
-                    ? `${effectiveSelectedPoint.choukaiScore}%`
-                    : '—'}
+                  {effectiveSelectedPoint.level === 'N2' &&
+                  effectiveSelectedPoint.n2ChoukaiScaled !== null
+                    ? `${effectiveSelectedPoint.n2ChoukaiScaled}/60`
+                    : effectiveSelectedPoint.choukaiScore !== null
+                      ? `${effectiveSelectedPoint.choukaiScore}%`
+                      : '—'}
                 </p>
               </div>
 

@@ -5,6 +5,7 @@ import {
   BookmarkPlus,
   ChevronDown,
   ChevronUp,
+  PenTool,
   Search,
   Volume2,
   X,
@@ -22,7 +23,9 @@ import {
   type DictionaryLevelFilter,
   type DictionaryStatusFilter,
 } from '../utils/practiceGenerators';
+import { extractKanjiCharacters } from '../utils/writingPractice';
 import { HighlightedJapaneseText } from './HighlightedJapaneseText';
+import { SpeechControlBar } from './SpeechControlBar';
 
 interface VocabDictionaryModalProps {
   open: boolean;
@@ -30,6 +33,7 @@ interface VocabDictionaryModalProps {
   ankiSrs: AnkiSrsMap;
   againIds: readonly string[];
   onToggleDifficultCard: (cardId: string) => void;
+  onOpenWritingForWord?: (word: string) => void;
   onClose: () => void;
 }
 
@@ -76,6 +80,7 @@ export function VocabDictionaryModal({
   ankiSrs,
   againIds,
   onToggleDifficultCard,
+  onOpenWritingForWord,
   onClose,
 }: VocabDictionaryModalProps) {
   const [query, setQuery] = useState('');
@@ -392,14 +397,21 @@ export function VocabDictionaryModal({
                             </div>
                           )}
 
-                          <div className="pt-1">
+                          <SpeechControlBar
+                            text={card.word || card.furigana || ''}
+                            compact
+                            showShadowing
+                            showQuickSettings
+                          />
+
+                          <div className="flex flex-wrap gap-2 pt-1">
                             <button
                               type="button"
                               onClick={() => {
                                 vibrateTap();
                                 onToggleDifficultCard(card.id);
                               }}
-                              className={`m3-tactile inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border px-4 py-2 text-xs font-bold transition-colors sm:w-auto ${
+                              className={`m3-tactile inline-flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-xl border px-4 py-2 text-xs font-bold transition-colors sm:flex-none ${
                                 isDifficult
                                   ? 'border-primary/40 bg-primary-container text-on-primary-container hover:opacity-90'
                                   : 'border-outline bg-surface-container-low text-on-surface hover:bg-surface-container'
@@ -423,6 +435,24 @@ export function VocabDictionaryModal({
                                 </>
                               )}
                             </button>
+
+                            {onOpenWritingForWord &&
+                              extractKanjiCharacters(card.word).length > 0 && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    vibrateTap();
+                                    onOpenWritingForWord(card.word);
+                                  }}
+                                  className="m3-tactile inline-flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-xl border border-outline bg-surface-container-low px-4 py-2 text-xs font-bold text-on-surface hover:bg-surface-container sm:flex-none"
+                                >
+                                  <PenTool
+                                    className="h-4 w-4 text-primary"
+                                    aria-hidden="true"
+                                  />
+                                  <span>Latih Tulis Kanji</span>
+                                </button>
+                              )}
                           </div>
                         </div>
                       )}

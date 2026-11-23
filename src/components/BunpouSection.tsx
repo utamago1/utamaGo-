@@ -41,6 +41,7 @@ import { generateBunpouComparisonQuiz } from '../utils/practiceGenerators';
 import { BunpouExplanation } from './BunpouExplanation';
 import { ChallengeRunnerModal } from './ChallengeRunnerModal';
 import { HighlightedJapaneseText } from './HighlightedJapaneseText';
+import { SpeechControlBar } from './SpeechControlBar';
 
 interface BunpouSectionProps {
   unlockedLevel: JlptLevel;
@@ -546,6 +547,13 @@ export function BunpouSection({
                 )}
               </div>
             )}
+            <SpeechControlBar
+              text={activeItem.examples[0]?.jp || activeItem.pattern}
+              compact
+              showShadowing
+              showQuickSettings
+              className="mt-3"
+            />
           </div>
 
           <div className="space-y-1">

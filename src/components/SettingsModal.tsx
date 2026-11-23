@@ -9,6 +9,7 @@ import {
   Smartphone,
   Type,
   Upload,
+  Volume2,
   X,
 } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -21,6 +22,21 @@ import {
   vibrateSuccess,
   vibrateTap,
 } from '../utils/haptics';
+import {
+  formatSpeechRateLabel,
+  formatSpeechStyleLabel,
+  isJapaneseSpeechSupported,
+  listJapaneseVoices,
+  loadSpeechPreferences,
+  saveSpeechPreferences,
+  speakJapanese,
+  SPEECH_RATE_PRESETS,
+  stopJapaneseSpeech,
+  subscribeSpeechPreferences,
+  type JapaneseVoiceOption,
+  type SpeechPreferences,
+  type SpeechVoiceStyle,
+} from '../utils/japaneseSpeech';
 import { buildWhatsAppInquiryUrl } from '../utils/jlptReport';
 import {
   formatReminderTime,
@@ -87,9 +103,34 @@ export function SettingsModal({
   const [hapticsOn, setHapticsOn] = useState<boolean>(() =>
     getHapticsEnabled(),
   );
+  const [speechPrefs, setSpeechPrefs] = useState<SpeechPreferences>(() =>
+    loadSpeechPreferences(),
+  );
+  const [japaneseVoices, setJapaneseVoices] = useState<JapaneseVoiceOption[]>(
+    () => listJapaneseVoices(),
+  );
+  const [testingVoice, setTestingVoice] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const whatsappUrl = buildWhatsAppInquiryUrl();
+  const speechSupported = isJapaneseSpeechSupported();
+
+  useEffect(() => {
+    const unsub = subscribeSpeechPreferences(setSpeechPrefs);
+    return unsub;
+  }, []);
+
+  useEffect(() => {
+    if (!open || !speechSupported) return;
+    const syncVoices = () => setJapaneseVoices(listJapaneseVoices());
+    syncVoices();
+    window.speechSynthesis.addEventListener?.('voiceschanged', syncVoices);
+    return () => {
+      window.speechSynthesis.removeEventListener?.('voiceschanged', syncVoices);
+      stopJapaneseSpeech();
+      setTestingVoice(false);
+    };
+  }, [open, speechSupported]);
 
   useEffect(() => {
     if (!open) return;
@@ -437,6 +478,213 @@ export function SettingsModal({
                   </div>
                 </div>
               </div>
+            </section>
+
+            <section className="space-y-4 rounded-3xl border border-outline-variant bg-surface-container-low p-5 shadow-xs md:col-span-2">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <h3 className="inline-flex items-center gap-2 font-display text-base font-bold text-on-surface">
+                    <Volume2
+                      className="h-4 w-4 shrink-0 text-primary"
+                      aria-hidden="true"
+                    />
+                    <span>Suara &amp; Pelafalan Jepang (Offline)</span>
+                  </h3>
+                  <p className="mt-1 text-xs leading-relaxed text-on-surface-variant">
+                    Atur kecepatan bicara, gaya suara cowok/cewek, serta pilihan
+                    suara perangkat untuk Anki, Kamus, Bunpou, dan Shadowing.
+                  </p>
+                </div>
+
+                {speechSupported && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      vibrateTap();
+                      if (testingVoice) {
+                        stopJapaneseSpeech();
+                        setTestingVoice(false);
+                        return;
+                      }
+                      setTestingVoice(true);
+                      const ok = speakJapanese(
+                        'こんにちは。今日も一緒に日本語を勉強しましょう。',
+                        { onEnd: () => setTestingVoice(false) },
+                      );
+                      if (!ok) setTestingVoice(false);
+                    }}
+                    className={`m3-tactile inline-flex min-h-[44px] shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl border px-3.5 py-2 text-xs font-bold transition-colors ${
+                      testingVoice
+                        ? 'border-primary bg-primary text-on-primary'
+                        : 'border-outline bg-surface text-on-surface hover:bg-surface-container'
+                    }`}
+                  >
+                    <Volume2 className="h-4 w-4" aria-hidden="true" />
+                    <span>{testingVoice ? 'Hentikan Uji' : 'Uji Suara'}</span>
+                  </button>
+                )}
+              </div>
+
+              {!speechSupported ? (
+                <p className="rounded-2xl bg-surface-container p-3.5 text-xs text-on-surface-variant">
+                  Browser perangkat ini belum mendukung Web Speech API untuk
+                  pelafalan Jepang offline.
+                </p>
+              ) : (
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-semibold text-on-surface-variant">
+                        Kecepatan Bicara
+                      </span>
+                      <span className="font-mono font-bold tabular-nums text-primary">
+                        {formatSpeechRateLabel(speechPrefs.rate)}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-6 gap-1.5">
+                      {SPEECH_RATE_PRESETS.map((rateOpt) => {
+                        const active = Math.abs(speechPrefs.rate - rateOpt) < 0.03;
+                        return (
+                          <button
+                            key={rateOpt}
+                            type="button"
+                            onClick={() => {
+                              vibrateTap();
+                              saveSpeechPreferences({ rate: rateOpt });
+                            }}
+                            className={`m3-tactile min-h-[44px] rounded-xl border font-mono text-xs font-bold tabular-nums transition-colors ${
+                              active
+                                ? 'border-primary bg-primary text-on-primary'
+                                : 'border-outline-variant bg-surface text-on-surface-variant hover:border-outline hover:text-on-surface'
+                            }`}
+                          >
+                            {rateOpt}x
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold text-on-surface-variant">
+                      Gaya Suara ({formatSpeechStyleLabel(speechPrefs.voiceStyle)})
+                    </p>
+                    <div
+                      role="radiogroup"
+                      aria-label="Pilih gaya suara Jepang"
+                      className="grid grid-cols-3 gap-1.5 rounded-2xl bg-surface-container p-1"
+                    >
+                      {(
+                        [
+                          { id: 'auto', label: 'Otomatis' },
+                          { id: 'female', label: 'Cewek' },
+                          { id: 'male', label: 'Cowok' },
+                        ] as ReadonlyArray<{
+                          id: SpeechVoiceStyle;
+                          label: string;
+                        }>
+                      ).map((opt) => {
+                        const active = speechPrefs.voiceStyle === opt.id;
+                        return (
+                          <button
+                            key={opt.id}
+                            type="button"
+                            role="radio"
+                            aria-checked={active}
+                            onClick={() => {
+                              vibrateTap();
+                              saveSpeechPreferences({
+                                voiceStyle: opt.id,
+                                voiceURI: '',
+                              });
+                            }}
+                            className={`m3-tactile min-h-[44px] rounded-xl px-2 text-xs font-bold transition-colors ${
+                              active
+                                ? 'bg-surface-container-low text-on-surface shadow-xs'
+                                : 'text-on-surface-variant hover:text-on-surface'
+                            }`}
+                          >
+                            {opt.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label
+                      htmlFor="settings-jp-voice-select"
+                      className="block text-xs font-semibold text-on-surface-variant"
+                    >
+                      Pilihan Suara Perangkat ({japaneseVoices.length} suara
+                      Jepang terdeteksi)
+                    </label>
+                    <select
+                      id="settings-jp-voice-select"
+                      value={speechPrefs.voiceURI}
+                      onChange={(e) => {
+                        saveSpeechPreferences({ voiceURI: e.target.value });
+                      }}
+                      className="min-h-[44px] w-full rounded-xl border border-outline-variant bg-surface px-3 text-xs font-medium text-on-surface focus:border-primary focus:outline-none"
+                    >
+                      <option value="">
+                        Otomatis sesuai gaya (
+                        {formatSpeechStyleLabel(speechPrefs.voiceStyle)})
+                      </option>
+                      {japaneseVoices.map((v) => (
+                        <option key={v.voiceURI} value={v.voiceURI}>
+                          {v.name} ({v.lang}
+                          {v.detectedGender !== 'unknown'
+                            ? ` · ${v.detectedGender === 'female' ? 'Cewek' : 'Cowok'}`
+                            : ''}
+                          )
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-3 rounded-2xl bg-surface-container px-4 py-3">
+                    <div>
+                      <p className="text-xs font-bold text-on-surface">
+                        Auto-play Audio di Anki
+                      </p>
+                      <p className="text-[11px] text-on-surface-variant">
+                        Otomatis membacakan kata Jepang saat kartu baru muncul
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={speechPrefs.autoPlayAnki}
+                      aria-label="Aktifkan auto-play audio pada kartu Anki"
+                      onClick={() => {
+                        vibrateTap();
+                        saveSpeechPreferences({
+                          autoPlayAnki: !speechPrefs.autoPlayAnki,
+                        });
+                      }}
+                      className="m3-tactile inline-flex min-h-[44px] shrink-0 items-center rounded-xl px-1"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className={`flex h-7 w-12 items-center rounded-full p-1 transition-colors ${
+                          speechPrefs.autoPlayAnki
+                            ? 'bg-primary'
+                            : 'bg-surface-container-high'
+                        }`}
+                      >
+                        <span
+                          className={`h-5 w-5 rounded-full bg-white shadow-xs transition-transform ${
+                            speechPrefs.autoPlayAnki
+                              ? 'translate-x-5'
+                              : 'translate-x-0'
+                          }`}
+                        />
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </section>
 
             <section className="space-y-4 rounded-3xl border border-outline-variant bg-surface-container-low p-5 shadow-xs">

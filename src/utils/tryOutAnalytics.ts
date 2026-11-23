@@ -1,5 +1,10 @@
 import { getTryOutPacketForms } from '../data/tryOutN2AllPackets';
 import type { JlptLevel } from '../data/utamagoContent';
+import {
+  evaluateJlptN2PacketScore,
+  evaluateJlptN2PartScore,
+  type JlptN2PassStatus,
+} from './jlptN2Scoring';
 import type { ComputedTryOutReport } from './jlptReport';
 import type { StoredTryOutPacketState } from './storage';
 import {
@@ -24,6 +29,11 @@ export interface TryOutPacketChartPoint {
   dokkaiScore: number | null;
   choukaiScore: number | null;
   overallScore: number | null;
+  n2MojiBunpouScaled: number | null;
+  n2DokkaiScaled: number | null;
+  n2ChoukaiScaled: number | null;
+  n2TotalScaled: number | null;
+  n2PassStatus: JlptN2PassStatus | null;
   submittedPartsCount: number;
   completedPartsCount: number;
   answeredChoices: number;
@@ -69,6 +79,11 @@ export function buildTryOutPacketChartSeries(
       dokkai: null,
       choukai: null,
     };
+    const n2ScaledParts: Record<TryOutPacketPartId, number | null> = {
+      'moji-bunpou': null,
+      dokkai: null,
+      choukai: null,
+    };
 
     let answeredChoices = 0;
     let totalChoices = 0;
@@ -89,6 +104,14 @@ export function buildTryOutPacketChartSeries(
         partScores[part.id] = score.accuracyPercent;
         totalCorrectAttempted += score.correctCount;
         totalGradableAttempted += score.totalGradable;
+
+        if (packet.level === 'N2') {
+          n2ScaledParts[part.id] = evaluateJlptN2PartScore(
+            part.id,
+            pages,
+            values,
+          ).scaledScore;
+        }
       }
     }
 
@@ -96,6 +119,27 @@ export function buildTryOutPacketChartSeries(
       totalGradableAttempted > 0
         ? Math.round((totalCorrectAttempted / totalGradableAttempted) * 100)
         : null;
+
+    let n2TotalScaled: number | null = null;
+    let n2PassStatus: JlptN2PassStatus | null = null;
+    if (packet.level === 'N2') {
+      const attemptedScaledValues = (
+        ['moji-bunpou', 'dokkai', 'choukai'] as TryOutPacketPartId[]
+      )
+        .map((id) => n2ScaledParts[id])
+        .filter((v): v is number => v !== null);
+
+      if (attemptedScaledValues.length > 0) {
+        n2TotalScaled = attemptedScaledValues.reduce((sum, v) => sum + v, 0);
+        const packetEval = evaluateJlptN2PacketScore({
+          forms,
+          answersByPart: answersByPart ?? {},
+          submittedIds:
+            submittedIds.length > 0 ? submittedIds : completedIds,
+        });
+        n2PassStatus = packetEval.status;
+      }
+    }
 
     return {
       packetId: packet.id,
@@ -110,6 +154,11 @@ export function buildTryOutPacketChartSeries(
       dokkaiScore: partScores.dokkai,
       choukaiScore: partScores.choukai,
       overallScore,
+      n2MojiBunpouScaled: n2ScaledParts['moji-bunpou'],
+      n2DokkaiScaled: n2ScaledParts.dokkai,
+      n2ChoukaiScaled: n2ScaledParts.choukai,
+      n2TotalScaled,
+      n2PassStatus,
       submittedPartsCount: submittedIds.length,
       completedPartsCount: completedIds.length,
       answeredChoices,

@@ -6,6 +6,7 @@ import {
   ClipboardCheck,
   Flame,
   Lock,
+  PenTool,
   Play,
   RotateCcw,
   Search,
@@ -49,8 +50,13 @@ import {
   type StudyActivityLog,
 } from '../utils/studyAnalytics';
 import type { EquivalentJlptEstimate } from '../utils/tryOutAnalytics';
+import type {
+  JlptWeaknessReport,
+  WeaknessActionTarget,
+} from '../utils/weaknessDetector';
 import type { AppTab } from './AppShellNav';
 import { HomeGreetingCard } from './HomeGreetingCard';
+import { WeaknessDetectorCard } from './WeaknessDetectorCard';
 
 interface HomeScreenProps {
   levelProgress: LevelProgressInfo;
@@ -80,6 +86,9 @@ interface HomeScreenProps {
   bunpouN1Items?: BunpouN2Item[];
   showChallengesView: boolean;
   dailyDrillDoneToday?: boolean;
+  weaknessReport?: JlptWeaknessReport;
+  onExecuteWeaknessAction?: (action: WeaknessActionTarget) => void;
+  onOpenWritingStudio?: () => void;
   onOpenChallenges: () => void;
   onCloseChallenges: () => void;
   onOpenTryOut: () => void;
@@ -114,6 +123,9 @@ export function HomeScreen({
   bunpouN1Items = [],
   showChallengesView,
   dailyDrillDoneToday = false,
+  weaknessReport,
+  onExecuteWeaknessAction,
+  onOpenWritingStudio,
   onOpenChallenges,
   onCloseChallenges,
   onOpenTryOut,
@@ -824,27 +836,60 @@ export function HomeScreen({
           </div>
         </button>
 
-        <button
-          type="button"
-          onClick={() => {
-            vibrateTap();
-            onOpenDictionary();
-          }}
-          className="m3-tactile flex min-h-[52px] w-full min-w-0 items-center gap-3 rounded-2xl border border-outline-variant bg-surface-container-low px-4 py-3 text-left transition-colors hover:border-primary/50"
-        >
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-surface text-primary">
-            <Search className="h-4.5 w-4.5" aria-hidden="true" />
-          </span>
-          <div className="min-w-0 flex-1">
-            <p className="truncate font-display text-sm font-bold text-on-surface">
-              Kamus Kosakata N5–N1
-            </p>
-            <p className="truncate text-xs text-[#4b4b53]">
-              Cari cepat Kanji, Kana, Romaji, atau arti
-            </p>
-          </div>
-        </button>
+        <div className="divide-y divide-outline-variant overflow-hidden rounded-2xl border border-outline-variant bg-surface-container-low">
+          <button
+            type="button"
+            onClick={() => {
+              vibrateTap();
+              onOpenDictionary();
+            }}
+            className="m3-tactile flex min-h-[56px] w-full min-w-0 items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-surface-container/60"
+          >
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-surface text-primary">
+              <Search className="h-4.5 w-4.5" aria-hidden="true" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="truncate font-display text-sm font-bold text-on-surface">
+                Kamus Kosakata N5–N1
+              </p>
+              <p className="truncate text-xs text-[#4b4b53]">
+                Cari cepat Kanji, Kana, Romaji, atau arti
+              </p>
+            </div>
+          </button>
+
+          {onOpenWritingStudio && (
+            <button
+              type="button"
+              onClick={() => {
+                vibrateTap();
+                onOpenWritingStudio();
+              }}
+              className="m3-tactile flex min-h-[56px] w-full min-w-0 items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-surface-container/60"
+            >
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-surface text-primary">
+                <PenTool className="h-4.5 w-4.5" aria-hidden="true" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-display text-sm font-bold text-on-surface">
+                  Studio Tulis Kanji &amp; Kana
+                </p>
+                <p className="truncate text-xs text-[#4b4b53]">
+                  Latih coretan jari/mouse + panduan kotak genkouyoushi
+                </p>
+              </div>
+            </button>
+          )}
+        </div>
       </section>
+
+      {/* 5b. Detektor Kelemahan JLPT & Rekomendasi Latihan Otomatis */}
+      {weaknessReport && onExecuteWeaknessAction && (
+        <WeaknessDetectorCard
+          report={weaknessReport}
+          onExecuteAction={onExecuteWeaknessAction}
+        />
+      )}
 
       {/* 6. Grid 2x2: Tantangan Level, Materi Belajar, Try Out JLPT, Kata Sulit */}
       <section aria-label="Menu Belajar" className="w-full min-w-0">

@@ -18,7 +18,6 @@ import {
   Shuffle,
   SlidersHorizontal,
   Sparkles,
-  Volume2,
   X,
   Zap,
 } from 'lucide-react';
@@ -71,6 +70,7 @@ import {
 } from '../utils/haptics';
 import {
   isJapaneseSpeechSupported,
+  loadSpeechPreferences,
   speakJapanese,
   stopJapaneseSpeech,
 } from '../utils/japaneseSpeech';
@@ -79,11 +79,13 @@ import {
   JLPT_LEVELS_ASC,
 } from '../utils/levelProgression';
 import { getLocalDateKey } from '../utils/studyAnalytics';
+import { extractKanjiCharacters } from '../utils/writingPractice';
 import { ConfirmDialog } from './ConfirmDialog';
 import { BunpouExplanation } from './BunpouExplanation';
 import { HighlightedJapaneseText } from './HighlightedJapaneseText';
 import { RubyReading } from './RubyReading';
 import { AnkiDeckSkeleton } from './SkeletonLoaders';
+import { SpeechControlBar } from './SpeechControlBar';
 
 type AnkiMode = 'study' | 'browse' | 'options';
 type StudyScope = 'due' | 'all';
@@ -132,6 +134,7 @@ interface AnkiN5SectionProps {
   onToggleSuspendCard: (deckId: AnkiDeckId, card: AnkiCard) => void;
   onResetDeckProgress: (deckId: AnkiDeckId) => void;
   onOpenProfile?: () => void;
+  onOpenWritingForWord?: (word: string) => void;
 }
 
 function isBunpouDeckId(id: AnkiDeckId): boolean {
@@ -209,6 +212,7 @@ export function AnkiN5Section({
   onToggleSuspendCard,
   onResetDeckProgress,
   onOpenProfile,
+  onOpenWritingForWord,
 }: AnkiN5SectionProps) {
   const [deckCategory, setDeckCategory] = useState<AnkiDeckCategory>(() =>
     isBunpouDeckId(initialDeckId) ? 'bunpou' : 'kosakata',
@@ -245,7 +249,6 @@ export function AnkiN5Section({
   const [browsePreviewSession, setBrowsePreviewSession] =
     useState<AnkiStudySession | null>(null);
   const [sessionReviewedCount, setSessionReviewedCount] = useState(0);
-  const [speakingCardWord, setSpeakingCardWord] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
   const [xpNotice, setXpNotice] = useState<{
     key: number;
@@ -263,7 +266,6 @@ export function AnkiN5Section({
   const setPopupOpen = useCallback((open: boolean) => {
     if (!open) {
       stopJapaneseSpeech();
-      setSpeakingCardWord(false);
       setBrowsePreviewSession(null);
     }
     setStudyModalOpen(open);
@@ -645,6 +647,20 @@ export function AnkiN5Section({
     }
   }, [activeModalSession, setPopupOpen, studyModalOpen]);
 
+  // Auto-play pronunciation when user enables autoPlayAnki preference
+  useEffect(() => {
+    if (!studyModalOpen || !activeCard || !canSpeakJapanese) return;
+    const prefs = loadSpeechPreferences();
+    if (!prefs.autoPlayAnki) return;
+    const timer = window.setTimeout(() => {
+      speakJapanese(activeCard.word);
+    }, 180);
+    return () => {
+      window.clearTimeout(timer);
+      stopJapaneseSpeech();
+    };
+  }, [activeCard?.id, activeCard?.word, canSpeakJapanese, studyModalOpen]);
+
   const dragX = useMotionValue(0);
   const cardRotate = useTransform(dragX, [-180, 0, 180], [-6, 0, 6]);
   const cardOpacity = useTransform(
@@ -752,7 +768,6 @@ export function AnkiN5Section({
     }
 
     stopJapaneseSpeech();
-    setSpeakingCardWord(false);
     setIsFlipped(false);
     dragX.set(0);
     setNowMs(Date.now());
@@ -793,7 +808,6 @@ export function AnkiN5Section({
     }
     vibrateTap();
     stopJapaneseSpeech();
-    setSpeakingCardWord(false);
     setIsFlipped(false);
     dragX.set(0);
 
@@ -2380,30 +2394,28 @@ export function AnkiN5Section({
                       </p>
                     )}
 
-                    {canSpeakJapanese && (
-                      <div className="mt-3 flex justify-center">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            vibrateTap();
-                            setSpeakingCardWord(true);
-                            const ok = speakJapanese(activeCard.word, {
-                              onEnd: () => setSpeakingCardWord(false),
-                            });
-                            if (!ok) setSpeakingCardWord(false);
-                          }}
-                          className={`m3-tactile inline-flex min-h-[38px] items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-semibold transition-colors ${
-                            speakingCardWord
-                              ? 'border-primary bg-primary text-on-primary'
-                              : 'border-outline-variant bg-surface-container text-on-surface-variant hover:border-outline hover:text-primary'
-                          }`}
-                        >
-                          <Volume2
-                            className={`h-3.5 w-3.5 ${speakingCardWord ? 'animate-pulse' : ''}`}
-                            aria-hidden="true"
-                          />
-                          <span>Dengar Pengucapan</span>
-                        </button>
+                    {(canSpeakJapanese ||
+                      (onOpenWritingForWord &&
+                        activeCard.cardKind !== 'bunpou' &&
+                        extractKanjiCharacters(activeCard.word).length > 0)) && (
+                      <div className="mt-3.5 flex justify-center">
+                        <SpeechControlBar
+                          text={activeCard.word}
+                          showShadowing
+                          showQuickSettings
+                          showAutoPlayToggle
+                          onWriteKanji={
+                            onOpenWritingForWord &&
+                            activeCard.cardKind !== 'bunpou' &&
+                            extractKanjiCharacters(activeCard.word).length > 0
+                              ? () => {
+                                  stopJapaneseSpeech();
+                                  onOpenWritingForWord(activeCard.word);
+                                }
+                              : undefined
+                          }
+                          writeKanjiLabel="Tulis Kanji"
+                        />
                       </div>
                     )}
 

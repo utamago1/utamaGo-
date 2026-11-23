@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
+  AlertCircle,
   ArrowLeft,
   ArrowRight,
   Check,
@@ -16,6 +17,13 @@ import {
 } from '../data/tryOutN2AllPackets';
 import { SAMPLE_N3_REPORT } from '../data/utamagoContent';
 import { vibrateError, vibrateSuccess, vibrateTap } from '../utils/haptics';
+import {
+  evaluateJlptN2PacketScore,
+  JLPT_N2_SECTION_MAX,
+  JLPT_N2_SECTION_PASS_MIN,
+  JLPT_N2_TOTAL_MAX,
+  JLPT_N2_TOTAL_PASS_MIN,
+} from '../utils/jlptN2Scoring';
 import type { ComputedTryOutReport } from '../utils/jlptReport';
 import type { StoredTryOutPacketState } from '../utils/storage';
 import {
@@ -298,6 +306,21 @@ export function ReportAndSimSection({
     [fallbackFirstPacket, packetsProgress],
   );
 
+  const activeN2PacketScore = useMemo(() => {
+    if (activePacket.level !== 'N2' || !activePacket.isFullText) return null;
+    return evaluateJlptN2PacketScore({
+      forms: activePacketForms,
+      answersByPart: formAnswersByPart,
+      submittedIds: submittedParts,
+    });
+  }, [
+    activePacket.isFullText,
+    activePacket.level,
+    activePacketForms,
+    formAnswersByPart,
+    submittedParts,
+  ]);
+
   const activeFormPart =
     isActivePacketUnlocked && activeFormPartId
       ? activePacketParts.find((p) => p.id === activeFormPartId) ?? null
@@ -550,6 +573,129 @@ export function ReportAndSimSection({
               </div>
             </section>
 
+            {activeN2PacketScore && (
+              <section
+                aria-label="Estimasi Skor JLPT N2 Paket Ini"
+                className="space-y-4 rounded-2xl border border-outline-variant bg-surface-container-low p-4 sm:p-6"
+              >
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <p className="text-xs font-bold tracking-wide text-primary">
+                      Estimasi Skor JLPT N2 · Bobot Resmi per Mondai
+                    </p>
+                    <h4 className="mt-1 font-display text-lg font-extrabold text-on-surface">
+                      {activeN2PacketScore.statusLabel}
+                    </h4>
+                    <p className="mt-1 text-xs leading-relaxed text-on-surface-variant">
+                      {activeN2PacketScore.statusDetail}
+                    </p>
+                  </div>
+
+                  <div className="shrink-0 text-left sm:text-right">
+                    <p className="text-[11px] font-semibold text-on-surface-variant">
+                      Total Estimasi (Lulus ≥ {JLPT_N2_TOTAL_PASS_MIN})
+                    </p>
+                    <p
+                      className={`font-mono text-2xl font-extrabold tabular-nums sm:text-3xl ${
+                        activeN2PacketScore.status === 'passed'
+                          ? 'text-success'
+                          : activeN2PacketScore.status === 'in-progress'
+                            ? 'text-on-surface'
+                            : 'text-primary'
+                      }`}
+                    >
+                      {activeN2PacketScore.submittedPartCount > 0
+                        ? activeN2PacketScore.totalScaledScore
+                        : '—'}
+                      <span className="text-sm font-bold text-on-surface-variant">
+                        /{JLPT_N2_TOTAL_MAX}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-3 border-t border-outline-variant pt-4 sm:grid-cols-3 sm:gap-0 sm:divide-x sm:divide-outline-variant">
+                  {(['moji-bunpou', 'dokkai', 'choukai'] as const).map(
+                    (partKey, idx) => {
+                      const sec = activeN2PacketScore.parts[partKey];
+                      return (
+                        <div
+                          key={partKey}
+                          className={idx > 0 ? 'sm:pl-4' : 'sm:pr-4'}
+                        >
+                          <div className="flex items-baseline justify-between gap-2">
+                            <p className="text-xs font-bold text-on-surface">
+                              {sec.japaneseLabel} · {sec.partLabel}
+                            </p>
+                            <span className="font-mono text-[11px] tabular-nums text-on-surface-variant">
+                              {sec.totalQuestions} soal
+                            </span>
+                          </div>
+                          <div className="mt-1.5 flex items-baseline justify-between gap-2">
+                            <p className="font-mono text-xl font-extrabold tabular-nums text-on-surface">
+                              {sec.isSubmitted ? sec.scaledScore : '—'}
+                              <span className="text-xs font-semibold text-on-surface-variant">
+                                /{JLPT_N2_SECTION_MAX}
+                              </span>
+                            </p>
+                            {sec.isSubmitted ? (
+                              <span
+                                className={`inline-flex items-center gap-1 text-xs font-bold ${
+                                  sec.passedCutoff
+                                    ? 'text-success'
+                                    : 'text-warning'
+                                }`}
+                              >
+                                {sec.passedCutoff ? (
+                                  <>
+                                    <CheckCircle2
+                                      className="h-3.5 w-3.5 shrink-0"
+                                      aria-hidden="true"
+                                    />
+                                    <span>≥ {JLPT_N2_SECTION_PASS_MIN}</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <AlertCircle
+                                      className="h-3.5 w-3.5 shrink-0"
+                                      aria-hidden="true"
+                                    />
+                                    <span>&lt; {JLPT_N2_SECTION_PASS_MIN}</span>
+                                  </>
+                                )}
+                              </span>
+                            ) : (
+                              <span className="text-xs text-on-surface-variant">
+                                Belum dikumpulkan
+                              </span>
+                            )}
+                          </div>
+                          <p className="mt-1 font-mono text-[11px] tabular-nums text-on-surface-variant">
+                            {sec.isSubmitted
+                              ? `Poin ${sec.earnedRawPoints}/${sec.maxRawPoints} · Benar ${sec.correctCount}/${sec.totalQuestions}`
+                              : `Maks poin berbobot ${sec.maxRawPoints} → skala 60`}
+                          </p>
+                        </div>
+                      );
+                    },
+                  )}
+                </div>
+
+                <p className="border-t border-outline-variant/70 pt-3 text-[11px] leading-relaxed text-on-surface-variant">
+                  Syarat lulus JLPT N2: total minimal{' '}
+                  <strong className="font-mono font-bold text-on-surface">
+                    90/180
+                  </strong>{' '}
+                  dan setiap bagian minimal{' '}
+                  <strong className="font-mono font-bold text-on-surface">
+                    19/60
+                  </strong>
+                  . Skala nilai otomatis menyesuaikan jumlah soal aktual di tiap
+                  paket.
+                </p>
+              </section>
+            )}
+
             <div className="divide-y divide-outline-variant overflow-hidden rounded-2xl border border-outline-variant bg-surface-container-low">
               {activePacketParts.map((part) => {
                 const isCompleted = completedPacketParts.includes(part.id);
@@ -562,6 +708,10 @@ export function ReportAndSimSection({
                 const partScore = isSubmittedPart
                   ? evaluatePartScore(activePacketForms[part.id], partValues)
                   : null;
+                const n2PartSummary =
+                  isSubmittedPart && activeN2PacketScore
+                    ? activeN2PacketScore.parts[part.id]
+                    : null;
 
                 return (
                   <article key={part.id} className="p-4 sm:p-6">
@@ -614,9 +764,22 @@ export function ReportAndSimSection({
                                 <span aria-hidden="true" className="text-outline">
                                   ·
                                 </span>
-                                <span className="font-mono font-extrabold tabular-nums text-success">
-                                  Skor {partScore.accuracyPercent}%
-                                </span>
+                                {n2PartSummary ? (
+                                  <span
+                                    className={`font-mono font-extrabold tabular-nums ${
+                                      n2PartSummary.passedCutoff
+                                        ? 'text-success'
+                                        : 'text-warning'
+                                    }`}
+                                  >
+                                    Skor N2 {n2PartSummary.scaledScore}/60 (
+                                    {partScore.accuracyPercent}%)
+                                  </span>
+                                ) : (
+                                  <span className="font-mono font-extrabold tabular-nums text-success">
+                                    Skor {partScore.accuracyPercent}%
+                                  </span>
+                                )}
                               </>
                             )}
                           </div>

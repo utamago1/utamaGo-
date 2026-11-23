@@ -6,8 +6,10 @@ import {
   BookOpen,
   Check,
   CheckCircle2,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
+  ChevronUp,
   Clock,
   Eye,
   Flag,
@@ -23,6 +25,11 @@ import {
 } from 'lucide-react';
 import type { TryOutFormPage } from '../data/tryOutN2Data';
 import { vibrateError, vibrateSuccess, vibrateTap } from '../utils/haptics';
+import {
+  evaluateJlptN2PartScore,
+  JLPT_N2_SECTION_MAX,
+  JLPT_N2_SECTION_PASS_MIN,
+} from '../utils/jlptN2Scoring';
 import {
   evaluatePartFormProgress,
   evaluatePartScore,
@@ -118,6 +125,7 @@ export function TryOutFormRunner({
   } | null>(null);
   const [sheetModalIndex, setSheetModalIndex] = useState<number | null>(null);
   const [sheetZoom, setSheetZoom] = useState<1 | 1.5 | 2>(1);
+  const [showMondaiBreakdown, setShowMondaiBreakdown] = useState(true);
 
   const formTopRef = useRef<HTMLDivElement | null>(null);
   const elapsedRef = useRef(elapsedSeconds);
@@ -194,6 +202,11 @@ export function TryOutFormRunner({
   const scoreSummary = useMemo(
     () => evaluatePartScore(pages, values),
     [pages, values],
+  );
+  const isN2Level = levelLabel.toUpperCase().includes('N2');
+  const n2PartScore = useMemo(
+    () => (isN2Level ? evaluateJlptN2PartScore(part.id, pages, values) : null),
+    [isN2Level, pages, part.id, values],
   );
   const wrongItemIds = useMemo(
     () => new Set(scoreSummary.wrongItems.map((w) => w.itemId)),
@@ -536,49 +549,253 @@ export function TryOutFormRunner({
             </div>
           </div>
 
-          <div className="rounded-2xl bg-surface-container p-4">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p className="text-xs font-semibold text-on-surface-variant">
-                  Skor Otomatis (Kunci Resmi {levelLabel} {examCode})
-                </p>
-                <p className="mt-0.5 font-display text-lg font-extrabold text-on-surface">
-                  Benar {scoreSummary.correctCount} dari{' '}
-                  {scoreSummary.totalGradable} Soal
-                </p>
-              </div>
-              <div className="text-left sm:text-right">
-                <p className="font-mono text-2xl font-extrabold tabular-nums text-primary">
-                  {scoreSummary.accuracyPercent}%
-                </p>
-                <p className="text-[11px] font-semibold text-on-surface-variant">
-                  {scoreSummary.wrongItems.length} jawaban perlu ditinjau
-                </p>
-              </div>
-            </div>
-            <div
-              className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-surface-container-high"
-              role="progressbar"
-              aria-valuenow={scoreSummary.accuracyPercent}
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-label={`Skor ${part.title}`}
-            >
-              <div
-                className={`h-full rounded-full transition-all duration-300 ${
-                  scoreSummary.accuracyPercent >= 60
-                    ? 'bg-success'
-                    : scoreSummary.accuracyPercent >= 45
-                      ? 'bg-warning'
-                      : 'bg-primary'
-                }`}
-                style={{ width: `${scoreSummary.accuracyPercent}%` }}
-              />
-            </div>
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-on-surface-variant">
+          <div className="space-y-4 rounded-2xl bg-surface-container p-4 sm:p-5">
+            {n2PartScore ? (
+              <>
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold text-on-surface-variant">
+                      Estimasi Skor JLPT N2 · {n2PartScore.japaneseLabel} ({examCode})
+                    </p>
+                    <p className="mt-0.5 font-display text-lg font-extrabold text-on-surface">
+                      Benar {n2PartScore.correctCount} dari{' '}
+                      {n2PartScore.totalQuestions} Soal
+                    </p>
+                    <div className="mt-1 flex flex-wrap items-center gap-x-2 text-xs text-on-surface-variant">
+                      <span className="font-mono tabular-nums">
+                        Akurasi {n2PartScore.accuracyPercent}%
+                      </span>
+                      <span aria-hidden="true">·</span>
+                      <span className="font-mono tabular-nums">
+                        Poin berbobot {n2PartScore.earnedRawPoints}/
+                        {n2PartScore.maxRawPoints}
+                      </span>
+                      <span aria-hidden="true">·</span>
+                      <span className="font-mono tabular-nums">
+                        Ambang bagian {JLPT_N2_SECTION_PASS_MIN}/
+                        {JLPT_N2_SECTION_MAX}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-left sm:text-right">
+                    <p
+                      className={`font-mono text-2xl font-extrabold tabular-nums ${
+                        n2PartScore.passedCutoff
+                          ? 'text-success'
+                          : 'text-primary'
+                      }`}
+                    >
+                      {n2PartScore.scaledScore}
+                      <span className="text-sm font-bold text-on-surface-variant">
+                        /{JLPT_N2_SECTION_MAX}
+                      </span>
+                    </p>
+                    <p
+                      className={`mt-0.5 inline-flex items-center gap-1 text-xs font-bold ${
+                        n2PartScore.passedCutoff
+                          ? 'text-success'
+                          : 'text-warning'
+                      }`}
+                    >
+                      {n2PartScore.passedCutoff ? (
+                        <>
+                          <CheckCircle2
+                            className="h-3.5 w-3.5 shrink-0"
+                            aria-hidden="true"
+                          />
+                          <span>Memenuhi ambang ≥ 19/60</span>
+                        </>
+                      ) : (
+                        <>
+                          <AlertCircle
+                            className="h-3.5 w-3.5 shrink-0"
+                            aria-hidden="true"
+                          />
+                          <span>Di bawah ambang 19/60</span>
+                        </>
+                      )}
+                    </p>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="relative">
+                    <div
+                      className="h-2.5 w-full overflow-hidden rounded-full bg-surface-container-high"
+                      role="progressbar"
+                      aria-valuenow={n2PartScore.scaledScore}
+                      aria-valuemin={0}
+                      aria-valuemax={JLPT_N2_SECTION_MAX}
+                      aria-label={`Skor estimasi JLPT N2 ${part.title}: ${n2PartScore.scaledScore} dari ${JLPT_N2_SECTION_MAX}`}
+                    >
+                      <div
+                        className={`h-full rounded-full transition-all duration-300 ${
+                          n2PartScore.scaledScore >= 30
+                            ? 'bg-success'
+                            : n2PartScore.passedCutoff
+                              ? 'bg-warning'
+                              : 'bg-primary'
+                        }`}
+                        style={{
+                          width: `${Math.round(
+                            (n2PartScore.scaledScore / JLPT_N2_SECTION_MAX) * 100,
+                          )}%`,
+                        }}
+                      />
+                    </div>
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute top-0 bottom-0 w-0.5 bg-on-surface/55"
+                      style={{
+                        left: `${(JLPT_N2_SECTION_PASS_MIN / JLPT_N2_SECTION_MAX) * 100}%`,
+                      }}
+                    />
+                  </div>
+                  <div className="mt-1.5 flex items-center justify-between font-mono text-[11px] tabular-nums text-on-surface-variant">
+                    <span>0</span>
+                    <span>Ambang 19</span>
+                    <span>Target 30+</span>
+                    <span>60</span>
+                  </div>
+                </div>
+
+                {n2PartScore.mondaiBreakdown.length > 0 && (
+                  <div className="border-t border-outline-variant pt-3">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        vibrateTap();
+                        setShowMondaiBreakdown((prev) => !prev);
+                      }}
+                      aria-expanded={showMondaiBreakdown}
+                      className="flex min-h-[44px] w-full items-center justify-between gap-2 text-left text-xs font-bold text-on-surface hover:text-primary"
+                    >
+                      <span>
+                        Rincian Bobot per Mondai (
+                        {n2PartScore.mondaiBreakdown.length} Mondai · Menyesuaikan{' '}
+                        {n2PartScore.totalQuestions} Soal)
+                      </span>
+                      {showMondaiBreakdown ? (
+                        <ChevronUp
+                          className="h-4 w-4 shrink-0 text-on-surface-variant"
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        <ChevronDown
+                          className="h-4 w-4 shrink-0 text-on-surface-variant"
+                          aria-hidden="true"
+                        />
+                      )}
+                    </button>
+
+                    {showMondaiBreakdown && (
+                      <div className="mt-2 overflow-x-auto">
+                        <table className="w-full border-collapse text-left text-xs">
+                          <thead>
+                            <tr className="border-b border-outline-variant text-[11px] font-semibold text-on-surface-variant">
+                              <th className="py-2 pr-1.5 font-semibold sm:pr-2">
+                                Mondai
+                              </th>
+                              <th className="whitespace-nowrap px-1.5 py-2 text-right font-semibold sm:px-2">
+                                Bobot
+                              </th>
+                              <th className="whitespace-nowrap px-1.5 py-2 text-right font-semibold sm:px-2">
+                                Benar
+                              </th>
+                              <th className="whitespace-nowrap py-2 pl-1.5 text-right font-semibold sm:pl-2">
+                                Poin
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-outline-variant/60">
+                            {n2PartScore.mondaiBreakdown.map((row) => (
+                              <tr key={row.pageId}>
+                                <td className="py-2 pr-1.5 font-medium text-on-surface sm:pr-2">
+                                  {row.title}
+                                </td>
+                                <td className="whitespace-nowrap px-1.5 py-2 text-right font-mono text-[11px] tabular-nums text-on-surface-variant sm:px-2 sm:text-xs">
+                                  {row.weightLabel}
+                                </td>
+                                <td className="whitespace-nowrap px-1.5 py-2 text-right font-mono tabular-nums text-on-surface sm:px-2">
+                                  {row.correctCount}/{row.totalQuestions}
+                                </td>
+                                <td className="whitespace-nowrap py-2 pl-1.5 text-right font-mono font-bold tabular-nums text-on-surface sm:pl-2">
+                                  {row.earnedRawPoints}/{row.maxRawPoints}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                          <tfoot>
+                            <tr className="border-t border-outline-variant font-bold text-on-surface">
+                              <td className="pt-2.5 pr-1.5 sm:pr-2">
+                                Total (× 60 ÷ {n2PartScore.maxRawPoints})
+                              </td>
+                              <td className="px-1.5 pt-2.5 text-right font-mono text-on-surface-variant sm:px-2">
+                                —
+                              </td>
+                              <td className="whitespace-nowrap px-1.5 pt-2.5 text-right font-mono tabular-nums sm:px-2">
+                                {n2PartScore.correctCount}/
+                                {n2PartScore.totalQuestions}
+                              </td>
+                              <td className="whitespace-nowrap pt-2.5 pl-1.5 text-right font-mono tabular-nums text-primary sm:pl-2">
+                                {n2PartScore.earnedRawPoints}/
+                                {n2PartScore.maxRawPoints}
+                              </td>
+                            </tr>
+                          </tfoot>
+                        </table>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold text-on-surface-variant">
+                      Skor Otomatis (Kunci Resmi {levelLabel} {examCode})
+                    </p>
+                    <p className="mt-0.5 font-display text-lg font-extrabold text-on-surface">
+                      Benar {scoreSummary.correctCount} dari{' '}
+                      {scoreSummary.totalGradable} Soal
+                    </p>
+                  </div>
+                  <div className="text-left sm:text-right">
+                    <p className="font-mono text-2xl font-extrabold tabular-nums text-primary">
+                      {scoreSummary.accuracyPercent}%
+                    </p>
+                    <p className="text-[11px] font-semibold text-on-surface-variant">
+                      {scoreSummary.wrongItems.length} jawaban perlu ditinjau
+                    </p>
+                  </div>
+                </div>
+                <div
+                  className="h-2.5 w-full overflow-hidden rounded-full bg-surface-container-high"
+                  role="progressbar"
+                  aria-valuenow={scoreSummary.accuracyPercent}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-label={`Skor ${part.title}`}
+                >
+                  <div
+                    className={`h-full rounded-full transition-all duration-300 ${
+                      scoreSummary.accuracyPercent >= 60
+                        ? 'bg-success'
+                        : scoreSummary.accuracyPercent >= 45
+                          ? 'bg-warning'
+                          : 'bg-primary'
+                    }`}
+                    style={{ width: `${scoreSummary.accuracyPercent}%` }}
+                  />
+                </div>
+              </>
+            )}
+
+            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-outline-variant/70 pt-3 text-[11px] text-on-surface-variant">
               <span>
-                Skor ini otomatis tercatat ke grafik perbandingan hasil Try Out
-                JLPT.
+                {scoreSummary.wrongItems.length} soal salah untuk ditinjau ·
+                Otomatis tercatat ke grafik Try Out.
               </span>
               <button
                 type="button"
@@ -588,7 +805,7 @@ export function TryOutFormRunner({
                 }}
                 className="font-bold text-primary hover:underline"
               >
-                Lihat Grafik Perbandingan →
+                Lihat Ringkasan Paket →
               </button>
             </div>
           </div>
