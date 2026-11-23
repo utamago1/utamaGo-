@@ -8,6 +8,8 @@ import {
   Lock,
   Play,
   RotateCcw,
+  Search,
+  Shuffle,
   Star,
   Trophy,
   Volume2,
@@ -77,9 +79,13 @@ interface HomeScreenProps {
   bunpouN2Items?: BunpouN2Item[];
   bunpouN1Items?: BunpouN2Item[];
   showChallengesView: boolean;
+  dailyDrillDoneToday?: boolean;
   onOpenChallenges: () => void;
   onCloseChallenges: () => void;
   onOpenTryOut: () => void;
+  onOpenDictionary: () => void;
+  onStartDifficultDrill: () => void;
+  onStartDailyDrill: (count: 5 | 10, shuffleIndex: number) => void;
   onStartStage: (stage: ChallengeStage) => void;
   onNavigate: (tab: Exclude<AppTab, 'home'>) => void;
 }
@@ -107,13 +113,19 @@ export function HomeScreen({
   bunpouN2Items = [],
   bunpouN1Items = [],
   showChallengesView,
+  dailyDrillDoneToday = false,
   onOpenChallenges,
   onCloseChallenges,
   onOpenTryOut,
+  onOpenDictionary,
+  onStartDifficultDrill,
+  onStartDailyDrill,
   onStartStage,
   onNavigate,
 }: HomeScreenProps) {
   const [showDifficultView, setShowDifficultView] = useState(false);
+  const [dailyDrillCount, setDailyDrillCount] = useState<5 | 10>(5);
+  const [dailyShuffleIndex, setDailyShuffleIndex] = useState(0);
   const speechSupported = useMemo(() => isJapaneseSpeechSupported(), []);
 
   const stageIds = useMemo(() => CHALLENGE_STAGES.map((s) => s.id), []);
@@ -214,7 +226,7 @@ export function HomeScreen({
               <h2 className="font-display text-lg font-extrabold tracking-tight text-on-surface sm:text-xl">
                 Tantangan Level JLPT
               </h2>
-              <p className="text-[13px] text-[#4b4b53] dark:text-[#b4b4c0]">
+              <p className="text-[13px] text-[#4b4b53]">
                 <span className="font-mono tabular-nums">
                   {completedStagesCount}/{CHALLENGE_STAGES.length}
                 </span>{' '}
@@ -240,10 +252,94 @@ export function HomeScreen({
           </button>
         </div>
 
+        {/* Daily Drill Adaptif Card */}
+        <section
+          aria-label="Daily Drill Hari Ini"
+          className="rounded-2xl border border-outline-variant bg-surface-container-low p-4 sm:p-5"
+        >
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-semibold text-primary">
+                Daily Drill Adaptif · Level {unlockedLevel}
+                {dailyDrillDoneToday ? (
+                  <span className="text-success"> · Selesai hari ini</span>
+                ) : null}
+              </p>
+              <h3 className="mt-1 font-display text-base font-extrabold text-on-surface sm:text-lg">
+                Latihan Campuran Hari Ini
+              </h3>
+              <p className="mt-0.5 text-[13px] leading-relaxed text-[#4b4b53]">
+                Otomatis menggabungkan kata sulitmu, kosakata, dan pola bunpou
+                sesuai level. Tanpa batas nyawa.
+              </p>
+            </div>
+
+            <div
+              role="group"
+              aria-label="Pilih jumlah soal Daily Drill"
+              className="inline-flex shrink-0 items-center rounded-xl border border-outline-variant bg-surface p-1"
+            >
+              {([5, 10] as const).map((cnt) => {
+                const active = dailyDrillCount === cnt;
+                return (
+                  <button
+                    key={cnt}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => {
+                      vibrateTap();
+                      setDailyDrillCount(cnt);
+                    }}
+                    className={`min-h-[36px] rounded-lg px-3 py-1 font-mono text-xs font-bold transition-colors ${
+                      active
+                        ? 'bg-primary text-on-primary'
+                        : 'text-[#4b4b53] hover:text-on-surface'
+                    }`}
+                  >
+                    {cnt} Soal
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+            <button
+              type="button"
+              onClick={() => {
+                vibrateTap();
+                onStartDailyDrill(dailyDrillCount, dailyShuffleIndex);
+              }}
+              className="m3-tactile inline-flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-on-primary hover:bg-primary-hover"
+            >
+              <Play className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
+              <span>
+                {dailyDrillDoneToday
+                  ? `Latihan Lagi (${dailyDrillCount} Soal)`
+                  : `Mulai Daily Drill (${dailyDrillCount} Soal)`}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                vibrateTap();
+                const nextShuffle = dailyShuffleIndex + 1;
+                setDailyShuffleIndex(nextShuffle);
+                onStartDailyDrill(dailyDrillCount, nextShuffle);
+              }}
+              className="m3-tactile inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-xl border border-outline bg-surface px-4 py-2.5 text-xs font-bold text-on-surface hover:bg-surface-container"
+            >
+              <Shuffle className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+              <span>Acak Ulang</span>
+            </button>
+          </div>
+        </section>
+
         <section aria-label="Daftar Level Tantangan" className="space-y-6">
           {chapters.map((group) => (
             <div key={group.chapter} className="space-y-2.5">
-              <h3 className="font-display text-xs font-extrabold tracking-wider text-[#4b4b53] dark:text-[#b4b4c0]">
+              <h3 className="font-display text-xs font-extrabold tracking-wider text-[#4b4b53]">
                 {group.chapter}
               </h3>
 
@@ -394,7 +490,7 @@ export function HomeScreen({
               <h2 className="font-display text-lg font-extrabold tracking-tight text-on-surface">
                 Kata Sulit
               </h2>
-              <p className="text-[13px] text-[#4b4b53] dark:text-[#b4b4c0]">
+              <p className="text-[13px] text-[#4b4b53]">
                 <span className="font-mono tabular-nums">
                   {difficultCards.length}
                 </span>{' '}
@@ -415,24 +511,53 @@ export function HomeScreen({
             <h3 className="mt-3 font-display text-base font-bold text-on-surface">
               Belum ada kata sulit
             </h3>
-            <p className="mt-1.5 text-[13px] leading-relaxed text-[#4b4b53] dark:text-[#b4b4c0]">
-              Kartu yang kamu tandai &ldquo;Ulangi&rdquo; saat latihan Anki akan
-              otomatis terkumpul di sini agar mudah diulang.
+            <p className="mt-1.5 text-[13px] leading-relaxed text-[#4b4b53]">
+              Kartu yang kamu tandai &ldquo;Ulangi&rdquo; saat latihan Anki atau
+              kamu tandai di Kamus akan otomatis terkumpul di sini untuk sesi
+              drill khusus.
             </p>
+            <div className="mt-4 space-y-2.5">
+              <button
+                type="button"
+                onClick={() => {
+                  vibrateTap();
+                  setShowDifficultView(false);
+                  onNavigate('anki');
+                }}
+                className="m3-tactile inline-flex min-h-[44px] w-full items-center justify-center rounded-2xl bg-primary px-4 py-2.5 text-sm font-bold text-on-primary hover:bg-primary-hover"
+              >
+                Mulai Latihan Anki
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  vibrateTap();
+                  onOpenDictionary();
+                }}
+                className="m3-tactile inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-2xl border border-outline bg-surface px-4 py-2.5 text-sm font-bold text-on-surface hover:bg-surface-container"
+              >
+                <Search className="h-4 w-4 text-primary" aria-hidden="true" />
+                <span>Cari &amp; Tandai di Kamus</span>
+              </button>
+            </div>
+          </section>
+        ) : (
+          <div className="space-y-4">
             <button
               type="button"
               onClick={() => {
                 vibrateTap();
-                setShowDifficultView(false);
-                onNavigate('anki');
+                onStartDifficultDrill();
               }}
-              className="m3-tactile mt-4 inline-flex min-h-[44px] w-full items-center justify-center rounded-2xl bg-primary px-4 py-2.5 text-sm font-bold text-on-primary hover:bg-primary-hover"
+              className="m3-tactile flex min-h-[48px] w-full items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-3 text-sm font-bold text-on-primary hover:bg-primary-hover"
             >
-              Mulai Latihan Anki
+              <Play className="h-4 w-4 fill-current" aria-hidden="true" />
+              <span>
+                Mulai Drill Kata Sulit ({Math.min(difficultCards.length, 15)}{' '}
+                kartu)
+              </span>
             </button>
-          </section>
-        ) : (
-          <div className="space-y-4">
+
             <div className="divide-y divide-outline-variant overflow-hidden rounded-2xl border border-outline-variant bg-surface-container-low">
               {difficultCards.slice(0, 30).map(({ card, lapses }) => (
                 <div
@@ -445,15 +570,15 @@ export function HomeScreen({
                         {card.word}
                       </span>
                       {card.furigana && card.furigana !== card.word && (
-                        <span className="text-[13px] text-[#4b4b53] dark:text-[#b4b4c0]">
+                        <span className="text-[13px] text-[#4b4b53]">
                           {card.furigana}
                         </span>
                       )}
                     </div>
-                    <p className="mt-1 text-[13px] leading-snug text-[#4b4b53] dark:text-[#b4b4c0] break-words">
+                    <p className="mt-1 text-[13px] leading-snug text-[#4b4b53] break-words">
                       {card.meaning}
                     </p>
-                    <p className="mt-1 text-xs text-[#4b4b53] dark:text-[#b4b4c0]">
+                    <p className="mt-1 text-xs text-[#4b4b53]">
                       <span className="font-mono font-semibold text-primary">
                         {card.jlptLevel ?? 'JLPT'}
                       </span>{' '}
@@ -486,9 +611,9 @@ export function HomeScreen({
                 setShowDifficultView(false);
                 onNavigate('anki');
               }}
-              className="m3-tactile flex min-h-[48px] w-full items-center justify-center rounded-2xl bg-primary px-5 py-3 text-sm font-bold text-on-primary hover:bg-primary-hover"
+              className="m3-tactile flex min-h-[44px] w-full items-center justify-center rounded-2xl border border-outline bg-surface-container-low px-5 py-2.5 text-sm font-bold text-on-surface hover:bg-surface-container"
             >
-              Latih di Anki Sekarang
+              Buka Deck Anki Reguler
             </button>
           </div>
         )}
@@ -672,8 +797,8 @@ export function HomeScreen({
         </div>
       </section>
 
-      {/* 5. Kartu "Lanjutkan belajar" (1 ketukan) */}
-      <section aria-label="Lanjutkan Belajar" className="w-full min-w-0">
+      {/* 5. Kartu "Lanjutkan belajar" + Akses Cepat Kamus Kosakata */}
+      <section aria-label="Lanjutkan Belajar dan Kamus" className="w-full min-w-0 space-y-3">
         <button
           type="button"
           onClick={() => {
@@ -693,8 +818,29 @@ export function HomeScreen({
             <p className="mt-0.5 font-display text-[15px] font-bold leading-snug text-on-surface break-words">
               {continueLearning.title}
             </p>
-            <p className="mt-0.5 line-clamp-2 text-[13px] leading-snug text-[#4b4b53] dark:text-[#b4b4c0] break-words">
+            <p className="mt-0.5 line-clamp-2 text-[13px] leading-snug text-[#4b4b53] break-words">
               {continueLearning.subtitle}
+            </p>
+          </div>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            vibrateTap();
+            onOpenDictionary();
+          }}
+          className="m3-tactile flex min-h-[52px] w-full min-w-0 items-center gap-3 rounded-2xl border border-outline-variant bg-surface-container-low px-4 py-3 text-left transition-colors hover:border-primary/50"
+        >
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-surface text-primary">
+            <Search className="h-4.5 w-4.5" aria-hidden="true" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="truncate font-display text-sm font-bold text-on-surface">
+              Kamus Kosakata N5–N1
+            </p>
+            <p className="truncate text-xs text-[#4b4b53]">
+              Cari cepat Kanji, Kana, Romaji, atau arti
             </p>
           </div>
         </button>

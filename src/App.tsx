@@ -24,6 +24,7 @@ import {
 } from './components/AppShellNav';
 import { ChallengeRunnerModal } from './components/ChallengeRunnerModal';
 import { ConfirmDialog } from './components/ConfirmDialog';
+import { DifficultDrillModal } from './components/DifficultDrillModal';
 import { HomeScreen } from './components/HomeScreen';
 import { LearnScreen } from './components/LearnScreen';
 import { LoginScreen } from './components/LoginScreen';
@@ -33,6 +34,7 @@ import type { ReportTab } from './components/ReportAndSimSection';
 import { SettingsModal } from './components/SettingsModal';
 import { TryOutSectionSkeleton } from './components/SkeletonLoaders';
 import { SplashWelcomeScreen } from './components/SplashWelcomeScreen';
+import { VocabDictionaryModal } from './components/VocabDictionaryModal';
 import {
   CHALLENGE_STAGES,
   type ChallengeStage,
@@ -111,6 +113,7 @@ import {
   type BunpouN2Item,
 } from './utils/bunpouN2Parser';
 import { attachGlobalHapticsListener } from './utils/haptics';
+import { getDifficultAnkiCards } from './utils/homeSummary';
 import type { ComputedTryOutReport } from './utils/jlptReport';
 import {
   getLevelProgress,
@@ -120,6 +123,7 @@ import {
   type CompletedLevelRecord,
   type LearnerGender,
 } from './utils/levelProgression';
+import { generateDailyDrillStage } from './utils/practiceGenerators';
 import { estimateEquivalentJlptLevel } from './utils/tryOutAnalytics';
 import {
   getNotificationAdapter,
@@ -290,6 +294,22 @@ export default function App() {
   const [activeChallengeStage, setActiveChallengeStage] =
     useState<ChallengeStage | null>(null);
   const [challengeHasProgress, setChallengeHasProgress] = useState(false);
+  const [dictionaryOpen, setDictionaryOpen] = useState(false);
+  const [difficultDrillOpen, setDifficultDrillOpen] = useState(false);
+  const [activeDailyDrill, setActiveDailyDrill] = useState<{
+    stage: ChallengeStage;
+    count: 5 | 10;
+    shuffleIndex: number;
+  } | null>(null);
+  const [dailyDrillDoneDate, setDailyDrillDoneDate] = useState<string | null>(
+    () => {
+      try {
+        return window.localStorage.getItem('utamago_daily_drill_done_date');
+      } catch {
+        return null;
+      }
+    },
+  );
 
   const [exitConfirm, setExitConfirm] = useState<{
     title: string;
@@ -1151,6 +1171,38 @@ export default function App() {
     bunpouN1AnkiCards,
     appState.onboarding.selfAssessedLevel,
   ]);
+
+  const allVocabCards = useMemo(
+    () => [...n5Cards, ...n4Cards, ...n3Cards, ...n2Cards, ...n1Cards],
+    [n5Cards, n4Cards, n3Cards, n2Cards, n1Cards],
+  );
+
+  const unlockedBunpouItems = useMemo(() => {
+    const items: BunpouN2Item[] = [...bunpouN5Items];
+    const unlocked = appState.onboarding.selfAssessedLevel;
+    if (isJlptLevelUnlocked('N4', unlocked)) items.push(...bunpouN4Items);
+    if (isJlptLevelUnlocked('N3', unlocked)) items.push(...bunpouN3Items);
+    if (isJlptLevelUnlocked('N2', unlocked)) items.push(...bunpouN2Items);
+    if (isJlptLevelUnlocked('N1', unlocked)) items.push(...bunpouN1Items);
+    return items;
+  }, [
+    bunpouN5Items,
+    bunpouN4Items,
+    bunpouN3Items,
+    bunpouN2Items,
+    bunpouN1Items,
+    appState.onboarding.selfAssessedLevel,
+  ]);
+
+  const difficultCards = useMemo(
+    () =>
+      getDifficultAnkiCards(
+        unlockedAnkiCards,
+        appState.ankiSrs,
+        appState.ankiProgress.againIds,
+      ),
+    [unlockedAnkiCards, appState.ankiSrs, appState.ankiProgress.againIds],
+  );
 
   const totalStars = useMemo(
     () => getTotalStarsEarned(appState.gameProgress.completedLevels),
@@ -2280,6 +2332,129 @@ export default function App() {
     setActiveChallengeStage(nextStage);
   }, [activeChallengeStage, appState.onboarding.selfAssessedLevel]);
 
+  const handleAwardPracticeXp = useCallback(
+    (xp: number, category: 'learn' | 'challenge') => {
+      if (xp <= 0) return;
+      setJustCompletedSession(true);
+      setAppState((prev) => ({
+        ...prev,
+        gameProgress: {
+          ...prev.gameProgress,
+          totalXp: prev.gameProgress.totalXp + xp,
+        },
+        activityLog: recordStudyActivity(prev.activityLog, category),
+      }));
+    },
+    [],
+  );
+
+  const handleToggleDifficultCard = useCallback((cardId: string) => {
+    setAppState((prev) => {
+      const inAgain = prev.ankiProgress.againIds.includes(cardId);
+      const srsRec = prev.ankiSrs[cardId];
+      const hasSrsDifficult =
+        Boolean(srsRec) &&
+        (srsRec.state === 'relearning' || (srsRec.lapses ?? 0) >= 1);
+      const currentlyDifficult = inAgain || hasSrsDifficult;
+
+      if (currentlyDifficult) {
+        const nextSrs = { ...prev.ankiSrs };
+        if (srsRec && hasSrsDifficult) {
+          nextSrs[cardId] = {
+            ...srsRec,
+            state: srsRec.state === 'relearning' ? 'review' : srsRec.state,
+            lapses: 0,
+          };
+        }
+        return {
+          ...prev,
+          ankiProgress: {
+            ...prev.ankiProgress,
+            againIds: prev.ankiProgress.againIds.filter((id) => id !== cardId),
+          },
+          ankiSrs: nextSrs,
+        };
+      }
+
+      return {
+        ...prev,
+        ankiProgress: {
+          ...prev.ankiProgress,
+          againIds: [...prev.ankiProgress.againIds, cardId],
+        },
+      };
+    });
+  }, []);
+
+  const handleMarkDifficultDrillRemembered = useCallback(
+    (card: AnkiCard): number => {
+      const deckId = (card.deckId ?? card.jlptLevel ?? 'N5') as AnkiDeckId;
+      const xp = handleRateAnkiCard(deckId, card, 'good', null);
+      // Clear card from difficult/leech queue immediately after user confirms mastery
+      setAppState((prev) => {
+        const srsRec = prev.ankiSrs[card.id];
+        const nextSrs = srsRec
+          ? {
+              ...prev.ankiSrs,
+              [card.id]: {
+                ...srsRec,
+                state:
+                  srsRec.state === 'relearning' ? ('review' as const) : srsRec.state,
+                lapses: 0,
+              },
+            }
+          : prev.ankiSrs;
+        return {
+          ...prev,
+          ankiProgress: {
+            ...prev.ankiProgress,
+            againIds: prev.ankiProgress.againIds.filter((id) => id !== card.id),
+          },
+          ankiSrs: nextSrs,
+        };
+      });
+      return xp;
+    },
+    [handleRateAnkiCard],
+  );
+
+  const handleStartDailyDrill = useCallback(
+    (count: 5 | 10, shuffleIndex: number) => {
+      const todayKey = getLocalDateKey();
+      const stage = generateDailyDrillStage({
+        dateKey: todayKey,
+        shuffleIndex,
+        unlockedLevel: appState.onboarding.selfAssessedLevel,
+        difficultCards,
+        unlockedAnkiCards,
+        unlockedBunpouItems,
+        count,
+      });
+      if (!stage) return;
+      setActiveDailyDrill({ stage, count, shuffleIndex });
+    },
+    [
+      appState.onboarding.selfAssessedLevel,
+      difficultCards,
+      unlockedAnkiCards,
+      unlockedBunpouItems,
+    ],
+  );
+
+  const handleCompleteDailyDrill = useCallback(
+    (_stage: ChallengeStage, evaluation: ChallengeEvaluation) => {
+      const todayKey = getLocalDateKey();
+      setDailyDrillDoneDate(todayKey);
+      try {
+        window.localStorage.setItem('utamago_daily_drill_done_date', todayKey);
+      } catch {
+        // Ignore storage restrictions
+      }
+      handleAwardPracticeXp(evaluation.xpAwarded, 'challenge');
+    },
+    [handleAwardPracticeXp],
+  );
+
   const handleExportBackup = useCallback((): string => {
     const payload = createBackupPayload({
       version: 2,
@@ -2503,9 +2678,13 @@ export default function App() {
                   bunpouN2Items={bunpouN2Items}
                   bunpouN1Items={bunpouN1Items}
                   showChallengesView={homeFocusView === 'challenges'}
+                  dailyDrillDoneToday={dailyDrillDoneDate === getLocalDateKey()}
                   onOpenChallenges={() => handleOpenHomeFocus('challenges')}
                   onCloseChallenges={handleCloseHomeFocus}
                   onOpenTryOut={handleOpenTryOut}
+                  onOpenDictionary={() => setDictionaryOpen(true)}
+                  onStartDifficultDrill={() => setDifficultDrillOpen(true)}
+                  onStartDailyDrill={handleStartDailyDrill}
                   onStartStage={handleStartChallenge}
                   onNavigate={(tab) => handleSelectTab(tab)}
                 />
@@ -2609,6 +2788,8 @@ export default function App() {
                   bunpouN1Items={bunpouN1Items}
                   reviewedLessonIds={appState.activityLog.reviewedLessonIds}
                   onMarkLessonReviewed={handleMarkLessonReviewed}
+                  onAwardPracticeXp={handleAwardPracticeXp}
+                  onOpenDictionary={() => setDictionaryOpen(true)}
                   onNavigateProfile={() => handleSelectTab('profile')}
                   onOpenTryOut={handleOpenTryOut}
                   onNavigate={handleSelectTab}
@@ -2697,6 +2878,44 @@ export default function App() {
           onClose={handleAttemptCloseChallenge}
         />
       )}
+
+      {activeDailyDrill && (
+        <ChallengeRunnerModal
+          key={activeDailyDrill.stage.id}
+          stage={activeDailyDrill.stage}
+          previousBestStars={0}
+          hasNextStage={false}
+          unlimitedHearts
+          headerLabel={`Daily Drill · ${activeDailyDrill.stage.jlptLevel}`}
+          closeButtonLabel="Kembali ke Tantangan"
+          onShuffleNewSet={() =>
+            handleStartDailyDrill(
+              activeDailyDrill.count,
+              activeDailyDrill.shuffleIndex + 1,
+            )
+          }
+          onComplete={handleCompleteDailyDrill}
+          onNextStage={() => {}}
+          onClose={() => setActiveDailyDrill(null)}
+        />
+      )}
+
+      {difficultDrillOpen && (
+        <DifficultDrillModal
+          cards={difficultCards}
+          onMarkRemembered={handleMarkDifficultDrillRemembered}
+          onClose={() => setDifficultDrillOpen(false)}
+        />
+      )}
+
+      <VocabDictionaryModal
+        open={dictionaryOpen}
+        cards={allVocabCards}
+        ankiSrs={appState.ankiSrs}
+        againIds={appState.ankiProgress.againIds}
+        onToggleDifficultCard={handleToggleDifficultCard}
+        onClose={() => setDictionaryOpen(false)}
+      />
 
       <ConfirmDialog
         open={exitConfirm !== null}

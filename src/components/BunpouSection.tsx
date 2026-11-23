@@ -7,10 +7,13 @@ import {
   ChevronLeft,
   ChevronRight,
   Lock,
+  Play,
   Search,
+  Shuffle,
   SlidersHorizontal,
   X,
 } from 'lucide-react';
+import type { ChallengeStage } from '../data/challengeLevels';
 import type { JlptLevel } from '../data/utamagoContent';
 import {
   buildCrossLevelBunpouComparisonGroups,
@@ -34,7 +37,9 @@ import {
   isJlptLevelUnlocked,
   JLPT_LEVELS_ASC,
 } from '../utils/levelProgression';
+import { generateBunpouComparisonQuiz } from '../utils/practiceGenerators';
 import { BunpouExplanation } from './BunpouExplanation';
+import { ChallengeRunnerModal } from './ChallengeRunnerModal';
 import { HighlightedJapaneseText } from './HighlightedJapaneseText';
 
 interface BunpouSectionProps {
@@ -46,6 +51,7 @@ interface BunpouSectionProps {
   bunpouN1Items: BunpouN2Item[];
   reviewedLessonIds: string[];
   onMarkLessonReviewed?: (lessonId: string) => void;
+  onAwardPracticeXp?: (xp: number, category: 'learn' | 'challenge') => void;
   onNavigateProfile: () => void;
   mobileDetailOpen: boolean;
   onMobileDetailOpenChange: (open: boolean) => void;
@@ -101,10 +107,16 @@ export function BunpouSection({
   bunpouN1Items,
   reviewedLessonIds,
   onMarkLessonReviewed,
+  onAwardPracticeXp,
   onNavigateProfile,
   mobileDetailOpen,
   onMobileDetailOpenChange,
 }: BunpouSectionProps) {
+  const [activeCompareQuiz, setActiveCompareQuiz] = useState<{
+    stage: ChallengeStage;
+    mode: 'topic' | 'mixed';
+    seed: number;
+  } | null>(null);
   const detailTopRef = useRef<HTMLDivElement | null>(null);
   const chapterTopRef = useRef<HTMLDivElement | null>(null);
 
@@ -1029,6 +1041,65 @@ export function BunpouSection({
               );
             })}
           </div>
+
+          {/* Interactive Comparison Quiz Action Bar */}
+          <div className="flex flex-col gap-2.5 rounded-2xl border border-outline-variant bg-surface-container-low p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0">
+              <p className="font-display text-sm font-bold text-on-surface">
+                Uji Pembeda Pola Mirip
+              </p>
+              <p className="mt-0.5 text-xs leading-relaxed text-on-surface-variant">
+                Latihan melengkapi kalimat dengan pengecoh dari sub-nuansa yang
+                sering tertukar.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-2 sm:shrink-0 sm:flex-row">
+              <button
+                type="button"
+                onClick={() => {
+                  vibrateTap();
+                  const seed = Date.now() % 100000;
+                  const quiz = generateBunpouComparisonQuiz({
+                    group: activeComparisonGroup,
+                    allGroups: allCrossLevelGroups,
+                    mode: 'topic',
+                    count: 5,
+                    seed,
+                  });
+                  if (quiz) {
+                    setActiveCompareQuiz({ stage: quiz, mode: 'topic', seed });
+                  }
+                }}
+                className="m3-tactile inline-flex min-h-[44px] items-center justify-center gap-1.5 whitespace-nowrap rounded-xl bg-primary px-4 py-2 text-xs font-bold text-on-primary hover:bg-primary-hover"
+              >
+                <Play className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
+                <span>Uji Pemahaman Topik Ini (5 Soal)</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  vibrateTap();
+                  const seed = Date.now() % 100000;
+                  const quiz = generateBunpouComparisonQuiz({
+                    group: activeComparisonGroup,
+                    allGroups: allCrossLevelGroups,
+                    mode: 'mixed',
+                    count: 5,
+                    seed,
+                  });
+                  if (quiz) {
+                    setActiveCompareQuiz({ stage: quiz, mode: 'mixed', seed });
+                  }
+                }}
+                className="m3-tactile inline-flex min-h-[44px] items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border border-outline bg-surface px-4 py-2 text-xs font-bold text-on-surface hover:bg-surface-container"
+              >
+                <Shuffle className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+                <span>Kuis Campuran Lintas Topik</span>
+              </button>
+            </div>
+          </div>
         </div>
       </section>
     );
@@ -1576,6 +1647,46 @@ export function BunpouSection({
             </div>
           </div>
         </div>
+      )}
+
+      {activeCompareQuiz && (
+        <ChallengeRunnerModal
+          key={activeCompareQuiz.stage.id}
+          stage={activeCompareQuiz.stage}
+          previousBestStars={0}
+          hasNextStage={false}
+          unlimitedHearts
+          useFormattedExplanation
+          headerLabel={
+            activeCompareQuiz.mode === 'topic'
+              ? 'Kuis Pembeda · Topik Ini'
+              : 'Kuis Pembeda · Lintas Topik'
+          }
+          closeButtonLabel="Kembali ke Materi"
+          onShuffleNewSet={() => {
+            if (!activeComparisonGroup) return;
+            const nextSeed = activeCompareQuiz.seed + 1;
+            const nextQuiz = generateBunpouComparisonQuiz({
+              group: activeComparisonGroup,
+              allGroups: allCrossLevelGroups,
+              mode: activeCompareQuiz.mode,
+              count: 5,
+              seed: nextSeed,
+            });
+            if (nextQuiz) {
+              setActiveCompareQuiz({
+                stage: nextQuiz,
+                mode: activeCompareQuiz.mode,
+                seed: nextSeed,
+              });
+            }
+          }}
+          onComplete={(_, evalResult) => {
+            onAwardPracticeXp?.(evalResult.xpAwarded, 'learn');
+          }}
+          onNextStage={() => {}}
+          onClose={() => setActiveCompareQuiz(null)}
+        />
       )}
     </section>
   );

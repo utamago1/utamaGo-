@@ -243,6 +243,8 @@ export function isStageUnlocked(
   completedLevels: Record<string, CompletedLevelRecord>,
 ): boolean {
   if (stageIndex <= 0) return true;
+  const currentId = allStageIds[stageIndex];
+  if (currentId && completedLevels[currentId]) return true;
   const previousId = allStageIds[stageIndex - 1];
   if (!previousId) return false;
   return Boolean(completedLevels[previousId]);
