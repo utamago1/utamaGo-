@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  buildTtsCacheKey,
   clampSpeechRate,
   cleanJapaneseSpeechText,
   DEFAULT_SPEECH_PREFERENCES,
@@ -8,6 +9,7 @@ import {
   formatSpeechRateLabel,
   formatSpeechStyleLabel,
   resolveJapaneseVoiceSelection,
+  resolveServerTtsVoice,
   sanitizeSpeechPreferences,
 } from './japaneseSpeech';
 
@@ -90,4 +92,25 @@ test('cleanJapaneseSpeechText strips parentheses and formatting markers', () => 
   assert.equal(formatSpeechRateLabel(0.75), '0.75x');
   assert.equal(formatSpeechStyleLabel('female'), 'Cewek');
   assert.equal(formatSpeechStyleLabel('male'), 'Cowok');
+});
+
+test('resolveServerTtsVoice maps male to Charon and female/auto to Kore with distinct cache keys', () => {
+  assert.deepEqual(resolveServerTtsVoice('male'), {
+    voiceName: 'Charon',
+    normalizedStyle: 'male',
+  });
+  assert.deepEqual(resolveServerTtsVoice('female'), {
+    voiceName: 'Kore',
+    normalizedStyle: 'female',
+  });
+  assert.deepEqual(resolveServerTtsVoice('auto'), {
+    voiceName: 'Kore',
+    normalizedStyle: 'female',
+  });
+
+  const maleKey = buildTtsCacheKey('こんにちは', 'male');
+  const femaleKey = buildTtsCacheKey('こんにちは', 'female');
+  assert.notEqual(maleKey, femaleKey);
+  assert.ok(maleKey.includes('/male/'));
+  assert.ok(femaleKey.includes('/female/'));
 });

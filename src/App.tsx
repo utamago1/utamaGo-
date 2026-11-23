@@ -144,7 +144,6 @@ import {
   getPacketState,
   isValidTab,
   loadUnifiedAppState,
-  sanitizePacketsProgressMap,
   saveUnifiedAppState,
   type OnboardingSettings,
   type StoredTryOutPacketState,
@@ -152,10 +151,8 @@ import {
   type UtamagoAppStateV2,
 } from './utils/storage';
 import {
-  createBackupPayload,
   EMPTY_ACTIVITY_LOG,
   getLocalDateKey,
-  parseBackupPayload,
   recordStudyActivity,
 } from './utils/studyAnalytics';
 import {
@@ -2505,73 +2502,6 @@ export default function App() {
     [handleAwardPracticeXp],
   );
 
-  const handleExportBackup = useCallback((): string => {
-    const payload = createBackupPayload({
-      version: 2,
-      ankiProgress: appState.ankiProgress,
-      ankiSrs: appState.ankiSrs,
-      ankiEngine: appState.ankiEngine,
-      onboarding: appState.onboarding,
-      gameProgress: appState.gameProgress,
-      packetProgress: appState.packetProgress,
-      tryoutTimers: appState.tryoutTimers,
-      tryoutFlaggedIds: appState.tryoutFlaggedIds,
-      packetsProgress: appState.packetsProgress,
-      latestReport: appState.latestReport,
-      activityLog: appState.activityLog,
-      choukaiAudio: appState.choukaiAudio,
-      reminder: appState.reminder,
-    });
-    return JSON.stringify(payload, null, 2);
-  }, [appState]);
-
-  const handleImportBackup = useCallback((rawJson: string): boolean => {
-    const parsed = parseBackupPayload(rawJson);
-    if (!parsed) return false;
-
-    setAppState((prev) => {
-      const importedFirst: StoredTryOutPacketState = {
-        packetProgress: parsed.packetProgress,
-        tryoutTimers: parsed.tryoutTimers ?? { ...EMPTY_TIMERS_BY_PART },
-        tryoutFlaggedIds: parsed.tryoutFlaggedIds ?? { ...EMPTY_FLAGGED_BY_PART },
-        choukaiAudio: parsed.choukaiAudio ?? { currentTime: 0, playbackRate: 1 },
-      };
-      const packetsProgress = sanitizePacketsProgressMap(
-        parsed.packetsProgress,
-        importedFirst,
-      );
-      const effectiveFirst = packetsProgress['n2-1'] ?? importedFirst;
-
-      return {
-        ...prev,
-        ankiProgress: parsed.ankiProgress,
-        ankiSrs: parsed.ankiSrs ?? prev.ankiSrs,
-        ankiEngine: parsed.ankiEngine ?? prev.ankiEngine,
-        onboarding: parsed.onboarding
-          ? {
-              ...parsed.onboarding,
-              name: parsed.onboarding.name ?? prev.onboarding.name,
-              gender: parsed.onboarding.gender ?? prev.onboarding.gender,
-              selfAssessedLevel:
-                parsed.onboarding.selfAssessedLevel ??
-                prev.onboarding.selfAssessedLevel,
-            }
-          : { ...prev.onboarding, completed: true },
-        gameProgress: parsed.gameProgress,
-        packetProgress: effectiveFirst.packetProgress,
-        tryoutTimers: effectiveFirst.tryoutTimers,
-        tryoutFlaggedIds: effectiveFirst.tryoutFlaggedIds,
-        packetsProgress,
-        latestReport: parsed.latestReport,
-        activityLog: parsed.activityLog,
-        choukaiAudio: effectiveFirst.choukaiAudio,
-        reminder: parsed.reminder ?? prev.reminder,
-      };
-    });
-
-    return true;
-  }, []);
-
   const handleResetAllProgress = useCallback(() => {
     clearAllAppStorage(activeUserIdRef.current);
     const initialFirst = createDefaultPacketState();
@@ -2942,8 +2872,6 @@ export default function App() {
         onUpdateReminder={(next) =>
           setAppState((prev) => ({ ...prev, reminder: next }))
         }
-        onExportBackup={handleExportBackup}
-        onImportBackup={handleImportBackup}
         onResetAllProgress={handleResetAllProgress}
         accountUsername={authProfile.username}
         accountEmail={authProfile.email}

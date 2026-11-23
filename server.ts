@@ -3,10 +3,179 @@ import os from 'node:os';
 import path from 'node:path';
 import { Readable } from 'node:stream';
 import type { ReadableStream as WebReadableStream } from 'node:stream/web';
+import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
 import express, { type Request, type Response } from 'express';
 
 dotenv.config();
+
+type TtsVoiceStyle = 'auto' | 'female' | 'male';
+
+const TTS_MAX_TEXT_LENGTH = 260;
+const TTS_CACHE_MAX_ENTRIES = 250;
+const TTS_RATE_LIMIT_WINDOW_MS = 60_000;
+const TTS_RATE_LIMIT_MAX_REQUESTS = 60;
+
+let geminiTtsClient: GoogleGenAI | null = null;
+const ttsAudioCache = new Map<string, Buffer>();
+const ttsRateLimitBuckets = new Map<string, number[]>();
+
+function getGeminiTtsClient(): GoogleGenAI | null {
+  const apiKey = process.env.GEMINI_API_KEY?.trim();
+  if (!apiKey) return null;
+  if (!geminiTtsClient) {
+    geminiTtsClient = new GoogleGenAI({
+      apiKey,
+      apiVersion: 'v1beta',
+      httpOptions: { headers: { 'User-Agent': 'aistudio-build' } },
+    });
+  }
+  return geminiTtsClient;
+}
+
+function getClientIp(req: Request): string {
+  const forwarded = req.headers['x-forwarded-for'];
+  if (typeof forwarded === 'string' && forwarded.trim()) {
+    return forwarded.split(',')[0].trim();
+  }
+  return req.socket.remoteAddress || 'unknown';
+}
+
+function checkTtsRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const cutoff = now - TTS_RATE_LIMIT_WINDOW_MS;
+  const recent = (ttsRateLimitBuckets.get(ip) ?? []).filter((t) => t > cutoff);
+  if (recent.length >= TTS_RATE_LIMIT_MAX_REQUESTS) {
+    ttsRateLimitBuckets.set(ip, recent);
+    return false;
+  }
+  recent.push(now);
+  ttsRateLimitBuckets.set(ip, recent);
+
+  if (ttsRateLimitBuckets.size > 500) {
+    for (const [key, timestamps] of ttsRateLimitBuckets.entries()) {
+      const kept = timestamps.filter((t) => t > cutoff);
+      if (kept.length === 0) ttsRateLimitBuckets.delete(key);
+      else ttsRateLimitBuckets.set(key, kept);
+    }
+  }
+  return true;
+}
+
+function setTtsCacheEntry(cacheKey: string, wavBuffer: Buffer): void {
+  if (ttsAudioCache.has(cacheKey)) {
+    ttsAudioCache.delete(cacheKey);
+  }
+  ttsAudioCache.set(cacheKey, wavBuffer);
+  if (ttsAudioCache.size > TTS_CACHE_MAX_ENTRIES) {
+    const oldestKey = ttsAudioCache.keys().next().value;
+    if (oldestKey) ttsAudioCache.delete(oldestKey);
+  }
+}
+
+async function handleJapaneseTts(req: Request, res: Response): Promise<void> {
+  const body = req.body as { text?: unknown; voiceStyle?: unknown } | undefined;
+  const rawText = typeof body?.text === 'string' ? body.text.trim() : '';
+  const rawStyle = body?.voiceStyle;
+
+  if (!rawText) {
+    res.status(400).json({ error: 'Text is required.' });
+    return;
+  }
+  if (rawText.length > TTS_MAX_TEXT_LENGTH) {
+    res.status(400).json({ error: 'Text exceeds maximum length.' });
+    return;
+  }
+
+  const voiceStyle: TtsVoiceStyle =
+    rawStyle === 'male' || rawStyle === 'female' || rawStyle === 'auto'
+      ? rawStyle
+      : 'auto';
+
+  const voiceName = voiceStyle === 'male' ? 'Charon' : 'Kore';
+  const normalizedText = rawText.replace(/\s+/g, ' ').trim();
+  const cacheKey = `${voiceName}:${normalizedText}`;
+
+  const cached = ttsAudioCache.get(cacheKey);
+  if (cached) {
+    // Refresh LRU position
+    ttsAudioCache.delete(cacheKey);
+    ttsAudioCache.set(cacheKey, cached);
+    res.setHeader('Content-Type', 'audio/wav');
+    res.setHeader('Cache-Control', 'public, max-age=604800');
+    res.setHeader('X-TTS-Voice', voiceName);
+    res.setHeader('X-TTS-Cache', 'HIT');
+    res.status(200).send(cached);
+    return;
+  }
+
+  const clientIp = getClientIp(req);
+  if (!checkTtsRateLimit(clientIp)) {
+    res.status(429).json({ error: 'Too many TTS requests. Please wait a moment.' });
+    return;
+  }
+
+  const ai = getGeminiTtsClient();
+  if (!ai) {
+    res.status(503).json({ error: 'TTS service is not configured.' });
+    return;
+  }
+
+  try {
+    const styleInstruction =
+      voiceStyle === 'male'
+        ? 'Clear, natural male standard Tokyo Japanese native pronunciation for JLPT study'
+        : 'Clear, natural female standard Tokyo Japanese native pronunciation for JLPT study';
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.8-flash-lite-tts',
+      contents: [
+        {
+          role: 'user',
+          parts: [
+            {
+              text: normalizedText,
+              speechMetadata: {
+                style: styleInstruction,
+              },
+            },
+          ],
+        },
+      ],
+      config: {
+        responseModalities: ['AUDIO'],
+        speechConfig: {
+          voiceConfig: {
+            prebuiltVoiceConfig: { voiceName },
+          },
+        },
+      },
+    });
+
+    const base64Audio =
+      response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+    if (!base64Audio) {
+      res.status(502).json({ error: 'No audio returned by TTS service.' });
+      return;
+    }
+
+    // Unary Gemini 3.8 TTS returns a complete RIFF WAV file (24kHz mono 16-bit).
+    const wavBuffer = Buffer.from(base64Audio, 'base64');
+    setTtsCacheEntry(cacheKey, wavBuffer);
+
+    res.setHeader('Content-Type', 'audio/wav');
+    res.setHeader('Cache-Control', 'public, max-age=604800');
+    res.setHeader('X-TTS-Voice', voiceName);
+    res.setHeader('X-TTS-Cache', 'MISS');
+    res.status(200).send(wavBuffer);
+  } catch (err) {
+    console.error(
+      '[TTS] Gemini TTS request failed:',
+      err instanceof Error ? err.message : 'unknown error',
+    );
+    res.status(503).json({ error: 'TTS service temporarily unavailable.' });
+  }
+}
 
 interface DriveAudioAssetMeta {
   mimeType: string;
@@ -1625,6 +1794,10 @@ async function startServer() {
 
   app.get('/api/health', (_req, res) => {
     res.json({ ok: true });
+  });
+
+  app.post('/api/tts', express.json({ limit: '8kb' }), (req, res) => {
+    void handleJapaneseTts(req, res);
   });
 
   // Monthly Catbox.moe keep-alive endpoint (touches all 18 N2 MP3s at least once every 25 days)

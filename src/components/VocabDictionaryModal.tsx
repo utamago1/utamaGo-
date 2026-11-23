@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   ArrowLeft,
+  Bookmark,
   BookmarkCheck,
   BookmarkPlus,
   ChevronDown,
@@ -23,9 +24,20 @@ import {
   type DictionaryLevelFilter,
   type DictionaryStatusFilter,
 } from '../utils/practiceGenerators';
+import {
+  extractNotesMapById,
+  extractSavedItemIdSet,
+  getStudyNoteEntry,
+  loadStudyNotes,
+  saveStudyNoteText,
+  subscribeStudyNotes,
+  toggleStudyBookmark,
+  type StudyNotesStore,
+} from '../utils/studyNotes';
 import { extractKanjiCharacters } from '../utils/writingPractice';
 import { HighlightedJapaneseText } from './HighlightedJapaneseText';
 import { SpeechControlBar } from './SpeechControlBar';
+import { StudyNotePanel } from './StudyNotePanel';
 
 interface VocabDictionaryModalProps {
   open: boolean;
@@ -51,6 +63,7 @@ const STATUS_FILTERS: ReadonlyArray<{
   label: string;
 }> = [
   { id: 'ALL', label: 'Semua Status' },
+  { id: 'SAVED', label: 'Tersimpan' },
   { id: 'DIFFICULT', label: 'Kata Sulit' },
   { id: 'LEARNED', label: 'Sudah Dipelajari' },
 ];
@@ -89,8 +102,24 @@ export function VocabDictionaryModal({
     useState<DictionaryStatusFilter>('ALL');
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [studyNotes, setStudyNotes] = useState<StudyNotesStore>(() =>
+    loadStudyNotes(),
+  );
+
+  useEffect(() => {
+    return subscribeStudyNotes(setStudyNotes);
+  }, []);
 
   const speechSupported = useMemo(() => isJapaneseSpeechSupported(), []);
+
+  const savedVocabIds = useMemo(
+    () => extractSavedItemIdSet(studyNotes, 'vocab'),
+    [studyNotes],
+  );
+  const vocabNotesById = useMemo(
+    () => extractNotesMapById(studyNotes, 'vocab'),
+    [studyNotes],
+  );
 
   const results = useMemo(
     () =>
@@ -101,8 +130,19 @@ export function VocabDictionaryModal({
         status: statusFilter,
         ankiSrs,
         againIds,
+        savedIds: savedVocabIds,
+        notesById: vocabNotesById,
       }),
-    [cards, query, levelFilter, statusFilter, ankiSrs, againIds],
+    [
+      cards,
+      query,
+      levelFilter,
+      statusFilter,
+      ankiSrs,
+      againIds,
+      savedVocabIds,
+      vocabNotesById,
+    ],
   );
 
   if (!open) return null;
@@ -229,6 +269,10 @@ export function VocabDictionaryModal({
             >
               {STATUS_FILTERS.map((st) => {
                 const active = statusFilter === st.id;
+                const savedSuffix =
+                  st.id === 'SAVED' && savedVocabIds.size > 0
+                    ? ` (${savedVocabIds.size})`
+                    : '';
                 return (
                   <button
                     key={st.id}
@@ -246,6 +290,7 @@ export function VocabDictionaryModal({
                     }`}
                   >
                     {st.label}
+                    {savedSuffix}
                   </button>
                 );
               })}
@@ -280,6 +325,11 @@ export function VocabDictionaryModal({
                   const { card, level, status, isDifficult } = item;
                   const isExpanded = expandedId === card.id;
                   const statusMeta = formatStatusLabel(status);
+                  const noteEntry = getStudyNoteEntry(
+                    studyNotes,
+                    'vocab',
+                    card.id,
+                  );
 
                   return (
                     <li key={card.id} className="min-w-0">
@@ -316,9 +366,39 @@ export function VocabDictionaryModal({
                               {statusMeta.text}
                             </span>
                           </p>
+                          {!isExpanded && noteEntry.note.length > 0 && (
+                            <p className="mt-1.5 truncate border-l-2 border-amber-500 pl-2 text-xs text-amber-900/90">
+                              {noteEntry.note}
+                            </p>
+                          )}
                         </button>
 
                         <div className="flex shrink-0 items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              vibrateTap();
+                              toggleStudyBookmark('vocab', card.id);
+                            }}
+                            aria-pressed={noteEntry.bookmarked}
+                            aria-label={
+                              noteEntry.bookmarked
+                                ? `Hapus bookmark ${card.word}`
+                                : `Simpan bookmark ${card.word}`
+                            }
+                            className={`m3-tactile inline-flex h-11 w-11 items-center justify-center rounded-xl transition-colors ${
+                              noteEntry.bookmarked
+                                ? 'bg-amber-50 text-amber-600'
+                                : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
+                            }`}
+                          >
+                            <Bookmark
+                              className={`h-4 w-4 ${
+                                noteEntry.bookmarked ? 'fill-amber-500' : ''
+                              }`}
+                              aria-hidden="true"
+                            />
+                          </button>
                           {speechSupported && (
                             <button
                               type="button"
@@ -327,7 +407,7 @@ export function VocabDictionaryModal({
                                 speakJapanese(card.word || card.furigana || '');
                               }}
                               aria-label={`Dengarkan pelafalan ${card.word}`}
-                              className="m3-tactile inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary-container text-primary hover:opacity-90"
+                              className="m3-tactile inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary-container text-primary hover:opacity-90"
                             >
                               <Volume2 className="h-4 w-4" aria-hidden="true" />
                             </button>
@@ -343,7 +423,7 @@ export function VocabDictionaryModal({
                                 ? `Tutup detail ${card.word}`
                                 : `Buka detail ${card.word}`
                             }
-                            className="inline-flex h-10 w-10 items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
+                            className="inline-flex h-11 w-11 items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
                           >
                             {isExpanded ? (
                               <ChevronUp className="h-4 w-4" aria-hidden="true" />
@@ -402,6 +482,19 @@ export function VocabDictionaryModal({
                             compact
                             showShadowing
                             showQuickSettings
+                          />
+
+                          <StudyNotePanel
+                            itemId={card.id}
+                            entry={noteEntry}
+                            compact
+                            onToggleBookmark={() =>
+                              toggleStudyBookmark('vocab', card.id)
+                            }
+                            onSaveNote={(noteText) =>
+                              saveStudyNoteText('vocab', card.id, noteText)
+                            }
+                            placeholder="Tulis catatan arti, pasangan kata, atau cara mengingat kanji ini..."
                           />
 
                           <div className="flex flex-wrap gap-2 pt-1">

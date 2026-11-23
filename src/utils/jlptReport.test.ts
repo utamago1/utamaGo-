@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {
   buildWhatsAppInquiryUrl,
   calculateTryOutReport,
+  TEACHER_INSTAGRAM_HANDLE,
+  TEACHER_INSTAGRAM_URL,
 } from './jlptReport';
 import { MINI_TRYOUT_QUESTIONS } from '../data/utamagoContent';
 
@@ -39,4 +41,9 @@ test('buildWhatsAppInquiryUrl encodes learner question note cleanly', () => {
   const url = buildWhatsAppInquiryUrl('Tanya pola Bunpou N2');
   assert.ok(url.startsWith('https://wa.me/?text='));
   assert.ok(decodeURIComponent(url).includes('Tanya pola Bunpou N2'));
+});
+
+test('teacher Instagram contact points to official @ryan_lief profile', () => {
+  assert.equal(TEACHER_INSTAGRAM_HANDLE, '@ryan_lief');
+  assert.equal(TEACHER_INSTAGRAM_URL, 'https://www.instagram.com/ryan_lief/');
 });

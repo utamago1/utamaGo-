@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import {
+  Loader2,
   Repeat,
   SlidersHorizontal,
   Square,
@@ -10,6 +11,7 @@ import { vibrateTap } from '../utils/haptics';
 import {
   formatSpeechRateLabel,
   formatSpeechStyleLabel,
+  isDeviceSpeechSynthesisSupported,
   isJapaneseSpeechSupported,
   listJapaneseVoices,
   loadSpeechPreferences,
@@ -56,6 +58,7 @@ export function SpeechControlBar({
     loadSpeechPreferences(),
   );
   const [speaking, setSpeaking] = useState(false);
+  const [loadingAudio, setLoadingAudio] = useState(false);
   const [shadowStage, setShadowStage] = useState<ShadowingStage>('idle');
   const [repeatLeft, setRepeatLeft] = useState<number>(0);
   const [popoverOpen, setPopoverOpen] = useState(false);
@@ -72,14 +75,14 @@ export function SpeechControlBar({
   }, []);
 
   useEffect(() => {
-    if (!supported) return;
+    if (!isDeviceSpeechSynthesisSupported()) return;
     const syncVoices = () => setVoices(listJapaneseVoices());
     syncVoices();
     window.speechSynthesis.addEventListener?.('voiceschanged', syncVoices);
     return () => {
       window.speechSynthesis.removeEventListener?.('voiceschanged', syncVoices);
     };
-  }, [supported]);
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -93,6 +96,7 @@ export function SpeechControlBar({
     shadowHandleRef.current = null;
     setShadowStage('idle');
     setSpeaking(false);
+    setLoadingAudio(false);
   }, [text]);
 
   if (!supported || !text.trim()) return null;
@@ -106,17 +110,23 @@ export function SpeechControlBar({
       shadowHandleRef.current = null;
       setShadowStage('idle');
     }
-    if (speaking) {
+    if (speaking || loadingAudio) {
       stopJapaneseSpeech();
       setSpeaking(false);
+      setLoadingAudio(false);
       return;
     }
     setSpeaking(true);
     const ok = speakJapanese(text, {
-      onEnd: () => setSpeaking(false),
+      onLoadingChange: (loading) => setLoadingAudio(loading),
+      onEnd: () => {
+        setSpeaking(false);
+        setLoadingAudio(false);
+      },
     });
     if (!ok) {
       setSpeaking(false);
+      setLoadingAudio(false);
     }
   };
 
@@ -169,12 +179,16 @@ export function SpeechControlBar({
               : 'border-outline-variant bg-surface-container text-on-surface hover:border-outline hover:text-primary'
           }`}
         >
-          {speaking ? (
+          {loadingAudio ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
+          ) : speaking ? (
             <Square className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
           ) : (
             <Volume2 className="h-3.5 w-3.5" aria-hidden="true" />
           )}
-          <span>{speaking ? 'Berhenti' : 'Dengar'}</span>
+          <span>
+            {loadingAudio ? 'Memuat...' : speaking ? 'Berhenti' : 'Dengar'}
+          </span>
         </button>
 
         {showShadowing && (
@@ -334,7 +348,7 @@ export function SpeechControlBar({
             </div>
           </div>
 
-          {voices.length > 0 && (
+          {voices.length > 1 && (
             <div className="space-y-1.5">
               <label
                 htmlFor="quick-jp-voice-select"
@@ -351,7 +365,7 @@ export function SpeechControlBar({
                 className="min-h-[40px] w-full rounded-xl border border-outline-variant bg-surface-container-low px-3 text-xs font-medium text-on-surface focus:border-primary focus:outline-none"
               >
                 <option value="">
-                  Otomatis sesuai gaya ({formatSpeechStyleLabel(prefs.voiceStyle)})
+                  Suara Server Natural ({formatSpeechStyleLabel(prefs.voiceStyle)})
                 </option>
                 {voices.map((v) => (
                   <option key={v.voiceURI} value={v.voiceURI}>

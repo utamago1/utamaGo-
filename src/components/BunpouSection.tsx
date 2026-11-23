@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
+  Bookmark,
   Check,
   CheckCircle2,
   ChevronLeft,
@@ -11,6 +12,7 @@ import {
   Search,
   Shuffle,
   SlidersHorizontal,
+  StickyNote,
   X,
 } from 'lucide-react';
 import type { ChallengeStage } from '../data/challengeLevels';
@@ -38,10 +40,21 @@ import {
   JLPT_LEVELS_ASC,
 } from '../utils/levelProgression';
 import { generateBunpouComparisonQuiz } from '../utils/practiceGenerators';
+import {
+  countSavedStudyItems,
+  getStudyNoteEntry,
+  isStudyItemSaved,
+  loadStudyNotes,
+  saveStudyNoteText,
+  subscribeStudyNotes,
+  toggleStudyBookmark,
+  type StudyNotesStore,
+} from '../utils/studyNotes';
 import { BunpouExplanation } from './BunpouExplanation';
 import { ChallengeRunnerModal } from './ChallengeRunnerModal';
 import { HighlightedJapaneseText } from './HighlightedJapaneseText';
 import { SpeechControlBar } from './SpeechControlBar';
+import { StudyNotePanel } from './StudyNotePanel';
 
 interface BunpouSectionProps {
   unlockedLevel: JlptLevel;
@@ -127,8 +140,12 @@ export function BunpouSection({
     null,
   );
   const [query, setQuery] = useState('');
+  const [savedOnly, setSavedOnly] = useState(false);
   const [filterSheetOpen, setFilterSheetOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string>('');
+  const [studyNotes, setStudyNotes] = useState<StudyNotesStore>(() =>
+    loadStudyNotes(),
+  );
 
   // Cross-level comparison state (ID-based & taxonomy-aware)
   const [compareTopicId, setCompareTopicId] = useState<string>('');
@@ -136,6 +153,10 @@ export function BunpouSection({
     useState<ComparisonLevelFilter>('ALL');
   const [compareLeftId, setCompareLeftId] = useState<string>('');
   const [compareRightId, setCompareRightId] = useState<string>('');
+
+  useEffect(() => {
+    return subscribeStudyNotes(setStudyNotes);
+  }, []);
 
   useEffect(() => {
     if (!filterSheetOpen) return;
@@ -151,6 +172,7 @@ export function BunpouSection({
   const handleSelectLevel = (lvl: JlptLevel) => {
     setBunpouLevel(lvl);
     setQuery('');
+    setSavedOnly(false);
     setGroupFilter('Semua');
     setOpenedLessonNumber(null);
     setSelectedId('');
@@ -218,17 +240,61 @@ export function BunpouSection({
     : -1;
 
   const isSearching = query.trim().length > 0;
+  const isFlatListMode = isSearching || savedOnly;
 
-  // Items displayed either inside the opened chapter OR across the level when searching
+  const savedLevelCount = useMemo(
+    () =>
+      countSavedStudyItems(
+        studyNotes,
+        'bunpou',
+        activeBunpouItems.map((it) => it.id),
+      ),
+    [studyNotes, activeBunpouItems],
+  );
+
+  // Items displayed inside opened chapter, saved-only filter, or search results
   const displayedItems = useMemo(() => {
+    const basePool = savedOnly
+      ? activeBunpouItems.filter((item) =>
+          isStudyItemSaved(studyNotes, 'bunpou', item.id),
+        )
+      : activeBunpouItems;
+
     if (isSearching) {
-      return filterBunpouN2Items(activeBunpouItems, query, groupFilter, 'all');
+      const qLower = query.trim().toLowerCase();
+      const matched = filterBunpouN2Items(basePool, query, groupFilter, 'all');
+      const matchedIds = new Set(matched.map((m) => m.id));
+      // Also match items whose personal study note contains the search query
+      const noteMatched = basePool.filter((item) => {
+        if (matchedIds.has(item.id)) return false;
+        if (groupFilter !== 'Semua' && item.groupId !== groupFilter) {
+          return false;
+        }
+        const entry = getStudyNoteEntry(studyNotes, 'bunpou', item.id);
+        return entry.note.toLowerCase().includes(qLower);
+      });
+      return [...matched, ...noteMatched];
     }
+
+    if (savedOnly) {
+      return groupFilter === 'Semua'
+        ? basePool
+        : basePool.filter((item) => item.groupId === groupFilter);
+    }
+
     if (activeChapter) {
       return activeChapter.items;
     }
     return [];
-  }, [isSearching, activeBunpouItems, query, groupFilter, activeChapter]);
+  }, [
+    savedOnly,
+    activeBunpouItems,
+    studyNotes,
+    isSearching,
+    query,
+    groupFilter,
+    activeChapter,
+  ]);
 
   const activeItem = useMemo(
     () =>
@@ -478,6 +544,7 @@ export function BunpouSection({
   const resetSearchAndFilters = () => {
     vibrateTap();
     setQuery('');
+    setSavedOnly(false);
     setGroupFilter('Semua');
     setOpenedLessonNumber(null);
     setSelectedId('');
@@ -552,6 +619,18 @@ export function BunpouSection({
               compact
               showShadowing
               showQuickSettings
+              className="mt-3"
+            />
+            <StudyNotePanel
+              itemId={activeItem.id}
+              entry={getStudyNoteEntry(studyNotes, 'bunpou', activeItem.id)}
+              onToggleBookmark={() =>
+                toggleStudyBookmark('bunpou', activeItem.id)
+              }
+              onSaveNote={(noteText) =>
+                saveStudyNoteText('bunpou', activeItem.id, noteText)
+              }
+              placeholder="Contoh: bedanya dengan pola mirip, konteks formal/kasual, atau trik ingat..."
               className="mt-3"
             />
           </div>
@@ -1233,6 +1312,36 @@ export function BunpouSection({
 
               <button
                 type="button"
+                aria-pressed={savedOnly}
+                onClick={() => {
+                  vibrateTap();
+                  setSavedOnly((prev) => !prev);
+                  setOpenedLessonNumber(null);
+                  setSelectedId('');
+                  onMobileDetailOpenChange(false);
+                }}
+                className={`inline-flex min-h-[44px] shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl border px-3 py-2 text-sm font-medium transition-colors ${
+                  savedOnly
+                    ? 'border-amber-500/60 bg-amber-50 text-amber-900'
+                    : 'border-outline-variant bg-surface-container-low text-on-surface hover:border-outline'
+                }`}
+              >
+                <Bookmark
+                  className={`h-4 w-4 shrink-0 ${
+                    savedOnly ? 'fill-amber-500 text-amber-600' : ''
+                  }`}
+                  aria-hidden="true"
+                />
+                <span className="hidden sm:inline">Tersimpan</span>
+                {savedLevelCount > 0 && (
+                  <span className="font-mono text-xs font-bold tabular-nums">
+                    ({savedLevelCount})
+                  </span>
+                )}
+              </button>
+
+              <button
+                type="button"
                 aria-haspopup="dialog"
                 aria-expanded={filterSheetOpen}
                 onClick={() => {
@@ -1255,15 +1364,17 @@ export function BunpouSection({
               </button>
             </div>
 
-            {(groupFilter !== 'Semua' || isSearching) && (
+            {(groupFilter !== 'Semua' || isFlatListMode) && (
               <div className="flex flex-wrap items-center justify-between gap-2 text-[13px] text-[#4b4b53] dark:text-[#b4b4c0]">
                 <p className="min-w-0 truncate">
-                  {isSearching ? (
+                  {isFlatListMode ? (
                     <>
                       <span className="font-mono font-semibold tabular-nums">
                         {displayedItems.length}
                       </span>{' '}
-                      pola ditemukan
+                      {savedOnly && !isSearching
+                        ? `pola tersimpan / bercatatan di ${bunpouLevel}`
+                        : 'pola ditemukan'}
                     </>
                   ) : (
                     <>
@@ -1292,7 +1403,7 @@ export function BunpouSection({
                 Memuat daftar bab Bunpou {bunpouLevel}...
               </p>
             </div>
-          ) : !isSearching && !activeChapter ? (
+          ) : !isFlatListMode && !activeChapter ? (
             /* STEP 1: DAFTAR BAB */
             <div className="space-y-3">
               <div className="flex items-baseline justify-between gap-2">
@@ -1380,11 +1491,14 @@ export function BunpouSection({
           ) : displayedItems.length === 0 ? (
             <div className="rounded-2xl border border-outline-variant bg-surface-container-low p-6 text-center">
               <p className="text-base font-semibold text-on-surface">
-                Pola yang dicari belum ditemukan
+                {savedOnly && !isSearching
+                  ? `Belum ada Bunpou ${bunpouLevel} yang disimpan`
+                  : 'Pola yang dicari belum ditemukan'}
               </p>
               <p className="mt-1 text-[13px] text-[#4b4b53] dark:text-[#b4b4c0] sm:text-sm">
-                Coba kata kunci lain atau kembali ke daftar bab Bunpou{' '}
-                {bunpouLevel}.
+                {savedOnly && !isSearching
+                  ? 'Buka pola Bunpou mana saja lalu ketuk tombol Simpan atau Catatan Pribadi agar muncul di sini.'
+                  : `Coba kata kunci lain atau kembali ke daftar bab Bunpou ${bunpouLevel}.`}
               </p>
               <button
                 type="button"
@@ -1395,9 +1509,9 @@ export function BunpouSection({
               </button>
             </div>
           ) : (
-            /* STEP 2: BUNPOU DALAM BAB (atau hasil pencarian) */
+            /* STEP 2: BUNPOU DALAM BAB (atau hasil pencarian / tersimpan) */
             <div className="space-y-4">
-              {!isSearching && activeChapter && !mobileDetailOpen && (
+              {!isFlatListMode && activeChapter && !mobileDetailOpen && (
                 <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-outline-variant bg-surface-container-low p-3.5 sm:px-4">
                   <div className="flex min-w-0 items-center gap-2.5">
                     <button
@@ -1440,6 +1554,11 @@ export function BunpouSection({
                     {displayedItems.map((item) => {
                       const selected = activeItem?.id === item.id;
                       const reviewed = isReviewed(item.id);
+                      const noteEntry = getStudyNoteEntry(
+                        studyNotes,
+                        'bunpou',
+                        item.id,
+                      );
                       return (
                         <li key={item.id} className="min-w-0">
                           <button
@@ -1480,6 +1599,18 @@ export function BunpouSection({
                                     </span>
                                   </>
                                 )}
+                                {noteEntry.bookmarked && (
+                                  <Bookmark
+                                    className="h-3.5 w-3.5 shrink-0 fill-amber-500 text-amber-600"
+                                    aria-label="Tersimpan"
+                                  />
+                                )}
+                                {noteEntry.note.length > 0 && (
+                                  <StickyNote
+                                    className="h-3.5 w-3.5 shrink-0 text-amber-600"
+                                    aria-label="Ada catatan pribadi"
+                                  />
+                                )}
                               </div>
 
                               <p
@@ -1495,6 +1626,12 @@ export function BunpouSection({
                               <p className="line-clamp-2 text-[13px] leading-relaxed text-[#4b4b53] dark:text-[#b4b4c0] sm:text-sm">
                                 {item.meaning}
                               </p>
+
+                              {noteEntry.note.length > 0 && (
+                                <p className="truncate border-l-2 border-amber-500 pl-2 text-xs text-amber-900/90">
+                                  {noteEntry.note}
+                                </p>
+                              )}
                             </div>
 
                             <ChevronRight
@@ -1512,7 +1649,7 @@ export function BunpouSection({
                   </ul>
 
                   {/* Prev / Next Bab quick navigation */}
-                  {!isSearching && activeChapter && chapters.length > 1 && (
+                  {!isFlatListMode && activeChapter && chapters.length > 1 && (
                     <div className="grid grid-cols-2 gap-2.5">
                       <button
                         type="button"

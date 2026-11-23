@@ -14,13 +14,22 @@ import {
   Eraser,
   Eye,
   EyeOff,
+  Hash,
   PenTool,
+  Play,
   RotateCcw,
+  Square,
   Undo2,
 } from 'lucide-react';
 import type { JlptLevel } from '../data/utamagoContent';
 import type { AnkiCard } from '../utils/ankiParser';
 import { vibrateSuccess, vibrateTap } from '../utils/haptics';
+import {
+  getCachedStrokeData,
+  loadCharacterStrokeData,
+  prefetchCharacterStrokeData,
+  type CharacterStrokeData,
+} from '../utils/strokeOrder';
 import {
   buildWritingPracticeDeck,
   type WritingPracticeMode,
@@ -64,6 +73,9 @@ const LEVEL_OPTIONS: ReadonlyArray<JlptLevel | 'ALL'> = [
   'ALL',
 ];
 
+const STROKE_ANIM_DURATION_MS = 640;
+const STROKE_ANIM_PAUSE_MS = 160;
+
 export function WritingStudioModal({
   open,
   cards,
@@ -79,22 +91,54 @@ export function WritingStudioModal({
   const [seedText, setSeedText] = useState<string | undefined>(initialSeedText);
   const [index, setIndex] = useState(0);
   const [showGuide, setShowGuide] = useState(true);
-  const [brushSize, setBrushSize] = useState<'fine' | 'calligraphy'>('calligraphy');
+  const [showStrokeNumbers, setShowStrokeNumbers] = useState(true);
+  const [brushSize, setBrushSize] = useState<'fine' | 'calligraphy'>(
+    'calligraphy',
+  );
   const [strokes, setStrokes] = useState<CanvasStroke[]>([]);
   const [masteredIds, setMasteredIds] = useState<string[]>([]);
 
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const activeStrokeRef = useRef<CanvasStroke | null>(null);
-  const drawingRef = useRef(false);
+  // Authentic KanjiVG stroke order state
+  const [strokeData, setStrokeData] = useState<CharacterStrokeData | null>(null);
+  const [strokeDataLoading, setStrokeDataLoading] = useState(false);
 
-  // Sync initial props when modal opens
+  // Interactive stroke-order animation state
+  const [animState, setAnimState] = useState<{
+    mode: 'idle' | 'all' | 'single';
+    strokeIndex: number;
+    progress: number;
+  }>({ mode: 'idle', strokeIndex: 0, progress: 0 });
+  const [inspectedStrokeIdx, setInspectedStrokeIdx] = useState<number | null>(
+    null,
+  );
+  const [animTip, setAnimTip] = useState<{ x: number; y: number } | null>(null);
+
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const animPathRef = useRef<SVGPathElement | null>(null);
+  const animRafRef = useRef<number | null>(null);
+  const drawingRef = useRef(false);
+  const activeStrokeRef = useRef<CanvasStroke | null>(null);
+
+  const stopStrokeAnimation = useCallback(() => {
+    if (animRafRef.current !== null) {
+      window.cancelAnimationFrame(animRafRef.current);
+      animRafRef.current = null;
+    }
+    setAnimState({ mode: 'idle', strokeIndex: 0, progress: 0 });
+    setAnimTip(null);
+  }, []);
+
+  // Reset modal internal state whenever opened with fresh props
   useEffect(() => {
     if (!open) return;
+    stopStrokeAnimation();
     setMode(initialMode);
+    setLevel(unlockedLevel);
     setSeedText(initialSeedText);
     setIndex(0);
     setStrokes([]);
-  }, [open, initialMode, initialSeedText]);
+    setInspectedStrokeIdx(null);
+  }, [initialMode, initialSeedText, open, stopStrokeAnimation, unlockedLevel]);
 
   const deck = useMemo(
     () =>
@@ -110,9 +154,121 @@ export function WritingStudioModal({
 
   const safeIndex = deck.length > 0 ? Math.min(index, deck.length - 1) : 0;
   const activeItem = deck[safeIndex] ?? null;
+  const nextItem =
+    deck.length > 1 ? deck[(safeIndex + 1) % deck.length] : null;
+
+  // Load KanjiVG stroke order whenever the active character changes
+  useEffect(() => {
+    if (!open || !activeItem) {
+      setStrokeData(null);
+      setStrokeDataLoading(false);
+      return;
+    }
+
+    stopStrokeAnimation();
+    setInspectedStrokeIdx(null);
+
+    const char = activeItem.character;
+    const cached = getCachedStrokeData(char);
+    if (cached !== undefined) {
+      setStrokeData(cached);
+      setStrokeDataLoading(false);
+    } else {
+      let cancelled = false;
+      setStrokeData(null);
+      setStrokeDataLoading(true);
+      void loadCharacterStrokeData(char).then((data) => {
+        if (cancelled) return;
+        setStrokeData(data);
+        setStrokeDataLoading(false);
+      });
+      return () => {
+        cancelled = true;
+      };
+    }
+  }, [activeItem, open, stopStrokeAnimation]);
+
+  // Silently prefetch next character's stroke order for zero-latency navigation
+  useEffect(() => {
+    if (!open || !nextItem) return;
+    prefetchCharacterStrokeData(nextItem.character);
+  }, [nextItem, open]);
+
+  // Clean up animation frame on unmount / close
+  useEffect(() => {
+    if (!open) {
+      stopStrokeAnimation();
+    }
+    return () => {
+      if (animRafRef.current !== null) {
+        window.cancelAnimationFrame(animRafRef.current);
+        animRafRef.current = null;
+      }
+    };
+  }, [open, stopStrokeAnimation]);
+
+  const runStrokeAnimation = useCallback(
+    (playMode: 'all' | 'single', startIdx: number) => {
+      if (!strokeData || strokeData.strokes.length === 0) return;
+      stopStrokeAnimation();
+
+      const total = strokeData.strokes.length;
+      const clampedStart = Math.max(0, Math.min(startIdx, total - 1));
+      const endIdx = playMode === 'single' ? clampedStart : total - 1;
+      const stepTotalMs = STROKE_ANIM_DURATION_MS + STROKE_ANIM_PAUSE_MS;
+      const startedAt = performance.now();
+
+      const tick = (now: number) => {
+        const elapsed = now - startedAt;
+        const stepOffset = Math.floor(elapsed / stepTotalMs);
+        const currentIdx = clampedStart + stepOffset;
+
+        if (currentIdx > endIdx) {
+          animRafRef.current = null;
+          setAnimState({ mode: 'idle', strokeIndex: endIdx, progress: 0 });
+          setAnimTip(null);
+          return;
+        }
+
+        const withinStep = elapsed - stepOffset * stepTotalMs;
+        const rawProgress = Math.min(1, withinStep / STROKE_ANIM_DURATION_MS);
+        // Smooth ease-out curve for natural calligraphy pacing
+        const eased = 1 - Math.pow(1 - rawProgress, 2.2);
+
+        setAnimState({
+          mode: playMode,
+          strokeIndex: currentIdx,
+          progress: eased,
+        });
+
+        animRafRef.current = window.requestAnimationFrame(tick);
+      };
+
+      setAnimState({ mode: playMode, strokeIndex: clampedStart, progress: 0 });
+      animRafRef.current = window.requestAnimationFrame(tick);
+    },
+    [stopStrokeAnimation, strokeData],
+  );
+
+  // Sync live red brush tip coordinates from SVG path geometry during animation
+  useEffect(() => {
+    if (animState.mode === 'idle') {
+      setAnimTip(null);
+      return;
+    }
+    const pathEl = animPathRef.current;
+    if (!pathEl) return;
+    try {
+      const len = pathEl.getTotalLength();
+      const pt = pathEl.getPointAtLength(len * animState.progress);
+      setAnimTip({ x: pt.x, y: pt.y });
+    } catch {
+      setAnimTip(null);
+    }
+  }, [animState]);
 
   const redrawCanvas = useCallback(
-    (strokeList: readonly CanvasStroke[], inProgress?: CanvasStroke | null) => {
+    (strokeList: CanvasStroke[], inProgress?: CanvasStroke | null) => {
       const canvas = canvasRef.current;
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
@@ -135,37 +291,7 @@ export function WritingStudioModal({
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, cssWidth, cssHeight);
 
-      // Draw genkouyoushi 4-quadrant calligraphy guides
-      ctx.strokeStyle = 'rgba(113, 113, 122, 0.24)';
-      ctx.lineWidth = 1;
-      ctx.setLineDash([5, 5]);
-
-      ctx.beginPath();
-      ctx.moveTo(cssWidth / 2, 10);
-      ctx.lineTo(cssWidth / 2, cssHeight - 10);
-      ctx.moveTo(10, cssHeight / 2);
-      ctx.lineTo(cssWidth - 10, cssHeight / 2);
-      ctx.stroke();
-
-      ctx.strokeStyle = 'rgba(113, 113, 122, 0.12)';
-      ctx.beginPath();
-      ctx.moveTo(12, 12);
-      ctx.lineTo(cssWidth - 12, cssHeight - 12);
-      ctx.moveTo(cssWidth - 12, 12);
-      ctx.lineTo(12, cssHeight - 12);
-      ctx.stroke();
-      ctx.setLineDash([]);
-
-      // Faint ghost tracing character
-      if (showGuide && activeItem) {
-        ctx.fillStyle = 'rgba(24, 24, 27, 0.11)';
-        ctx.font = `700 ${Math.round(cssWidth * 0.68)}px "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(activeItem.character, cssWidth / 2, cssHeight / 2 + 4);
-      }
-
-      // Render smooth quadratic Bezier strokes
+      // Render smooth quadratic Bezier user ink strokes on transparent layer
       const allStrokes = inProgress ? [...strokeList, inProgress] : strokeList;
       ctx.strokeStyle = '#18181b';
       ctx.fillStyle = '#18181b';
@@ -176,14 +302,12 @@ export function WritingStudioModal({
         const pts = stroke.points;
         if (pts.length === 0) continue;
         ctx.lineWidth = stroke.width;
-
         if (pts.length === 1) {
           ctx.beginPath();
           ctx.arc(pts[0].x, pts[0].y, stroke.width / 2, 0, Math.PI * 2);
           ctx.fill();
           continue;
         }
-
         ctx.beginPath();
         ctx.moveTo(pts[0].x, pts[0].y);
         for (let i = 1; i < pts.length - 1; i += 1) {
@@ -198,7 +322,7 @@ export function WritingStudioModal({
 
       ctx.restore();
     },
-    [activeItem, showGuide],
+    [],
   );
 
   useEffect(() => {
@@ -213,6 +337,7 @@ export function WritingStudioModal({
     if (!open) return;
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
+        stopStrokeAnimation();
         if (masteredIds.length > 0) {
           onCompletePractice?.(masteredIds.length);
         }
@@ -221,7 +346,7 @@ export function WritingStudioModal({
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [masteredIds.length, onClose, onCompletePractice, open]);
+  }, [masteredIds.length, onClose, onCompletePractice, open, stopStrokeAnimation]);
 
   if (!open) return null;
 
@@ -237,6 +362,12 @@ export function WritingStudioModal({
 
   const handlePointerDown = (e: ReactPointerEvent<HTMLCanvasElement>) => {
     e.preventDefault();
+    if (animState.mode !== 'idle') {
+      stopStrokeAnimation();
+    }
+    if (inspectedStrokeIdx !== null) {
+      setInspectedStrokeIdx(null);
+    }
     e.currentTarget.setPointerCapture(e.pointerId);
     drawingRef.current = true;
     const pt = getPointerPoint(e);
@@ -264,16 +395,22 @@ export function WritingStudioModal({
 
   const handleClear = () => {
     vibrateTap();
+    stopStrokeAnimation();
+    setInspectedStrokeIdx(null);
     setStrokes([]);
   };
 
   const handleUndo = () => {
     vibrateTap();
+    stopStrokeAnimation();
+    setInspectedStrokeIdx(null);
     setStrokes((prev) => prev.slice(0, -1));
   };
 
   const goToIndex = (nextIdx: number) => {
     if (deck.length === 0) return;
+    stopStrokeAnimation();
+    setInspectedStrokeIdx(null);
     const wrapped = (nextIdx + deck.length) % deck.length;
     setIndex(wrapped);
     setStrokes([]);
@@ -293,11 +430,29 @@ export function WritingStudioModal({
 
   const handleCloseStudio = () => {
     vibrateTap();
+    stopStrokeAnimation();
     if (masteredIds.length > 0) {
       onCompletePractice?.(masteredIds.length);
     }
     onClose();
   };
+
+  const isAnimating = animState.mode !== 'idle';
+  const totalExpectedStrokes = strokeData?.strokeCount ?? null;
+
+  // Which stroke should be highlighted as the next/inspected stroke guide
+  const focusedStrokeIdx = (() => {
+    if (!strokeData || !showGuide) return -1;
+    if (isAnimating) return animState.strokeIndex;
+    if (inspectedStrokeIdx !== null) return inspectedStrokeIdx;
+    if (strokes.length < strokeData.strokeCount) return strokes.length;
+    return -1;
+  })();
+
+  const focusedStroke =
+    strokeData && focusedStrokeIdx >= 0
+      ? strokeData.strokes[focusedStrokeIdx]
+      : null;
 
   return (
     <div
@@ -336,6 +491,7 @@ export function WritingStudioModal({
               type="button"
               onClick={() => {
                 vibrateTap();
+                stopStrokeAnimation();
                 setSeedText(undefined);
                 setIndex(0);
                 setStrokes([]);
@@ -368,6 +524,7 @@ export function WritingStudioModal({
                       aria-selected={active}
                       onClick={() => {
                         vibrateTap();
+                        stopStrokeAnimation();
                         setMode(opt.id);
                         setIndex(0);
                         setStrokes([]);
@@ -399,6 +556,7 @@ export function WritingStudioModal({
                         aria-pressed={active}
                         onClick={() => {
                           vibrateTap();
+                          stopStrokeAnimation();
                           setLevel(lv);
                           setIndex(0);
                           setStrokes([]);
@@ -441,19 +599,239 @@ export function WritingStudioModal({
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)] lg:items-start">
-              {/* Left / Top: Interactive Genkouyoushi Canvas */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between text-xs text-on-surface-variant">
+              {/* Left / Top: Interactive Genkouyoushi Canvas + Live Stroke Order Overlay */}
+              <div className="space-y-2.5">
+                <div className="mx-auto flex w-full max-w-[360px] items-center justify-between text-xs text-on-surface-variant">
                   <span className="font-mono font-bold tabular-nums text-on-surface">
                     Karakter {safeIndex + 1}/{deck.length}
                   </span>
                   <span className="font-mono tabular-nums">
-                    {strokes.length} goresan ·{' '}
-                    {showGuide ? 'Mode Tracing' : 'Uji Memori'}
+                    {isAnimating && totalExpectedStrokes ? (
+                      <span className="font-bold text-primary">
+                        Animasi {animState.strokeIndex + 1}/
+                        {totalExpectedStrokes}
+                      </span>
+                    ) : totalExpectedStrokes ? (
+                      <>
+                        Goresan{' '}
+                        <strong className="text-on-surface">
+                          {strokes.length}/{totalExpectedStrokes}
+                        </strong>{' '}
+                        · {showGuide ? 'Tracing' : 'Memori'}
+                      </>
+                    ) : (
+                      <>
+                        {strokes.length} goresan ·{' '}
+                        {showGuide ? 'Tracing' : 'Memori'}
+                      </>
+                    )}
                   </span>
                 </div>
 
                 <div className="relative mx-auto aspect-square w-full max-w-[360px] overflow-hidden rounded-2xl border border-outline bg-white shadow-xs">
+                  {/* Layer 1: Genkouyoushi Grid + Vector Stroke Order Guide (109x109 KanjiVG space) */}
+                  <svg
+                    viewBox="0 0 109 109"
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 h-full w-full select-none"
+                  >
+                    {/* Genkouyoushi 4-quadrant calligraphy grid */}
+                    <g stroke="rgba(113, 113, 122, 0.24)" strokeWidth="0.55" strokeDasharray="2.2 2.2">
+                      <line x1="54.5" y1="3" x2="54.5" y2="106" />
+                      <line x1="3" y1="54.5" x2="106" y2="54.5" />
+                    </g>
+                    <g stroke="rgba(113, 113, 122, 0.12)" strokeWidth="0.45" strokeDasharray="2 2.5">
+                      <line x1="4" y1="4" x2="105" y2="105" />
+                      <line x1="105" y1="4" x2="4" y2="105" />
+                    </g>
+
+                    {/* Case A: Authentic KanjiVG Stroke Order Data loaded */}
+                    {strokeData ? (
+                      <>
+                        {/* Base ghost character paths (in Tracing mode or during Animation) */}
+                        {(showGuide || isAnimating) && (
+                          <g
+                            fill="none"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            {strokeData.strokes.map((st, idx) => {
+                              const isCompletedDuringAnim =
+                                isAnimating &&
+                                animState.mode === 'all' &&
+                                idx < animState.strokeIndex;
+                              const isFocusedNext =
+                                !isAnimating &&
+                                showGuide &&
+                                idx === focusedStrokeIdx;
+
+                              return (
+                                <path
+                                  key={st.number}
+                                  d={st.d}
+                                  stroke={
+                                    isCompletedDuringAnim
+                                      ? 'rgba(24, 24, 27, 0.72)'
+                                      : isFocusedNext
+                                        ? 'rgba(220, 38, 38, 0.34)'
+                                        : 'rgba(24, 24, 27, 0.13)'
+                                  }
+                                  strokeWidth={
+                                    isCompletedDuringAnim
+                                      ? 4.2
+                                      : isFocusedNext
+                                        ? 5.2
+                                        : 4.5
+                                  }
+                                  strokeDasharray={
+                                    isFocusedNext ? '2.8 2.4' : undefined
+                                  }
+                                />
+                              );
+                            })}
+                          </g>
+                        )}
+
+                        {/* Active Animated Stroke Path */}
+                        {isAnimating && focusedStroke && (
+                          <g
+                            fill="none"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path
+                              ref={animPathRef}
+                              d={focusedStroke.d}
+                              pathLength={1}
+                              stroke="#dc2626"
+                              strokeWidth="5.2"
+                              strokeDasharray="1"
+                              strokeDashoffset={Math.max(
+                                0,
+                                1 - animState.progress,
+                              )}
+                            />
+                            {animTip && (
+                              <circle
+                                cx={animTip.x}
+                                cy={animTip.y}
+                                r="3.4"
+                                fill="#dc2626"
+                                stroke="#ffffff"
+                                strokeWidth="1.2"
+                              />
+                            )}
+                          </g>
+                        )}
+
+                        {/* Stroke Number Badges for all strokes (when Tracing + Numbers ON) */}
+                        {showGuide && showStrokeNumbers && !isAnimating && (
+                          <g>
+                            {strokeData.strokes.map((st, idx) => {
+                              if (idx === focusedStrokeIdx) return null;
+                              const alreadyDrawn = idx < strokes.length;
+                              return (
+                                <g
+                                  key={`num-${st.number}`}
+                                  transform={`translate(${st.labelX}, ${st.labelY})`}
+                                  opacity={alreadyDrawn ? 0.42 : 0.88}
+                                >
+                                  <circle
+                                    r="3.8"
+                                    fill={alreadyDrawn ? '#e4e4e7' : '#ffffff'}
+                                    stroke={
+                                      alreadyDrawn ? '#a1a1aa' : '#71717a'
+                                    }
+                                    strokeWidth="0.65"
+                                  />
+                                  <text
+                                    y="0.3"
+                                    textAnchor="middle"
+                                    dominantBaseline="central"
+                                    fill={alreadyDrawn ? '#52525b' : '#27272a'}
+                                    fontSize="4.6"
+                                    fontWeight="700"
+                                    fontFamily="ui-monospace, SFMono-Regular, Menlo, monospace"
+                                  >
+                                    {st.number}
+                                  </text>
+                                </g>
+                              );
+                            })}
+                          </g>
+                        )}
+
+                        {/* Highlighted Start Dot + Direction Arrow for Next / Active Stroke */}
+                        {(showGuide || isAnimating) && focusedStroke && (
+                          <g>
+                            {/* Directional arrow showing where to pull the stroke */}
+                            <g
+                              transform={`translate(${focusedStroke.startX}, ${focusedStroke.startY}) rotate(${focusedStroke.angleDeg})`}
+                            >
+                              <line
+                                x1="4.8"
+                                y1="0"
+                                x2="11.5"
+                                y2="0"
+                                stroke="#dc2626"
+                                strokeWidth="1.35"
+                                strokeLinecap="round"
+                              />
+                              <polyline
+                                points="9.2,-2.2 12.2,0 9.2,2.2"
+                                fill="none"
+                                stroke="#dc2626"
+                                strokeWidth="1.35"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </g>
+
+                            {/* Crisp numbered starting point dot */}
+                            <g
+                              transform={`translate(${focusedStroke.startX}, ${focusedStroke.startY})`}
+                            >
+                              <circle
+                                r="5.1"
+                                fill="#dc2626"
+                                stroke="#ffffff"
+                                strokeWidth="1.1"
+                              />
+                              <text
+                                y="0.3"
+                                textAnchor="middle"
+                                dominantBaseline="central"
+                                fill="#ffffff"
+                                fontSize="5.4"
+                                fontWeight="800"
+                                fontFamily="ui-monospace, SFMono-Regular, Menlo, monospace"
+                              >
+                                {focusedStroke.number}
+                              </text>
+                            </g>
+                          </g>
+                        )}
+                      </>
+                    ) : (
+                      /* Fallback font outline while KanjiVG SVG loads or offline uncached */
+                      showGuide && (
+                        <text
+                          x="54.5"
+                          y="56"
+                          textAnchor="middle"
+                          dominantBaseline="central"
+                          fill="rgba(24, 24, 27, 0.11)"
+                          fontSize="74"
+                          fontWeight="700"
+                          fontFamily='"Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", sans-serif'
+                        >
+                          {activeItem.character}
+                        </text>
+                      )
+                    )}
+                  </svg>
+
+                  {/* Layer 2: User's transparent interactive drawing canvas */}
                   <canvas
                     ref={canvasRef}
                     onPointerDown={handlePointerDown}
@@ -461,19 +839,85 @@ export function WritingStudioModal({
                     onPointerUp={handlePointerUp}
                     onPointerCancel={handlePointerUp}
                     aria-label={`Kanvas tulis karakter ${activeItem.character}`}
-                    className="h-full w-full cursor-crosshair touch-none select-none"
+                    className="relative z-10 h-full w-full cursor-crosshair touch-none select-none"
                   />
-                  {strokes.length === 0 && (
+
+                  {/* Subtle contextual hint at bottom of box */}
+                  {strokes.length === 0 && !isAnimating && (
                     <span
                       aria-hidden="true"
-                      className="pointer-events-none absolute right-0 bottom-2.5 left-0 text-center text-[11px] font-medium text-on-surface-variant/70"
+                      className="pointer-events-none absolute right-2 bottom-2 left-2 z-20 text-center text-[11px] font-medium text-on-surface-variant/80"
                     >
-                      Tulis dengan jari atau mouse di dalam kotak
+                      {strokeDataLoading
+                        ? 'Memuat panduan urutan goresan...'
+                        : strokeData && showGuide
+                          ? `Mulai goresan 1 dari titik merah, ikuti arah panah`
+                          : 'Tulis dengan jari atau mouse di dalam kotak'}
                     </span>
                   )}
                 </div>
 
-                {/* Canvas Toolbar */}
+                {/* Stroke Order Animation & Numbers Quick Row */}
+                <div className="mx-auto grid w-full max-w-[360px] grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    disabled={!strokeData}
+                    onClick={() => {
+                      vibrateTap();
+                      if (isAnimating) {
+                        stopStrokeAnimation();
+                      } else {
+                        setShowGuide(true);
+                        setInspectedStrokeIdx(null);
+                        runStrokeAnimation('all', 0);
+                      }
+                    }}
+                    className={`m3-tactile inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl border px-3 py-2 text-xs font-bold transition-colors disabled:opacity-45 ${
+                      isAnimating
+                        ? 'border-primary bg-primary text-on-primary'
+                        : 'border-primary/40 bg-primary-container text-on-primary-container hover:border-primary'
+                    }`}
+                  >
+                    {isAnimating ? (
+                      <>
+                        <Square className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
+                        <span>Hentikan Animasi</span>
+                      </>
+                    ) : (
+                      <>
+                        <Play className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
+                        <span>
+                          Putar Urutan
+                          {totalExpectedStrokes
+                            ? ` (${totalExpectedStrokes})`
+                            : ''}
+                        </span>
+                      </>
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    disabled={!strokeData || !showGuide}
+                    aria-pressed={showStrokeNumbers}
+                    onClick={() => {
+                      vibrateTap();
+                      setShowStrokeNumbers((prev) => !prev);
+                    }}
+                    className={`m3-tactile inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-bold transition-colors disabled:opacity-45 ${
+                      showStrokeNumbers && showGuide
+                        ? 'border-outline bg-surface-container text-on-surface'
+                        : 'border-outline-variant bg-surface-container-low text-on-surface-variant'
+                    }`}
+                  >
+                    <Hash className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+                    <span>
+                      {showStrokeNumbers ? 'Nomor: Aktif' : 'Nomor: Mati'}
+                    </span>
+                  </button>
+                </div>
+
+                {/* Canvas Drawing Toolbar */}
                 <div className="mx-auto grid w-full max-w-[360px] grid-cols-4 gap-2">
                   <button
                     type="button"
@@ -499,6 +943,7 @@ export function WritingStudioModal({
                     type="button"
                     onClick={() => {
                       vibrateTap();
+                      stopStrokeAnimation();
                       setShowGuide((prev) => !prev);
                     }}
                     aria-pressed={showGuide}
@@ -532,7 +977,7 @@ export function WritingStudioModal({
                 </div>
               </div>
 
-              {/* Right / Bottom: Character Reference, Audio & Progression */}
+              {/* Right / Bottom: Character Reference, Interactive Stroke Steps, Audio & Progression */}
               <div className="space-y-4 rounded-2xl border border-outline-variant bg-surface-container-low p-4 sm:p-5">
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -543,6 +988,9 @@ export function WritingStudioModal({
                           ? 'Hiragana Dasar'
                           : 'Katakana Dasar'}
                       {activeItem.isDifficult ? ' · Dari Kata Sulit' : ''}
+                      {totalExpectedStrokes
+                        ? ` · ${totalExpectedStrokes} Goresan`
+                        : ''}
                     </p>
                     <h3 className="mt-1 font-display text-2xl font-extrabold text-on-surface">
                       {activeItem.character}{' '}
@@ -567,6 +1015,58 @@ export function WritingStudioModal({
                     </span>
                   )}
                 </div>
+
+                {/* Interactive Step-by-Step Stroke Picker */}
+                {strokeData && (
+                  <div className="space-y-2 border-t border-outline-variant pt-3">
+                    <div className="flex items-center justify-between gap-2 text-xs">
+                      <span className="font-semibold text-on-surface">
+                        Urutan Goresan (ketuk nomor untuk lihat arah)
+                      </span>
+                      <span className="font-mono text-[11px] tabular-nums text-on-surface-variant">
+                        {strokeData.strokeCount} langkah
+                      </span>
+                    </div>
+
+                    <div
+                      role="group"
+                      aria-label="Pilih langkah urutan goresan"
+                      className="flex flex-wrap gap-1.5"
+                    >
+                      {strokeData.strokes.map((st, idx) => {
+                        const isFocused = idx === focusedStrokeIdx;
+                        const isDone = !isAnimating && idx < strokes.length;
+                        return (
+                          <button
+                            key={st.number}
+                            type="button"
+                            onClick={() => {
+                              vibrateTap();
+                              setShowGuide(true);
+                              setInspectedStrokeIdx(idx);
+                              runStrokeAnimation('single', idx);
+                            }}
+                            aria-label={`Lihat animasi goresan ke-${st.number}`}
+                            className={`m3-tactile inline-flex h-9 w-9 items-center justify-center rounded-lg border font-mono text-xs font-bold tabular-nums transition-colors ${
+                              isFocused
+                                ? 'border-primary bg-primary text-on-primary'
+                                : isDone
+                                  ? 'border-success/40 bg-success-container text-on-success-container'
+                                  : 'border-outline-variant bg-surface text-on-surface hover:border-primary/50 hover:text-primary'
+                            }`}
+                          >
+                            {st.number}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <p className="text-[11px] leading-relaxed text-on-surface-variant">
+                      Titik merah bernomor menunjukkan posisi awal pena dan panah
+                      menunjukkan arah tarikan goresan.
+                    </p>
+                  </div>
+                )}
 
                 {activeItem.exampleWord && (
                   <div className="border-t border-outline-variant pt-3 text-xs">
@@ -677,6 +1177,10 @@ export function WritingStudioModal({
                     <ChevronRight className="h-4 w-4" aria-hidden="true" />
                   </button>
                 </div>
+
+                <p className="border-t border-outline-variant pt-2.5 text-[11px] text-on-surface-variant/80">
+                  Panduan urutan goresan bersumber dari KanjiVG (CC BY-SA 3.0).
+                </p>
               </div>
             </div>
           )}

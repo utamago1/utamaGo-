@@ -11,7 +11,7 @@ import type { DifficultCardEntry } from './homeSummary';
 import { highlightJapaneseSentence } from './japaneseHighlight';
 
 export type DictionaryLevelFilter = 'ALL' | JlptLevel;
-export type DictionaryStatusFilter = 'ALL' | 'DIFFICULT' | 'LEARNED';
+export type DictionaryStatusFilter = 'ALL' | 'DIFFICULT' | 'LEARNED' | 'SAVED';
 export type DictionaryCardStatus = 'new' | 'learning' | 'difficult' | 'mastered';
 
 export interface DictionarySearchItem {
@@ -106,8 +106,11 @@ export function searchDictionaryCards(params: {
   status: DictionaryStatusFilter;
   ankiSrs: AnkiSrsMap;
   againIds: readonly string[];
+  savedIds?: ReadonlySet<string>;
+  notesById?: Readonly<Record<string, string>>;
 }): DictionarySearchItem[] {
-  const { cards, query, level, status, ankiSrs, againIds } = params;
+  const { cards, query, level, status, ankiSrs, againIds, savedIds, notesById } =
+    params;
   const q = normalizeQuery(query);
   const againSet = new Set(againIds);
 
@@ -122,6 +125,7 @@ export function searchDictionaryCards(params: {
     const meta = resolveDictionaryCardStatus(card.id, ankiSrs, againSet);
     if (status === 'DIFFICULT' && !meta.isDifficult) continue;
     if (status === 'LEARNED' && meta.status === 'new') continue;
+    if (status === 'SAVED' && !savedIds?.has(card.id)) continue;
 
     const item: DictionarySearchItem = {
       card,
@@ -157,12 +161,14 @@ export function searchDictionaryCards(params: {
       continue;
     }
 
+    const personalNote = (notesById?.[card.id] ?? '').toLowerCase();
     const matchesBody =
       word.includes(q) ||
       furigana.includes(q) ||
       readingTerm.includes(q) ||
       romaji.includes(q) ||
       meaning.includes(q) ||
+      personalNote.includes(q) ||
       card.examples.some(
         (ex) =>
           ex.jp.toLowerCase().includes(q) || ex.id.toLowerCase().includes(q),

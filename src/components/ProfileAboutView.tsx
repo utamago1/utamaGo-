@@ -1,7 +1,11 @@
 import { useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Instagram } from 'lucide-react';
 import { BRAND_ASSETS } from '../data/utamagoContent';
 import { vibrateTap } from '../utils/haptics';
+import {
+  TEACHER_INSTAGRAM_HANDLE,
+  TEACHER_INSTAGRAM_URL,
+} from '../utils/jlptReport';
 
 interface ProfileAboutViewProps {
   onBack: () => void;
@@ -126,6 +130,20 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
               <li>· Pemegang sertifikasi JLPT N1</li>
               <li>· Bekerja sebagai penerjemah di perusahaan Jepang</li>
             </ul>
+            <a
+              href={TEACHER_INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => vibrateTap()}
+              className="m3-tactile inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-outline-variant bg-surface px-3.5 py-2 text-xs font-bold text-on-surface transition-colors hover:border-primary/40 hover:text-primary sm:w-auto"
+            >
+              <Instagram className="h-4 w-4 text-primary" aria-hidden="true" />
+              <span>Tanya Pengajar · {TEACHER_INSTAGRAM_HANDLE}</span>
+              <ExternalLink
+                className="h-3.5 w-3.5 text-on-surface-variant"
+                aria-hidden="true"
+              />
+            </a>
           </div>
 
           <div className="space-y-4 p-4 sm:p-6">

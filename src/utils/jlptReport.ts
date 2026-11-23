@@ -104,6 +104,9 @@ export function calculateTryOutReport(
   };
 }
 
+export const TEACHER_INSTAGRAM_HANDLE = '@ryan_lief';
+export const TEACHER_INSTAGRAM_URL = 'https://www.instagram.com/ryan_lief/';
+
 export function buildWhatsAppInquiryUrl(note?: string): string {
   const lines = [
     'Halo pengajar UtamaGo!, saya sedang memakai aplikasi belajar JLPT UtamaGo! dan ingin bertanya mengenai materi.',

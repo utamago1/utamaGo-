@@ -2402,8 +2402,8 @@ export function AnkiN5Section({
                         <SpeechControlBar
                           text={activeCard.word}
                           showShadowing
-                          showQuickSettings
-                          showAutoPlayToggle
+                          showQuickSettings={false}
+                          showAutoPlayToggle={false}
                           onWriteKanji={
                             onOpenWritingForWord &&
                             activeCard.cardKind !== 'bunpou' &&
