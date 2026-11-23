@@ -316,17 +316,19 @@ test('ALL_TRYOUT_PACKETS includes full-text JLPT N2 (17 packets) and JLPT N1 (18
 
       for (const page of pages) {
         for (const item of page.items) {
-          assert.notEqual(
-            item.kind,
-            'image',
-            `Unexpected image item ${item.id} in full-text packet ${packet.id}`,
-          );
-          if (item.kind === 'choice') {
-            assert.equal(
-              item.image,
-              null,
-              `Expected null image for ${packet.id}/${item.id}`,
+          if (item.kind === 'image') {
+            assert.ok(
+              item.image.src.startsWith('/assets/tryout/'),
+              `Unexpected non-verified image item ${item.id} in packet ${packet.id}`,
             );
+          }
+          if (item.kind === 'choice') {
+            if (item.image !== null) {
+              assert.ok(
+                item.image.src.startsWith('/assets/tryout/'),
+                `Unexpected non-verified choice image for ${packet.id}/${item.id}`,
+              );
+            }
             assert.ok(
               item.prompt.trim().length > 0,
               `Empty prompt for ${packet.id}/${item.id}`,

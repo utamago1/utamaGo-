@@ -204,8 +204,34 @@ export function TryOutFormRunner({
     [allChoiceItems, wrongItemIds],
   );
 
+  const choiceItemById = useMemo(
+    () => new Map(allChoiceItems.map((it) => [it.id, it])),
+    [allChoiceItems],
+  );
+
   const currentPageSheets = useMemo(
-    () => currentPage.items.filter((it) => it.kind === 'image'),
+    () =>
+      currentPage.items.flatMap((it) => {
+        if (it.kind === 'image') {
+          return [
+            {
+              id: it.id,
+              label: `Lembar Soal · ${currentPage.title}`,
+              image: it.image,
+            },
+          ];
+        }
+        if (it.kind === 'choice' && it.image) {
+          return [
+            {
+              id: it.id,
+              label: `Ilustrasi Soal · ${it.label}`,
+              image: it.image,
+            },
+          ];
+        }
+        return [];
+      }),
     [currentPage],
   );
 
@@ -667,19 +693,37 @@ export function TryOutFormRunner({
               </div>
 
               <div className="space-y-2.5">
-                {scoreSummary.wrongItems.map((wrong) => (
-                  <div
-                    key={wrong.itemId}
-                    className="rounded-xl border border-outline-variant bg-surface-container-low p-3.5 text-xs"
-                  >
-                    <p className="font-mono font-bold text-primary">
-                      #{wrong.number} · {wrong.label}
-                    </p>
-                    {wrong.prompt && (
-                      <p className="mt-1 whitespace-pre-line text-sm font-semibold leading-relaxed text-on-surface">
-                        {renderUnderlinedJapanese(wrong.prompt)}
+                {scoreSummary.wrongItems.map((wrong) => {
+                  const matchedChoice = choiceItemById.get(wrong.itemId);
+                  return (
+                    <div
+                      key={wrong.itemId}
+                      className="rounded-xl border border-outline-variant bg-surface-container-low p-3.5 text-xs"
+                    >
+                      <p className="font-mono font-bold text-primary">
+                        #{wrong.number} · {wrong.label}
                       </p>
-                    )}
+                      {wrong.prompt && (
+                        <p className="mt-1 whitespace-pre-line text-sm font-semibold leading-relaxed text-on-surface">
+                          {renderUnderlinedJapanese(wrong.prompt)}
+                        </p>
+                      )}
+                      {matchedChoice?.image && (
+                        <div className="mt-2.5 flex justify-center rounded-xl border border-outline-variant bg-white p-2.5">
+                          <img
+                            src={matchedChoice.image.src}
+                            alt={`Ilustrasi ${wrong.label} — ${part.title}`}
+                            width={matchedChoice.image.w}
+                            height={matchedChoice.image.h}
+                            loading="lazy"
+                            decoding="async"
+                            referrerPolicy="no-referrer"
+                            draggable={false}
+                            onContextMenu={(e) => e.preventDefault()}
+                            className="mx-auto h-auto max-h-[260px] w-auto max-w-full select-none rounded-lg bg-white object-contain"
+                          />
+                        </div>
+                      )}
                     <div className="mt-2 space-y-1">
                       <p className="text-primary">
                         Jawabanmu: <strong>{wrong.chosen}</strong>
@@ -709,8 +753,9 @@ export function TryOutFormRunner({
                         </p>
                       </div>
                     )}
-                  </div>
-                ))}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -1166,22 +1211,56 @@ export function TryOutFormRunner({
                       </p>
                     )}
 
-                    {item.image && (
-                      <div className="mt-3 overflow-x-auto rounded-xl border border-outline-variant bg-white p-2.5 sm:p-3">
-                        <img
-                          src={item.image.src}
-                          alt={`${item.label} — ${part.title}`}
-                          width={item.image.w}
-                          height={item.image.h}
-                          loading="lazy"
-                          decoding="async"
-                          referrerPolicy="no-referrer"
-                          draggable={false}
-                          onContextMenu={(e) => e.preventDefault()}
-                          className="h-auto max-w-full select-none bg-white object-contain"
-                        />
-                      </div>
-                    )}
+                    {item.image && (() => {
+                      const choiceSheetIdx = currentPageSheets.findIndex(
+                        (s) => s.id === item.id,
+                      );
+                      return (
+                        <div className="mt-3 rounded-xl border border-outline-variant bg-white p-2.5 shadow-xs sm:p-3.5">
+                          <div className="mb-2 flex items-center justify-between gap-2 border-b border-slate-200 pb-2 text-xs text-slate-700">
+                            <span className="font-mono font-bold">
+                              Ilustrasi Soal · {item.label}
+                            </span>
+                            {choiceSheetIdx >= 0 && (
+                              <button
+                                type="button"
+                                onClick={() => openSheetModal(choiceSheetIdx)}
+                                className="m3-tactile inline-flex min-h-[40px] items-center gap-1.5 whitespace-nowrap rounded-xl bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-900 hover:bg-slate-200"
+                              >
+                                <Maximize2
+                                  className="h-3.5 w-3.5"
+                                  aria-hidden="true"
+                                />
+                                <span>Perbesar</span>
+                              </button>
+                            )}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (choiceSheetIdx >= 0) {
+                                openSheetModal(choiceSheetIdx);
+                              }
+                            }}
+                            aria-label={`Perbesar ilustrasi ${item.label}`}
+                            className="flex w-full cursor-zoom-in justify-center overflow-hidden rounded-lg bg-white p-1 focus:outline-none focus:ring-2 focus:ring-primary"
+                          >
+                            <img
+                              src={item.image.src}
+                              alt={`Ilustrasi ${item.label} — ${part.title}`}
+                              width={item.image.w}
+                              height={item.image.h}
+                              loading="lazy"
+                              decoding="async"
+                              referrerPolicy="no-referrer"
+                              draggable={false}
+                              onContextMenu={(e) => e.preventDefault()}
+                              className="mx-auto h-auto max-h-[340px] w-auto max-w-full select-none rounded-lg bg-white object-contain"
+                            />
+                          </button>
+                        </div>
+                      );
+                    })()}
 
                     {hasOptionTexts ? (
                       <div
@@ -1355,8 +1434,8 @@ export function TryOutFormRunner({
           <div className="flex items-center justify-between gap-2 border-b border-white/15 bg-black/70 px-3 py-2">
             <div className="min-w-0">
               <p className="truncate font-mono text-xs font-bold text-white">
-                Lembar {sheetModalIndex + 1} / {currentPageSheets.length} ·{' '}
-                {levelLabel} {examCode}
+                {currentPageSheets[sheetModalIndex].label} · {levelLabel}{' '}
+                {examCode}
               </p>
               <p className="truncate text-[11px] text-white/75">
                 {part.title}
@@ -1403,11 +1482,10 @@ export function TryOutFormRunner({
             >
               {(() => {
                 const activeSheet = currentPageSheets[sheetModalIndex];
-                if (activeSheet.kind !== 'image') return null;
                 return (
                   <img
                     src={activeSheet.image.src}
-                    alt={`Lembar soal ${sheetModalIndex + 1} ${levelLabel} ${examCode}`}
+                    alt={`${activeSheet.label} ${levelLabel} ${examCode}`}
                     width={activeSheet.image.w}
                     height={activeSheet.image.h}
                     draggable={false}

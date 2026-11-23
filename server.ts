@@ -171,9 +171,9 @@ function buildDriveDownloadUrl(fileId: string): string {
 // respond in <5ms instead of repeating multi-second Google Drive round-trips.
 const AUDIO_CACHE_DIR = path.join(os.tmpdir(), 'utamago-audio-cache');
 const AUDIO_CACHE_MAX_BYTES = 180 * 1024 * 1024; // Keep cache <= 180 MB (safe for Cloud Run tmpfs)
-// Cap every HTTP 206 chunk to 2 MB so 40-48 MB Choukai MP3s stay 16x below Cloud Run's 32 MB cap
-// while cutting mobile Range round-trips in half.
-const MAX_RANGE_CHUNK_BYTES = 2 * 1024 * 1024;
+// Cap every HTTP 206 chunk to 1 MB so 40-48 MB Choukai MP3s stay far below Cloud Run's 32 MB cap
+// and respond rapidly over mobile & reverse-proxy connections.
+const MAX_RANGE_CHUNK_BYTES = 1024 * 1024;
 const STATIC_AUDIO_LAST_MODIFIED = 'Mon, 01 Jan 2024 00:00:00 GMT';
 const PREWARM_DRIVE_AUDIO_IDS = ['1BijZlQrAGGx08Uuo0x49xLTQ63pzWE10']; // JLPT N2 Paket 1 (2010.07)
 
@@ -847,6 +847,329 @@ async function handleDriveAudioProxy(req: Request, res: Response) {
   }
 }
 
+const MPEG1_L3_BITRATES = [
+  0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 0,
+];
+const MPEG2_L3_BITRATES = [
+  0, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, 0,
+];
+const MPEG1_SAMPLE_RATES = [44100, 48000, 32000, 0];
+const MPEG2_SAMPLE_RATES = [22050, 24000, 16000, 0];
+const MPEG25_SAMPLE_RATES = [11025, 12000, 8000, 0];
+
+function parseMp3FrameLength(buf: Buffer, offset: number): number | null {
+  if (offset + 4 > buf.length) return null;
+  if (buf[offset] !== 0xff || (buf[offset + 1] & 0xe0) !== 0xe0) return null;
+  const versionBits = (buf[offset + 1] >> 3) & 0x03;
+  const layerBits = (buf[offset + 1] >> 1) & 0x03;
+  if (versionBits === 0x01 || layerBits !== 0x01) return null; // Layer III only
+  const bitrateIdx = (buf[offset + 2] >> 4) & 0x0f;
+  const sampleIdx = (buf[offset + 2] >> 2) & 0x03;
+  const padding = (buf[offset + 2] >> 1) & 0x01;
+  if (bitrateIdx === 0 || bitrateIdx === 15 || sampleIdx === 3) return null;
+
+  const isMpeg1 = versionBits === 0x03;
+  const bitrateKbps = isMpeg1
+    ? MPEG1_L3_BITRATES[bitrateIdx]
+    : MPEG2_L3_BITRATES[bitrateIdx];
+  const sampleRate = isMpeg1
+    ? MPEG1_SAMPLE_RATES[sampleIdx]
+    : versionBits === 0x02
+      ? MPEG2_SAMPLE_RATES[sampleIdx]
+      : MPEG25_SAMPLE_RATES[sampleIdx];
+  if (!bitrateKbps || !sampleRate) return null;
+
+  const coeff = isMpeg1 ? 144 : 72;
+  const frameLen = Math.floor((coeff * bitrateKbps * 1000) / sampleRate) + padding;
+  return frameLen >= 24 && frameLen <= 4096 ? frameLen : null;
+}
+
+function alignMp3BufferToFrames(
+  buf: Buffer,
+  chunkStart: number,
+  isAtEof: boolean,
+): { slice: Buffer; sliceStartOffset: number; nextByteOffset: number } {
+  if (buf.length < 32) {
+    return { slice: buf, sliceStartOffset: 0, nextByteOffset: chunkStart + buf.length };
+  }
+
+  let firstFrame = 0;
+  if (chunkStart > 0) {
+    let found = -1;
+    const scanLimit = Math.min(buf.length - 4, 8192);
+    for (let i = 0; i <= scanLimit; i += 1) {
+      const len = parseMp3FrameLength(buf, i);
+      if (len && i + len + 4 <= buf.length && parseMp3FrameLength(buf, i + len)) {
+        found = i;
+        break;
+      }
+    }
+    if (found >= 0) {
+      firstFrame = found;
+    }
+  }
+
+  if (isAtEof) {
+    const out = buf.subarray(firstFrame);
+    return {
+      slice: out,
+      sliceStartOffset: firstFrame,
+      nextByteOffset: chunkStart + buf.length,
+    };
+  }
+
+  // Walk backwards from near the end of the buffer to find the last valid frame boundary
+  // so we never split an MP3 frame across MediaSource appendBuffer boundaries.
+  let cutEnd = buf.length;
+  const minCut = Math.max(firstFrame + 2048, buf.length - 8192);
+  for (let i = buf.length - 4; i >= minCut; i -= 1) {
+    const len = parseMp3FrameLength(buf, i);
+    if (len && i + len <= buf.length) {
+      cutEnd = i + len;
+      break;
+    }
+  }
+
+  const out = buf.subarray(firstFrame, cutEnd);
+  return {
+    slice: out,
+    sliceStartOffset: firstFrame,
+    nextByteOffset: chunkStart + cutEnd,
+  };
+}
+
+async function readDriveAudioBytes(
+  fileId: string,
+  meta: DriveAudioAssetMeta,
+  start: number,
+  length: number,
+  signal: AbortSignal,
+): Promise<{
+  eof: boolean;
+  totalBytes: number;
+  start: number;
+  buffer: Buffer;
+}> {
+  const readFromPath = (
+    filePath: string,
+    total: number,
+  ): { eof: boolean; totalBytes: number; start: number; buffer: Buffer } | null => {
+    if (start >= total) {
+      return { eof: true, totalBytes: total, start, buffer: Buffer.alloc(0) };
+    }
+    const readLen = Math.min(length, total - start);
+    let fd: number | null = null;
+    try {
+      fd = fs.openSync(filePath, 'r');
+      const out = Buffer.allocUnsafe(readLen);
+      let filled = 0;
+      while (filled < readLen) {
+        const n = fs.readSync(fd, out, filled, readLen - filled, start + filled);
+        if (n <= 0) break;
+        filled += n;
+      }
+      return {
+        eof: false,
+        totalBytes: total,
+        start,
+        buffer: filled === readLen ? out : out.subarray(0, filled),
+      };
+    } catch {
+      return null;
+    } finally {
+      if (fd !== null) {
+        try {
+          fs.closeSync(fd);
+        } catch {
+          // Ignore close errors
+        }
+      }
+    }
+  };
+
+  // 1. Local disk cache (<2ms)
+  const cachedPath = getAudioCachePath(fileId);
+  if (fs.existsSync(cachedPath)) {
+    try {
+      recordAudioCacheAccess(cachedPath);
+      const total = fs.statSync(cachedPath).size;
+      const local = readFromPath(cachedPath, total);
+      if (local) return local;
+    } catch {
+      // Fall through
+    }
+  }
+
+  // 2. Warm background cache + check safely flushed partial .tmp
+  const downloadTask = ensureDriveAudioCached(fileId, meta);
+  if (downloadTask && downloadTask.totalBytes !== null) {
+    const total = downloadTask.totalBytes;
+    if (start >= total) {
+      return { eof: true, totalBytes: total, start, buffer: Buffer.alloc(0) };
+    }
+    try {
+      if (fs.existsSync(cachedPath)) {
+        const local = readFromPath(cachedPath, total);
+        if (local) return local;
+      }
+      if (fs.existsSync(downloadTask.tmpPath)) {
+        const diskSize = fs.statSync(downloadTask.tmpPath).size;
+        const safeFlushedEnd = diskSize - 65536 - 1;
+        const targetEnd = Math.min(total - 1, start + length - 1);
+        if (safeFlushedEnd >= targetEnd) {
+          const local = readFromPath(downloadTask.tmpPath, total);
+          if (local) return local;
+        }
+      }
+    } catch {
+      // Fall through to upstream
+    }
+  }
+
+  // 3. Cold-miss single bounded range fetch from Google Drive
+  const end = start + length - 1;
+  const cachedDirect = resolvedDriveUrlCache.get(fileId);
+  const targetUrl =
+    cachedDirect && cachedDirect.expiresAt > Date.now()
+      ? cachedDirect.url
+      : buildDriveDownloadUrl(fileId);
+  const headers: Record<string, string> = {
+    'User-Agent':
+      'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+    Accept: 'audio/*,*/*;q=0.9',
+    Range: `bytes=${start}-${end}`,
+  };
+
+  let upstream = await fetch(targetUrl, {
+    headers,
+    redirect: 'follow',
+    signal,
+  });
+  if (
+    !upstream.ok &&
+    upstream.status !== 206 &&
+    upstream.status !== 416 &&
+    targetUrl !== buildDriveDownloadUrl(fileId)
+  ) {
+    resolvedDriveUrlCache.delete(fileId);
+    upstream = await fetch(buildDriveDownloadUrl(fileId), {
+      headers,
+      redirect: 'follow',
+      signal,
+    });
+  }
+
+  if (upstream.status === 416) {
+    const cr = upstream.headers.get('content-range') ?? '';
+    const totalMatch = cr.match(/\/(\d+)$/);
+    return {
+      eof: true,
+      totalBytes: totalMatch ? Number.parseInt(totalMatch[1], 10) : start,
+      start,
+      buffer: Buffer.alloc(0),
+    };
+  }
+
+  if (!upstream.ok && upstream.status !== 206) {
+    throw new Error(`Upstream status ${upstream.status}`);
+  }
+  const upstreamType = upstream.headers.get('content-type') ?? '';
+  if (upstreamType.includes('text/html') || !upstream.body) {
+    throw new Error('Upstream returned HTML instead of audio binary.');
+  }
+
+  if (upstream.url && upstream.url.startsWith('https://')) {
+    resolvedDriveUrlCache.set(fileId, {
+      url: upstream.url,
+      expiresAt: Date.now() + 15 * 60 * 1000,
+    });
+  }
+
+  const cr = upstream.headers.get('content-range') ?? '';
+  const rangeMatch = /^bytes\s+(\d+)-(\d+)\/(\d+)$/i.exec(cr);
+  const arrBuf = await upstream.arrayBuffer();
+  const buf = Buffer.from(arrBuf);
+  const totalBytes = rangeMatch
+    ? Number.parseInt(rangeMatch[3], 10)
+    : start + buf.length;
+  return { eof: buf.length === 0, totalBytes, start, buffer: buf };
+}
+
+// Plain HTTP 200 JSON+base64 chunk endpoint: passes through any reverse proxy / WAF
+// identically to /api/audio/prefetch and aligns MP3 chunks cleanly to frame boundaries.
+async function handleDriveAudioJsonChunk(req: Request, res: Response) {
+  const fileId = (req.params.fileId ?? '').trim();
+  const meta = ALLOWED_DRIVE_AUDIO[fileId];
+  if (!meta) {
+    res.status(404).json({ error: 'Audio track not found in catalog.' });
+    return;
+  }
+
+  const rawStart = Number.parseInt(String(req.query.start ?? '0'), 10);
+  const rawLength = Number.parseInt(String(req.query.length ?? '262144'), 10);
+  const alignMp3 =
+    String(req.query.align ?? '0') === '1' && meta.mimeType === 'audio/mpeg';
+  const start = Number.isFinite(rawStart) && rawStart >= 0 ? rawStart : 0;
+  const length = Math.max(
+    16384,
+    Math.min(
+      524288,
+      Number.isFinite(rawLength) && rawLength > 0 ? rawLength : 262144,
+    ),
+  );
+
+  const controller = new AbortController();
+  res.on('close', () => {
+    if (!res.writableEnded) controller.abort();
+  });
+
+  try {
+    const result = await readDriveAudioBytes(
+      fileId,
+      meta,
+      start,
+      length,
+      controller.signal,
+    );
+    res.setHeader('Cache-Control', 'private, no-store');
+    if (result.eof || result.buffer.length === 0) {
+      res.status(200).json({
+        eof: true,
+        totalBytes: result.totalBytes,
+        start: result.start,
+        nextStart: result.totalBytes,
+        mimeType: meta.mimeType,
+        data: '',
+      });
+      return;
+    }
+
+    const isAtEof = result.start + result.buffer.length >= result.totalBytes;
+    const aligned = alignMp3
+      ? alignMp3BufferToFrames(result.buffer, result.start, isAtEof)
+      : {
+          slice: result.buffer,
+          sliceStartOffset: 0,
+          nextByteOffset: result.start + result.buffer.length,
+        };
+
+    res.status(200).json({
+      eof: false,
+      totalBytes: result.totalBytes,
+      start: result.start + aligned.sliceStartOffset,
+      nextStart: aligned.nextByteOffset,
+      byteLength: aligned.slice.length,
+      mimeType: meta.mimeType,
+      data: aligned.slice.toString('base64'),
+    });
+  } catch (err) {
+    if ((err as { name?: string })?.name === 'AbortError') return;
+    if (!res.headersSent) {
+      res.status(502).json({ error: 'Gagal mengambil potongan audio.' });
+    }
+  }
+}
+
 // Plain HTTP 200 OK binary chunk endpoint for MediaSource Extensions (MSE) streaming.
 // Bypasses browser/proxy HTTP 206 Range quirks on Android Chrome & Cloud Run completely.
 async function handleDriveAudioChunk(req: Request, res: Response) {
@@ -1154,6 +1477,10 @@ async function startServer() {
       downloadedBytes: task?.downloadedBytes ?? 0,
       totalBytes: task?.totalBytes ?? null,
     });
+  });
+
+  app.get('/api/audio/json-chunk/:fileId', (req, res) => {
+    void handleDriveAudioJsonChunk(req, res);
   });
 
   app.get('/api/audio/chunk/:fileId', (req, res) => {

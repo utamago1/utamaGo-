@@ -102,3 +102,75 @@ test('parseVerifiedTryOutDocument parses all 6 authentic JLPT N2 packets (2010.0
 
   assert.equal(grandTotal, 639);
 });
+
+test('all 4 authentic JLPT N2 illustrations exist on disk, attach to the exact questions, and leak no caption lines', () => {
+  const expectedChoiceImages = [
+    {
+      packetId: 'n2-5',
+      itemId: 'n2-5-ch-m1-2',
+      src: '/assets/tryout/n2-2011-12-choukai-m1-q2.png',
+      optionTexts: ['ア', 'イ', 'ウ', 'エ'],
+    },
+    {
+      packetId: 'n2-6',
+      itemId: 'n2-6-ch-m1-3',
+      src: '/assets/tryout/n2-2012-07-choukai-m1-q3.png',
+      optionTexts: ['1', '2', '3', '4'],
+    },
+    {
+      packetId: 'n2-7',
+      itemId: 'n2-7-ch-m1-4',
+      src: '/assets/tryout/n2-2012-12-choukai-m1-q4.png',
+      optionTexts: ['一', '二', '三', '四'],
+    },
+  ];
+
+  for (const exp of expectedChoiceImages) {
+    const filePath = path.resolve(process.cwd(), 'public', exp.src.slice(1));
+    assert.equal(fs.existsSync(filePath), true, `Missing asset ${exp.src}`);
+
+    const forms = getTryOutPacketForms(exp.packetId);
+    const allChoukaiItems = forms.choukai.flatMap((p) => p.items);
+    const target = allChoukaiItems.find(
+      (it) => it.kind === 'choice' && it.id === exp.itemId,
+    );
+    assert.ok(target && target.kind === 'choice', `Missing ${exp.itemId}`);
+    assert.equal(target.image?.src, exp.src);
+    assert.deepEqual(target.optionTexts, exp.optionTexts);
+  }
+
+  // Paket 3 (n2-4, 2011.07) Dokkai Mondai 14 flowchart
+  const dokkaiDiagramSrc = '/assets/tryout/n2-2011-07-dokkai-diagram.png';
+  assert.equal(
+    fs.existsSync(
+      path.resolve(process.cwd(), 'public', dokkaiDiagramSrc.slice(1)),
+    ),
+    true,
+  );
+  const n24Dokkai = getTryOutPacketForms('n2-4').dokkai;
+  const page14 = n24Dokkai.find((p) => p.id === 'n2-4-dk-page-14');
+  assert.ok(page14, 'Expected n2-4-dk-page-14');
+  const diagramItem = page14.items.find(
+    (it) => it.kind === 'image' && it.id === 'n2-4-dk-m14-diagram',
+  );
+  assert.ok(diagramItem && diagramItem.kind === 'image');
+  assert.equal(diagramItem.image.src, dokkaiDiagramSrc);
+
+  // Zero leaked caption strings across all 6 packets
+  for (const packetId of ['n2-2', 'n2-3', 'n2-4', 'n2-5', 'n2-6', 'n2-7']) {
+    const forms = getTryOutPacketForms(packetId);
+    for (const pages of Object.values(forms)) {
+      for (const page of pages) {
+        for (const item of page.items) {
+          const serialized = JSON.stringify({ ...item, image: undefined });
+          assert.equal(
+            /Ilustrasi Soal|Diagram Alur/i.test(serialized),
+            false,
+            `Leaked illustration caption in ${packetId}/${item.id}`,
+          );
+        }
+      }
+    }
+  }
+});
+

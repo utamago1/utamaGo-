@@ -24,17 +24,21 @@ interface ChoukaiAudioPlayerProps {
   }) => void;
 }
 
-type StreamMode = 'native' | 'mse' | 'blob';
+type StreamMode = 'native' | 'mse' | 'blob' | 'drive-embed';
 
 const SPEED_OPTIONS = [0.9, 1, 1.1, 1.25] as const;
-const MSE_CHUNK_BYTES = 512 * 1024; // 512 KB (~32s of 128kbps MP3) per plain HTTP 200 chunk
-const BLOB_CHUNK_BYTES = 2 * 1024 * 1024; // 2 MB per plain HTTP 200 chunk for Blob fallback
-const MSE_BUFFER_AHEAD_SECONDS = 75;
+const MSE_CHUNK_BYTES = 256 * 1024; // 256 KB (~16s of 128kbps MP3) per frame-aligned JSON chunk
+const BLOB_CHUNK_BYTES = 512 * 1024; // 512 KB per JSON chunk for universal Blob fallback
+const MSE_BUFFER_AHEAD_SECONDS = 65;
 const MSE_EVICT_BEHIND_SECONDS = 30;
 
 function extractDriveFileId(src: string): string | null {
   const match = src.match(/\/api\/audio\/drive\/([^/?#]+)/);
   return match?.[1] ? decodeURIComponent(match[1]) : null;
+}
+
+function buildDrivePreviewUrl(fileId: string): string {
+  return `https://drive.google.com/file/d/${encodeURIComponent(fileId)}/preview`;
 }
 
 function supportsMpegMse(fileName: string): boolean {
@@ -47,6 +51,60 @@ function supportsMpegMse(fileName: string): boolean {
   } catch {
     return false;
   }
+}
+
+function decodeBase64ToUint8Array(base64: string): Uint8Array<ArrayBuffer> {
+  const binary = window.atob(base64);
+  const len = binary.length;
+  const buffer = new ArrayBuffer(len);
+  const bytes = new Uint8Array(buffer);
+  for (let i = 0; i < len; i += 1) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return bytes;
+}
+
+interface JsonAudioChunkResponse {
+  eof: boolean;
+  totalBytes: number;
+  start: number;
+  nextStart: number;
+  byteLength?: number;
+  mimeType: string;
+  data: string;
+}
+
+async function fetchAudioJsonChunk(
+  driveFileId: string,
+  start: number,
+  length: number,
+  alignMp3: boolean,
+  signal: AbortSignal,
+): Promise<JsonAudioChunkResponse> {
+  const url = `/api/audio/json-chunk/${encodeURIComponent(driveFileId)}?start=${start}&length=${length}&align=${alignMp3 ? '1' : '0'}`;
+  const res = await fetch(url, {
+    method: 'GET',
+    credentials: 'include',
+    cache: 'no-store',
+    signal,
+  });
+  const contentType = res.headers.get('content-type') ?? '';
+  if (!res.ok || !contentType.includes('application/json')) {
+    throw new Error(`Invalid audio chunk response (${res.status} ${contentType})`);
+  }
+  const payload = (await res.json()) as Partial<JsonAudioChunkResponse>;
+  if (typeof payload.eof !== 'boolean' || typeof payload.data !== 'string') {
+    throw new Error('Malformed audio chunk JSON payload');
+  }
+  return {
+    eof: payload.eof,
+    totalBytes: Number(payload.totalBytes) || 0,
+    start: Number(payload.start) || start,
+    nextStart: Number(payload.nextStart) || start,
+    byteLength: Number(payload.byteLength) || 0,
+    mimeType: payload.mimeType || 'audio/mpeg',
+    data: payload.data,
+  };
 }
 
 interface MseController {
@@ -94,13 +152,15 @@ export function ChoukaiAudioPlayer({
   const [reloadNonce, setReloadNonce] = useState(0);
 
   const effectiveSrc =
-    streamMode === 'mse'
-      ? (mseObjectUrl ?? '')
-      : streamMode === 'blob'
-        ? (blobObjectUrl ?? '')
-        : reloadNonce > 0
-          ? `${src}${src.includes('?') ? '&' : '?'}r=${reloadNonce}`
-          : src;
+    streamMode === 'drive-embed'
+      ? ''
+      : streamMode === 'mse'
+        ? (mseObjectUrl ?? '')
+        : streamMode === 'blob'
+          ? (blobObjectUrl ?? '')
+          : reloadNonce > 0
+            ? `${src}${src.includes('?') ? '&' : '?'}r=${reloadNonce}`
+            : src;
 
   const emitAudioState = useCallback(
     (nextTime: number, nextRate: number) => {
@@ -116,7 +176,6 @@ export function ChoukaiAudioPlayer({
     (autoPlayAfterSwitch: boolean) => {
       pendingAutoPlayRef.current = autoPlayAfterSwitch;
       if (streamMode === 'native') {
-        // Retry native Range streaming once cleanly before switching engines
         if (nativeRetryCountRef.current < 1) {
           nativeRetryCountRef.current += 1;
           setHasError(false);
@@ -145,6 +204,14 @@ export function ChoukaiAudioPlayer({
         setIsPlaying(false);
         setStreamMode('blob');
         return;
+      } else if (streamMode === 'blob' && driveFileId) {
+        // Final guaranteed fallback: official Google Drive player at proper un-cropped height
+        // (essential when hosted on static-only hosting or behind strict proxy cookie walls)
+        setHasError(false);
+        setIsLoading(false);
+        setIsPlaying(false);
+        setStreamMode('drive-embed');
+        return;
       }
 
       setHasError(true);
@@ -159,6 +226,7 @@ export function ChoukaiAudioPlayer({
     if (!driveFileId) return;
     void fetch(`/api/audio/prefetch/${encodeURIComponent(driveFileId)}`, {
       method: 'GET',
+      credentials: 'include',
       cache: 'no-store',
     }).catch(() => {});
   }, [driveFileId]);
@@ -195,7 +263,7 @@ export function ChoukaiAudioPlayer({
     setPlaybackRate(nextInitialRate);
   }, [src]);
 
-  // Layer 2: Plain HTTP 200 chunked fetch + MediaSource streaming engine (same sleek UI)
+  // Layer 2: MP3-frame-aligned JSON-chunked MediaSource streaming (same sleek UtamaGo! UI)
   useEffect(() => {
     if (streamMode !== 'mse' || !driveFileId || !supportsMpegMse(fileName)) {
       return;
@@ -284,17 +352,21 @@ export function ChoukaiAudioPlayer({
       const abort = new AbortController();
       currentAbort = abort;
 
-      const chunkUrl = `/api/audio/chunk/${encodeURIComponent(driveFileId)}?start=${startByte}&length=${MSE_CHUNK_BYTES}`;
-      const res = await fetch(chunkUrl, {
-        method: 'GET',
-        credentials: 'same-origin',
-        cache: 'no-store',
-        signal: abort.signal,
-      });
+      const chunk = await fetchAudioJsonChunk(
+        driveFileId,
+        startByte,
+        MSE_CHUNK_BYTES,
+        true,
+        abort.signal,
+      );
 
-      if (cancelled) return false;
+      if (cancelled || mediaSource.readyState !== 'open') return false;
 
-      if (res.status === 204) {
+      if (chunk.totalBytes > 0) {
+        totalBytes = chunk.totalBytes;
+      }
+
+      if (chunk.eof || !chunk.data) {
         eofReached = true;
         if (mediaSource.readyState === 'open' && !sourceBuffer.updating) {
           try {
@@ -306,26 +378,8 @@ export function ChoukaiAudioPlayer({
         return false;
       }
 
-      const contentType = res.headers.get('content-type') ?? '';
-      if (
-        !res.ok ||
-        contentType.includes('text/html') ||
-        contentType.includes('application/json')
-      ) {
-        throw new Error(`Invalid chunk response (${res.status} ${contentType})`);
-      }
-
-      const headerTotal = Number.parseInt(
-        res.headers.get('x-audio-total-bytes') ?? '',
-        10,
-      );
-      if (Number.isFinite(headerTotal) && headerTotal > 0) {
-        totalBytes = headerTotal;
-      }
-
-      const arrayBuf = await res.arrayBuffer();
-      if (cancelled || mediaSource.readyState !== 'open') return false;
-      if (arrayBuf.byteLength === 0) {
+      const bytes = decodeBase64ToUint8Array(chunk.data);
+      if (bytes.byteLength === 0) {
         eofReached = true;
         return false;
       }
@@ -352,14 +406,14 @@ export function ChoukaiAudioPlayer({
       const appendWithQuotaRetry = async () => {
         if (!sourceBuffer || cancelled || mediaSource.readyState !== 'open') return;
         try {
-          sourceBuffer.appendBuffer(arrayBuf);
+          sourceBuffer.appendBuffer(bytes);
           await waitForUpdateEnd(sourceBuffer);
         } catch (err) {
           if ((err as { name?: string })?.name === 'QuotaExceededError') {
             const cur = audioRef.current?.currentTime ?? 0;
             await evictOldBuffer(Math.max(0, cur - 10));
             if (!cancelled && mediaSource.readyState === 'open') {
-              sourceBuffer.appendBuffer(arrayBuf);
+              sourceBuffer.appendBuffer(bytes);
               await waitForUpdateEnd(sourceBuffer);
             }
           } else {
@@ -371,7 +425,10 @@ export function ChoukaiAudioPlayer({
       await appendWithQuotaRetry();
       if (cancelled) return false;
 
-      nextByteOffset = startByte + arrayBuf.byteLength;
+      nextByteOffset =
+        chunk.nextStart > startByte
+          ? chunk.nextStart
+          : startByte + bytes.byteLength;
 
       if (
         startByte === 0 &&
@@ -380,7 +437,7 @@ export function ChoukaiAudioPlayer({
       ) {
         const decodedSec = sourceBuffer.buffered.end(0);
         if (decodedSec > 1) {
-          bytesPerSecond = arrayBuf.byteLength / decodedSec;
+          bytesPerSecond = bytes.byteLength / decodedSec;
           estimatedDuration = totalBytes / bytesPerSecond;
           setDuration(estimatedDuration);
           try {
@@ -452,7 +509,7 @@ export function ChoukaiAudioPlayer({
           const appended = await fetchAndAppendChunk(nextByteOffset);
           if (!appended) break;
 
-          if (nextByteOffset <= MSE_CHUNK_BYTES) {
+          if (nextByteOffset <= MSE_CHUNK_BYTES + 4096) {
             setIsLoading(false);
             if (pendingAutoPlayRef.current && audioRef.current) {
               pendingAutoPlayRef.current = false;
@@ -467,7 +524,6 @@ export function ChoukaiAudioPlayer({
         if (cancelled || (err as { name?: string })?.name === 'AbortError') {
           return;
         }
-        // Failover seamlessly to Layer 3 (Blob download inside the exact same sleek UI)
         setIsPlaying(false);
         setStreamMode('blob');
       } finally {
@@ -486,13 +542,12 @@ export function ChoukaiAudioPlayer({
         setStreamMode('blob');
         return;
       }
-      // On Android Chrome Dev, audio/mpeg may already enforce sequence mode; never fail if read-only
       try {
         if (sourceBuffer.mode !== 'sequence') {
           sourceBuffer.mode = 'sequence';
         }
       } catch {
-        // Safe to ignore
+        // Safe to ignore on browsers enforcing sequence mode
       }
       void pumpBuffer();
     };
@@ -543,7 +598,7 @@ export function ChoukaiAudioPlayer({
     };
   }, [driveFileId, fileName, streamMode]);
 
-  // Layer 3: Universal chunked HTTP 200 Blob loader (same sleek UtamaGo! UI, works on every device)
+  // Layer 3: Universal JSON-chunked Blob loader (for .m4a N1 files or browsers without MPEG MSE)
   useEffect(() => {
     if (streamMode !== 'blob' || !driveFileId) {
       return;
@@ -558,61 +613,72 @@ export function ChoukaiAudioPlayer({
 
     const loadFullBlob = async () => {
       try {
-        const parts: ArrayBuffer[] = [];
-        let offset = 0;
-        let total = 0;
-        let mimeType = fileName.toLowerCase().endsWith('.m4a')
-          ? 'audio/mp4'
-          : 'audio/mpeg';
-
-        while (!cancelled) {
-          const chunkUrl = `/api/audio/chunk/${encodeURIComponent(driveFileId)}?start=${offset}&length=${BLOB_CHUNK_BYTES}`;
-          const res = await fetch(chunkUrl, {
-            method: 'GET',
-            credentials: 'same-origin',
-            cache: 'no-store',
-            signal: abort.signal,
-          });
-
-          if (cancelled) return;
-          if (res.status === 204) break;
-
-          const ct = res.headers.get('content-type') ?? '';
-          if (!res.ok || ct.includes('text/html') || ct.includes('application/json')) {
-            throw new Error(`Chunk fetch failed (${res.status})`);
-          }
-
-          const headerTotal = Number.parseInt(
-            res.headers.get('x-audio-total-bytes') ?? '',
-            10,
-          );
-          if (Number.isFinite(headerTotal) && headerTotal > 0) {
-            total = headerTotal;
-          }
-          const headerMime = res.headers.get('x-audio-mime-type');
-          if (headerMime) {
-            mimeType = headerMime;
-          }
-
-          const buf = await res.arrayBuffer();
-          if (cancelled) return;
-          if (buf.byteLength === 0) break;
-
-          parts.push(buf);
-          offset += buf.byteLength;
-
-          if (total > 0) {
-            setBlobProgressPct(Math.min(99, Math.round((offset / total) * 100)));
-            if (offset >= total) break;
-          }
-        }
-
+        const firstChunk = await fetchAudioJsonChunk(
+          driveFileId,
+          0,
+          BLOB_CHUNK_BYTES,
+          false,
+          abort.signal,
+        );
         if (cancelled) return;
-        if (parts.length === 0) {
+        if (firstChunk.eof || !firstChunk.data) {
           throw new Error('Empty audio payload');
         }
 
-        const blob = new Blob(parts, { type: mimeType });
+        const total = firstChunk.totalBytes;
+        const mimeType =
+          firstChunk.mimeType ||
+          (fileName.toLowerCase().endsWith('.m4a') ? 'audio/mp4' : 'audio/mpeg');
+        const firstBytes = decodeBase64ToUint8Array(firstChunk.data);
+
+        const offsets: number[] = [];
+        let cursor = firstChunk.nextStart || firstBytes.byteLength;
+        while (total > 0 && cursor < total) {
+          offsets.push(cursor);
+          cursor += BLOB_CHUNK_BYTES;
+        }
+
+        const parts: Uint8Array[] = new Array(offsets.length + 1);
+        parts[0] = firstBytes;
+        let receivedBytes = firstBytes.byteLength;
+        if (total > 0) {
+          setBlobProgressPct(Math.min(99, Math.round((receivedBytes / total) * 100)));
+        }
+
+        // Fetch remaining chunks with 3x concurrency for rapid mobile loading
+        let nextIdx = 0;
+        const worker = async () => {
+          while (!cancelled && nextIdx < offsets.length) {
+            const idx = nextIdx;
+            nextIdx += 1;
+            const chunk = await fetchAudioJsonChunk(
+              driveFileId,
+              offsets[idx],
+              BLOB_CHUNK_BYTES,
+              false,
+              abort.signal,
+            );
+            if (cancelled) return;
+            const decoded = chunk.data
+              ? decodeBase64ToUint8Array(chunk.data)
+              : new Uint8Array(0);
+            parts[idx + 1] = decoded;
+            receivedBytes += decoded.byteLength;
+            if (total > 0) {
+              setBlobProgressPct(
+                Math.min(99, Math.round((receivedBytes / total) * 100)),
+              );
+            }
+          }
+        };
+
+        const workerCount = Math.min(3, Math.max(1, offsets.length));
+        await Promise.all(Array.from({ length: workerCount }, () => worker()));
+
+        if (cancelled) return;
+        const blob = new Blob(parts.filter(Boolean) as BlobPart[], {
+          type: mimeType,
+        });
         createdUrl = URL.createObjectURL(blob);
         setBlobProgressPct(100);
         setBlobObjectUrl(createdUrl);
@@ -621,9 +687,11 @@ export function ChoukaiAudioPlayer({
         if (cancelled || (err as { name?: string })?.name === 'AbortError') {
           return;
         }
-        setHasError(true);
+        // Failover cleanly to Layer 4 official Drive player so user is NEVER blocked
+        setHasError(false);
         setIsLoading(false);
         setIsPlaying(false);
+        setStreamMode('drive-embed');
       }
     };
 
@@ -790,15 +858,21 @@ export function ChoukaiAudioPlayer({
     emitAudioState(currentTime, nextSpeed);
   };
 
-  const statusText = isPlaying
-    ? 'Sedang diputar · Tetap berjalan saat memilih jawaban'
-    : streamMode === 'blob' && isLoading && blobProgressPct > 0 && blobProgressPct < 100
-      ? `Menyiapkan audio Choukai (${blobProgressPct}%)...`
-      : isLoading
-        ? 'Menyiapkan audio Choukai...'
-        : isDriveStream
-          ? 'Streaming Audio Resmi · Posisi & kecepatan tersimpan otomatis'
-          : 'Audio Terstruktur (Mondai 1–5) · Posisi & kecepatan tersimpan';
+  const statusText =
+    streamMode === 'drive-embed'
+      ? 'Pemutar Audio Resmi · Tekan tombol Putar di bawah'
+      : isPlaying
+        ? 'Sedang diputar · Tetap berjalan saat memilih jawaban'
+        : streamMode === 'blob' &&
+            isLoading &&
+            blobProgressPct > 0 &&
+            blobProgressPct < 100
+          ? `Menyiapkan audio Choukai (${blobProgressPct}%)...`
+          : isLoading
+            ? 'Menyiapkan audio Choukai...'
+            : isDriveStream
+              ? 'Streaming Audio Resmi · Posisi & kecepatan tersimpan otomatis'
+              : 'Audio Terstruktur (Mondai 1–5) · Posisi & kecepatan tersimpan';
 
   return (
     <div
@@ -940,17 +1014,44 @@ export function ChoukaiAudioPlayer({
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={handleCycleSpeed}
-          aria-label={`Ubah kecepatan audio, saat ini ${playbackRate} kali`}
-          className="m3-tactile min-h-[48px] shrink-0 whitespace-nowrap rounded-xl border border-outline bg-surface-container-low px-3 py-2 font-mono text-xs font-bold tabular-nums text-on-surface hover:bg-surface-container-high"
-        >
-          {playbackRate.toFixed(2).replace(/\.00$/, '.0')}x
-        </button>
+        {streamMode !== 'drive-embed' && (
+          <button
+            type="button"
+            onClick={handleCycleSpeed}
+            aria-label={`Ubah kecepatan audio, saat ini ${playbackRate} kali`}
+            className="m3-tactile min-h-[48px] shrink-0 whitespace-nowrap rounded-xl border border-outline bg-surface-container-low px-3 py-2 font-mono text-xs font-bold tabular-nums text-on-surface hover:bg-surface-container-high"
+          >
+            {playbackRate.toFixed(2).replace(/\.00$/, '.0')}x
+          </button>
+        )}
       </div>
 
-      {hasError ? (
+      {streamMode === 'drive-embed' && driveFileId ? (
+        <div className="mt-3.5 space-y-2.5">
+          <div className="overflow-hidden rounded-xl border border-outline-variant bg-surface-container-low shadow-xs">
+            <iframe
+              src={buildDrivePreviewUrl(driveFileId)}
+              title={title}
+              allow="autoplay; encrypted-media"
+              className="block h-[180px] w-full border-0"
+            />
+          </div>
+          <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-on-surface-variant">
+            <span>Audio tetap diputar langsung di halaman ini.</span>
+            <button
+              type="button"
+              onClick={() => {
+                vibrateTap();
+                triggerFreshReload(false);
+              }}
+              className="m3-tactile inline-flex min-h-[40px] items-center gap-1.5 whitespace-nowrap rounded-xl border border-outline bg-surface-container-low px-3 py-1.5 text-xs font-semibold text-on-surface hover:bg-surface-container-high"
+            >
+              <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
+              <span>Coba Pemutar Utama</span>
+            </button>
+          </div>
+        </div>
+      ) : hasError ? (
         <div className="mt-3 space-y-2.5 rounded-xl bg-primary-container p-3 text-xs font-medium text-on-primary-container">
           <p>
             {isDriveStream

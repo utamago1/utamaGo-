@@ -55,6 +55,45 @@ export function formatBlankParentheses(text: string): string {
   return text.replace(/[（(][\s\u3000]*[）)]/g, '(____)');
 }
 
+interface VerifiedTryOutImageAsset {
+  src: string;
+  w: number;
+  h: number;
+}
+
+const VERIFIED_CHOUKAI_IMAGES: Record<string, VerifiedTryOutImageAsset> = {
+  'n2-5-ch-m1-2': {
+    src: '/assets/tryout/n2-2011-12-choukai-m1-q2.png',
+    w: 465,
+    h: 285,
+  },
+  'n2-6-ch-m1-3': {
+    src: '/assets/tryout/n2-2012-07-choukai-m1-q3.png',
+    w: 445,
+    h: 360,
+  },
+  'n2-7-ch-m1-4': {
+    src: '/assets/tryout/n2-2012-12-choukai-m1-q4.png',
+    w: 1120,
+    h: 265,
+  },
+};
+
+const VERIFIED_DOKKAI_DIAGRAMS: Record<string, VerifiedTryOutImageAsset> = {
+  'n2-4-dk-m14': {
+    src: '/assets/tryout/n2-2011-07-dokkai-diagram.png',
+    w: 1320,
+    h: 620,
+  },
+};
+
+function stripIllustrationCaptionLine(line: string): string {
+  return line
+    .replace(/\s*Ilustrasi Soal Choukai[^\n]*$/i, '')
+    .replace(/\s*Diagram Alur [^\n]*$/i, '')
+    .trim();
+}
+
 /**
  * Exact underlined target words for Moji-Goi Mondai 1 (1-5), Mondai 2 (6-10),
  * and Mondai 5 (23-27) across the 6 verified JLPT N2 exams (2010.07-2012.12).
@@ -582,14 +621,25 @@ function parseDokkaiMondaiWithSubPassages(
     });
   } else {
     const { paragraphs, notes, source } = parsePassageAndNotes(passageLines);
+    const cleanedParagraphs = paragraphs
+      .map(stripIllustrationCaptionLine)
+      .filter(Boolean);
     items.push({
       kind: 'passage',
       id: `${packetId}-dk-m${mondaiNum}-passage`,
       title: mondaiNum === 13 ? '長文読解' : '情報検索',
-      paragraphs,
+      paragraphs: cleanedParagraphs,
       notes: notes.length > 0 ? notes : undefined,
       source,
     });
+    const diagramImage = VERIFIED_DOKKAI_DIAGRAMS[`${packetId}-dk-m${mondaiNum}`];
+    if (diagramImage) {
+      items.push({
+        kind: 'image',
+        id: `${packetId}-dk-m${mondaiNum}-diagram`,
+        image: diagramImage,
+      });
+    }
   }
 
   const questions = parseNumberedQuestions(qLines, 55, 75);
@@ -770,18 +820,25 @@ function parseChoukaiPart(
 
     itemBlocks.forEach((ib, idx) => {
       const itemNum = Number(ib.match[1]);
-      const optTexts = parseFourOptions(ib.lines);
+      const cleanedLines = ib.lines
+        .map((l) => stripIllustrationCaptionLine(cleanLine(l)))
+        .filter(Boolean);
+      const optTexts = parseFourOptions(cleanedLines).map(
+        stripIllustrationCaptionLine,
+      );
+      const itemId = `${packetId}-ch-m${mondaiNum}-${itemNum}`;
+      const itemImage = VERIFIED_CHOUKAI_IMAGES[itemId] ?? null;
       const qNum = seqNum++;
       items.push({
         kind: 'choice',
-        id: `${packetId}-ch-m${mondaiNum}-${itemNum}`,
+        id: itemId,
         number: qNum,
         label: `問題${mondaiNum} · ${itemNum}番`,
         prompt: `Dengarkan audio 問題${mondaiNum} (${itemNum}番), lalu pilih jawaban terbaik:`,
         optionTexts: optTexts.length === 4 ? optTexts : undefined,
         correctAnswer: ansList[idx] ?? '1',
         transcript: transcriptMap.byMondaiAndItem[`${mondaiNum}-${itemNum}`],
-        image: null,
+        image: itemImage,
         options: ['1', '2', '3', '4'],
         required: true,
       });
