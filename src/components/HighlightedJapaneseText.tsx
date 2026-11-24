@@ -64,10 +64,12 @@ export function HighlightedJapaneseText({
   return (
     <span className={`inline-flex flex-col gap-1 ${className}`}>
       <span className="inline-flex items-start gap-2">
-        <span className="flex-1">
-          {prefix ? (
-            <span className="mr-1 font-mono text-xs opacity-70">{prefix}</span>
-          ) : null}
+        {prefix ? (
+          <span className="mt-[3px] shrink-0 font-mono text-xs tabular-nums opacity-70">
+            {prefix}
+          </span>
+        ) : null}
+        <span className="min-w-0 flex-1">
           {segments.map((seg, idx) =>
             seg.highlighted ? (
               <mark

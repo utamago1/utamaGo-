@@ -671,19 +671,23 @@ export function BunpouSection({
                 {activeItem.examples.map((ex, idx) => (
                   <li
                     key={idx}
-                    className="space-y-1.5 py-3.5 first:pt-1 last:pb-0"
+                    className="flex items-start gap-2.5 py-3.5 first:pt-1 last:pb-0"
                   >
-                    <HighlightedJapaneseText
-                      sentence={ex.jp}
-                      target={activeItem.pattern}
-                      kind="bunpou"
-                      prefix={`${idx + 1}.`}
-                      showSpeakButton
-                      className="w-full text-[15px] font-medium leading-relaxed text-on-surface"
-                    />
-                    <p className="pl-5 text-sm leading-relaxed text-on-surface-variant">
-                      {ex.id}
-                    </p>
+                    <span className="mt-[3px] w-5 shrink-0 font-mono text-xs font-semibold tabular-nums text-on-surface-variant">
+                      {idx + 1}.
+                    </span>
+                    <div className="min-w-0 flex-1 space-y-1.5">
+                      <HighlightedJapaneseText
+                        sentence={ex.jp}
+                        target={activeItem.pattern}
+                        kind="bunpou"
+                        showSpeakButton
+                        className="w-full text-[15px] font-medium leading-relaxed text-on-surface"
+                      />
+                      <p className="text-sm leading-relaxed text-on-surface-variant">
+                        {ex.id}
+                      </p>
+                    </div>
                   </li>
                 ))}
               </ol>

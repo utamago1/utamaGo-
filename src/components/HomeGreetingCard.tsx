@@ -357,13 +357,13 @@ export function HomeGreetingCard({
       className="w-full min-w-0 rounded-2xl border border-outline-variant bg-surface-container-low p-4"
     >
       {/* Top row: prominent interactive animated GIF mascot on left + greeting, badge & speech bubble on right */}
-      <div className="flex min-w-0 items-center gap-3.5 sm:gap-4">
+      <div className="flex min-w-0 items-start gap-3 sm:items-center sm:gap-4">
         <MascotAvatar
           stage={levelProgress.rank.stage}
           gender={gender}
           expression={activeExpression}
           size={136}
-          sizeClassName="h-[126px] w-[126px] sm:h-[144px] sm:w-[144px]"
+          sizeClassName="h-[96px] w-[96px] shrink-0 sm:h-[136px] sm:w-[136px]"
           fallbackSrc={src ?? levelProgress.rank.illustrationPath}
           fallbackLabel={shortRankName}
           ariaLabel="Maskot UtamaGo, ketuk untuk berinteraksi"
@@ -377,7 +377,7 @@ export function HomeGreetingCard({
             {learnerName ? `Halo, ${learnerName}!` : 'Halo, Pelajar!'}
           </h2>
 
-          <div className="mt-1 flex min-w-0 items-center gap-1.5">
+          <div className="mt-1 flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1">
             <span className="inline-flex max-w-full items-center truncate rounded-lg bg-primary-container px-2 py-0.5 text-[11px] font-bold leading-tight text-on-primary-container">
               Level{' '}
               <span className="mx-0.5 font-mono tabular-nums">
@@ -409,7 +409,7 @@ export function HomeGreetingCard({
                 aria-hidden="true"
                 className="pointer-events-none absolute top-3.5 -left-[5.5px] z-10 h-2.5 w-2.5 rotate-45 border-b border-l border-outline-variant bg-surface-container"
               />
-              <p className="line-clamp-2 font-sans text-[14px] font-medium leading-snug text-on-surface break-words">
+              <p className="font-sans text-[13.5px] font-medium leading-relaxed text-on-surface break-words sm:text-[14px]">
                 {bubbleLine}
               </p>
             </div>
