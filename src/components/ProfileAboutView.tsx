@@ -7,6 +7,9 @@ import {
   TEACHER_INSTAGRAM_URL,
 } from '../utils/jlptReport';
 
+const FOUNDER_MOTTO = 'Muda berkelana, Tua bercerita「若旅、老語」';
+const PARTNER_MOTTO = '';
+
 interface ProfileAboutViewProps {
   onBack: () => void;
 }
@@ -95,8 +98,7 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
               logo kami berbentuk telur!)
             </p>
             <p className="font-display text-sm font-semibold text-primary">
-              Belajar lebih terarah. Berlatih lebih konsisten. Siap menghadapi
-              JLPT!
+              Belajar Cerdas. Latih Rutin. Lulus JLPT.
             </p>
           </div>
         </div>
@@ -129,6 +131,11 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
                 <p className="mt-0.5 text-xs font-semibold text-primary">
                   Pendiri UtamaGo! &amp; Pengajar Bahasa Jepang
                 </p>
+                {FOUNDER_MOTTO && (
+                  <p className="mt-1.5 text-xs italic leading-relaxed text-[#4b4b53] dark:text-[#b4b4c0]">
+                    {FOUNDER_MOTTO}
+                  </p>
+                )}
               </div>
             </div>
             <ul className="space-y-1.5 text-sm leading-relaxed text-on-surface-variant">
@@ -171,6 +178,11 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
                   <p className="mt-0.5 text-xs font-semibold text-on-surface-variant">
                     Terkunci · Beta Tester
                   </p>
+                  {PARTNER_MOTTO && (
+                    <p className="mt-1.5 text-xs italic leading-relaxed text-[#4b4b53] dark:text-[#b4b4c0]">
+                      {PARTNER_MOTTO}
+                    </p>
+                  )}
                 </div>
               </div>
               <p className="text-sm leading-relaxed text-on-surface-variant">
