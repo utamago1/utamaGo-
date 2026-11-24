@@ -77,6 +77,66 @@ const VERIFIED_CHOUKAI_IMAGES: Record<string, VerifiedTryOutImageAsset> = {
     w: 1120,
     h: 265,
   },
+  'n3-1-ch-m1-1': {
+    src: '/assets/tryout/n3-2010-07-choukai-m1-q1.png',
+    w: 178,
+    h: 111,
+  },
+  'n3-1-ch-m4-strip': {
+    src: '/assets/tryout/n3-2010-07-choukai-m4.png',
+    w: 455,
+    h: 315,
+  },
+  'n3-2-ch-m1-1': {
+    src: '/assets/tryout/n3-2011-07-choukai-m1-q1.png',
+    w: 132,
+    h: 105,
+  },
+  'n3-2-ch-m4-strip': {
+    src: '/assets/tryout/n3-2011-07-choukai-m4.png',
+    w: 509,
+    h: 96,
+  },
+  'n3-3-ch-m1-2': {
+    src: '/assets/tryout/n3-2011-12-choukai-m1-q2.png',
+    w: 147,
+    h: 107,
+  },
+  'n3-3-ch-m1-3': {
+    src: '/assets/tryout/n3-2011-12-choukai-m1-q3.png',
+    w: 150,
+    h: 107,
+  },
+  'n3-3-ch-m1-5': {
+    src: '/assets/tryout/n3-2011-12-choukai-m1-q5.png',
+    w: 240,
+    h: 183,
+  },
+  'n3-3-ch-m4-strip': {
+    src: '/assets/tryout/n3-2011-12-choukai-m4.png',
+    w: 507,
+    h: 94,
+  },
+  'n3-4-ch-m4-strip': {
+    src: '/assets/tryout/n3-2012-07-choukai-m4.png',
+    w: 483,
+    h: 103,
+  },
+  'n3-5-ch-m1-1': {
+    src: '/assets/tryout/n3-2012-12-choukai-m1-q1.png',
+    w: 141,
+    h: 118,
+  },
+  'n3-5-ch-m1-5': {
+    src: '/assets/tryout/n3-2012-12-choukai-m1-q5.png',
+    w: 116,
+    h: 123,
+  },
+  'n3-5-ch-m4-strip': {
+    src: '/assets/tryout/n3-2012-12-choukai-m4.png',
+    w: 494,
+    h: 93,
+  },
 };
 
 const VERIFIED_DOKKAI_DIAGRAMS: Record<string, VerifiedTryOutImageAsset> = {
@@ -213,12 +273,26 @@ function underlineExactOnce(text: string, target: string): string {
 const MONDAI6_CONJUGATION_PATTERNS: Record<string, RegExp> = {
   はずす: /はず(?:して|した|す|さ|せ)/,
   保つ: /保(?:って|った|つ|た|て)/,
-  かなう: /かな(?:った|って|い|う)/,
+  かなう: /かな(?:った|って|い|う|わ)/,
   受け入れる: /受け入れ(?:て|た|る|られ)/,
   とぼしい: /とぼし(?:くて|かった|い)/,
   問い合わせる: /問い合わせ(?:られ(?:た|て|る)?|よう|て|た|る)?/,
   心強い: /心強(?:くて|かった|い)/,
   ふさぐ: /ふさ(?:いで|いだ|ぐ|が|げ)/,
+  潔い: /潔(?:く|かった|い)/,
+  にぎわう: /にぎわ(?:って|った|う|い|え|わ)/,
+  見落とす: /見落と(?:して|した|す|し|さ|せ)/,
+  目覚ましい: /目覚まし(?:く|かった|い)/,
+  ほどける: /ほどけ(?:て|た|る|ない|ます)/,
+  見失う: /見失(?:って|った|う|い|わ)/,
+  落ち着く: /落ち着(?:いて|いた|く|き|け|か)/,
+  はかる: /はか(?:って|った|る|り|れ|ら)/,
+  ころぶ: /ころ(?:んで|んだ|ぶ|び|べ|ば)/,
+  見送る: /見送(?:って|った|る|り|れ|ら)/,
+  植える: /植え(?:て|た|る|られ|よう|ます)/,
+  断る: /断(?:って|った|る|り|れ|ら)/,
+  ゆるい: /ゆる(?:く|かった|い)/,
+  通り過ぎる: /通り過ぎ(?:て|た|る|ない|ます)/,
 };
 
 function underlineMondai6WordInOption(option: string, headword: string): string {
@@ -1289,3 +1363,1581 @@ export function parseVerifiedTryOutDocument(
 
   return parsedPackets;
 }
+
+export const VERIFIED_N1_EXAM_CODE_TO_PACKET_ID: Record<
+  string,
+  { packetId: string; yearLabel: string; orderNumber: number }
+> = {
+  '2010.07': { packetId: 'n1-1', yearLabel: 'Juli 2010', orderNumber: 1 },
+  '2010.12': { packetId: 'n1-2', yearLabel: 'Desember 2010', orderNumber: 2 },
+  '2011.07': { packetId: 'n1-3', yearLabel: 'Juli 2011', orderNumber: 3 },
+  '2011.12': { packetId: 'n1-4', yearLabel: 'Desember 2011', orderNumber: 4 },
+};
+
+const VERIFIED_N1_MOJI_UNDERLINES: Record<string, Record<number, string>> = {
+  '2010.07': {
+    1: '繁盛',
+    2: '契約',
+    3: '潤って',
+    4: '手薄',
+    5: '壊されて',
+    6: '華々しく',
+    14: 'ルーズな',
+    15: 'なじんで',
+    16: '張り合って',
+    17: '朗報',
+    18: 'わずらわしい',
+    19: 'いやみ',
+  },
+  '2010.12': {
+    1: '本筋',
+    2: '伴奏',
+    3: '推理',
+    4: '極めて',
+    5: '練って',
+    6: '締めた',
+    14: 'まばらだった',
+    15: 'どんよりした',
+    16: '丹念に',
+    17: 'はかどっている',
+    18: '見合わせる',
+    19: 'やむをえず',
+  },
+  '2011.07': {
+    1: '利益',
+    2: '逃れた',
+    3: '考慮',
+    4: '遮る',
+    5: '根拠',
+    6: '肝心',
+    14: '画期的な',
+    15: 'もくろんで',
+    16: '手がかり',
+    17: 'にわかには',
+    18: '重宝している',
+    19: 'シビアだ',
+  },
+  '2011.12': {
+    1: '鈍って',
+    2: '漠然',
+    3: '閲覧',
+    4: '釈明',
+    5: '合併',
+    6: '兆し',
+    14: 'ありきたりの',
+    15: '歴然としている',
+    16: '極力',
+    17: '落胆した',
+    18: 'あっけない',
+    19: 'コントラスト',
+  },
+};
+
+const N1_MOJI_MONDAI_META: Record<
+  number,
+  { title: string; subtitle: string; start: number; end: number }
+> = {
+  1: { title: '問題1 · 漢字読み', subtitle: 'Pilih cara baca kanji yang tepat (Soal 1–6)', start: 1, end: 6 },
+  2: { title: '問題2 · 文脈規定', subtitle: 'Pilih kosakata yang sesuai konteks kalimat (Soal 7–13)', start: 7, end: 13 },
+  3: { title: '問題3 · 言い換え類義', subtitle: 'Pilih padanan kata dengan makna terdekat (Soal 14–19)', start: 14, end: 19 },
+  4: { title: '問題4 · 用法', subtitle: 'Pilih kalimat dengan penggunaan kata yang tepat (Soal 20–25)', start: 20, end: 25 },
+  5: { title: '問題5 · 文の文法1', subtitle: 'Pilih pola tata bahasa yang tepat untuk kalimat (Soal 26–35)', start: 26, end: 35 },
+  6: { title: '問題6 · 文の文法2 (★)', subtitle: 'Susun urutan kata dan pilih yang menempati posisi ★ (Soal 36–40)', start: 36, end: 40 },
+  7: { title: '問題7 · 文章の文法', subtitle: 'Baca wacana dan lengkapi bagian (41)–(45) (Soal 41–45)', start: 41, end: 45 },
+};
+
+const N1_DOKKAI_MONDAI_META: Record<number, { title: string; subtitle: string }> = {
+  8: { title: '問題8 · 内容理解（短文）', subtitle: '4 wacana pendek (Soal 46–49)' },
+  9: { title: '問題9 · 内容理解（中文）', subtitle: '3 wacana menengah (Soal 50–58)' },
+  10: { title: '問題10 · 内容理解（長文）', subtitle: '1 wacana panjang (Soal 59–62)' },
+  11: { title: '問題11 · 統合理解（A・B比較）', subtitle: 'Perbandingan 2 opini A & B' },
+  12: { title: '問題12 · 主張理解（長文）', subtitle: '1 wacana panjang argumentatif' },
+  13: { title: '問題13 · 情報検索', subtitle: 'Pencarian informasi pada pengumuman/brosur' },
+};
+
+function parseFlexibleDokkaiMondai(params: {
+  lines: string[];
+  mondaiNum: number;
+  instruction: string;
+  packetId: string;
+  keys: Record<number, string>;
+  minQ: number;
+  maxQ: number;
+  hasSubPassages: boolean;
+  isABComparison: boolean;
+  passageTitle: string;
+}): TryOutFormItem[] {
+  const {
+    lines,
+    mondaiNum,
+    instruction,
+    packetId,
+    keys,
+    minQ,
+    maxQ,
+    hasSubPassages,
+    isABComparison,
+    passageTitle,
+  } = params;
+
+  const items: TryOutFormItem[] = [
+    {
+      kind: 'passage',
+      id: `${packetId}-dk-m${mondaiNum}-intro`,
+      title: `問題${mondaiNum}`,
+      subtitle: instruction,
+      paragraphs: [],
+    },
+  ];
+
+  if (hasSubPassages) {
+    const subParts: Array<{ label: string; lines: string[] }> = [];
+    let current: { label: string; lines: string[] } | null = null;
+
+    for (const raw of lines) {
+      const line = cleanLine(raw);
+      if (!line) continue;
+      const subMatch = line.match(/^\((\d+)\)\s*(.*)$/);
+      if (subMatch) {
+        if (current) subParts.push(current);
+        current = {
+          label: `(${subMatch[1]})`,
+          lines: subMatch[2] ? [subMatch[2]] : [],
+        };
+        continue;
+      }
+      if (current) current.lines.push(line);
+    }
+    if (current) subParts.push(current);
+
+    subParts.forEach((sub, subIdx) => {
+      const firstQIdx = sub.lines.findIndex((l) => /^\[\d+\]/.test(l));
+      const passageLines = firstQIdx >= 0 ? sub.lines.slice(0, firstQIdx) : sub.lines;
+      const qLines = firstQIdx >= 0 ? sub.lines.slice(firstQIdx) : [];
+
+      const { paragraphs, notes, source } = parsePassageAndNotes(passageLines);
+      items.push({
+        kind: 'passage',
+        id: `${packetId}-dk-m${mondaiNum}-p${subIdx + 1}`,
+        title: `問題${mondaiNum} ${sub.label}`,
+        paragraphs: paragraphs.map(formatBlankParentheses),
+        notes: notes.length > 0 ? notes : undefined,
+        source,
+      });
+
+      const questions = parseNumberedQuestions(qLines, minQ, maxQ);
+      for (const q of questions) {
+        items.push({
+          kind: 'choice',
+          id: `${packetId}-dk-q-${q.number}`,
+          number: q.number,
+          label: `Soal ${q.number}`,
+          prompt: formatBlankParentheses(q.prompt),
+          optionTexts: q.optionTexts.map(formatBlankParentheses),
+          correctAnswer: keys[q.number] ?? '1',
+          image: null,
+          options: ['1', '2', '3', '4'],
+          required: true,
+        });
+      }
+    });
+
+    return items;
+  }
+
+  const firstQIdx = lines.findIndex((l) => /^\[\d+\]/.test(cleanLine(l)));
+  const passageLines = firstQIdx >= 0 ? lines.slice(0, firstQIdx) : lines;
+  const qLines = firstQIdx >= 0 ? lines.slice(firstQIdx) : [];
+
+  if (isABComparison) {
+    const sections: TryOutPassageSection[] = [];
+    let currentHeading: string | null = null;
+    let currentLines: string[] = [];
+    const notes: string[] = [];
+    const preLines: string[] = [];
+
+    for (const raw of passageLines) {
+      const line = cleanLine(raw);
+      if (!line) continue;
+      if (/^[（(]注/.test(line)) {
+        notes.push(line);
+        continue;
+      }
+      const abMatch = line.match(/^([AB])\s*(.*)$/);
+      if (abMatch && (line === 'A' || line === 'B' || /^[AB][：:\s]/.test(line))) {
+        if (currentHeading) {
+          sections.push({ heading: currentHeading, lines: currentLines });
+        }
+        currentHeading = `文章 ${abMatch[1]}`;
+        currentLines = abMatch[2] ? [abMatch[2].replace(/^[：:]\s*/, '')] : [];
+        continue;
+      }
+      if (currentHeading) {
+        currentLines.push(line);
+      } else {
+        preLines.push(line);
+      }
+    }
+    if (currentHeading) {
+      sections.push({ heading: currentHeading, lines: currentLines });
+    }
+
+    items.push({
+      kind: 'passage',
+      id: `${packetId}-dk-m${mondaiNum}-passage`,
+      title: '文章 A・B',
+      paragraphs: preLines,
+      sections: sections.length > 0 ? sections : undefined,
+      notes: notes.length > 0 ? notes : undefined,
+    });
+  } else {
+    const { paragraphs, notes, source } = parsePassageAndNotes(passageLines);
+    const cleanedParagraphs = paragraphs
+      .map(stripIllustrationCaptionLine)
+      .filter(Boolean);
+    items.push({
+      kind: 'passage',
+      id: `${packetId}-dk-m${mondaiNum}-passage`,
+      title: passageTitle,
+      paragraphs: cleanedParagraphs.map(formatBlankParentheses),
+      notes: notes.length > 0 ? notes : undefined,
+      source,
+    });
+  }
+
+  const questions = parseNumberedQuestions(qLines, minQ, maxQ);
+  for (const q of questions) {
+    items.push({
+      kind: 'choice',
+      id: `${packetId}-dk-q-${q.number}`,
+      number: q.number,
+      label: `Soal ${q.number}`,
+      prompt: formatBlankParentheses(q.prompt),
+      optionTexts: q.optionTexts.map(formatBlankParentheses),
+      correctAnswer: keys[q.number] ?? '1',
+      image: null,
+      options: ['1', '2', '3', '4'],
+      required: true,
+    });
+  }
+
+  return items;
+}
+
+function parseN1ChoukaiPart(
+  choukaiLines: string[],
+  keys: ParsedAnswerKeys['choukai'],
+  transcriptMap: ParsedChoukaiTranscriptMap,
+  packetId: string,
+): TryOutFormPage[] {
+  const mondaiBlocks = splitSectionsByRegex(choukaiLines, /^問題([1-5])\s*$/);
+  const blockByNum = new Map<number, string[]>();
+  for (const mb of mondaiBlocks) {
+    blockByNum.set(Number(mb.match[1]), mb.lines);
+  }
+
+  const pages: TryOutFormPage[] = [];
+  let seqNum = 1;
+
+  const parsePaperChoiceMondai = (
+    mondaiNum: 1 | 2,
+    title: string,
+    subtitle: string,
+    ansList: string[],
+  ): TryOutFormPage => {
+    const mLines = blockByNum.get(mondaiNum) ?? [];
+    const firstItemIdx = mLines.findIndex((l) => /^\d+番$/.test(cleanLine(l)));
+    const instructionLines =
+      firstItemIdx >= 0
+        ? mLines.slice(0, firstItemIdx).map(cleanLine).filter(Boolean)
+        : mLines.map(cleanLine).filter(Boolean);
+    const itemsLines = firstItemIdx >= 0 ? mLines.slice(firstItemIdx) : [];
+
+    const itemBlocks = splitSectionsByRegex(itemsLines, /^(\d+)番$/);
+    const items: TryOutFormItem[] = [
+      {
+        kind: 'passage',
+        id: `${packetId}-ch-m${mondaiNum}-intro`,
+        title,
+        subtitle,
+        paragraphs: instructionLines,
+      },
+    ];
+
+    itemBlocks.forEach((ib, idx) => {
+      const itemNum = Number(ib.match[1]);
+      const cleanedLines = ib.lines
+        .map((l) => stripIllustrationCaptionLine(cleanLine(l)))
+        .filter(Boolean);
+      const optTexts = parseFourOptions(cleanedLines).map(
+        stripIllustrationCaptionLine,
+      );
+      const itemId = `${packetId}-ch-m${mondaiNum}-${itemNum}`;
+      const qNum = seqNum++;
+      items.push({
+        kind: 'choice',
+        id: itemId,
+        number: qNum,
+        label: `問題${mondaiNum} · ${itemNum}番`,
+        prompt: `Dengarkan audio 問題${mondaiNum} (${itemNum}番), lalu pilih jawaban terbaik:`,
+        optionTexts: optTexts.length === 4 ? optTexts : undefined,
+        correctAnswer: ansList[idx] ?? '1',
+        transcript: transcriptMap.byMondaiAndItem[`${mondaiNum}-${itemNum}`],
+        image: null,
+        options: ['1', '2', '3', '4'],
+        required: true,
+      });
+    });
+
+    return {
+      id: `${packetId}-ch-page-${mondaiNum}`,
+      title,
+      subtitle,
+      items,
+    };
+  };
+
+  pages.push(
+    parsePaperChoiceMondai(
+      1,
+      '問題1 課題理解',
+      `Dengarkan pertanyaan & percakapan, pilih tindakan berikutnya (${keys.m1.length} soal)`,
+      keys.m1,
+    ),
+  );
+
+  pages.push(
+    parsePaperChoiceMondai(
+      2,
+      '問題2 要点理解',
+      `Baca pilihan, dengarkan percakapan, lalu pilih poin utama (${keys.m2.length} soal)`,
+      keys.m2,
+    ),
+  );
+
+  // Page 3: 問題3 概要理解
+  {
+    const m3Lines = (blockByNum.get(3) ?? []).map(cleanLine).filter(Boolean);
+    const count = keys.m3.length || 6;
+    const items: TryOutFormItem[] = [
+      {
+        kind: 'passage',
+        id: `${packetId}-ch-m3-intro`,
+        title: '問題3 概要理解',
+        subtitle: `Soal murni audio tanpa pilihan tercetak (${count} soal)`,
+        paragraphs: m3Lines,
+      },
+    ];
+    for (let i = 1; i <= count; i++) {
+      items.push({
+        kind: 'choice',
+        id: `${packetId}-ch-m3-${i}`,
+        number: seqNum++,
+        label: `問題3 · ${i}番`,
+        prompt: `Dengarkan audio 問題3 (${i}番) dan pilih 1, 2, 3, atau 4.`,
+        correctAnswer: keys.m3[i - 1] ?? '1',
+        transcript: transcriptMap.byMondaiAndItem[`3-${i}`],
+        image: null,
+        options: ['1', '2', '3', '4'],
+        required: true,
+      });
+    }
+    pages.push({
+      id: `${packetId}-ch-page-3`,
+      title: '問題3 概要理解',
+      subtitle: `Pemahaman garis besar secara audio (${count} soal)`,
+      items,
+    });
+  }
+
+  // Page 4: 問題4 即時応答 (3 options)
+  {
+    const m4Lines = (blockByNum.get(4) ?? []).map(cleanLine).filter(Boolean);
+    const count = keys.m4.length || 14;
+    const items: TryOutFormItem[] = [
+      {
+        kind: 'passage',
+        id: `${packetId}-ch-m4-intro`,
+        title: '問題4 即時応答',
+        subtitle: `Respons cepat audio — pilih 1, 2, atau 3 (${count} soal)`,
+        paragraphs: m4Lines,
+      },
+    ];
+    for (let i = 1; i <= count; i++) {
+      items.push({
+        kind: 'choice',
+        id: `${packetId}-ch-m4-${i}`,
+        number: seqNum++,
+        label: `問題4 · ${i}番`,
+        prompt: `Dengarkan ucapan & 3 pilihan respons 問題4 (${i}番), pilih 1, 2, atau 3.`,
+        correctAnswer: keys.m4[i - 1] ?? '1',
+        transcript: transcriptMap.byMondaiAndItem[`4-${i}`],
+        image: null,
+        options: ['1', '2', '3'],
+        required: true,
+      });
+    }
+    pages.push({
+      id: `${packetId}-ch-page-4`,
+      title: '問題4 即時応答',
+      subtitle: `Respons cepat 3 pilihan (${count} soal)`,
+      items,
+    });
+  }
+
+  // Page 5: 問題5 総合理解 (handles both same-line and next-line 質問1/質問2 options)
+  {
+    const m5Lines = (blockByNum.get(5) ?? []).map(cleanLine).filter(Boolean);
+    const q1Idx = m5Lines.findIndex((l) => /^質問1/.test(l));
+    const q2Idx = m5Lines.findIndex((l) => /^質問2/.test(l));
+
+    const introEnd = q1Idx >= 0 ? q1Idx : m5Lines.length;
+    const introLines = m5Lines.slice(0, introEnd);
+
+    const extractSubOptions = (startIdx: number, endIdx?: number): string[] => {
+      if (startIdx < 0) return [];
+      const firstRest = m5Lines[startIdx].replace(/^質問[12][：:]?\s*/, '').trim();
+      const restLines = m5Lines.slice(startIdx + 1, endIdx);
+      const combined = firstRest ? [firstRest, ...restLines] : restLines;
+      return parseFourOptions(combined);
+    };
+
+    const q1Opts = extractSubOptions(q1Idx, q2Idx >= 0 ? q2Idx : undefined);
+    const q2Opts = extractSubOptions(q2Idx);
+
+    const items: TryOutFormItem[] = [
+      {
+        kind: 'passage',
+        id: `${packetId}-ch-m5-intro`,
+        title: '問題5 総合理解',
+        subtitle:
+          'Pemahaman terpadu: 1番・2番 audio, 3番 (質問1 & 質問2) dengan pilihan teks',
+        paragraphs: introLines,
+      },
+      {
+        kind: 'choice',
+        id: `${packetId}-ch-m5-1`,
+        number: seqNum++,
+        label: '問題5 · 1番',
+        prompt: 'Dengarkan audio 問題5 (1番), lalu pilih 1, 2, 3, atau 4.',
+        correctAnswer: keys.m5[0] ?? '1',
+        transcript: transcriptMap.byMondaiAndItem['5-1'],
+        image: null,
+        options: ['1', '2', '3', '4'],
+        required: true,
+      },
+      {
+        kind: 'choice',
+        id: `${packetId}-ch-m5-2`,
+        number: seqNum++,
+        label: '問題5 · 2番',
+        prompt: 'Dengarkan audio 問題5 (2番), lalu pilih 1, 2, 3, atau 4.',
+        correctAnswer: keys.m5[1] ?? '1',
+        transcript: transcriptMap.byMondaiAndItem['5-2'],
+        image: null,
+        options: ['1', '2', '3', '4'],
+        required: true,
+      },
+      {
+        kind: 'choice',
+        id: `${packetId}-ch-m5-3a`,
+        number: seqNum++,
+        label: '問題5 · 3番 (質問1)',
+        prompt: 'Dengarkan audio 問題5 (3番 · 質問1), lalu pilih jawaban terbaik:',
+        optionTexts: q1Opts.length === 4 ? q1Opts : undefined,
+        correctAnswer: keys.m5[2] ?? '1',
+        transcript: transcriptMap.byMondaiAndItem['5-3'],
+        image: null,
+        options: ['1', '2', '3', '4'],
+        required: true,
+      },
+      {
+        kind: 'choice',
+        id: `${packetId}-ch-m5-3b`,
+        number: seqNum++,
+        label: '問題5 · 3番 (質問2)',
+        prompt: 'Dengarkan audio 問題5 (3番 · 質問2), lalu pilih jawaban terbaik:',
+        optionTexts: q2Opts.length === 4 ? q2Opts : undefined,
+        correctAnswer: keys.m5[3] ?? '1',
+        transcript: transcriptMap.byMondaiAndItem['5-3'],
+        image: null,
+        options: ['1', '2', '3', '4'],
+        required: true,
+      },
+    ];
+
+    pages.push({
+      id: `${packetId}-ch-page-5`,
+      title: '問題5 総合理解',
+      subtitle: 'Pemahaman terpadu (4 soal: 1番, 2番, 3番 質問1 & 質問2)',
+      items,
+    });
+  }
+
+  return pages;
+}
+
+export function parseVerifiedTryOutN1Document(
+  rawText: string,
+): ParsedVerifiedTryOutPacket[] {
+  const normalized = rawText.replace(/^\uFEFF/, '');
+  const rawPackets = normalized
+    .split(/(?=^SOAL TAHUN \d{4} BULAN \d{2})/m)
+    .filter((block) => block.trim().startsWith('SOAL TAHUN'));
+
+  const parsedPackets: ParsedVerifiedTryOutPacket[] = [];
+
+  for (const packetText of rawPackets) {
+    const lines = packetText.split(/\r?\n/);
+    const headerTitle = cleanLine(lines[0] ?? '');
+    const codeMatch = headerTitle.match(/SOAL TAHUN (\d{4}) BULAN (\d{2})/);
+    if (!codeMatch) continue;
+
+    const examCode = `${codeMatch[1]}.${codeMatch[2]}`;
+    const mapping = VERIFIED_N1_EXAM_CODE_TO_PACKET_ID[examCode];
+    if (!mapping) continue;
+
+    const { packetId, yearLabel, orderNumber } = mapping;
+
+    const dokkaiIdx = lines.findIndex((l) => cleanLine(l) === '読解');
+    const choukaiIdx = lines.findIndex((l) => cleanLine(l) === '聴解');
+    const jawabanIdx = lines.findIndex((l) => /^JAWABAN\s*\(/.test(cleanLine(l)));
+    const transkripIdx = lines.findIndex((l) =>
+      /^TRANSKRIP CHOUKAI/.test(cleanLine(l)),
+    );
+
+    if (dokkaiIdx < 0 || choukaiIdx < 0 || jawabanIdx < 0 || transkripIdx < 0) {
+      continue;
+    }
+
+    const mojiBunpouLines = lines.slice(1, dokkaiIdx);
+    const dokkaiLines = lines.slice(dokkaiIdx + 1, choukaiIdx);
+    const choukaiLines = lines.slice(choukaiIdx + 1, jawabanIdx);
+    const answerLines = lines.slice(jawabanIdx + 1, transkripIdx);
+    const transcriptLines = lines.slice(transkripIdx + 1);
+
+    const keys = parseAnswerKeyBlock(answerLines);
+    const transcriptMap = parseChoukaiTranscript(
+      transcriptLines,
+      keys.choukai,
+      packetId,
+    );
+
+    const choukaiCount =
+      keys.choukai.m1.length +
+      keys.choukai.m2.length +
+      keys.choukai.m3.length +
+      keys.choukai.m4.length +
+      keys.choukai.m5.length;
+
+    const dokkaiKeyCount = Object.keys(keys.written).filter((k) => Number(k) >= 46).length;
+
+    const mojiPages: TryOutFormPage[] = [
+      {
+        id: `${packetId}-mb-page-0`,
+        title: 'Tata Tertib Pengerjaan',
+        subtitle: `Panduan singkat JLPT N1 Paket ${orderNumber} (${examCode} · ${yearLabel})`,
+        items: [
+          {
+            kind: 'notice',
+            id: `${packetId}-mb-rules`,
+            title: `Tata Tertib JLPT N1 — Paket ${orderNumber} (${examCode})`,
+            bullets: [
+              `Soal Terverifikasi: Berisi 45 soal Moji-Goi & Bunpou, ${dokkaiKeyCount} soal Dokkai, dan ${choukaiCount} soal Choukai asli seri ${examCode} (${yearLabel}).`,
+              'Kunci Jawaban Resmi: Skor otomatis, status benar/salah, dan pembahasan kunci jawaban muncul setelah kamu mengumpulkan bagian ini.',
+              'Audio & Transkrip Choukai: Bagian Choukai dilengkapi audio resmi. Transkrip lengkap (聴力原文) terbuka otomatis saat evaluasi setelah kamu mengumpulkan jawaban.',
+            ],
+          },
+        ],
+      },
+    ];
+
+    const mojiBlocks = splitSectionsByRegex(mojiBunpouLines, /^問題([1-7])\s+(.*)$/);
+    const examUnderlines = VERIFIED_N1_MOJI_UNDERLINES[examCode] ?? {};
+    for (const mb of mojiBlocks) {
+      const mNum = Number(mb.match[1]);
+      const instruction = formatBlankParentheses(mb.match[2]?.trim() ?? '');
+      const meta = N1_MOJI_MONDAI_META[mNum];
+      if (!meta) continue;
+
+      const items: TryOutFormItem[] = [];
+      if (mNum === 7) {
+        const firstQIdx = mb.lines.findIndex((l) => /^\[41\]/.test(cleanLine(l)));
+        const passageLines = firstQIdx >= 0 ? mb.lines.slice(0, firstQIdx) : [];
+        const qLines = firstQIdx >= 0 ? mb.lines.slice(firstQIdx) : mb.lines;
+        const { paragraphs, notes, source } = parsePassageAndNotes(passageLines);
+
+        items.push({
+          kind: 'passage',
+          id: `${packetId}-mb-m7-passage`,
+          title: '問題7 · 文章の文法',
+          subtitle: instruction,
+          paragraphs: paragraphs.map(formatBlankParentheses),
+          notes: notes.length > 0 ? notes : undefined,
+          source,
+        });
+
+        const questions = parseNumberedQuestions(qLines, meta.start, meta.end);
+        for (const q of questions) {
+          items.push({
+            kind: 'choice',
+            id: `${packetId}-mb-q-${q.number}`,
+            number: q.number,
+            label: `Soal ${q.number}`,
+            prompt: formatBlankParentheses(
+              q.prompt || `Pilih jawaban paling tepat untuk mengisi (${q.number}).`,
+            ),
+            optionTexts: q.optionTexts.map(formatBlankParentheses),
+            correctAnswer: keys.written[q.number] ?? '1',
+            image: null,
+            options: ['1', '2', '3', '4'],
+            required: true,
+          });
+        }
+      } else {
+        items.push({
+          kind: 'passage',
+          id: `${packetId}-mb-m${mNum}-intro`,
+          title: meta.title,
+          subtitle: instruction,
+          paragraphs: [],
+        });
+
+        const questions = parseNumberedQuestions(mb.lines, meta.start, meta.end);
+        for (const q of questions) {
+          let formattedPrompt = formatBlankParentheses(q.prompt);
+          let formattedOptions = q.optionTexts.map((opt) =>
+            formatBlankParentheses(opt.replace(/\s+文法$/, '').trim()),
+          );
+
+          if (mNum === 4) {
+            const headword = formattedPrompt.trim();
+            formattedPrompt = `[[${headword}]]`;
+            formattedOptions = formattedOptions.map((opt) =>
+              underlineMondai6WordInOption(opt, headword),
+            );
+          } else if (examUnderlines[q.number]) {
+            formattedPrompt = underlineExactOnce(
+              formattedPrompt,
+              examUnderlines[q.number],
+            );
+          }
+
+          items.push({
+            kind: 'choice',
+            id: `${packetId}-mb-q-${q.number}`,
+            number: q.number,
+            label: `Soal ${q.number}`,
+            prompt: formattedPrompt,
+            optionTexts: formattedOptions,
+            correctAnswer: keys.written[q.number] ?? '1',
+            image: null,
+            options: ['1', '2', '3', '4'],
+            required: true,
+          });
+        }
+      }
+
+      mojiPages.push({
+        id: `${packetId}-mb-page-${mNum}`,
+        title: meta.title,
+        subtitle: meta.subtitle,
+        items,
+      });
+    }
+
+    const dokkaiPages: TryOutFormPage[] = [];
+    const dokkaiBlocks = splitSectionsByRegex(
+      dokkaiLines,
+      /^問題(8|9|10|11|12|13)\s+(.*)$/,
+    );
+    for (const db of dokkaiBlocks) {
+      const mNum = Number(db.match[1]);
+      const instruction = db.match[2]?.trim() ?? '';
+      const meta = N1_DOKKAI_MONDAI_META[mNum];
+      if (!meta) continue;
+
+      dokkaiPages.push({
+        id: `${packetId}-dk-page-${mNum}`,
+        title: meta.title,
+        subtitle: meta.subtitle,
+        items: parseFlexibleDokkaiMondai({
+          lines: db.lines,
+          mondaiNum: mNum,
+          instruction,
+          packetId,
+          keys: keys.written,
+          minQ: 46,
+          maxQ: 75,
+          hasSubPassages: mNum === 8 || mNum === 9,
+          isABComparison: mNum === 11,
+          passageTitle:
+            mNum === 13 ? '情報検索' : mNum === 12 ? '主張理解（長文）' : '長文読解',
+        }),
+      });
+    }
+
+    const choukaiPages = parseN1ChoukaiPart(
+      choukaiLines,
+      keys.choukai,
+      transcriptMap,
+      packetId,
+    );
+
+    const countChoices = (pages: TryOutFormPage[]) =>
+      pages.reduce(
+        (sum, pg) => sum + pg.items.filter((it) => it.kind === 'choice').length,
+        0,
+      );
+    const mbCount = countChoices(mojiPages);
+    const dkCount = countChoices(dokkaiPages);
+    const chCount = countChoices(choukaiPages);
+
+    parsedPackets.push({
+      packetId,
+      examCode,
+      yearLabel,
+      headerTitle,
+      forms: {
+        'moji-bunpou': mojiPages,
+        dokkai: dokkaiPages,
+        choukai: choukaiPages,
+      },
+      choukaiTranscript: transcriptMap.sections,
+      counts: {
+        mojiBunpou: mbCount,
+        dokkai: dkCount,
+        choukai: chCount,
+        total: mbCount + dkCount + chCount,
+      },
+    });
+  }
+
+  return parsedPackets;
+}
+
+export const VERIFIED_N3_EXAM_CODE_TO_PACKET_ID: Record<
+  string,
+  { packetId: string; yearLabel: string; orderNumber: number }
+> = {
+  '2010.07': { packetId: 'n3-1', yearLabel: 'Juli 2010', orderNumber: 1 },
+  '2011.07': { packetId: 'n3-2', yearLabel: 'Juli 2011', orderNumber: 2 },
+  '2011.12': { packetId: 'n3-3', yearLabel: 'Desember 2011', orderNumber: 3 },
+  '2012.07': { packetId: 'n3-4', yearLabel: 'Juli 2012', orderNumber: 4 },
+  '2012.12': { packetId: 'n3-5', yearLabel: 'Desember 2012', orderNumber: 5 },
+};
+
+const VERIFIED_N3_MOJI_UNDERLINES: Record<string, Record<number, string>> = {
+  '2010.07': {
+    1: '包んで',
+    2: '得意',
+    3: '発見',
+    4: '表して',
+    5: '件',
+    6: '通勤',
+    7: '岩',
+    8: '努力',
+    9: 'せいじょう',
+    10: 'けつえき',
+    11: 'おって',
+    12: 'おりる',
+    13: 'しんちょう',
+    14: 'ものがたり',
+    26: 'きつい',
+    27: 'くたびれた',
+    28: '明けたら',
+    29: '混雑している',
+    30: '単純だ',
+  },
+  '2011.07': {
+    1: '首都',
+    2: '地球',
+    3: '遅れて',
+    4: '協力',
+    5: '応募',
+    6: '疑問',
+    7: '発表',
+    8: '単語',
+    9: 'かいけつ',
+    10: 'あんない',
+    11: 'けんこう',
+    12: 'きおん',
+    13: 'いたい',
+    14: 'たいりょう',
+    26: '通勤して',
+    27: 'おそろしい',
+    28: 'わけ',
+    29: 'へった',
+    30: 'やりなおした',
+  },
+  '2011.12': {
+    1: '過去',
+    2: '到着',
+    3: '折って',
+    4: '情報',
+    5: '値段',
+    6: '深い',
+    7: '返しました',
+    8: '表面',
+    9: 'げんざい',
+    10: 'ごじゆう',
+    11: 'ほうりつ',
+    12: 'かんこう',
+    13: 'けん',
+    14: 'なみだ',
+    26: '欠点',
+    27: '翌年',
+    28: 'スケジュール',
+    29: 'らくな',
+    30: 'さっき',
+  },
+  '2012.07': {
+    1: '汗',
+    2: '配って',
+    3: '完成',
+    4: '島',
+    5: '困って',
+    6: '平日',
+    7: '卒業',
+    8: '固く',
+    9: 'まもる',
+    10: 'しゅうかんし',
+    11: 'そうだん',
+    12: 'じしん',
+    13: 'あたためました',
+    14: 'げんりょう',
+    26: '共通点',
+    27: '整理した',
+    28: 'ぜったいに',
+    29: 'ないしょにして',
+    30: '気に入っている',
+  },
+  '2012.12': {
+    1: '短すぎて',
+    2: '他人',
+    3: '示した',
+    4: '外科',
+    5: '笑顔',
+    6: '以降',
+    7: '横断',
+    8: '合図',
+    9: 'きたく',
+    10: 'そだてる',
+    11: 'きろく',
+    12: 'は',
+    13: 'むすぶ',
+    14: 'ふくしゅう',
+    26: 'あきらめなかった',
+    27: '年中',
+    28: 'うばわれて',
+    29: 'そっと',
+    30: 'まぶしくて',
+  },
+};
+
+interface ParsedN3AnswerKeys {
+  moji: Record<number, string>; // 1..35
+  bunpouDokkai: Record<number, string>; // 1..39 (1..23 Bunpou, 24..39 Dokkai)
+  choukai: {
+    m1: string[];
+    m2: string[];
+    m3: string[];
+    m4: string[];
+    m5: string[];
+  };
+}
+
+function parseN3AnswerKeyBlock(lines: string[]): ParsedN3AnswerKeys {
+  const moji: Record<number, string> = {};
+  const bunpouDokkai: Record<number, string> = {};
+  const choukai = {
+    m1: [] as string[],
+    m2: [] as string[],
+    m3: [] as string[],
+    m4: [] as string[],
+    m5: [] as string[],
+  };
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = cleanLine(lines[i]);
+    if (!line) continue;
+
+    const mojiMatch = line.match(/^文字・語彙\s*[—–-]\s*問題\d+\s*\((\d+)-(\d+)\)/);
+    if (mojiMatch) {
+      const startNum = Number(mojiMatch[1]);
+      let valLine = '';
+      for (let j = i + 1; j < lines.length; j++) {
+        const candidate = cleanLine(lines[j]);
+        if (candidate) {
+          valLine = candidate;
+          i = j;
+          break;
+        }
+      }
+      (valLine.match(/[1-4]/g) ?? []).forEach((d, idx) => {
+        moji[startNum + idx] = d;
+      });
+      continue;
+    }
+
+    const bdMatch = line.match(/^(?:文法|読解)\s*[—–-]\s*問題\d+\s*\((\d+)-(\d+)\)/);
+    if (bdMatch) {
+      const startNum = Number(bdMatch[1]);
+      let valLine = '';
+      for (let j = i + 1; j < lines.length; j++) {
+        const candidate = cleanLine(lines[j]);
+        if (candidate) {
+          valLine = candidate;
+          i = j;
+          break;
+        }
+      }
+      (valLine.match(/[1-4]/g) ?? []).forEach((d, idx) => {
+        bunpouDokkai[startNum + idx] = d;
+      });
+      continue;
+    }
+
+    const chMatch = line.match(/^聴解\s*[—–-]\s*問題([1-5])\s*\((\d+)-(\d+)\)/);
+    if (chMatch) {
+      const mondai = Number(chMatch[1]);
+      let valLine = '';
+      for (let j = i + 1; j < lines.length; j++) {
+        const candidate = cleanLine(lines[j]);
+        if (candidate) {
+          valLine = candidate;
+          i = j;
+          break;
+        }
+      }
+      if (mondai === 1) choukai.m1 = valLine.match(/[1-4]/g) ?? [];
+      else if (mondai === 2) choukai.m2 = valLine.match(/[1-4]/g) ?? [];
+      else if (mondai === 3) choukai.m3 = valLine.match(/[1-4]/g) ?? [];
+      else if (mondai === 4) choukai.m4 = valLine.match(/[1-3]/g) ?? [];
+      else if (mondai === 5) choukai.m5 = valLine.match(/[1-3]/g) ?? [];
+    }
+  }
+
+  return { moji, bunpouDokkai, choukai };
+}
+
+function parseN3ChoukaiTranscript(
+  lines: string[],
+  keys: ParsedN3AnswerKeys['choukai'],
+  packetId: string,
+): ParsedChoukaiTranscriptMap {
+  const sections: ChoukaiTranscriptSection[] = [];
+  const byMondaiAndItem: Record<string, string> = {};
+  const mondaiBlocks = splitSectionsByRegex(lines, /^問題([1-5])\s*(.*)$/);
+
+  const m1Count = keys.m1.length || 6;
+  const m2Count = keys.m2.length || 6;
+  const m3Count = keys.m3.length || 3;
+  const m4Count = keys.m4.length || 4;
+
+  const mondaiStartNum: Record<number, number> = {
+    1: 1,
+    2: 1 + m1Count,
+    3: 1 + m1Count + m2Count,
+    4: 1 + m1Count + m2Count + m3Count,
+    5: 1 + m1Count + m2Count + m3Count + m4Count,
+  };
+
+  for (const mb of mondaiBlocks) {
+    const mondaiNumber = Number(mb.match[1]);
+    const title = mb.header;
+    const entries: ChoukaiTranscriptEntry[] = [];
+
+    const rawEntries: Array<{ itemNum: number; firstLineRest: string; lines: string[] }> = [];
+    let current: { itemNum: number; firstLineRest: string; lines: string[] } | null = null;
+
+    for (const raw of mb.lines) {
+      const line = cleanLine(raw);
+      if (!line) continue;
+      const itemMatch = line.match(/^(\d+)番(?:\s+(.*))?$/);
+      if (itemMatch) {
+        if (current) rawEntries.push(current);
+        current = {
+          itemNum: Number(itemMatch[1]),
+          firstLineRest: itemMatch[2]?.trim() ?? '',
+          lines: [],
+        };
+        continue;
+      }
+      if (current) current.lines.push(line);
+    }
+    if (current) rawEntries.push(current);
+
+    for (const re of rawEntries) {
+      const allLines: string[] = [];
+      if (re.firstLineRest) allLines.push(re.firstLineRest);
+
+      let answerNote = '';
+      for (const l of re.lines) {
+        if (/^正解[：:]/.test(l)) {
+          answerNote = l.replace(/^正解[：:]\s*/, '').trim();
+        } else {
+          allLines.push(l);
+        }
+      }
+
+      const body = allLines.join('\n').trim();
+      byMondaiAndItem[`${mondaiNumber}-${re.itemNum}`] = body;
+
+      const baseStart = mondaiStartNum[mondaiNumber] ?? 1;
+      const keyArr =
+        mondaiNumber === 1
+          ? keys.m1
+          : mondaiNumber === 2
+            ? keys.m2
+            : mondaiNumber === 3
+              ? keys.m3
+              : mondaiNumber === 4
+                ? keys.m4
+                : keys.m5;
+
+      entries.push({
+        id: `${packetId}-tr-m${mondaiNumber}-${re.itemNum}`,
+        mondaiNumber,
+        itemNumberLabel: `${re.itemNum}番`,
+        questionNumbers: [baseStart + re.itemNum - 1],
+        body,
+        correctAnswerLabel: keyArr[re.itemNum - 1] ?? answerNote,
+      });
+    }
+
+    sections.push({
+      mondaiNumber,
+      title,
+      entries,
+    });
+  }
+
+  return { sections, byMondaiAndItem };
+}
+
+function parseN3ChoukaiPart(
+  choukaiLines: string[],
+  keys: ParsedN3AnswerKeys['choukai'],
+  transcriptMap: ParsedChoukaiTranscriptMap,
+  packetId: string,
+): TryOutFormPage[] {
+  const mondaiBlocks = splitSectionsByRegex(choukaiLines, /^問題([1-5])\s*$/);
+  const blockByNum = new Map<number, string[]>();
+  for (const mb of mondaiBlocks) {
+    blockByNum.set(Number(mb.match[1]), mb.lines);
+  }
+
+  const pages: TryOutFormPage[] = [];
+  let seqNum = 1;
+
+  const parsePaperChoiceMondai = (
+    mondaiNum: 1 | 2,
+    title: string,
+    subtitle: string,
+    ansList: string[],
+  ): TryOutFormPage => {
+    const mLines = blockByNum.get(mondaiNum) ?? [];
+    const firstItemIdx = mLines.findIndex((l) => /^\d+番$/.test(cleanLine(l)));
+    const instructionLines =
+      firstItemIdx >= 0
+        ? mLines.slice(0, firstItemIdx).map(cleanLine).filter(Boolean)
+        : mLines.map(cleanLine).filter(Boolean);
+    const itemsLines = firstItemIdx >= 0 ? mLines.slice(firstItemIdx) : [];
+
+    const itemBlocks = splitSectionsByRegex(itemsLines, /^(\d+)番$/);
+    const items: TryOutFormItem[] = [
+      {
+        kind: 'passage',
+        id: `${packetId}-ch-m${mondaiNum}-intro`,
+        title,
+        subtitle,
+        paragraphs: instructionLines,
+      },
+    ];
+
+    itemBlocks.forEach((ib, idx) => {
+      const itemNum = Number(ib.match[1]);
+      const cleanedLines = ib.lines
+        .map((l) => stripIllustrationCaptionLine(cleanLine(l)))
+        .filter(Boolean);
+      const optTexts = parseFourOptions(cleanedLines).map(
+        stripIllustrationCaptionLine,
+      );
+      const itemId = `${packetId}-ch-m${mondaiNum}-${itemNum}`;
+      const itemImage = VERIFIED_CHOUKAI_IMAGES[itemId] ?? null;
+      const qNum = seqNum++;
+      items.push({
+        kind: 'choice',
+        id: itemId,
+        number: qNum,
+        label: `問題${mondaiNum} · ${itemNum}番`,
+        prompt: itemImage
+          ? `Perhatikan ilustrasi & dengarkan audio 問題${mondaiNum} (${itemNum}番), lalu pilih 1, 2, 3, atau 4:`
+          : `Dengarkan audio 問題${mondaiNum} (${itemNum}番), lalu pilih jawaban terbaik:`,
+        optionTexts: optTexts.length === 4 ? optTexts : undefined,
+        correctAnswer: ansList[idx] ?? '1',
+        transcript: transcriptMap.byMondaiAndItem[`${mondaiNum}-${itemNum}`],
+        image: itemImage,
+        options: ['1', '2', '3', '4'],
+        required: true,
+      });
+    });
+
+    return {
+      id: `${packetId}-ch-page-${mondaiNum}`,
+      title,
+      subtitle,
+      items,
+    };
+  };
+
+  pages.push(
+    parsePaperChoiceMondai(
+      1,
+      '問題1 課題理解',
+      `Dengarkan pertanyaan & percakapan, pilih tindakan berikutnya (${keys.m1.length} soal)`,
+      keys.m1,
+    ),
+  );
+
+  pages.push(
+    parsePaperChoiceMondai(
+      2,
+      '問題2 ポイント理解',
+      `Baca pilihan, dengarkan percakapan, lalu pilih poin utama (${keys.m2.length} soal)`,
+      keys.m2,
+    ),
+  );
+
+  // Page 3: 問題3 概要理解 (3 audio-only questions, 4 options)
+  {
+    const m3Lines = (blockByNum.get(3) ?? [])
+      .map((l) => stripIllustrationCaptionLine(cleanLine(l)))
+      .filter(Boolean);
+    const count = keys.m3.length || 3;
+    const items: TryOutFormItem[] = [
+      {
+        kind: 'passage',
+        id: `${packetId}-ch-m3-intro`,
+        title: '問題3 概要理解',
+        subtitle: `Soal murni audio tanpa pilihan tercetak (${count} soal)`,
+        paragraphs: m3Lines,
+      },
+    ];
+    for (let i = 1; i <= count; i++) {
+      items.push({
+        kind: 'choice',
+        id: `${packetId}-ch-m3-${i}`,
+        number: seqNum++,
+        label: `問題3 · ${i}番`,
+        prompt: `Dengarkan audio 問題3 (${i}番) dan pilih 1, 2, 3, atau 4.`,
+        correctAnswer: keys.m3[i - 1] ?? '1',
+        transcript: transcriptMap.byMondaiAndItem[`3-${i}`],
+        image: null,
+        options: ['1', '2', '3', '4'],
+        required: true,
+      });
+    }
+    pages.push({
+      id: `${packetId}-ch-page-3`,
+      title: '問題3 概要理解',
+      subtitle: `Pemahaman garis besar secara audio (${count} soal)`,
+      items,
+    });
+  }
+
+  // Page 4: 問題4 発話表現 (4 picture-based questions, 3 options, with illustration strip)
+  {
+    const m4Lines = (blockByNum.get(4) ?? [])
+      .map((l) => stripIllustrationCaptionLine(cleanLine(l)))
+      .filter(Boolean);
+    const count = keys.m4.length || 4;
+    const stripImage = VERIFIED_CHOUKAI_IMAGES[`${packetId}-ch-m4-strip`];
+    const items: TryOutFormItem[] = [
+      {
+        kind: 'passage',
+        id: `${packetId}-ch-m4-intro`,
+        title: '問題4 発話表現',
+        subtitle: `Lihat ilustrasi situasi & pilih ungkapan terbaik 1, 2, atau 3 (${count} soal)`,
+        paragraphs: m4Lines,
+      },
+    ];
+    if (stripImage) {
+      items.push({
+        kind: 'image',
+        id: `${packetId}-ch-m4-image`,
+        image: stripImage,
+      });
+    }
+    for (let i = 1; i <= count; i++) {
+      items.push({
+        kind: 'choice',
+        id: `${packetId}-ch-m4-${i}`,
+        number: seqNum++,
+        label: `問題4 · ${i}番`,
+        prompt: `Lihat gambar ${i}番 pada ilustrasi di atas & dengarkan 3 pilihan ungkapan, pilih 1, 2, atau 3.`,
+        correctAnswer: keys.m4[i - 1] ?? '1',
+        transcript: transcriptMap.byMondaiAndItem[`4-${i}`],
+        image: null,
+        options: ['1', '2', '3'],
+        required: true,
+      });
+    }
+    pages.push({
+      id: `${packetId}-ch-page-4`,
+      title: '問題4 発話表現',
+      subtitle: `Ungkapan lisan berbasis ilustrasi (${count} soal · 3 pilihan)`,
+      items,
+    });
+  }
+
+  // Page 5: 問題5 即時応答 (8 or 9 audio-only questions, 3 options)
+  {
+    const m5Lines = (blockByNum.get(5) ?? [])
+      .map((l) => stripIllustrationCaptionLine(cleanLine(l)))
+      .filter(Boolean);
+    const count = keys.m5.length || 9;
+    const items: TryOutFormItem[] = [
+      {
+        kind: 'passage',
+        id: `${packetId}-ch-m5-intro`,
+        title: '問題5 即時応答',
+        subtitle: `Respons cepat audio — pilih 1, 2, atau 3 (${count} soal)`,
+        paragraphs: m5Lines,
+      },
+    ];
+    for (let i = 1; i <= count; i++) {
+      items.push({
+        kind: 'choice',
+        id: `${packetId}-ch-m5-${i}`,
+        number: seqNum++,
+        label: `問題5 · ${i}番`,
+        prompt: `Dengarkan ucapan & 3 pilihan respons 問題5 (${i}番), pilih 1, 2, atau 3.`,
+        correctAnswer: keys.m5[i - 1] ?? '1',
+        transcript: transcriptMap.byMondaiAndItem[`5-${i}`],
+        image: null,
+        options: ['1', '2', '3'],
+        required: true,
+      });
+    }
+    pages.push({
+      id: `${packetId}-ch-page-5`,
+      title: '問題5 即時応答',
+      subtitle: `Respons cepat 3 pilihan (${count} soal)`,
+      items,
+    });
+  }
+
+  return pages;
+}
+
+const N3_MOJI_MONDAI_META: Record<
+  number,
+  { title: string; subtitle: string; start: number; end: number }
+> = {
+  1: { title: '語彙 問題1 · 漢字読み', subtitle: 'Pilih cara baca kanji yang tepat (Soal 1–8)', start: 1, end: 8 },
+  2: { title: '語彙 問題2 · 表記', subtitle: 'Pilih penulisan kanji yang tepat (Soal 9–14)', start: 9, end: 14 },
+  3: { title: '語彙 問題3 · 文脈規定', subtitle: 'Pilih kosakata yang sesuai konteks kalimat (Soal 15–25)', start: 15, end: 25 },
+  4: { title: '語彙 問題4 · 言い換え類義', subtitle: 'Pilih padanan kata dengan makna terdekat (Soal 26–30)', start: 26, end: 30 },
+  5: { title: '語彙 問題5 · 用法', subtitle: 'Pilih kalimat dengan penggunaan kata yang tepat (Soal 31–35)', start: 31, end: 35 },
+};
+
+const N3_BUNPOU_MONDAI_META: Record<
+  number,
+  { title: string; subtitle: string; start: number; end: number }
+> = {
+  1: { title: '文法 問題1 · 文の文法1', subtitle: 'Pilih pola tata bahasa yang tepat untuk kalimat (Soal 1–13)', start: 1, end: 13 },
+  2: { title: '文法 問題2 · 文の文法2 (★)', subtitle: 'Susun urutan kata dan pilih yang menempati posisi ★ (Soal 14–18)', start: 14, end: 18 },
+  3: { title: '文法 問題3 · 文章の文法', subtitle: 'Baca wacana dan lengkapi bagian (19)–(23) (Soal 19–23)', start: 19, end: 23 },
+};
+
+const N3_DOKKAI_MONDAI_META: Record<number, { title: string; subtitle: string }> = {
+  4: { title: '読解 問題4 · 内容理解（短文）', subtitle: '4 wacana pendek (Soal 24–27)' },
+  5: { title: '読解 問題5 · 内容理解（中文）', subtitle: '2 wacana menengah (Soal 28–33)' },
+  6: { title: '読解 問題6 · 内容理解（長文）', subtitle: '1 wacana panjang (Soal 34–37)' },
+  7: { title: '読解 問題7 · 情報検索', subtitle: 'Pencarian informasi pada brosur/pengumuman (Soal 38–39)' },
+};
+
+export function parseVerifiedTryOutN3Document(
+  rawText: string,
+): ParsedVerifiedTryOutPacket[] {
+  const normalized = rawText.replace(/^\uFEFF/, '');
+  const rawPackets = normalized
+    .split(/(?=^SOAL TAHUN \d{4} BULAN \d{2})/m)
+    .filter((block) => block.trim().startsWith('SOAL TAHUN'));
+
+  const parsedPackets: ParsedVerifiedTryOutPacket[] = [];
+
+  for (const packetText of rawPackets) {
+    const lines = packetText.split(/\r?\n/);
+    const headerTitle = cleanLine(lines[0] ?? '');
+    const codeMatch = headerTitle.match(/SOAL TAHUN (\d{4}) BULAN (\d{2})/);
+    if (!codeMatch) continue;
+
+    const examCode = `${codeMatch[1]}.${codeMatch[2]}`;
+    const mapping = VERIFIED_N3_EXAM_CODE_TO_PACKET_ID[examCode];
+    if (!mapping) continue;
+
+    const { packetId, yearLabel, orderNumber } = mapping;
+
+    const bunpouIdx = lines.findIndex((l) => cleanLine(l) === '文法');
+    const dokkaiIdx = lines.findIndex((l) => cleanLine(l) === '読解');
+    const choukaiIdx = lines.findIndex((l) => cleanLine(l) === '聴解');
+    const jawabanIdx = lines.findIndex((l) => /^JAWABAN\s*\(/.test(cleanLine(l)));
+    const transkripIdx = lines.findIndex((l) =>
+      /^TRANSKRIP CHOUKAI/.test(cleanLine(l)),
+    );
+
+    if (
+      bunpouIdx < 0 ||
+      dokkaiIdx < 0 ||
+      choukaiIdx < 0 ||
+      jawabanIdx < 0 ||
+      transkripIdx < 0
+    ) {
+      continue;
+    }
+
+    const mojiLines = lines.slice(1, bunpouIdx);
+    const bunpouLines = lines.slice(bunpouIdx + 1, dokkaiIdx);
+    const dokkaiLines = lines.slice(dokkaiIdx + 1, choukaiIdx);
+    const choukaiLines = lines.slice(choukaiIdx + 1, jawabanIdx);
+    const answerLines = lines.slice(jawabanIdx + 1, transkripIdx);
+    const transcriptLines = lines.slice(transkripIdx + 1);
+
+    const keys = parseN3AnswerKeyBlock(answerLines);
+    const transcriptMap = parseN3ChoukaiTranscript(
+      transcriptLines,
+      keys.choukai,
+      packetId,
+    );
+
+    const choukaiCount =
+      keys.choukai.m1.length +
+      keys.choukai.m2.length +
+      keys.choukai.m3.length +
+      keys.choukai.m4.length +
+      keys.choukai.m5.length;
+
+    const mojiPages: TryOutFormPage[] = [
+      {
+        id: `${packetId}-mb-page-0`,
+        title: 'Tata Tertib Pengerjaan',
+        subtitle: `Panduan singkat JLPT N3 Paket ${orderNumber} (${examCode} · ${yearLabel})`,
+        items: [
+          {
+            kind: 'notice',
+            id: `${packetId}-mb-rules`,
+            title: `Tata Tertib JLPT N3 — Paket ${orderNumber} (${examCode})`,
+            bullets: [
+              `Soal Terverifikasi: Berisi 58 soal Moji-Goi (35) & Bunpou (23), 16 soal Dokkai, dan ${choukaiCount} soal Choukai asli seri ${examCode} (${yearLabel}).`,
+              'Kunci Jawaban Resmi: Skor otomatis, status benar/salah, dan pembahasan kunci jawaban muncul setelah kamu mengumpulkan bagian ini.',
+              'Audio & Transkrip Choukai: Bagian Choukai dilengkapi audio resmi & ilustrasi asli. Transkrip lengkap (聴力原文) terbuka otomatis saat evaluasi.',
+            ],
+          },
+        ],
+      },
+    ];
+
+    const examUnderlines = VERIFIED_N3_MOJI_UNDERLINES[examCode] ?? {};
+    const mojiBlocks = splitSectionsByRegex(mojiLines, /^問題([1-5])\s+(.*)$/);
+    for (const mb of mojiBlocks) {
+      const mNum = Number(mb.match[1]);
+      const instruction = formatBlankParentheses(mb.match[2]?.trim() ?? '');
+      const meta = N3_MOJI_MONDAI_META[mNum];
+      if (!meta) continue;
+
+      const items: TryOutFormItem[] = [
+        {
+          kind: 'passage',
+          id: `${packetId}-mb-vg-m${mNum}-intro`,
+          title: meta.title,
+          subtitle: instruction,
+          paragraphs: [],
+        },
+      ];
+
+      const questions = parseNumberedQuestions(mb.lines, meta.start, meta.end);
+      for (const q of questions) {
+        let formattedPrompt = formatBlankParentheses(q.prompt);
+        let formattedOptions = q.optionTexts.map((opt) =>
+          formatBlankParentheses(opt.replace(/\s+文法$/, '').trim()),
+        );
+
+        if (mNum === 5) {
+          const headword = formattedPrompt.trim();
+          formattedPrompt = `[[${headword}]]`;
+          formattedOptions = formattedOptions.map((opt) =>
+            underlineMondai6WordInOption(opt, headword),
+          );
+        } else if (examUnderlines[q.number]) {
+          formattedPrompt = underlineExactOnce(
+            formattedPrompt,
+            examUnderlines[q.number],
+          );
+        }
+
+        items.push({
+          kind: 'choice',
+          id: `${packetId}-mb-vg-${q.number}`,
+          number: q.number,
+          label: `語彙 ${q.number}`,
+          prompt: formattedPrompt,
+          optionTexts: formattedOptions,
+          correctAnswer: keys.moji[q.number] ?? '1',
+          image: null,
+          options: ['1', '2', '3', '4'],
+          required: true,
+        });
+      }
+
+      mojiPages.push({
+        id: `${packetId}-mb-page-${mNum}`,
+        title: meta.title,
+        subtitle: meta.subtitle,
+        items,
+      });
+    }
+
+    const bunpouBlocks = splitSectionsByRegex(bunpouLines, /^問題([1-3])\s+(.*)$/);
+    for (const bb of bunpouBlocks) {
+      const bNum = Number(bb.match[1]);
+      const instruction = formatBlankParentheses(bb.match[2]?.trim() ?? '');
+      const meta = N3_BUNPOU_MONDAI_META[bNum];
+      if (!meta) continue;
+
+      const items: TryOutFormItem[] = [];
+      if (bNum === 3) {
+        const firstQIdx = bb.lines.findIndex((l) => /^\[19\]/.test(cleanLine(l)));
+        const passageLines = firstQIdx >= 0 ? bb.lines.slice(0, firstQIdx) : [];
+        const qLines = firstQIdx >= 0 ? bb.lines.slice(firstQIdx) : bb.lines;
+        const { paragraphs, notes, source } = parsePassageAndNotes(passageLines);
+
+        items.push({
+          kind: 'passage',
+          id: `${packetId}-mb-bp-m3-passage`,
+          title: meta.title,
+          subtitle: instruction,
+          paragraphs: paragraphs.map(formatBlankParentheses),
+          notes: notes.length > 0 ? notes : undefined,
+          source,
+        });
+
+        const questions = parseNumberedQuestions(qLines, meta.start, meta.end);
+        for (const q of questions) {
+          items.push({
+            kind: 'choice',
+            id: `${packetId}-mb-bp-${q.number}`,
+            number: 35 + q.number,
+            label: `文法 ${q.number}`,
+            prompt: formatBlankParentheses(
+              q.prompt || `Pilih jawaban paling tepat untuk mengisi (${q.number}).`,
+            ),
+            optionTexts: q.optionTexts.map(formatBlankParentheses),
+            correctAnswer: keys.bunpouDokkai[q.number] ?? '1',
+            image: null,
+            options: ['1', '2', '3', '4'],
+            required: true,
+          });
+        }
+      } else {
+        items.push({
+          kind: 'passage',
+          id: `${packetId}-mb-bp-m${bNum}-intro`,
+          title: meta.title,
+          subtitle: instruction,
+          paragraphs: [],
+        });
+
+        const questions = parseNumberedQuestions(bb.lines, meta.start, meta.end);
+        for (const q of questions) {
+          items.push({
+            kind: 'choice',
+            id: `${packetId}-mb-bp-${q.number}`,
+            number: 35 + q.number,
+            label: `文法 ${q.number}`,
+            prompt: formatBlankParentheses(q.prompt),
+            optionTexts: q.optionTexts.map(formatBlankParentheses),
+            correctAnswer: keys.bunpouDokkai[q.number] ?? '1',
+            image: null,
+            options: ['1', '2', '3', '4'],
+            required: true,
+          });
+        }
+      }
+
+      mojiPages.push({
+        id: `${packetId}-mb-page-${5 + bNum}`,
+        title: meta.title,
+        subtitle: meta.subtitle,
+        items,
+      });
+    }
+
+    const dokkaiPages: TryOutFormPage[] = [];
+    const dokkaiBlocks = splitSectionsByRegex(dokkaiLines, /^問題([4-7])\s+(.*)$/);
+    for (const db of dokkaiBlocks) {
+      const mNum = Number(db.match[1]);
+      const instruction = db.match[2]?.trim() ?? '';
+      const meta = N3_DOKKAI_MONDAI_META[mNum];
+      if (!meta) continue;
+
+      dokkaiPages.push({
+        id: `${packetId}-dk-page-${mNum}`,
+        title: meta.title,
+        subtitle: meta.subtitle,
+        items: parseFlexibleDokkaiMondai({
+          lines: db.lines,
+          mondaiNum: mNum,
+          instruction,
+          packetId,
+          keys: keys.bunpouDokkai,
+          minQ: 24,
+          maxQ: 39,
+          hasSubPassages: mNum === 4 || mNum === 5,
+          isABComparison: false,
+          passageTitle: mNum === 7 ? '情報検索' : '長文読解',
+        }),
+      });
+    }
+
+    const choukaiPages = parseN3ChoukaiPart(
+      choukaiLines,
+      keys.choukai,
+      transcriptMap,
+      packetId,
+    );
+
+    const countChoices = (pages: TryOutFormPage[]) =>
+      pages.reduce(
+        (sum, pg) => sum + pg.items.filter((it) => it.kind === 'choice').length,
+        0,
+      );
+    const mbCount = countChoices(mojiPages);
+    const dkCount = countChoices(dokkaiPages);
+    const chCount = countChoices(choukaiPages);
+
+    parsedPackets.push({
+      packetId,
+      examCode,
+      yearLabel,
+      headerTitle,
+      forms: {
+        'moji-bunpou': mojiPages,
+        dokkai: dokkaiPages,
+        choukai: choukaiPages,
+      },
+      choukaiTranscript: transcriptMap.sections,
+      counts: {
+        mojiBunpou: mbCount,
+        dokkai: dkCount,
+        choukai: chCount,
+        total: mbCount + dkCount + chCount,
+      },
+    });
+  }
+
+  return parsedPackets;
+}
+

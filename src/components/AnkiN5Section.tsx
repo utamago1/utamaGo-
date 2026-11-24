@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  Bookmark,
   BookOpen,
   CalendarClock,
   ChevronDown,
@@ -79,6 +80,16 @@ import {
   JLPT_LEVELS_ASC,
 } from '../utils/levelProgression';
 import { getLocalDateKey } from '../utils/studyAnalytics';
+import {
+  filterSavedItemsById,
+  getStudyNoteEntry,
+  getStudyNoteScopeForCardKind,
+  loadStudyNotes,
+  saveStudyNoteText,
+  subscribeStudyNotes,
+  toggleStudyBookmark,
+  type StudyNotesStore,
+} from '../utils/studyNotes';
 import { extractKanjiCharacters } from '../utils/writingPractice';
 import { ConfirmDialog } from './ConfirmDialog';
 import { BunpouExplanation } from './BunpouExplanation';
@@ -86,9 +97,10 @@ import { HighlightedJapaneseText } from './HighlightedJapaneseText';
 import { RubyReading } from './RubyReading';
 import { AnkiDeckSkeleton } from './SkeletonLoaders';
 import { SpeechControlBar } from './SpeechControlBar';
+import { StudyNotePanel } from './StudyNotePanel';
 
 type AnkiMode = 'study' | 'browse' | 'options';
-type StudyScope = 'due' | 'all';
+type StudyScope = 'due' | 'favorites' | 'all';
 
 interface AnkiN5SectionProps {
   userId?: string;
@@ -239,6 +251,10 @@ export function AnkiN5Section({
     useState<BunpouN2GroupFilter>('Semua');
   const [bunpouLesson, setBunpouLesson] = useState<number | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [browseFavoritesOnly, setBrowseFavoritesOnly] = useState(false);
+  const [studyNotes, setStudyNotes] = useState<StudyNotesStore>(() =>
+    loadStudyNotes(),
+  );
   const [visibleBrowseCount, setVisibleBrowseCount] = useState(20);
   const [expandedHistoryCardId, setExpandedHistoryCardId] = useState<
     string | null
@@ -255,6 +271,10 @@ export function AnkiN5Section({
     amount: number;
   } | null>(null);
   const [nowMs, setNowMs] = useState<number>(() => Date.now());
+
+  useEffect(() => {
+    return subscribeStudyNotes(setStudyNotes);
+  }, []);
 
   const canSpeakJapanese = isJapaneseSpeechSupported();
 
@@ -424,6 +444,7 @@ export function AnkiN5Section({
   useEffect(() => {
     setVisibleBrowseCount(20);
     setExpandedHistoryCardId(null);
+    setBrowseFavoritesOnly(false);
     setIsFlipped(false);
     setBrowsePreviewSession(null);
     setSessionReviewedCount(0);
@@ -524,25 +545,42 @@ export function AnkiN5Section({
     [activeDeckCards, bunpouGroup, bunpouLesson, category, filterCardsForActiveDeck],
   );
 
-  const filteredBrowseCards = useMemo(
-    () =>
-      filterCardsForActiveDeck(
-        activeDeckCards,
-        mode === 'browse' ? searchQuery : '',
-        category,
-        bunpouGroup,
-        bunpouLesson,
-      ),
-    [
+  const deckNoteScope = getStudyNoteScopeForCardKind(
+    isBunpouDeck ? 'bunpou' : 'vocab',
+  );
+
+  const favoriteStudyCards = useMemo(
+    () => filterSavedItemsById(filteredStudyCards, studyNotes, deckNoteScope),
+    [deckNoteScope, filteredStudyCards, studyNotes],
+  );
+
+  const deckFavoritesCount = useMemo(
+    () => filterSavedItemsById(activeDeckCards, studyNotes, deckNoteScope).length,
+    [activeDeckCards, deckNoteScope, studyNotes],
+  );
+
+  const filteredBrowseCards = useMemo(() => {
+    const base = filterCardsForActiveDeck(
       activeDeckCards,
+      mode === 'browse' ? searchQuery : '',
+      category,
       bunpouGroup,
       bunpouLesson,
-      category,
-      filterCardsForActiveDeck,
-      mode,
-      searchQuery,
-    ],
-  );
+    );
+    if (!browseFavoritesOnly) return base;
+    return filterSavedItemsById(base, studyNotes, deckNoteScope);
+  }, [
+    activeDeckCards,
+    browseFavoritesOnly,
+    bunpouGroup,
+    bunpouLesson,
+    category,
+    deckNoteScope,
+    filterCardsForActiveDeck,
+    mode,
+    searchQuery,
+    studyNotes,
+  ]);
 
   // Full per-deck statistics (invariant: new + learning + review + relearning + suspended === totalCards)
   const deckStats = useMemo(
@@ -594,6 +632,7 @@ export function AnkiN5Section({
   // Check if active deck has an unfinished persisted session that can be resumed
   const resumableSessionInfo = useMemo(() => {
     if (
+      studyScope === 'favorites' ||
       !deckSettings.resumeInterruptedSession ||
       !persistedSession ||
       persistedSession.deckId !== deckId ||
@@ -688,7 +727,32 @@ export function AnkiN5Section({
       ? resumableSessionInfo
         ? resumableSessionInfo.remainingCount
         : filteredQueueResult.queueCards.length
-      : filteredStudyCards.length;
+      : studyScope === 'favorites'
+        ? favoriteStudyCards.length
+        : filteredStudyCards.length;
+
+  const handleOpenFavoriteStudyPopup = (cardsOverride?: AnkiCard[]) => {
+    vibrateTap();
+    const targetCards = cardsOverride ?? favoriteStudyCards;
+    if (targetCards.length === 0) return;
+
+    const now = Date.now();
+    setNowMs(now);
+    setBrowsePreviewSession({
+      sessionId: `favorites_${deckId}_${now}`,
+      deckId,
+      scope: 'all',
+      dateKey: getLocalDateKey(new Date(now)),
+      queueCardIds: targetCards.map((c) => c.id),
+      currentIndex: 0,
+      completedCardIds: [],
+      startedAt: new Date(now).toISOString(),
+      updatedAt: new Date(now).toISOString(),
+    });
+    setIsFlipped(false);
+    dragX.set(0);
+    setPopupOpen(true);
+  };
 
   const handleOpenStudyPopup = (
     scopeOverride?: StudyScope,
@@ -698,6 +762,11 @@ export function AnkiN5Section({
     const targetScope = scopeOverride ?? studyScope;
     if (scopeOverride && scopeOverride !== studyScope) {
       setStudyScope(scopeOverride);
+    }
+
+    if (targetScope === 'favorites') {
+      handleOpenFavoriteStudyPopup();
+      return;
     }
 
     const now = Date.now();
@@ -1326,7 +1395,7 @@ export function AnkiN5Section({
                   <div
                     role="tablist"
                     aria-label="Pilih antrean belajar"
-                    className="grid w-full grid-cols-[repeat(2,minmax(0,1fr))] gap-2 rounded-2xl bg-surface-container p-1"
+                    className="grid w-full grid-cols-[repeat(3,minmax(0,1fr))] gap-1.5 rounded-2xl bg-surface-container p-1"
                   >
                     <button
                       type="button"
@@ -1336,7 +1405,7 @@ export function AnkiN5Section({
                         vibrateTap();
                         setStudyScope('due');
                       }}
-                      className={`m3-tactile inline-flex min-h-[44px] min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-xl px-3 py-2 text-[13px] font-bold ${
+                      className={`m3-tactile inline-flex min-h-[44px] min-w-0 items-center justify-center gap-1 whitespace-nowrap rounded-xl px-2 py-2 text-xs font-bold sm:text-[13px] ${
                         studyScope === 'due'
                           ? 'bg-surface-container-low text-on-surface shadow-xs'
                           : 'text-[#4b4b53] hover:text-on-surface dark:text-[#b4b4c0]'
@@ -1353,12 +1422,38 @@ export function AnkiN5Section({
                     <button
                       type="button"
                       role="tab"
+                      aria-selected={studyScope === 'favorites'}
+                      onClick={() => {
+                        vibrateTap();
+                        setStudyScope('favorites');
+                      }}
+                      className={`m3-tactile inline-flex min-h-[44px] min-w-0 items-center justify-center gap-1 whitespace-nowrap rounded-xl px-2 py-2 text-xs font-bold sm:text-[13px] ${
+                        studyScope === 'favorites'
+                          ? 'bg-surface-container-low text-amber-800 shadow-xs'
+                          : 'text-[#4b4b53] hover:text-on-surface dark:text-[#b4b4c0]'
+                      }`}
+                    >
+                      <Bookmark
+                        className={`h-3.5 w-3.5 shrink-0 ${
+                          studyScope === 'favorites' || favoriteStudyCards.length > 0
+                            ? 'fill-amber-500 text-amber-600'
+                            : ''
+                        }`}
+                        aria-hidden="true"
+                      />
+                      <span className="truncate">
+                        Favorit ({favoriteStudyCards.length})
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      role="tab"
                       aria-selected={studyScope === 'all'}
                       onClick={() => {
                         vibrateTap();
                         setStudyScope('all');
                       }}
-                      className={`m3-tactile inline-flex min-h-[44px] min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-xl px-3 py-2 text-[13px] font-bold ${
+                      className={`m3-tactile inline-flex min-h-[44px] min-w-0 items-center justify-center gap-1 whitespace-nowrap rounded-xl px-2 py-2 text-xs font-bold sm:text-[13px] ${
                         studyScope === 'all'
                           ? 'bg-surface-container-low text-on-surface shadow-xs'
                           : 'text-[#4b4b53] hover:text-on-surface dark:text-[#b4b4c0]'
@@ -1370,7 +1465,37 @@ export function AnkiN5Section({
                     </button>
                   </div>
 
-                  {readyCountForScope === 0 && studyScope === 'due' ? (
+                  {studyScope === 'favorites' && favoriteStudyCards.length === 0 ? (
+                    <div className="space-y-3 rounded-2xl border border-outline-variant bg-surface-container p-4">
+                      <div className="flex items-start gap-2.5 text-sm">
+                        <Bookmark
+                          className="mt-0.5 h-4 w-4 shrink-0 text-amber-600"
+                          aria-hidden="true"
+                        />
+                        <div>
+                          <p className="font-bold text-on-surface">
+                            Belum ada kartu Favorit di deck ini
+                          </p>
+                          <p className="mt-0.5 text-xs leading-relaxed text-on-surface-variant">
+                            Ketuk ikon Bookmark di pop-up kartu Anki, daftar
+                            Cari Kartu, Kamus, atau Materi Bunpou untuk
+                            mengumpulkan materi favoritmu di sini.
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          vibrateTap();
+                          setMode('browse');
+                        }}
+                        className="m3-tactile inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-outline bg-surface-container-low px-4 py-2.5 text-xs font-bold text-on-surface hover:bg-surface"
+                      >
+                        <Search className="h-3.5 w-3.5" aria-hidden="true" />
+                        <span>Cari &amp; Tandai Kartu Favorit</span>
+                      </button>
+                    </div>
+                  ) : readyCountForScope === 0 && studyScope === 'due' ? (
                     <div className="space-y-3 rounded-2xl bg-success-container p-4 text-on-success-container">
                       <div className="flex items-center gap-2 text-sm font-bold">
                         <Sparkles
@@ -1408,9 +1533,11 @@ export function AnkiN5Section({
                           aria-hidden="true"
                         />
                         <span>
-                          {resumableSessionInfo
-                            ? `Lanjutkan Sesi (${resumableSessionInfo.remainingCount} tersisa)`
-                            : `Mulai Pop-up Kartu (${readyCountForScope})`}
+                          {studyScope === 'favorites'
+                            ? `Belajar Favorit (${favoriteStudyCards.length})`
+                            : resumableSessionInfo
+                              ? `Lanjutkan Sesi (${resumableSessionInfo.remainingCount} tersisa)`
+                              : `Mulai Pop-up Kartu (${readyCountForScope})`}
                         </span>
                       </button>
                       {resumableSessionInfo && (
@@ -1466,53 +1593,98 @@ export function AnkiN5Section({
           {mode === 'browse' && (
             <div className="space-y-5">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div className="relative flex-1">
-                  <label htmlFor="anki-search-input" className="sr-only">
-                    Cari di Deck {activeDeckLabel}
-                  </label>
-                  <Search
-                    className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-on-surface-variant"
-                    aria-hidden="true"
-                  />
-                  <input
-                    id="anki-search-input"
-                    type="search"
-                    value={searchQuery}
-                    onChange={(e) => {
-                      setSearchQuery(e.target.value);
+                <div className="flex min-w-0 flex-1 items-center gap-2">
+                  <div className="relative min-w-0 flex-1">
+                    <label htmlFor="anki-search-input" className="sr-only">
+                      Cari di Deck {activeDeckLabel}
+                    </label>
+                    <Search
+                      className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-on-surface-variant"
+                      aria-hidden="true"
+                    />
+                    <input
+                      id="anki-search-input"
+                      type="search"
+                      value={searchQuery}
+                      onChange={(e) => {
+                        setSearchQuery(e.target.value);
+                        setVisibleBrowseCount(20);
+                      }}
+                      placeholder={
+                        isBunpouDeck
+                          ? `Cari pola, rumus, atau arti Bunpou ${activeJlptLevel}...`
+                          : `Cari kanji, kana, atau arti di Deck ${activeJlptLevel}...`
+                      }
+                      className="min-h-[48px] w-full rounded-xl border border-outline bg-surface-container-low py-2.5 pr-4 pl-10 text-base text-on-surface placeholder:text-on-surface-variant focus:border-primary focus:outline-none sm:text-sm"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    aria-pressed={browseFavoritesOnly}
+                    onClick={() => {
+                      vibrateTap();
+                      setBrowseFavoritesOnly((prev) => !prev);
                       setVisibleBrowseCount(20);
                     }}
-                    placeholder={
-                      isBunpouDeck
-                        ? `Cari pola, rumus, atau arti Bunpou ${activeJlptLevel}...`
-                        : `Cari kanji, kana, atau arti di Deck ${activeJlptLevel}...`
-                    }
-                    className="min-h-[48px] w-full rounded-xl border border-outline bg-surface-container-low py-2.5 pr-4 pl-10 text-base text-on-surface placeholder:text-on-surface-variant focus:border-primary focus:outline-none sm:text-sm"
-                  />
+                    className={`m3-tactile inline-flex min-h-[48px] shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl border px-3.5 py-2 text-xs font-bold transition-colors ${
+                      browseFavoritesOnly
+                        ? 'border-amber-500/60 bg-amber-50 text-amber-900'
+                        : 'border-outline bg-surface-container-low text-on-surface hover:border-primary/40'
+                    }`}
+                  >
+                    <Bookmark
+                      className={`h-4 w-4 shrink-0 ${
+                        browseFavoritesOnly ? 'fill-amber-500 text-amber-600' : ''
+                      }`}
+                      aria-hidden="true"
+                    />
+                    <span>Favorit</span>
+                    <span className="font-mono tabular-nums">
+                      ({deckFavoritesCount})
+                    </span>
+                  </button>
                 </div>
-                <p className="font-mono text-xs tabular-nums text-on-surface-variant">
-                  {filteredBrowseCards.length} kartu
-                  {activeFilterSummary ? ` · ${activeFilterSummary}` : ''}
-                </p>
+                <div className="flex flex-wrap items-center justify-between gap-2 sm:justify-end">
+                  <p className="font-mono text-xs tabular-nums text-on-surface-variant">
+                    {filteredBrowseCards.length} kartu
+                    {activeFilterSummary ? ` · ${activeFilterSummary}` : ''}
+                  </p>
+                  {browseFavoritesOnly && filteredBrowseCards.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleOpenFavoriteStudyPopup(filteredBrowseCards)
+                      }
+                      className="m3-tactile inline-flex min-h-[40px] items-center gap-1.5 rounded-xl bg-primary px-3.5 py-1.5 text-xs font-bold text-on-primary hover:bg-primary-hover"
+                    >
+                      <Play className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
+                      <span>Latih Favorit ({filteredBrowseCards.length})</span>
+                    </button>
+                  )}
+                </div>
               </div>
 
               {filteredBrowseCards.length === 0 ? (
                 <div className="rounded-2xl border border-outline-variant bg-surface-container-low p-8 text-center">
                   <p className="text-sm font-semibold text-on-surface">
-                    Tidak ada kartu yang cocok dengan pencarian &ldquo;
-                    {searchQuery}&rdquo;.
+                    {browseFavoritesOnly && !searchQuery
+                      ? `Belum ada kartu Favorit di Deck ${activeDeckLabel}.`
+                      : `Tidak ada kartu yang cocok dengan pencarian “${searchQuery}”.`}
                   </p>
                   <button
                     type="button"
                     onClick={() => {
                       setSearchQuery('');
+                      setBrowseFavoritesOnly(false);
                       setCategory('Semua');
                       setBunpouGroup('Semua');
                       setBunpouLesson('all');
                     }}
                     className="m3-tactile mt-4 inline-flex min-h-[44px] items-center justify-center rounded-xl border border-outline px-4 py-2 text-xs font-semibold text-on-surface hover:bg-surface-container"
                   >
-                    Reset Pencarian
+                    {browseFavoritesOnly && !searchQuery
+                      ? 'Tampilkan Semua Kartu'
+                      : 'Reset Pencarian'}
                   </button>
                 </div>
               ) : (
@@ -1521,6 +1693,14 @@ export function AnkiN5Section({
                     {visibleCards.map((card) => {
                       const rec = ankiSrs[card.id];
                       const st = resolveCardState(rec);
+                      const cardNoteScope = getStudyNoteScopeForCardKind(
+                        card.cardKind,
+                      );
+                      const cardNoteEntry = getStudyNoteEntry(
+                        studyNotes,
+                        cardNoteScope,
+                        card.id,
+                      );
                       const mastered =
                         rec &&
                         computeIsMastered({
@@ -1611,6 +1791,11 @@ export function AnkiN5Section({
                                   </>
                                 )}
                               </div>
+                              {cardNoteEntry.note.length > 0 && (
+                                <p className="mt-1.5 truncate border-l-2 border-amber-500 pl-2 text-xs text-amber-900/90">
+                                  {cardNoteEntry.note}
+                                </p>
+                              )}
                             </button>
 
                             <div className="flex shrink-0 flex-col items-end gap-1.5">
@@ -1622,6 +1807,39 @@ export function AnkiN5Section({
                                 Pop-up →
                               </button>
                               <div className="flex items-center gap-1.5">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    vibrateTap();
+                                    toggleStudyBookmark(cardNoteScope, card.id);
+                                  }}
+                                  aria-pressed={cardNoteEntry.bookmarked}
+                                  aria-label={
+                                    cardNoteEntry.bookmarked
+                                      ? `Hapus ${card.word} dari Favorit`
+                                      : `Simpan ${card.word} ke Favorit`
+                                  }
+                                  title={
+                                    cardNoteEntry.bookmarked
+                                      ? 'Hapus dari Favorit'
+                                      : 'Simpan ke Favorit'
+                                  }
+                                  className={`inline-flex items-center gap-1 rounded-lg border px-2 py-1 font-mono text-[10px] font-semibold transition-colors ${
+                                    cardNoteEntry.bookmarked
+                                      ? 'border-amber-500/60 bg-amber-50 text-amber-800'
+                                      : 'border-outline-variant bg-surface text-on-surface-variant hover:border-outline hover:text-on-surface'
+                                  }`}
+                                >
+                                  <Bookmark
+                                    className={`h-3 w-3 ${
+                                      cardNoteEntry.bookmarked
+                                        ? 'fill-amber-500 text-amber-600'
+                                        : ''
+                                    }`}
+                                    aria-hidden="true"
+                                  />
+                                  <span>Favorit</span>
+                                </button>
                                 {historyList.length > 0 && (
                                   <button
                                     type="button"
@@ -2264,6 +2482,48 @@ export function AnkiN5Section({
                         +{xpNotice.amount}
                       </motion.span>
                     )}
+                    {(() => {
+                      const activeScope = getStudyNoteScopeForCardKind(
+                        activeCard.cardKind,
+                      );
+                      const activeEntry = getStudyNoteEntry(
+                        studyNotes,
+                        activeScope,
+                        activeCard.id,
+                      );
+                      return (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            vibrateTap();
+                            toggleStudyBookmark(activeScope, activeCard.id);
+                          }}
+                          aria-pressed={activeEntry.bookmarked}
+                          aria-label={
+                            activeEntry.bookmarked
+                              ? 'Hapus kartu dari Favorit'
+                              : 'Simpan kartu ke Favorit'
+                          }
+                          title={
+                            activeEntry.bookmarked
+                              ? 'Hapus dari Favorit'
+                              : 'Tandai Favorit'
+                          }
+                          className={`m3-tactile inline-flex h-10 w-10 items-center justify-center rounded-xl border transition-colors ${
+                            activeEntry.bookmarked
+                              ? 'border-amber-500/60 bg-amber-50 text-amber-600'
+                              : 'border-outline-variant bg-surface text-on-surface-variant hover:text-on-surface'
+                          }`}
+                        >
+                          <Bookmark
+                            className={`h-4 w-4 ${
+                              activeEntry.bookmarked ? 'fill-amber-500' : ''
+                            }`}
+                            aria-hidden="true"
+                          />
+                        </button>
+                      );
+                    })()}
                     <button
                       type="button"
                       onClick={() => {
@@ -2401,7 +2661,6 @@ export function AnkiN5Section({
                       <div className="mt-3.5 flex justify-center">
                         <SpeechControlBar
                           text={activeCard.word}
-                          showShadowing
                           showQuickSettings={false}
                           showAutoPlayToggle={false}
                           onWriteKanji={
@@ -2549,6 +2808,37 @@ export function AnkiN5Section({
                           </ol>
                         </div>
                       )}
+
+                      <div className="border-t border-outline-variant pt-3">
+                        {(() => {
+                          const activeScope = getStudyNoteScopeForCardKind(
+                            activeCard.cardKind,
+                          );
+                          const activeEntry = getStudyNoteEntry(
+                            studyNotes,
+                            activeScope,
+                            activeCard.id,
+                          );
+                          return (
+                            <StudyNotePanel
+                              itemId={activeCard.id}
+                              entry={activeEntry}
+                              compact
+                              onToggleBookmark={() =>
+                                toggleStudyBookmark(activeScope, activeCard.id)
+                              }
+                              onSaveNote={(noteText) =>
+                                saveStudyNoteText(
+                                  activeScope,
+                                  activeCard.id,
+                                  noteText,
+                                )
+                              }
+                              placeholder="Tulis catatan pribadi atau trik mengingat kartu ini..."
+                            />
+                          );
+                        })()}
+                      </div>
                     </motion.div>
                   )}
                 </motion.div>

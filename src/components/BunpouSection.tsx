@@ -39,7 +39,10 @@ import {
   isJlptLevelUnlocked,
   JLPT_LEVELS_ASC,
 } from '../utils/levelProgression';
-import { generateBunpouComparisonQuiz } from '../utils/practiceGenerators';
+import {
+  generateBunpouComparisonQuiz,
+  generateFavoriteBunpouQuiz,
+} from '../utils/practiceGenerators';
 import {
   countSavedStudyItems,
   getStudyNoteEntry,
@@ -128,7 +131,7 @@ export function BunpouSection({
 }: BunpouSectionProps) {
   const [activeCompareQuiz, setActiveCompareQuiz] = useState<{
     stage: ChallengeStage;
-    mode: 'topic' | 'mixed';
+    mode: 'topic' | 'mixed' | 'favorite';
     seed: number;
   } | null>(null);
   const detailTopRef = useRef<HTMLDivElement | null>(null);
@@ -617,7 +620,6 @@ export function BunpouSection({
             <SpeechControlBar
               text={activeItem.examples[0]?.jp || activeItem.pattern}
               compact
-              showShadowing
               showQuickSettings
               className="mt-3"
             />
@@ -1332,7 +1334,7 @@ export function BunpouSection({
                   }`}
                   aria-hidden="true"
                 />
-                <span className="hidden sm:inline">Tersimpan</span>
+                <span>Favorit</span>
                 {savedLevelCount > 0 && (
                   <span className="font-mono text-xs font-bold tabular-nums">
                     ({savedLevelCount})
@@ -1358,7 +1360,7 @@ export function BunpouSection({
                   className="h-4 w-4 shrink-0"
                   aria-hidden="true"
                 />
-                <span>
+                <span className="hidden sm:inline">
                   Bagian{groupFilter !== 'Semua' ? ' (1)' : ''}
                 </span>
               </button>
@@ -1373,7 +1375,7 @@ export function BunpouSection({
                         {displayedItems.length}
                       </span>{' '}
                       {savedOnly && !isSearching
-                        ? `pola tersimpan / bercatatan di ${bunpouLevel}`
+                        ? `pola favorit / bercatatan di ${bunpouLevel}`
                         : 'pola ditemukan'}
                     </>
                   ) : (
@@ -1385,13 +1387,41 @@ export function BunpouSection({
                     </>
                   )}
                 </p>
-                <button
-                  type="button"
-                  onClick={resetSearchAndFilters}
-                  className="shrink-0 font-semibold text-primary hover:underline"
-                >
-                  Reset
-                </button>
+                <div className="flex items-center gap-3">
+                  {savedOnly && displayedItems.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        vibrateTap();
+                        const quiz = generateFavoriteBunpouQuiz({
+                          favoriteItems: displayedItems,
+                          allItems: activeBunpouItems,
+                          levelLabel: bunpouLevel,
+                          count: Math.min(10, displayedItems.length),
+                          seed: 1,
+                        });
+                        if (quiz) {
+                          setActiveCompareQuiz({
+                            stage: quiz,
+                            mode: 'favorite',
+                            seed: 1,
+                          });
+                        }
+                      }}
+                      className="m3-tactile inline-flex min-h-[40px] shrink-0 items-center gap-1.5 rounded-xl bg-primary px-3.5 py-1.5 text-xs font-bold text-on-primary hover:bg-primary-hover"
+                    >
+                      <Play className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
+                      <span>Latih Favorit ({displayedItems.length})</span>
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={resetSearchAndFilters}
+                    className="shrink-0 font-semibold text-primary hover:underline"
+                  >
+                    Reset
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -1492,12 +1522,12 @@ export function BunpouSection({
             <div className="rounded-2xl border border-outline-variant bg-surface-container-low p-6 text-center">
               <p className="text-base font-semibold text-on-surface">
                 {savedOnly && !isSearching
-                  ? `Belum ada Bunpou ${bunpouLevel} yang disimpan`
+                  ? `Belum ada Bunpou ${bunpouLevel} di Favorit`
                   : 'Pola yang dicari belum ditemukan'}
               </p>
               <p className="mt-1 text-[13px] text-[#4b4b53] dark:text-[#b4b4c0] sm:text-sm">
                 {savedOnly && !isSearching
-                  ? 'Buka pola Bunpou mana saja lalu ketuk tombol Simpan atau Catatan Pribadi agar muncul di sini.'
+                  ? 'Ketuk ikon Bookmark di daftar pola Bunpou atau di halaman detail agar muncul di sini dan siap dilatih lewat Kuis Favorit.'
                   : `Coba kata kunci lain atau kembali ke daftar bab Bunpou ${bunpouLevel}.`}
               </p>
               <button
@@ -1561,88 +1591,123 @@ export function BunpouSection({
                       );
                       return (
                         <li key={item.id} className="min-w-0">
-                          <button
-                            type="button"
-                            onClick={() => openItem(item.id)}
-                            aria-current={selected ? 'true' : undefined}
-                            className={`group flex min-h-[76px] w-full min-w-0 items-center justify-between gap-3 px-4 py-4 text-left transition-colors ${
+                          <div
+                            className={`group flex min-h-[76px] w-full min-w-0 items-center justify-between gap-2 px-4 py-3.5 transition-colors ${
                               selected
                                 ? 'lg:bg-primary-container/25'
                                 : 'hover:bg-surface'
                             }`}
                           >
-                            <div className="min-w-0 flex-1 space-y-1">
-                              <div className="flex items-center gap-1.5 text-[13px] text-[#4b4b53] dark:text-[#b4b4c0]">
-                                <span className="font-mono font-semibold tabular-nums">
-                                  {item.code}
-                                </span>
-                                <span aria-hidden="true" className="opacity-50">
-                                  ·
-                                </span>
-                                <span className="truncate">
-                                  {formatBunpouLessonLabel(item)}
-                                </span>
-                                {reviewed && (
-                                  <>
-                                    <span
-                                      aria-hidden="true"
-                                      className="opacity-50"
-                                    >
-                                      ·
-                                    </span>
-                                    <span className="inline-flex shrink-0 items-center gap-1 font-medium text-success">
-                                      <Check
-                                        className="h-3 w-3"
+                            <button
+                              type="button"
+                              onClick={() => openItem(item.id)}
+                              aria-current={selected ? 'true' : undefined}
+                              className="min-w-0 flex-1 text-left"
+                            >
+                              <div className="space-y-1">
+                                <div className="flex items-center gap-1.5 text-[13px] text-[#4b4b53] dark:text-[#b4b4c0]">
+                                  <span className="font-mono font-semibold tabular-nums">
+                                    {item.code}
+                                  </span>
+                                  <span aria-hidden="true" className="opacity-50">
+                                    ·
+                                  </span>
+                                  <span className="truncate">
+                                    {formatBunpouLessonLabel(item)}
+                                  </span>
+                                  {reviewed && (
+                                    <>
+                                      <span
                                         aria-hidden="true"
-                                      />
-                                      <span>Paham</span>
-                                    </span>
-                                  </>
-                                )}
-                                {noteEntry.bookmarked && (
-                                  <Bookmark
-                                    className="h-3.5 w-3.5 shrink-0 fill-amber-500 text-amber-600"
-                                    aria-label="Tersimpan"
-                                  />
-                                )}
+                                        className="opacity-50"
+                                      >
+                                        ·
+                                      </span>
+                                      <span className="inline-flex shrink-0 items-center gap-1 font-medium text-success">
+                                        <Check
+                                          className="h-3 w-3"
+                                          aria-hidden="true"
+                                        />
+                                        <span>Paham</span>
+                                      </span>
+                                    </>
+                                  )}
+                                  {noteEntry.note.length > 0 && (
+                                    <StickyNote
+                                      className="h-3.5 w-3.5 shrink-0 text-amber-600"
+                                      aria-label="Ada catatan pribadi"
+                                    />
+                                  )}
+                                </div>
+
+                                <p
+                                  className={`truncate font-display text-base font-bold leading-snug sm:text-[17px] ${
+                                    selected
+                                      ? 'text-on-surface lg:text-primary'
+                                      : 'text-on-surface'
+                                  }`}
+                                >
+                                  {item.pattern}
+                                </p>
+
+                                <p className="line-clamp-2 text-[13px] leading-relaxed text-[#4b4b53] dark:text-[#b4b4c0] sm:text-sm">
+                                  {item.meaning}
+                                </p>
+
                                 {noteEntry.note.length > 0 && (
-                                  <StickyNote
-                                    className="h-3.5 w-3.5 shrink-0 text-amber-600"
-                                    aria-label="Ada catatan pribadi"
-                                  />
+                                  <p className="truncate border-l-2 border-amber-500 pl-2 text-xs text-amber-900/90">
+                                    {noteEntry.note}
+                                  </p>
                                 )}
                               </div>
+                            </button>
 
-                              <p
-                                className={`truncate font-display text-base font-bold leading-snug sm:text-[17px] ${
-                                  selected
-                                    ? 'text-on-surface lg:text-primary'
-                                    : 'text-on-surface'
+                            <div className="flex shrink-0 items-center gap-1">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  vibrateTap();
+                                  toggleStudyBookmark('bunpou', item.id);
+                                }}
+                                aria-pressed={noteEntry.bookmarked}
+                                aria-label={
+                                  noteEntry.bookmarked
+                                    ? `Hapus ${item.pattern} dari Favorit`
+                                    : `Simpan ${item.pattern} ke Favorit`
+                                }
+                                title={
+                                  noteEntry.bookmarked
+                                    ? 'Hapus dari Favorit'
+                                    : 'Tandai Favorit'
+                                }
+                                className={`m3-tactile inline-flex h-11 w-11 items-center justify-center rounded-xl transition-colors ${
+                                  noteEntry.bookmarked
+                                    ? 'bg-amber-50 text-amber-600'
+                                    : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
                                 }`}
                               >
-                                {item.pattern}
-                              </p>
-
-                              <p className="line-clamp-2 text-[13px] leading-relaxed text-[#4b4b53] dark:text-[#b4b4c0] sm:text-sm">
-                                {item.meaning}
-                              </p>
-
-                              {noteEntry.note.length > 0 && (
-                                <p className="truncate border-l-2 border-amber-500 pl-2 text-xs text-amber-900/90">
-                                  {noteEntry.note}
-                                </p>
-                              )}
+                                <Bookmark
+                                  className={`h-4 w-4 ${
+                                    noteEntry.bookmarked ? 'fill-amber-500' : ''
+                                  }`}
+                                  aria-hidden="true"
+                                />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => openItem(item.id)}
+                                aria-label={`Buka detail ${item.pattern}`}
+                                className="inline-flex h-11 w-9 items-center justify-center rounded-xl text-[#4b4b53] hover:text-primary dark:text-[#b4b4c0]"
+                              >
+                                <ChevronRight
+                                  className={`h-4 w-4 shrink-0 transition-transform duration-150 group-hover:translate-x-0.5 ${
+                                    selected ? 'lg:text-primary' : ''
+                                  }`}
+                                  aria-hidden="true"
+                                />
+                              </button>
                             </div>
-
-                            <ChevronRight
-                              className={`h-4 w-4 shrink-0 transition-transform duration-150 group-hover:translate-x-0.5 ${
-                                selected
-                                  ? 'text-[#4b4b53] dark:text-[#b4b4c0] lg:text-primary'
-                                  : 'text-[#4b4b53] dark:text-[#b4b4c0]'
-                              }`}
-                              aria-hidden="true"
-                            />
-                          </button>
+                          </div>
                         </li>
                       );
                     })}
@@ -1803,14 +1868,36 @@ export function BunpouSection({
           unlimitedHearts
           useFormattedExplanation
           headerLabel={
-            activeCompareQuiz.mode === 'topic'
-              ? 'Kuis Pembeda · Topik Ini'
-              : 'Kuis Pembeda · Lintas Topik'
+            activeCompareQuiz.mode === 'favorite'
+              ? `Kuis Favorit · Bunpou ${bunpouLevel}`
+              : activeCompareQuiz.mode === 'topic'
+                ? 'Kuis Pembeda · Topik Ini'
+                : 'Kuis Pembeda · Lintas Topik'
           }
           closeButtonLabel="Kembali ke Materi"
           onShuffleNewSet={() => {
-            if (!activeComparisonGroup) return;
             const nextSeed = activeCompareQuiz.seed + 1;
+            if (activeCompareQuiz.mode === 'favorite') {
+              const favPool = activeBunpouItems.filter((item) =>
+                isStudyItemSaved(studyNotes, 'bunpou', item.id),
+              );
+              const nextQuiz = generateFavoriteBunpouQuiz({
+                favoriteItems: favPool,
+                allItems: activeBunpouItems,
+                levelLabel: bunpouLevel,
+                count: Math.min(10, favPool.length),
+                seed: nextSeed,
+              });
+              if (nextQuiz) {
+                setActiveCompareQuiz({
+                  stage: nextQuiz,
+                  mode: 'favorite',
+                  seed: nextSeed,
+                });
+              }
+              return;
+            }
+            if (!activeComparisonGroup) return;
             const nextQuiz = generateBunpouComparisonQuiz({
               group: activeComparisonGroup,
               allGroups: allCrossLevelGroups,

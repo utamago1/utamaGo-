@@ -36,6 +36,7 @@ import {
   isTryOutPacketUnlocked,
   TRYOUT_N1_PACKETS,
   TRYOUT_N2_PACKETS,
+  TRYOUT_N3_PACKETS,
   type TryOutFormValues,
   type TryOutLevelOption,
   type TryOutPacketPartId,
@@ -216,6 +217,13 @@ export function ReportAndSimSection({
     [selectedLevel],
   );
 
+  const unlockedN3Count = useMemo(
+    () =>
+      TRYOUT_N3_PACKETS.filter((p) =>
+        isTryOutPacketUnlocked(p.id, completedFirstPacketParts),
+      ).length,
+    [completedFirstPacketParts],
+  );
   const unlockedN2Count = useMemo(
     () =>
       TRYOUT_N2_PACKETS.filter((p) =>
@@ -230,7 +238,7 @@ export function ReportAndSimSection({
       ).length,
     [completedFirstPacketParts],
   );
-  const unlockedTotalCount = unlockedN2Count + unlockedN1Count;
+  const unlockedTotalCount = unlockedN3Count + unlockedN2Count + unlockedN1Count;
   const lockedTotalCount = ALL_TRYOUT_PACKETS.length - unlockedTotalCount;
   const levelUnlockedCount = useMemo(
     () =>
@@ -294,6 +302,9 @@ export function ReportAndSimSection({
   const completedPacketsTotalCount = Object.values(packetCatalogStatsMap).filter(
     (s) => s.isDone,
   ).length;
+  const completedN3Count = TRYOUT_N3_PACKETS.filter(
+    (p) => packetCatalogStatsMap[p.id]?.isDone,
+  ).length;
   const completedN2Count = TRYOUT_N2_PACKETS.filter(
     (p) => packetCatalogStatsMap[p.id]?.isDone,
   ).length;
@@ -341,7 +352,7 @@ export function ReportAndSimSection({
               Terkunci
             </p>
             <h2 className="mt-1 font-display text-2xl font-extrabold tracking-tight text-on-surface sm:text-3xl">
-              Try Out JLPT N2 &amp; N1
+              Try Out JLPT N3, N2 &amp; N1
             </h2>
           </div>
 
@@ -923,9 +934,11 @@ export function ReportAndSimSection({
                   {levelPackets.length} Terbuka)
                 </h3>
                 <p className="mt-1 text-xs leading-relaxed text-on-surface-variant sm:text-sm">
-                  {selectedLevel === 'N2'
-                    ? '6 paket JLPT N2 (2010.07–2012.12) telah diperbarui memakai soal asli terverifikasi lengkap dengan kunci jawaban resmi, audio, dan transkrip Choukai untuk pembelajaran. Paket lainnya sementara terkunci.'
-                    : 'Seluruh 18 paket Try Out JLPT N1 sementara terkunci menunggu verifikasi soal asli & kunci jawaban resmi.'}
+                  {selectedLevel === 'N3'
+                    ? '5 paket JLPT N3 (2010.07–2012.12) memakai soal asli terverifikasi lengkap kunci jawaban resmi, ilustrasi & audio Choukai, serta transkrip untuk pembelajaran. Paket lainnya sementara terkunci.'
+                    : selectedLevel === 'N2'
+                      ? '6 paket JLPT N2 (2010.07–2012.12) memakai soal asli terverifikasi lengkap dengan kunci jawaban resmi, audio, dan transkrip Choukai untuk pembelajaran. Paket lainnya sementara terkunci.'
+                      : '4 paket JLPT N1 (2010.07–2011.12) telah terbuka dengan soal asli terverifikasi, kunci jawaban resmi, audio, dan transkrip Choukai. Paket lainnya sementara terkunci.'}
                 </p>
               </div>
               <span
@@ -960,7 +973,7 @@ export function ReportAndSimSection({
                           setPacketFeedback({
                             packetId: packet.id,
                             tone: 'warning',
-                            message: `${packet.title} sementara terkunci menunggu verifikasi soal & kunci resmi. Saat ini 6 paket JLPT N2 (2010.07–2012.12) sudah terverifikasi dan siap dikerjakan.`,
+                            message: `${packet.title} sementara terkunci menunggu verifikasi soal & kunci resmi. Saat ini 15 paket terverifikasi (5 N3, 6 N2, dan 4 N1) sudah siap dikerjakan.`,
                           });
                           return;
                         }
@@ -1094,6 +1107,56 @@ export function ReportAndSimSection({
               onClick={() => {
                 vibrateTap();
                 setPacketFeedback(null);
+                onSelectedLevelChange('N3');
+              }}
+              className="m3-tactile group flex w-full min-w-0 flex-col gap-4 rounded-2xl border border-outline-variant bg-surface-container-low p-4 text-left transition-colors hover:border-primary sm:flex-row sm:items-center sm:justify-between sm:p-6"
+            >
+              <div className="flex min-w-0 flex-1 items-start gap-3">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary font-display text-lg font-extrabold text-on-primary">
+                  N3
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[13px] font-semibold text-primary">
+                    <span className="font-mono tabular-nums">
+                      {unlockedN3Count}/{TRYOUT_N3_PACKETS.length}
+                    </span>{' '}
+                    Paket Terbuka ·{' '}
+                    <span className="font-mono tabular-nums">
+                      2010.07–2012.12
+                    </span>{' '}
+                    Terverifikasi
+                  </p>
+                  <h3 className="mt-1 font-display text-xl font-extrabold text-on-surface">
+                    Try Out JLPT N3
+                  </h3>
+                  <p className="mt-1 text-[13px] leading-relaxed text-[#4b4b53] dark:text-[#b4b4c0] sm:text-sm">
+                    5 paket soal asli terverifikasi (Juli 2010 – Desember 2012)
+                    lengkap kunci jawaban resmi, gambar soal Choukai, audio, dan
+                    transkrip untuk pembelajaran.
+                  </p>
+                  <p className="mt-2 text-[13px] text-[#4b4b53] dark:text-[#b4b4c0]">
+                    <span className="font-mono font-semibold tabular-nums">
+                      {completedN3Count}/{unlockedN3Count}
+                    </span>{' '}
+                    Paket Terbuka Selesai ·{' '}
+                    <span className="font-mono tabular-nums">101–102</span>{' '}
+                    soal/paket
+                  </p>
+                </div>
+              </div>
+
+              <span className="inline-flex min-h-[44px] w-full shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-on-primary group-hover:bg-primary-hover sm:w-auto sm:self-center">
+                <FileText className="h-4 w-4" aria-hidden="true" />
+                <span>Buka N3</span>
+                <ChevronRight className="h-4 w-4" aria-hidden="true" />
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                vibrateTap();
+                setPacketFeedback(null);
                 onSelectedLevelChange('N2');
               }}
               className="m3-tactile group flex w-full min-w-0 flex-col gap-4 rounded-2xl border border-outline-variant bg-surface-container-low p-4 text-left transition-colors hover:border-primary sm:flex-row sm:items-center sm:justify-between sm:p-6"
@@ -1146,46 +1209,51 @@ export function ReportAndSimSection({
                 setPacketFeedback(null);
                 onSelectedLevelChange('N1');
               }}
-              className="m3-tactile group flex w-full min-w-0 flex-col gap-4 rounded-2xl border border-outline-variant bg-surface-container/60 p-4 text-left opacity-85 transition-colors hover:border-outline sm:flex-row sm:items-center sm:justify-between sm:p-6"
+              className="m3-tactile group flex w-full min-w-0 flex-col gap-4 rounded-2xl border border-outline-variant bg-surface-container-low p-4 text-left transition-colors hover:border-primary sm:flex-row sm:items-center sm:justify-between sm:p-6"
             >
               <div className="flex min-w-0 flex-1 items-start gap-3">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-surface-container-high font-display text-lg font-extrabold text-on-surface-variant">
-                  <Lock className="h-5 w-5" aria-hidden="true" />
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary font-display text-lg font-extrabold text-on-primary">
+                  N1
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[13px] font-semibold text-on-surface-variant">
-                    Terkunci ·{' '}
+                  <p className="text-[13px] font-semibold text-primary">
                     <span className="font-mono tabular-nums">
                       {unlockedN1Count}/{TRYOUT_N1_PACKETS.length}
                     </span>{' '}
-                    Paket Terbuka
+                    Paket Terbuka ·{' '}
+                    <span className="font-mono tabular-nums">
+                      2010.07–2011.12
+                    </span>{' '}
+                    Terverifikasi
                   </p>
                   <h3 className="mt-1 font-display text-xl font-extrabold text-on-surface">
                     Try Out JLPT N1
                   </h3>
                   <p className="mt-1 text-[13px] leading-relaxed text-[#4b4b53] dark:text-[#b4b4c0] sm:text-sm">
-                    Seluruh paket Try Out JLPT N1 sementara dikunci menunggu
-                    pembaruan &amp; verifikasi soal asli beserta kunci jawaban
-                    resmi.
+                    4 paket soal asli terverifikasi (Juli 2010 – Desember 2011)
+                    lengkap kunci jawaban resmi, audio, dan transkrip Choukai
+                    untuk pembelajaran.
                   </p>
                   <p className="mt-2 text-[13px] text-[#4b4b53] dark:text-[#b4b4c0]">
                     <span className="font-mono font-semibold tabular-nums">
-                      {completedN1Count}/{TRYOUT_N1_PACKETS.length}
+                      {completedN1Count}/{unlockedN1Count}
                     </span>{' '}
-                    Paket Terbuka · Menunggu Verifikasi
+                    Paket Terbuka Selesai ·{' '}
+                    <span className="font-mono tabular-nums">106–108</span>{' '}
+                    soal/paket
                   </p>
                 </div>
               </div>
 
-              <span className="inline-flex min-h-[44px] w-full shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-outline bg-surface-container-low px-4 py-2.5 text-sm font-bold text-on-surface-variant sm:w-auto sm:self-center">
-                <Lock className="h-4 w-4" aria-hidden="true" />
-                <span>Terkunci</span>
+              <span className="inline-flex min-h-[44px] w-full shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-on-primary group-hover:bg-primary-hover sm:w-auto sm:self-center">
+                <FileText className="h-4 w-4" aria-hidden="true" />
+                <span>Buka N1</span>
+                <ChevronRight className="h-4 w-4" aria-hidden="true" />
               </span>
             </button>
 
             <p className="pt-3 text-xs leading-relaxed text-[#4b4b53] dark:text-[#b4b4c0]">
-              Level N5, N4, dan N3 tersedia melalui kartu Anki dan Materi
-              interaktif.
+              Level N5 dan N4 tersedia melalui kartu Anki dan Materi interaktif.
             </p>
           </div>
         )
@@ -1294,7 +1362,7 @@ export function ReportAndSimSection({
                 Soal simulasi lama sementara dikunci untuk memastikan semua soal
                 Try Out menggunakan data asli terverifikasi. Gunakan{' '}
                 <strong className="text-on-surface">
-                  6 Paket Try Out JLPT N2 (2010.07–2012.12)
+                  15 Paket Try Out JLPT N3, N2 &amp; N1
                 </strong>{' '}
                 yang sudah dilengkapi soal asli, kunci jawaban resmi, audio, dan
                 transkrip Choukai untuk pembelajaran.
@@ -1308,13 +1376,13 @@ export function ReportAndSimSection({
               onClick={() => {
                 vibrateTap();
                 onTabChange('n2-official');
-                onSelectedLevelChange('N2');
+                onSelectedLevelChange(null);
                 onPacketOpenedChange(false);
               }}
               className="m3-tactile inline-flex min-h-[44px] items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-primary px-5 py-2.5 text-xs font-bold text-on-primary hover:bg-primary-hover"
             >
               <FileText className="h-4 w-4" aria-hidden="true" />
-              <span>Buka 6 Paket JLPT N2 Terverifikasi</span>
+              <span>Buka 15 Paket Try Out Terverifikasi</span>
               <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
             </button>
             <button

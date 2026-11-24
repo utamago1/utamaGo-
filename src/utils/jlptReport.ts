@@ -106,6 +106,8 @@ export function calculateTryOutReport(
 
 export const TEACHER_INSTAGRAM_HANDLE = '@ryan_lief';
 export const TEACHER_INSTAGRAM_URL = 'https://www.instagram.com/ryan_lief/';
+export const PARTNER_INSTAGRAM_HANDLE = '@annisamldyhr';
+export const PARTNER_INSTAGRAM_URL = 'https://www.instagram.com/annisamldyhr/';
 
 export function buildWhatsAppInquiryUrl(note?: string): string {
   const lines = [

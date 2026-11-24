@@ -254,8 +254,11 @@ export function SettingsModal({
       >
         <div className="flex items-center justify-between gap-3 border-b border-outline-variant bg-surface-container-low px-5 py-4">
           <div>
-            <p className="text-[11px] font-bold tracking-wider text-primary">
-              UtamaGo!
+            <p className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-primary">
+              <span>UtamaGo!</span>
+              <span className="rounded-md border border-primary/35 bg-primary-container/60 px-1.5 py-0.5 font-mono text-[9px] leading-none font-bold uppercase text-primary">
+                Beta Tester
+              </span>
             </p>
             <h2
               id="settings-modal-title"
@@ -621,8 +624,7 @@ export function SettingsModal({
                   </h3>
                   <p className="mt-1 text-xs leading-relaxed text-on-surface-variant">
                     Suara Cowok &amp; Cewek Jepang asli dengan cache otomatis
-                    untuk pemakaian offline. Berlaku di Anki, Kamus, Bunpou, dan
-                    Shadowing.
+                    untuk pemakaian offline. Berlaku di Anki, Kamus, dan Bunpou.
                   </p>
                 </div>
 

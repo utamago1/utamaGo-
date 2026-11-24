@@ -424,6 +424,119 @@ export function generateBunpouComparisonQuiz(params: {
   };
 }
 
+export function generateFavoriteBunpouQuiz(params: {
+  favoriteItems: readonly BunpouN2Item[];
+  allItems: readonly BunpouN2Item[];
+  levelLabel: JlptLevel;
+  count?: number;
+  seed?: number;
+}): ChallengeStage | null {
+  const { favoriteItems, allItems, levelLabel, count = 10, seed = 1 } = params;
+  if (favoriteItems.length === 0 || allItems.length < 4) return null;
+
+  const rng = createSeededRandom(
+    hashSeed(`bunpou-fav-quiz:${levelLabel}:${favoriteItems.length}:${seed}`),
+  );
+
+  const orderedTargets = seededShuffle(favoriteItems, rng);
+  const questions: ChallengeQuestion[] = [];
+  const usedIds = new Set<string>();
+
+  for (const target of orderedTargets) {
+    if (questions.length >= count) break;
+    if (usedIds.has(target.id)) continue;
+
+    const targetLabel = cleanBunpouLabel(target.pattern);
+    if (!targetLabel) continue;
+
+    const usedLabels = new Set<string>([targetLabel]);
+    const distractors: BunpouN2Item[] = [];
+    const sameGroup = allItems.filter(
+      (it) => it.id !== target.id && it.groupId === target.groupId,
+    );
+    const otherGroup = allItems.filter(
+      (it) => it.id !== target.id && it.groupId !== target.groupId,
+    );
+
+    const pickFrom = (pool: readonly BunpouN2Item[]) => {
+      for (const cand of seededShuffle(pool, rng)) {
+        if (distractors.length >= 3) return;
+        const label = cleanBunpouLabel(cand.pattern);
+        if (!label || usedLabels.has(label)) continue;
+        usedLabels.add(label);
+        distractors.push(cand);
+      }
+    };
+
+    pickFrom(sameGroup);
+    pickFrom(otherGroup);
+    if (distractors.length < 3) continue;
+
+    usedIds.add(target.id);
+
+    const firstEx = target.examples[0];
+    const blanked = firstEx
+      ? blankBunpouInSentence(firstEx.jp, target.pattern)
+      : null;
+
+    const rawOptions = [
+      { label: targetLabel, isCorrect: true },
+      ...distractors.map((d) => ({
+        label: cleanBunpouLabel(d.pattern),
+        isCorrect: false,
+      })),
+    ];
+    const shuffledOptions = seededShuffle(rawOptions, rng);
+    const correctIndex = shuffledOptions.findIndex((o) => o.isCorrect);
+
+    const prompt = blanked
+      ? `Lengkapi kalimat berikut dengan pola favorit yang tepat:\n「${blanked}」`
+      : `Pola bunpou mana yang menyatakan makna:\n"${firstMeaningClause(target.meaning)}"?`;
+
+    const passage = firstEx?.id
+      ? blanked
+        ? `Arti kalimat: ${firstEx.id}`
+        : `Konteks terjemahan: ${firstEx.id}`
+      : undefined;
+
+    const explanationLines: string[] = [
+      `**Jawaban benar: 「${targetLabel}」 (${levelLabel})**`,
+      `- **Arti:** ${target.meaning}`,
+    ];
+    if (target.formula) {
+      explanationLines.push(`- **Rumus:** ${target.formula}`);
+    }
+    if (firstEx?.jp) {
+      explanationLines.push(
+        `- **Contoh:** ${firstEx.jp}${firstEx.id ? ` (${firstEx.id})` : ''}`,
+      );
+    }
+
+    questions.push({
+      id: `bfav-${target.id}-${seed}-${questions.length}`,
+      tag: `Favorit ${levelLabel} · [${target.code}]`,
+      prompt,
+      passage,
+      options: shuffledOptions.map((o) => o.label),
+      correctIndex,
+      explanation: explanationLines.join('\n'),
+    });
+  }
+
+  if (questions.length === 0) return null;
+
+  return {
+    id: `bunpou-favorite-quiz-${levelLabel}-${seed}`,
+    order: 0,
+    chapter: `Latihan Favorit · Bunpou ${levelLabel}`,
+    jlptLevel: levelLabel,
+    title: `Kuis Bunpou Favorit ${levelLabel}`,
+    subtitle: `Latihan fokus dari ${favoriteItems.length} pola yang kamu simpan`,
+    xpReward: 30 + questions.length * 8,
+    questions,
+  };
+}
+
 // ============================================================================
 // 3. Adaptive Daily Drill Generator (Latihan Harian 5 / 10 Soal)
 // ============================================================================

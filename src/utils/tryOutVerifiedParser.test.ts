@@ -7,7 +7,11 @@ import {
   getTryOutPacketForms,
 } from '../data/tryOutN2AllPackets';
 import { evaluatePartScore } from './tryOutPacket';
-import { parseVerifiedTryOutDocument } from './tryOutVerifiedParser';
+import {
+  parseVerifiedTryOutDocument,
+  parseVerifiedTryOutN1Document,
+  parseVerifiedTryOutN3Document,
+} from './tryOutVerifiedParser';
 
 test('parseVerifiedTryOutDocument parses all 6 authentic JLPT N2 packets (2010.07-2012.12) with 639 questions, keys, and Choukai transcripts', () => {
   const sourcePath = path.resolve(
@@ -171,6 +175,98 @@ test('all 4 authentic JLPT N2 illustrations exist on disk, attach to the exact q
         }
       }
     }
+  }
+});
+
+test('parseVerifiedTryOutN1Document parses all 4 authentic JLPT N1 packets (2010.07-2011.12) with 427 questions and transcripts', () => {
+  const sourcePath = path.resolve(
+    process.cwd(),
+    'public/assets/tryout/jlpt_n1_2010_2011_verified.txt',
+  );
+  const rawText = fs.readFileSync(sourcePath, 'utf8');
+  const parsed = parseVerifiedTryOutN1Document(rawText);
+
+  assert.equal(parsed.length, 4);
+  const expected = [
+    { packetId: 'n1-1', examCode: '2010.07', mb: 45, dk: 26, ck: 37 },
+    { packetId: 'n1-2', examCode: '2010.12', mb: 45, dk: 26, ck: 36 },
+    { packetId: 'n1-3', examCode: '2011.07', mb: 45, dk: 25, ck: 36 },
+    { packetId: 'n1-4', examCode: '2011.12', mb: 45, dk: 25, ck: 36 },
+  ];
+
+  let total = 0;
+  for (let i = 0; i < expected.length; i += 1) {
+    const exp = expected[i];
+    const pkt = parsed[i];
+    assert.equal(pkt.packetId, exp.packetId);
+    assert.equal(pkt.examCode, exp.examCode);
+    assert.equal(pkt.counts.mojiBunpou, exp.mb);
+    assert.equal(pkt.counts.dokkai, exp.dk);
+    assert.equal(pkt.counts.choukai, exp.ck);
+    assert.equal(pkt.choukaiTranscript.length, 5);
+    total += pkt.counts.total;
+
+    const bundledForms = getTryOutPacketForms(exp.packetId);
+    assert.equal(getTryOutPacketChoukaiTranscript(exp.packetId).length, 5);
+    const mbChoices = bundledForms['moji-bunpou'].flatMap((p) =>
+      p.items.filter((it) => it.kind === 'choice'),
+    );
+    assert.equal(mbChoices.length, exp.mb);
+  }
+
+  assert.equal(total, 427);
+});
+
+test('parseVerifiedTryOutN3Document parses all 5 authentic JLPT N3 packets (2010.07-2012.12) with 508 questions and 12 Choukai illustrations', () => {
+  const sourcePath = path.resolve(
+    process.cwd(),
+    'public/assets/tryout/jlpt_n3_2010_2012_verified.txt',
+  );
+  const rawText = fs.readFileSync(sourcePath, 'utf8');
+  const parsed = parseVerifiedTryOutN3Document(rawText);
+
+  assert.equal(parsed.length, 5);
+  const expected = [
+    { packetId: 'n3-1', examCode: '2010.07', mb: 58, dk: 16, ck: 28 },
+    { packetId: 'n3-2', examCode: '2011.07', mb: 58, dk: 16, ck: 27 },
+    { packetId: 'n3-3', examCode: '2011.12', mb: 58, dk: 16, ck: 27 },
+    { packetId: 'n3-4', examCode: '2012.07', mb: 58, dk: 16, ck: 28 },
+    { packetId: 'n3-5', examCode: '2012.12', mb: 58, dk: 16, ck: 28 },
+  ];
+
+  let total = 0;
+  for (let i = 0; i < expected.length; i += 1) {
+    const exp = expected[i];
+    const pkt = parsed[i];
+    assert.equal(pkt.packetId, exp.packetId);
+    assert.equal(pkt.examCode, exp.examCode);
+    assert.equal(pkt.counts.mojiBunpou, exp.mb);
+    assert.equal(pkt.counts.dokkai, exp.dk);
+    assert.equal(pkt.counts.choukai, exp.ck);
+    assert.equal(pkt.choukaiTranscript.length, 5);
+    total += pkt.counts.total;
+  }
+
+  assert.equal(total, 508);
+
+  const expectedN3Images = [
+    '/assets/tryout/n3-2010-07-choukai-m1-q1.png',
+    '/assets/tryout/n3-2010-07-choukai-m4.png',
+    '/assets/tryout/n3-2011-07-choukai-m1-q1.png',
+    '/assets/tryout/n3-2011-07-choukai-m4.png',
+    '/assets/tryout/n3-2011-12-choukai-m1-q2.png',
+    '/assets/tryout/n3-2011-12-choukai-m1-q3.png',
+    '/assets/tryout/n3-2011-12-choukai-m1-q5.png',
+    '/assets/tryout/n3-2011-12-choukai-m4.png',
+    '/assets/tryout/n3-2012-07-choukai-m4.png',
+    '/assets/tryout/n3-2012-12-choukai-m1-q1.png',
+    '/assets/tryout/n3-2012-12-choukai-m1-q5.png',
+    '/assets/tryout/n3-2012-12-choukai-m4.png',
+  ];
+
+  for (const src of expectedN3Images) {
+    const fullPath = path.resolve(process.cwd(), 'public', src.slice(1));
+    assert.equal(fs.existsSync(fullPath), true, `Missing N3 asset ${src}`);
   }
 });
 

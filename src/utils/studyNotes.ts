@@ -221,6 +221,20 @@ export function extractNotesMapById(
   return result;
 }
 
+export function getStudyNoteScopeForCardKind(
+  cardKind?: 'vocab' | 'bunpou',
+): StudyNoteScope {
+  return cardKind === 'bunpou' ? 'bunpou' : 'vocab';
+}
+
+export function filterSavedItemsById<T extends { id: string }>(
+  items: readonly T[],
+  store: StudyNotesStore,
+  scope: StudyNoteScope,
+): T[] {
+  return items.filter((item) => isStudyItemSaved(store, scope, item.id));
+}
+
 export function resetStudyNotesMemoryCache(): void {
   cachedStore = null;
 }

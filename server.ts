@@ -336,35 +336,71 @@ function buildDriveDownloadUrl(fileId: string): string {
   return `https://drive.usercontent.google.com/download?id=${encodeURIComponent(fileId)}&export=download&confirm=t`;
 }
 
-// Official JLPT N2 Choukai audio tracks hosted on Catbox.moe (2010.07 - 2018.12, 18 files).
-// Hardcoded allowlist prevents SSRF and guarantees all 18 files receive monthly access
-// so Catbox's 2-year inactivity expiration never removes any audio file.
-const CATBOX_N2_CHOUKAI_AUDIO: ReadonlyArray<{
+// Official JLPT N3, N2, and N1 Choukai audio tracks hosted on Catbox.moe (50 files total:
+// 15 N3 MP3 + 18 N2 MP3 + 17 N1 M4A). Hardcoded allowlist prevents SSRF and guarantees all
+// files receive monthly access so Catbox's 2-year inactivity expiration never removes any audio.
+const CATBOX_CHOUKAI_AUDIO: ReadonlyArray<{
+  level: 'N3' | 'N2' | 'N1';
   examCode: string;
   fileName: string;
   url: string;
 }> = [
-  { examCode: '2010.07', fileName: '2010年7月N2.mp3', url: 'https://files.catbox.moe/9xbz7l.mp3' },
-  { examCode: '2010.12', fileName: '2010年12月N2.mp3', url: 'https://files.catbox.moe/asvevt.mp3' },
-  { examCode: '2011.07', fileName: '2011年7月N2.mp3', url: 'https://files.catbox.moe/jenpw0.mp3' },
-  { examCode: '2011.12', fileName: '2011年12月N2.mp3', url: 'https://files.catbox.moe/3pnhbw.mp3' },
-  { examCode: '2012.07', fileName: '2012年7月N2.mp3', url: 'https://files.catbox.moe/mrwty8.mp3' },
-  { examCode: '2012.12', fileName: '2012年12月N2.mp3', url: 'https://files.catbox.moe/vo21e8.mp3' },
-  { examCode: '2013.07', fileName: '2013年7月N2.mp3', url: 'https://files.catbox.moe/ry6rwd.mp3' },
-  { examCode: '2013.12', fileName: '2013年12月N2.mp3', url: 'https://files.catbox.moe/8pmmgd.mp3' },
-  { examCode: '2014.07', fileName: '2014年7月N2.mp3', url: 'https://files.catbox.moe/xvu6e9.mp3' },
-  { examCode: '2014.12', fileName: '2014年12月N2.mp3', url: 'https://files.catbox.moe/esi007.mp3' },
-  { examCode: '2015.07', fileName: '2015年7月N2.mp3', url: 'https://files.catbox.moe/kmeji2.mp3' },
-  { examCode: '2015.12', fileName: '2015年12月N2.mp3', url: 'https://files.catbox.moe/aq12c6.mp3' },
-  { examCode: '2016.07', fileName: '2016年7月N2.mp3', url: 'https://files.catbox.moe/07shiy.mp3' },
-  { examCode: '2016.12', fileName: '2016年12月N2.mp3', url: 'https://files.catbox.moe/rkpxrk.mp3' },
-  { examCode: '2017.07', fileName: '2017年7月N2.mp3', url: 'https://files.catbox.moe/oh7lfi.mp3' },
-  { examCode: '2017.12', fileName: '2017年12月N2.mp3', url: 'https://files.catbox.moe/odph8a.mp3' },
-  { examCode: '2018.07', fileName: '2018年7月N2.mp3', url: 'https://files.catbox.moe/iw65xx.mp3' },
-  { examCode: '2018.12', fileName: '2018年12月N2.mp3', url: 'https://files.catbox.moe/n1uprt.mp3' },
+  // JLPT N3 (2010.07 - 2018.07, 15 files)
+  { level: 'N3', examCode: '2010.07', fileName: '2010年7月N3.mp3', url: 'https://files.catbox.moe/hpkzbw.mp3' },
+  { level: 'N3', examCode: '2011.07', fileName: '2011年7月N3.mp3', url: 'https://files.catbox.moe/d6lbqh.mp3' },
+  { level: 'N3', examCode: '2011.12', fileName: '2011年12月N3.mp3', url: 'https://files.catbox.moe/zhstka.mp3' },
+  { level: 'N3', examCode: '2012.07', fileName: '2012年7月N3.mp3', url: 'https://files.catbox.moe/2atz7d.mp3' },
+  { level: 'N3', examCode: '2012.12', fileName: '2012年12月N3.mp3', url: 'https://files.catbox.moe/74mi06.mp3' },
+  { level: 'N3', examCode: '2013.07', fileName: '2013年7月N3.mp3', url: 'https://files.catbox.moe/qwu6ii.mp3' },
+  { level: 'N3', examCode: '2013.12', fileName: '2013年12月N3.mp3', url: 'https://files.catbox.moe/1uszlx.mp3' },
+  { level: 'N3', examCode: '2014.07', fileName: '2014年7月N3.mp3', url: 'https://files.catbox.moe/olokg6.mp3' },
+  { level: 'N3', examCode: '2014.12', fileName: '2014年12月N3.mp3', url: 'https://files.catbox.moe/c8ip5f.mp3' },
+  { level: 'N3', examCode: '2015.12', fileName: '2015年12月N3.mp3', url: 'https://files.catbox.moe/hzcpma.mp3' },
+  { level: 'N3', examCode: '2016.07', fileName: '2016年7月N3.mp3', url: 'https://files.catbox.moe/y21tzz.mp3' },
+  { level: 'N3', examCode: '2016.12', fileName: '2016年12月N3.mp3', url: 'https://files.catbox.moe/79fueb.mp3' },
+  { level: 'N3', examCode: '2017.07', fileName: '2017年7月N3.mp3', url: 'https://files.catbox.moe/05sss5.mp3' },
+  { level: 'N3', examCode: '2017.12', fileName: '2017年12月N3.mp3', url: 'https://files.catbox.moe/xo65sa.mp3' },
+  { level: 'N3', examCode: '2018.07', fileName: '2018年7月N3.mp3', url: 'https://files.catbox.moe/jgc3zf.mp3' },
+  // JLPT N2 (2010.07 - 2018.12, 18 files)
+  { level: 'N2', examCode: '2010.07', fileName: '2010年7月N2.mp3', url: 'https://files.catbox.moe/9xbz7l.mp3' },
+  { level: 'N2', examCode: '2010.12', fileName: '2010年12月N2.mp3', url: 'https://files.catbox.moe/asvevt.mp3' },
+  { level: 'N2', examCode: '2011.07', fileName: '2011年7月N2.mp3', url: 'https://files.catbox.moe/jenpw0.mp3' },
+  { level: 'N2', examCode: '2011.12', fileName: '2011年12月N2.mp3', url: 'https://files.catbox.moe/3pnhbw.mp3' },
+  { level: 'N2', examCode: '2012.07', fileName: '2012年7月N2.mp3', url: 'https://files.catbox.moe/mrwty8.mp3' },
+  { level: 'N2', examCode: '2012.12', fileName: '2012年12月N2.mp3', url: 'https://files.catbox.moe/vo21e8.mp3' },
+  { level: 'N2', examCode: '2013.07', fileName: '2013年7月N2.mp3', url: 'https://files.catbox.moe/ry6rwd.mp3' },
+  { level: 'N2', examCode: '2013.12', fileName: '2013年12月N2.mp3', url: 'https://files.catbox.moe/8pmmgd.mp3' },
+  { level: 'N2', examCode: '2014.07', fileName: '2014年7月N2.mp3', url: 'https://files.catbox.moe/xvu6e9.mp3' },
+  { level: 'N2', examCode: '2014.12', fileName: '2014年12月N2.mp3', url: 'https://files.catbox.moe/esi007.mp3' },
+  { level: 'N2', examCode: '2015.07', fileName: '2015年7月N2.mp3', url: 'https://files.catbox.moe/kmeji2.mp3' },
+  { level: 'N2', examCode: '2015.12', fileName: '2015年12月N2.mp3', url: 'https://files.catbox.moe/aq12c6.mp3' },
+  { level: 'N2', examCode: '2016.07', fileName: '2016年7月N2.mp3', url: 'https://files.catbox.moe/07shiy.mp3' },
+  { level: 'N2', examCode: '2016.12', fileName: '2016年12月N2.mp3', url: 'https://files.catbox.moe/rkpxrk.mp3' },
+  { level: 'N2', examCode: '2017.07', fileName: '2017年7月N2.mp3', url: 'https://files.catbox.moe/oh7lfi.mp3' },
+  { level: 'N2', examCode: '2017.12', fileName: '2017年12月N2.mp3', url: 'https://files.catbox.moe/odph8a.mp3' },
+  { level: 'N2', examCode: '2018.07', fileName: '2018年7月N2.mp3', url: 'https://files.catbox.moe/iw65xx.mp3' },
+  { level: 'N2', examCode: '2018.12', fileName: '2018年12月N2.mp3', url: 'https://files.catbox.moe/n1uprt.mp3' },
+  // JLPT N1 (2010.07 - 2018.12, 17 files on Catbox; 2017.07 falls back to Drive proxy)
+  { level: 'N1', examCode: '2010.07', fileName: '2010年07月N1.m4a', url: 'https://files.catbox.moe/kssn7r.m4a' },
+  { level: 'N1', examCode: '2010.12', fileName: '2010年12月N1.m4a', url: 'https://files.catbox.moe/yha7n7.m4a' },
+  { level: 'N1', examCode: '2011.07', fileName: '2011年07月N1.m4a', url: 'https://files.catbox.moe/z0wq68.m4a' },
+  { level: 'N1', examCode: '2011.12', fileName: '2011年12月N1.m4a', url: 'https://files.catbox.moe/hqktxl.m4a' },
+  { level: 'N1', examCode: '2012.07', fileName: '2012年07月N1.m4a', url: 'https://files.catbox.moe/i5r5im.m4a' },
+  { level: 'N1', examCode: '2012.12', fileName: '2012年12月N1.m4a', url: 'https://files.catbox.moe/10cffh.m4a' },
+  { level: 'N1', examCode: '2013.07', fileName: '2013年07月N1.m4a', url: 'https://files.catbox.moe/gugw3n.m4a' },
+  { level: 'N1', examCode: '2013.12', fileName: '2013年12月N1.m4a', url: 'https://files.catbox.moe/fonv77.m4a' },
+  { level: 'N1', examCode: '2014.07', fileName: '2014年07月N1.m4a', url: 'https://files.catbox.moe/qlpjp1.m4a' },
+  { level: 'N1', examCode: '2014.12', fileName: '2014年12月N1.m4a', url: 'https://files.catbox.moe/u6j4mv.m4a' },
+  { level: 'N1', examCode: '2015.07', fileName: '2015年07月N1.m4a', url: 'https://files.catbox.moe/v9m3tc.m4a' },
+  { level: 'N1', examCode: '2015.12', fileName: '2015年12月N1.m4a', url: 'https://files.catbox.moe/8o3176.m4a' },
+  { level: 'N1', examCode: '2016.07', fileName: '2016年07月N1.m4a', url: 'https://files.catbox.moe/xdqxf9.m4a' },
+  { level: 'N1', examCode: '2016.12', fileName: '2016年12月N1.m4a', url: 'https://files.catbox.moe/eftt4e.m4a' },
+  { level: 'N1', examCode: '2017.12', fileName: '2017年12月N1.m4a', url: 'https://files.catbox.moe/afjymx.m4a' },
+  { level: 'N1', examCode: '2018.07', fileName: '2018年07月N1.m4a', url: 'https://files.catbox.moe/9vlon0.m4a' },
+  { level: 'N1', examCode: '2018.12', fileName: '2018年12月N1.m4a', url: 'https://files.catbox.moe/n2mwx5.m4a' },
 ];
 
-// Touch every Catbox MP3 once every 25 days (< 1 month) via lightweight 64-byte Range GET
+// Touch every Catbox audio once every 25 days (< 1 month) via lightweight 64-byte Range GET
 // to register genuine download activity and prevent 2-year inactivity deletion.
 const CATBOX_KEEPALIVE_INTERVAL_MS = 25 * 24 * 60 * 60 * 1000;
 const CATBOX_KEEPALIVE_CHECK_MS = 24 * 60 * 60 * 1000;
@@ -397,7 +433,7 @@ function readCatboxKeepAliveState(): CatboxKeepAliveState {
         lastRunAt,
         nextDueAt:
           lastRunAt > 0 ? lastRunAt + CATBOX_KEEPALIVE_INTERVAL_MS : 0,
-        totalFiles: CATBOX_N2_CHOUKAI_AUDIO.length,
+        totalFiles: CATBOX_CHOUKAI_AUDIO.length,
         touchedCount:
           typeof parsed.touchedCount === 'number' ? parsed.touchedCount : 0,
         failedCount:
@@ -410,7 +446,7 @@ function readCatboxKeepAliveState(): CatboxKeepAliveState {
   return {
     lastRunAt: 0,
     nextDueAt: 0,
-    totalFiles: CATBOX_N2_CHOUKAI_AUDIO.length,
+    totalFiles: CATBOX_CHOUKAI_AUDIO.length,
     touchedCount: 0,
     failedCount: 0,
   };
@@ -437,7 +473,7 @@ async function touchSingleCatboxAudio(url: string): Promise<boolean> {
       headers: {
         'User-Agent':
           'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-        Accept: 'audio/mpeg,audio/*;q=0.9,*/*;q=0.8',
+        Accept: 'audio/mpeg,audio/mp4,audio/*;q=0.9,*/*;q=0.8',
         Range: 'bytes=0-63',
       },
       redirect: 'follow',
@@ -483,7 +519,7 @@ function runCatboxKeepAliveIfDue(force = false): {
   const job = (async (): Promise<CatboxKeepAliveState> => {
     let touchedCount = 0;
     let failedCount = 0;
-    for (const item of CATBOX_N2_CHOUKAI_AUDIO) {
+    for (const item of CATBOX_CHOUKAI_AUDIO) {
       const ok = await touchSingleCatboxAudio(item.url);
       if (ok) touchedCount += 1;
       else failedCount += 1;
@@ -493,7 +529,7 @@ function runCatboxKeepAliveIfDue(force = false): {
     const nextState: CatboxKeepAliveState = {
       lastRunAt: completedAt,
       nextDueAt: completedAt + CATBOX_KEEPALIVE_INTERVAL_MS,
-      totalFiles: CATBOX_N2_CHOUKAI_AUDIO.length,
+      totalFiles: CATBOX_CHOUKAI_AUDIO.length,
       touchedCount,
       failedCount,
     };

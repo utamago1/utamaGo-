@@ -4,7 +4,9 @@ import {
   countSavedStudyItems,
   extractNotesMapById,
   extractSavedItemIdSet,
+  filterSavedItemsById,
   getStudyNoteEntry,
+  getStudyNoteScopeForCardKind,
   isStudyItemSaved,
   makeStudyNoteKey,
   normalizeStudyNoteText,
@@ -64,4 +66,33 @@ test('saved queries, counts, and notes extraction work per scope', () => {
   const vocabNotes = extractNotesMapById(store, 'vocab');
   assert.equal(vocabNotes['v-1'], 'inget kanji air');
   assert.equal(getStudyNoteEntry(store, 'vocab', 'missing').note, '');
+});
+
+test('getStudyNoteScopeForCardKind and filterSavedItemsById unify Anki and Materi favorites', () => {
+  assert.equal(getStudyNoteScopeForCardKind('bunpou'), 'bunpou');
+  assert.equal(getStudyNoteScopeForCardKind('vocab'), 'vocab');
+  assert.equal(getStudyNoteScopeForCardKind(undefined), 'vocab');
+
+  const store = sanitizeStudyNotesStore({
+    'bunpou:n2-bunpou-1-1': { bookmarked: true, note: '', updatedAt: 10 },
+    'vocab:n5-word-2': { bookmarked: true, note: 'penting', updatedAt: 20 },
+  });
+
+  const bunpouCards = [
+    { id: 'n2-bunpou-1-1', word: '～わけではない' },
+    { id: 'n2-bunpou-1-2', word: '～とは限らない' },
+  ];
+  const vocabCards = [
+    { id: 'n5-word-1', word: '水' },
+    { id: 'n5-word-2', word: '火' },
+  ];
+
+  assert.deepEqual(
+    filterSavedItemsById(bunpouCards, store, 'bunpou').map((c) => c.id),
+    ['n2-bunpou-1-1'],
+  );
+  assert.deepEqual(
+    filterSavedItemsById(vocabCards, store, 'vocab').map((c) => c.id),
+    ['n5-word-2'],
+  );
 });

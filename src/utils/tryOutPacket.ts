@@ -95,7 +95,7 @@ export const TRYOUT_N1_1_PARTS: TryOutPacketPart[] = [
   },
 ];
 
-export type TryOutLevelOption = 'N2' | 'N1';
+export type TryOutLevelOption = 'N3' | 'N2' | 'N1';
 
 export interface TryOutPacketCatalogItem {
   id: string;
@@ -107,6 +107,8 @@ export interface TryOutPacketCatalogItem {
   yearLabel: string;
   description: string;
   questionCount: number;
+  mojiBunpouCount?: number;
+  dokkaiCount?: number;
   choukaiCount: number;
   recommendedMinutes: number;
   xpReward: number;
@@ -119,12 +121,21 @@ export interface TryOutPacketCatalogItem {
 }
 
 export const VERIFIED_TRYOUT_PACKET_IDS = [
+  'n3-1',
+  'n3-2',
+  'n3-3',
+  'n3-4',
+  'n3-5',
   'n2-2',
   'n2-3',
   'n2-4',
   'n2-5',
   'n2-6',
   'n2-7',
+  'n1-1',
+  'n1-2',
+  'n1-3',
+  'n1-4',
 ] as const;
 
 export function isVerifiedTryOutPacket(packetId: string): boolean {
@@ -137,10 +148,160 @@ interface SessionSeedSpec {
   yearLabel: string;
   fileId: string;
   directAudioUrl?: string;
+  dokkaiCount?: number;
   choukaiCount?: number;
   choukaiMinutes?: number;
   audioDurationLabel?: string;
 }
+
+const N3_SESSIONS: SessionSeedSpec[] = [
+  {
+    id: 'n3-1',
+    examCode: '2010.07',
+    yearLabel: 'Juli 2010',
+    fileId: '',
+    directAudioUrl: 'https://files.catbox.moe/hpkzbw.mp3',
+    choukaiCount: 28,
+  },
+  {
+    id: 'n3-2',
+    examCode: '2011.07',
+    yearLabel: 'Juli 2011',
+    fileId: '',
+    directAudioUrl: 'https://files.catbox.moe/d6lbqh.mp3',
+    choukaiCount: 27,
+  },
+  {
+    id: 'n3-3',
+    examCode: '2011.12',
+    yearLabel: 'Desember 2011',
+    fileId: '',
+    directAudioUrl: 'https://files.catbox.moe/zhstka.mp3',
+    choukaiCount: 27,
+  },
+  {
+    id: 'n3-4',
+    examCode: '2012.07',
+    yearLabel: 'Juli 2012',
+    fileId: '',
+    directAudioUrl: 'https://files.catbox.moe/2atz7d.mp3',
+    choukaiCount: 28,
+  },
+  {
+    id: 'n3-5',
+    examCode: '2012.12',
+    yearLabel: 'Desember 2012',
+    fileId: '',
+    directAudioUrl: 'https://files.catbox.moe/74mi06.mp3',
+    choukaiCount: 28,
+  },
+  {
+    id: 'n3-6',
+    examCode: '2013.07',
+    yearLabel: 'Juli 2013',
+    fileId: '',
+    directAudioUrl: 'https://files.catbox.moe/qwu6ii.mp3',
+  },
+  {
+    id: 'n3-7',
+    examCode: '2013.12',
+    yearLabel: 'Desember 2013',
+    fileId: '',
+    directAudioUrl: 'https://files.catbox.moe/1uszlx.mp3',
+  },
+  {
+    id: 'n3-8',
+    examCode: '2014.07',
+    yearLabel: 'Juli 2014',
+    fileId: '',
+    directAudioUrl: 'https://files.catbox.moe/olokg6.mp3',
+  },
+  {
+    id: 'n3-9',
+    examCode: '2014.12',
+    yearLabel: 'Desember 2014',
+    fileId: '',
+    directAudioUrl: 'https://files.catbox.moe/c8ip5f.mp3',
+  },
+  {
+    id: 'n3-10',
+    examCode: '2015.12',
+    yearLabel: 'Desember 2015',
+    fileId: '',
+    directAudioUrl: 'https://files.catbox.moe/hzcpma.mp3',
+  },
+  {
+    id: 'n3-11',
+    examCode: '2016.07',
+    yearLabel: 'Juli 2016',
+    fileId: '',
+    directAudioUrl: 'https://files.catbox.moe/y21tzz.mp3',
+  },
+  {
+    id: 'n3-12',
+    examCode: '2016.12',
+    yearLabel: 'Desember 2016',
+    fileId: '',
+    directAudioUrl: 'https://files.catbox.moe/79fueb.mp3',
+  },
+  {
+    id: 'n3-13',
+    examCode: '2017.07',
+    yearLabel: 'Juli 2017',
+    fileId: '',
+    directAudioUrl: 'https://files.catbox.moe/05sss5.mp3',
+  },
+  {
+    id: 'n3-14',
+    examCode: '2017.12',
+    yearLabel: 'Desember 2017',
+    fileId: '',
+    directAudioUrl: 'https://files.catbox.moe/xo65sa.mp3',
+  },
+  {
+    id: 'n3-15',
+    examCode: '2018.07',
+    yearLabel: 'Juli 2018',
+    fileId: '',
+    directAudioUrl: 'https://files.catbox.moe/jgc3zf.mp3',
+  },
+];
+
+export const TRYOUT_N3_PACKETS: TryOutPacketCatalogItem[] = [...N3_SESSIONS]
+  .sort((a, b) => a.examCode.localeCompare(b.examCode))
+  .map((spec, idx): TryOutPacketCatalogItem => {
+    const number = idx + 1;
+    const order = String(number).padStart(2, '0');
+    const codeFile = spec.examCode.replace('.', '_');
+    const choukaiMinutes = spec.choukaiMinutes ?? 40;
+    const verified = isVerifiedTryOutPacket(spec.id);
+    const choukaiCount = spec.choukaiCount ?? 28;
+    const questionCount = 58 + 16 + choukaiCount;
+    return {
+      id: spec.id,
+      level: 'N3',
+      order,
+      number,
+      title: `JLPT N3 — Paket ${number} (${spec.examCode})`,
+      examCode: spec.examCode,
+      yearLabel: spec.yearLabel,
+      description: verified
+        ? `Soal asli terverifikasi seri ${spec.examCode} (${spec.yearLabel}) · Moji-Bunpou 58 soal, Dokkai 16 soal, Choukai ${choukaiCount} soal + audio resmi, ilustrasi, & transkrip Choukai.`
+        : `Paket JLPT N3 seri ${spec.examCode} (${spec.yearLabel}) sementara terkunci sambil menunggu verifikasi soal & kunci jawaban resmi.`,
+      questionCount,
+      mojiBunpouCount: 58,
+      dokkaiCount: 16,
+      choukaiCount,
+      recommendedMinutes: 100 + choukaiMinutes,
+      xpReward: 150,
+      hasQuestions: verified,
+      isFullText: verified,
+      audioSrc: spec.directAudioUrl ?? driveAudioProxyUrl(spec.fileId),
+      audioFileName: `JLPT_N3_${codeFile}_Choukai.mp3`,
+      audioDurationLabel: spec.audioDurationLabel ?? '40:00',
+      choukaiMinutes,
+    };
+  });
 
 const N2_SESSIONS: SessionSeedSpec[] = [
   {
@@ -306,6 +467,8 @@ export const TRYOUT_N2_PACKETS: TryOutPacketCatalogItem[] = [...N2_SESSIONS]
         ? `Soal asli terverifikasi seri ${spec.examCode} (${spec.yearLabel}) · Moji-Bunpou 54 soal, Dokkai 21 soal, Choukai ${choukaiCount} soal + audio resmi & transkrip Choukai.`
         : `Paket seri ${spec.examCode} (${spec.yearLabel}) sementara terkunci sambil menunggu verifikasi soal & kunci jawaban resmi.`,
       questionCount,
+      mojiBunpouCount: 54,
+      dokkaiCount: 21,
       choukaiCount,
       recommendedMinutes: 105 + choukaiMinutes,
       xpReward: 150,
@@ -324,6 +487,9 @@ const N1_SESSIONS: SessionSeedSpec[] = [
     examCode: '2010.07',
     yearLabel: 'Juli 2010',
     fileId: '1C-e2n7BKlxMzYCp1NqfkxAfmOiqiz3z-',
+    directAudioUrl: 'https://files.catbox.moe/kssn7r.m4a',
+    dokkaiCount: 26,
+    choukaiCount: 37,
     audioDurationLabel: '56:00',
   },
   {
@@ -331,78 +497,97 @@ const N1_SESSIONS: SessionSeedSpec[] = [
     examCode: '2010.12',
     yearLabel: 'Desember 2010',
     fileId: '1SFmPy5MFYFLDqrhRcgYKSTvTpHbwZQej',
+    directAudioUrl: 'https://files.catbox.moe/yha7n7.m4a',
+    dokkaiCount: 26,
+    choukaiCount: 36,
   },
   {
     id: 'n1-3',
     examCode: '2011.07',
     yearLabel: 'Juli 2011',
     fileId: '12MDcEEtE0DyglEBKRR2gvPR-wG_w_U1k',
+    directAudioUrl: 'https://files.catbox.moe/z0wq68.m4a',
+    dokkaiCount: 25,
+    choukaiCount: 36,
   },
   {
     id: 'n1-4',
     examCode: '2011.12',
     yearLabel: 'Desember 2011',
     fileId: '14PARWoCCw9wZZSlPjaviuceE8QpdQNxz',
+    directAudioUrl: 'https://files.catbox.moe/hqktxl.m4a',
+    dokkaiCount: 25,
+    choukaiCount: 36,
   },
   {
     id: 'n1-5',
     examCode: '2012.07',
     yearLabel: 'Juli 2012',
     fileId: '1IOFbCAWLZnLn7D-PtJNJuzWCISmwkbGT',
+    directAudioUrl: 'https://files.catbox.moe/i5r5im.m4a',
   },
   {
     id: 'n1-6',
     examCode: '2012.12',
     yearLabel: 'Desember 2012',
     fileId: '1rXWQg1jHfSrTffLcidq8mZh-dy40v2QS',
+    directAudioUrl: 'https://files.catbox.moe/10cffh.m4a',
   },
   {
     id: 'n1-7',
     examCode: '2013.07',
     yearLabel: 'Juli 2013',
     fileId: '1pLHBXNmF_jcwTAbs1BSni-62O0Cts4Xg',
+    directAudioUrl: 'https://files.catbox.moe/gugw3n.m4a',
   },
   {
     id: 'n1-8',
     examCode: '2013.12',
     yearLabel: 'Desember 2013',
     fileId: '1X-P496yHiBixcAcqbXMnIVt9J2LWDqwJ',
+    directAudioUrl: 'https://files.catbox.moe/fonv77.m4a',
   },
   {
     id: 'n1-9',
     examCode: '2014.07',
     yearLabel: 'Juli 2014',
     fileId: '1oa-KDlxobIVa5XCq-rgLcpPcdkquAWvi',
+    directAudioUrl: 'https://files.catbox.moe/qlpjp1.m4a',
   },
   {
     id: 'n1-10',
     examCode: '2014.12',
     yearLabel: 'Desember 2014',
     fileId: '1Kp7cijguVaf-HuyGdZ539mY0OBTEBodI',
+    directAudioUrl: 'https://files.catbox.moe/u6j4mv.m4a',
   },
   {
     id: 'n1-11',
     examCode: '2015.07',
     yearLabel: 'Juli 2015',
     fileId: '1jSFlXwkH8t2sTiTCCc2Oe9nKq3UXmwPU',
+    directAudioUrl: 'https://files.catbox.moe/v9m3tc.m4a',
   },
   {
     id: 'n1-12',
     examCode: '2015.12',
     yearLabel: 'Desember 2015',
     fileId: '14gz-OC_aYPH6iPVAScoFNM8f-68HzBKB',
+    directAudioUrl: 'https://files.catbox.moe/8o3176.m4a',
   },
   {
     id: 'n1-13',
     examCode: '2016.07',
     yearLabel: 'Juli 2016',
     fileId: '1TYo9GSUq5ONE98dYzrvaY13ljqGwbQCt',
+    directAudioUrl: 'https://files.catbox.moe/xdqxf9.m4a',
   },
   {
     id: 'n1-14',
     examCode: '2016.12',
     yearLabel: 'Desember 2016',
     fileId: '1_W0yIUn0CLx6ppNJIhRLnp9CmwEIa4Tj',
+    directAudioUrl: 'https://files.catbox.moe/eftt4e.m4a',
   },
   {
     id: 'n1-15',
@@ -415,20 +600,31 @@ const N1_SESSIONS: SessionSeedSpec[] = [
     examCode: '2017.12',
     yearLabel: 'Desember 2017',
     fileId: '1UEjGjKW532lioJYH_s4v1O-DUu6pb5q1',
+    directAudioUrl: 'https://files.catbox.moe/afjymx.m4a',
   },
   {
     id: 'n1-17',
     examCode: '2018.07',
     yearLabel: 'Juli 2018',
     fileId: '1j4qkXniIaurqjB6AiKV_Y89_NcEuiKYV',
+    directAudioUrl: 'https://files.catbox.moe/9vlon0.m4a',
   },
   {
     id: 'n1-18',
     examCode: '2018.12',
     yearLabel: 'Desember 2018',
     fileId: '19jDX4zRZCr1u4MVkM_eNJLrjekdQsKWB',
+    directAudioUrl: 'https://files.catbox.moe/n2mwx5.m4a',
   },
 ];
+
+export const CATBOX_ALL_CHOUKAI_URLS: readonly string[] = [
+  ...N3_SESSIONS,
+  ...N2_SESSIONS,
+  ...N1_SESSIONS,
+]
+  .map((s) => s.directAudioUrl)
+  .filter((url): url is string => Boolean(url));
 
 export const TRYOUT_N1_PACKETS: TryOutPacketCatalogItem[] = [...N1_SESSIONS]
   .sort((a, b) => a.examCode.localeCompare(b.examCode))
@@ -436,6 +632,10 @@ export const TRYOUT_N1_PACKETS: TryOutPacketCatalogItem[] = [...N1_SESSIONS]
     const number = idx + 1;
     const order = String(number).padStart(2, '0');
     const codeFile = spec.examCode.replace('.', '_');
+    const verified = isVerifiedTryOutPacket(spec.id);
+    const dokkaiCount = spec.dokkaiCount ?? 26;
+    const choukaiCount = spec.choukaiCount ?? 36;
+    const questionCount = 45 + dokkaiCount + choukaiCount;
     return {
       id: spec.id,
       level: 'N1',
@@ -444,14 +644,18 @@ export const TRYOUT_N1_PACKETS: TryOutPacketCatalogItem[] = [...N1_SESSIONS]
       title: `JLPT N1 — Paket ${number} (${spec.examCode})`,
       examCode: spec.examCode,
       yearLabel: spec.yearLabel,
-      description: `Paket JLPT N1 seri ${spec.examCode} (${spec.yearLabel}) sementara terkunci sambil menunggu verifikasi soal & kunci jawaban resmi.`,
-      questionCount: 108,
-      choukaiCount: 37,
+      description: verified
+        ? `Soal asli terverifikasi seri ${spec.examCode} (${spec.yearLabel}) · Moji-Bunpou 45 soal, Dokkai ${dokkaiCount} soal, Choukai ${choukaiCount} soal + audio resmi & transkrip Choukai.`
+        : `Paket JLPT N1 seri ${spec.examCode} (${spec.yearLabel}) sementara terkunci sambil menunggu verifikasi soal & kunci jawaban resmi.`,
+      questionCount,
+      mojiBunpouCount: 45,
+      dokkaiCount,
+      choukaiCount,
       recommendedMinutes: 166,
       xpReward: 150,
-      hasQuestions: false,
-      isFullText: false,
-      audioSrc: driveAudioProxyUrl(spec.fileId),
+      hasQuestions: verified,
+      isFullText: verified,
+      audioSrc: spec.directAudioUrl ?? driveAudioProxyUrl(spec.fileId),
       audioFileName: `JLPT_N1_${codeFile}_Choukai.m4a`,
       audioDurationLabel: spec.audioDurationLabel ?? '56:00',
       choukaiMinutes: 56,
@@ -459,6 +663,7 @@ export const TRYOUT_N1_PACKETS: TryOutPacketCatalogItem[] = [...N1_SESSIONS]
   });
 
 export const ALL_TRYOUT_PACKETS: TryOutPacketCatalogItem[] = [
+  ...TRYOUT_N3_PACKETS,
   ...TRYOUT_N2_PACKETS,
   ...TRYOUT_N1_PACKETS,
 ];
@@ -466,7 +671,9 @@ export const ALL_TRYOUT_PACKETS: TryOutPacketCatalogItem[] = [
 export function getTryOutPacketsByLevel(
   level: TryOutLevelOption,
 ): TryOutPacketCatalogItem[] {
-  return level === 'N1' ? TRYOUT_N1_PACKETS : TRYOUT_N2_PACKETS;
+  if (level === 'N3') return TRYOUT_N3_PACKETS;
+  if (level === 'N1') return TRYOUT_N1_PACKETS;
+  return TRYOUT_N2_PACKETS;
 }
 
 export function getTryOutPacketById(packetId: string): TryOutPacketCatalogItem {
@@ -478,13 +685,53 @@ export function getTryOutPacketById(packetId: string): TryOutPacketCatalogItem {
 
 export function getTryOutPacketParts(packetId: string): TryOutPacketPart[] {
   const packet = getTryOutPacketById(packetId);
-  if (packet.level === 'N1') {
+  if (packet.level === 'N3') {
+    const mbCount = packet.mojiBunpouCount ?? 58;
+    const dkCount = packet.dokkaiCount ?? 16;
     return [
       {
         id: 'moji-bunpou',
         order: '01',
         title: 'Moji-Goi & Bunpou',
-        subtitle: `Soal teks kanji, kosakata, & tata bahasa JLPT N1 ${packet.examCode} (45 soal · 8 halaman)`,
+        subtitle: `Soal asli kanji, kosakata (35), & tata bahasa (23) JLPT N3 ${packet.examCode} (${mbCount} soal · 9 halaman)`,
+        questionCount: mbCount,
+        pageCount: 9,
+        recommendedMinutes: 55,
+        xpReward: 50,
+      },
+      {
+        id: 'dokkai',
+        order: '02',
+        title: 'Dokkai (Pemahaman Bacaan)',
+        subtitle: `Wacana teks pendek, menengah, panjang, & pencarian info JLPT N3 ${packet.examCode} (${dkCount} soal · 4 halaman)`,
+        questionCount: dkCount,
+        pageCount: 4,
+        recommendedMinutes: 45,
+        xpReward: 50,
+      },
+      {
+        id: 'choukai',
+        order: '03',
+        title: 'Choukai (Menyimak + Audio & Transkrip)',
+        subtitle: `Audio resmi JLPT N3 ${packet.examCode} (${packet.yearLabel}) + ilustrasi & transkrip Choukai (${packet.choukaiCount} soal · 5 halaman)`,
+        questionCount: packet.choukaiCount,
+        pageCount: 5,
+        recommendedMinutes: packet.choukaiMinutes,
+        xpReward: 50,
+        audioSrc: packet.audioSrc,
+        audioFileName: packet.audioFileName,
+      },
+    ];
+  }
+
+  if (packet.level === 'N1') {
+    const dkCount = packet.dokkaiCount ?? 26;
+    return [
+      {
+        id: 'moji-bunpou',
+        order: '01',
+        title: 'Moji-Goi & Bunpou',
+        subtitle: `Soal asli kanji, kosakata, & tata bahasa JLPT N1 ${packet.examCode} (45 soal · 8 halaman)`,
         questionCount: 45,
         pageCount: 8,
         recommendedMinutes: 50,
@@ -494,8 +741,8 @@ export function getTryOutPacketParts(packetId: string): TryOutPacketPart[] {
         id: 'dokkai',
         order: '02',
         title: 'Dokkai (Pemahaman Bacaan)',
-        subtitle: `Wacana teks pendek, menengah, panjang, opini A/B, & info JLPT N1 ${packet.examCode} (26 soal · 6 halaman)`,
-        questionCount: 26,
+        subtitle: `Wacana teks pendek, menengah, panjang, opini A/B, & info JLPT N1 ${packet.examCode} (${dkCount} soal · 6 halaman)`,
+        questionCount: dkCount,
         pageCount: 6,
         recommendedMinutes: 60,
         xpReward: 50,
@@ -503,8 +750,8 @@ export function getTryOutPacketParts(packetId: string): TryOutPacketPart[] {
       {
         id: 'choukai',
         order: '03',
-        title: 'Choukai (Menyimak + Audio)',
-        subtitle: `Audio resmi JLPT N1 ${packet.examCode} (${packet.yearLabel}) + soal pilihan teks Mondai 1–5 (${packet.choukaiCount} soal · 5 halaman)`,
+        title: 'Choukai (Menyimak + Audio & Transkrip)',
+        subtitle: `Audio resmi JLPT N1 ${packet.examCode} (${packet.yearLabel}) + soal Mondai 1–5 & transkrip Choukai (${packet.choukaiCount} soal · 5 halaman)`,
         questionCount: packet.choukaiCount,
         pageCount: 5,
         recommendedMinutes: packet.choukaiMinutes,

@@ -8,7 +8,7 @@ import type {
 
 type ChartMetric = 'overall' | 'moji-bunpou' | 'dokkai' | 'choukai';
 type ChartScope = 'all' | 'attempted';
-type ChartLevelFilter = 'ALL' | 'N2' | 'N1';
+type ChartLevelFilter = 'ALL' | 'N3' | 'N2' | 'N1';
 
 interface TryOutComparisonChartProps {
   series: TryOutPacketChartPoint[];
@@ -59,6 +59,10 @@ export function TryOutComparisonChart({
     return series.filter((point) => point.level === levelFilter);
   }, [levelFilter, series]);
 
+  const n3Count = useMemo(
+    () => series.filter((p) => p.level === 'N3').length,
+    [series],
+  );
   const n2Count = useMemo(
     () => series.filter((p) => p.level === 'N2').length,
     [series],
@@ -169,14 +173,15 @@ export function TryOutComparisonChart({
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          {n1Count > 0 && (
+          {(n3Count > 0 || n1Count > 0) && (
             <div className="inline-flex shrink-0 rounded-xl bg-surface-container p-1">
               {(
                 [
-                  { id: 'ALL', label: `N2+N1 (${series.length})` },
-                  { id: 'N2', label: `N2 (${n2Count})` },
-                  { id: 'N1', label: `N1 (${n1Count})` },
-                ] as const
+                  { id: 'ALL', label: `Semua (${series.length})` },
+                  ...(n3Count > 0 ? [{ id: 'N3' as const, label: `N3 (${n3Count})` }] : []),
+                  ...(n2Count > 0 ? [{ id: 'N2' as const, label: `N2 (${n2Count})` }] : []),
+                  ...(n1Count > 0 ? [{ id: 'N1' as const, label: `N1 (${n1Count})` }] : []),
+                ] as ReadonlyArray<{ id: ChartLevelFilter; label: string }>
               ).map((lvl) => (
                 <button
                   key={lvl.id}

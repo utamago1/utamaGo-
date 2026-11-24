@@ -7,6 +7,7 @@ import {
 import { TRYOUT_N2_1_FORMS } from '../data/tryOutN2Data';
 import {
   ALL_TRYOUT_PACKETS,
+  CATBOX_ALL_CHOUKAI_URLS,
   CHOUKAI_N2_AUDIO_URL,
   evaluatePartFormProgress,
   evaluatePartScore,
@@ -21,6 +22,7 @@ import {
   TRYOUT_N1_PACKETS,
   TRYOUT_N2_1_PARTS,
   TRYOUT_N2_PACKETS,
+  TRYOUT_N3_PACKETS,
   VERIFIED_TRYOUT_PACKET_IDS,
 } from './tryOutPacket';
 
@@ -196,10 +198,18 @@ test('toggleTryOutPartCompletion awards XP on first completion only', () => {
   assert.equal(second.xpDelta, 0);
 });
 
-test('ALL_TRYOUT_PACKETS includes full-text JLPT N2 (18 packets on Catbox) and JLPT N1 (18 packets) ordered oldest-first', () => {
+test('ALL_TRYOUT_PACKETS includes JLPT N3 (15 packets), N2 (18 packets), and N1 (18 packets) ordered oldest-first with Catbox audio', () => {
+  assert.equal(TRYOUT_N3_PACKETS.length, 15);
   assert.equal(TRYOUT_N2_PACKETS.length, 18);
   assert.equal(TRYOUT_N1_PACKETS.length, 18);
-  assert.equal(ALL_TRYOUT_PACKETS.length, 36);
+  assert.equal(ALL_TRYOUT_PACKETS.length, 51);
+  assert.equal(CATBOX_ALL_CHOUKAI_URLS.length, 50);
+
+  assert.equal(TRYOUT_N3_PACKETS[0].id, 'n3-1');
+  assert.equal(TRYOUT_N3_PACKETS[0].examCode, '2010.07');
+  assert.equal(TRYOUT_N3_PACKETS[14].id, 'n3-15');
+  assert.equal(TRYOUT_N3_PACKETS[14].examCode, '2018.07');
+
   assert.equal(TRYOUT_N2_PACKETS[0].id, 'n2-2');
   assert.equal(TRYOUT_N2_PACKETS[0].examCode, '2010.07');
   assert.equal(TRYOUT_N2_PACKETS[0].order, '01');
@@ -217,6 +227,12 @@ test('ALL_TRYOUT_PACKETS includes full-text JLPT N2 (18 packets on Catbox) and J
   assert.equal(TRYOUT_N1_PACKETS[17].id, 'n1-18');
   assert.equal(TRYOUT_N1_PACKETS[17].examCode, '2018.12');
 
+  for (let i = 1; i < TRYOUT_N3_PACKETS.length; i += 1) {
+    assert.ok(
+      TRYOUT_N3_PACKETS[i - 1].examCode < TRYOUT_N3_PACKETS[i].examCode,
+      `Expected N3 oldest-first order at index ${i}`,
+    );
+  }
   for (let i = 1; i < TRYOUT_N2_PACKETS.length; i += 1) {
     assert.ok(
       TRYOUT_N2_PACKETS[i - 1].examCode < TRYOUT_N2_PACKETS[i].examCode,
@@ -230,6 +246,10 @@ test('ALL_TRYOUT_PACKETS includes full-text JLPT N2 (18 packets on Catbox) and J
     );
   }
 
+  assert.equal(
+    new Set(TRYOUT_N3_PACKETS.map((p) => p.audioSrc)).size,
+    TRYOUT_N3_PACKETS.length,
+  );
   assert.equal(
     new Set(TRYOUT_N2_PACKETS.map((p) => p.audioSrc)).size,
     TRYOUT_N2_PACKETS.length,
@@ -252,15 +272,11 @@ test('ALL_TRYOUT_PACKETS includes full-text JLPT N2 (18 packets on Catbox) and J
   const lockedPackets = ALL_TRYOUT_PACKETS.filter(
     (p) => !isTryOutPacketUnlocked(p.id, []),
   );
-  assert.equal(unlockedPackets.length, 6);
-  assert.equal(lockedPackets.length, 30);
+  assert.equal(unlockedPackets.length, 15);
+  assert.equal(lockedPackets.length, 36);
   assert.deepEqual(
     unlockedPackets.map((p) => p.id),
     [...VERIFIED_TRYOUT_PACKET_IDS],
-  );
-  assert.deepEqual(
-    unlockedPackets.map((p) => p.examCode),
-    ['2010.07', '2010.12', '2011.07', '2011.12', '2012.07', '2012.12'],
   );
 
   for (const packet of ALL_TRYOUT_PACKETS) {
@@ -273,16 +289,22 @@ test('ALL_TRYOUT_PACKETS includes full-text JLPT N2 (18 packets on Catbox) and J
       isVerified,
     );
     assert.ok(packet.yearLabel.length > 0, `Missing yearLabel for ${packet.id}`);
-    if (packet.level === 'N2') {
+    if (packet.level === 'N3' || packet.level === 'N2') {
       assert.ok(
         packet.audioSrc.startsWith('https://files.catbox.moe/') &&
           packet.audioSrc.endsWith('.mp3'),
         `Expected Catbox direct MP3 URL for ${packet.id}, got ${packet.audioSrc}`,
       );
-    } else {
+    } else if (packet.id === 'n1-15') {
       assert.ok(
         packet.audioSrc.startsWith('/api/audio/drive/'),
-        `Expected same-origin /api/audio/drive/* URL for ${packet.id}, got ${packet.audioSrc}`,
+        `Expected Drive fallback URL for n1-15, got ${packet.audioSrc}`,
+      );
+    } else {
+      assert.ok(
+        packet.audioSrc.startsWith('https://files.catbox.moe/') &&
+          packet.audioSrc.endsWith('.m4a'),
+        `Expected Catbox direct M4A URL for ${packet.id}, got ${packet.audioSrc}`,
       );
     }
 
@@ -352,11 +374,15 @@ test('ALL_TRYOUT_PACKETS includes full-text JLPT N2 (18 packets on Catbox) and J
                 `Option text count mismatch for ${packet.id}/${item.id}`,
               );
             }
-            if (part.id === 'choukai' && item.label.includes('問題4')) {
+            if (
+              part.id === 'choukai' &&
+              (item.label.includes('問題4') ||
+                (packet.level === 'N3' && item.label.includes('問題5')))
+            ) {
               assert.deepEqual(
                 item.options,
                 ['1', '2', '3'],
-                `Expected 3 choices for Choukai Mondai 4 in ${packet.id}/${item.id}`,
+                `Expected 3 choices for Choukai ${item.label} in ${packet.id}/${item.id}`,
               );
             }
           }

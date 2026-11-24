@@ -189,6 +189,13 @@ export function mapN1ScoreToEquivalentLevel(scorePercent: number): JlptLevel {
   return 'N4';
 }
 
+export function mapN3ScoreToEquivalentLevel(scorePercent: number): JlptLevel {
+  if (scorePercent >= 85) return 'N2';
+  if (scorePercent >= 55) return 'N3';
+  if (scorePercent >= 35) return 'N4';
+  return 'N5';
+}
+
 export function estimateEquivalentJlptLevel(params: {
   packetsProgress: Record<string, StoredTryOutPacketState>;
   fallbackFirstPacket?: StoredTryOutPacketState;
@@ -217,21 +224,22 @@ export function estimateEquivalentJlptLevel(params: {
     );
 
     const n1Submitted = submittedPackets.filter((p) => p.level === 'N1');
+    const n2Submitted = submittedPackets.filter((p) => p.level === 'N2');
     const n1Best =
       n1Submitted.length > 0
         ? Math.max(...n1Submitted.map((p) => p.overallScore ?? 0))
         : null;
 
-    const hasFullN2 = submittedPackets.some(
-      (p) =>
-        p.level === 'N2' &&
-        (p.submittedPartsCount >= 3 || p.completedPartsCount >= 3),
+    const hasFullN2 = n2Submitted.some(
+      (p) => p.submittedPartsCount >= 3 || p.completedPartsCount >= 3,
     );
 
     const level =
       n1Best !== null && n1Best >= 60
         ? mapN1ScoreToEquivalentLevel(n1Best)
-        : mapN2ScoreToEquivalentLevel(avg, hasFullN2);
+        : n2Submitted.length > 0 || n1Submitted.length > 0
+          ? mapN2ScoreToEquivalentLevel(avg, hasFullN2)
+          : mapN3ScoreToEquivalentLevel(avg);
 
     return {
       level,
@@ -265,7 +273,7 @@ export function estimateEquivalentJlptLevel(params: {
     source: 'none',
     sourceLabel: 'Belum ada hasil Try Out',
     summaryText:
-      'Kerjakan Try Out JLPT N2/N1 atau Mini Simulasi untuk menghitung level JLPT setaramu.',
+      'Kerjakan Try Out JLPT N3/N2/N1 atau Mini Simulasi untuk menghitung level JLPT setaramu.',
     completedPacketsCount: 0,
     submittedPartsTotal: 0,
   };

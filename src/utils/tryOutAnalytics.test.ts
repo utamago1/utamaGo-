@@ -57,14 +57,19 @@ test('buildTryOutPacketChartSeries and estimateEquivalentJlptLevel track scores 
   packetOne.packetProgress.answersByPart.dokkai = perfectDokkaiAnswers;
 
   const series = buildTryOutPacketChartSeries({ 'n2-2': packetOne }, emptyPacket);
-  assert.equal(series.length, 6);
-  assert.equal(series[0].packetId, 'n2-2');
-  assert.equal(series[0].examCode, '2010.07');
-  assert.equal(series[0].dokkaiScore, 100);
-  assert.equal(series[0].overallScore, 100);
-  assert.equal(series[5].packetId, 'n2-7');
-  assert.equal(series[5].examCode, '2012.12');
-  assert.equal(series[5].overallScore, null);
+  assert.equal(series.length, 15);
+  const n22Point = series.find((p) => p.packetId === 'n2-2');
+  const n27Point = series.find((p) => p.packetId === 'n2-7');
+  assert.ok(n22Point);
+  assert.ok(n27Point);
+  assert.equal(n22Point.examCode, '2010.07');
+  assert.equal(n22Point.dokkaiScore, 100);
+  assert.equal(n22Point.overallScore, 100);
+  assert.equal(n27Point.examCode, '2012.12');
+  assert.equal(n27Point.overallScore, null);
+  assert.equal(series.filter((p) => p.level === 'N3').length, 5);
+  assert.equal(series.filter((p) => p.level === 'N2').length, 6);
+  assert.equal(series.filter((p) => p.level === 'N1').length, 4);
 
   const packetEstimate = estimateEquivalentJlptLevel({
     packetsProgress: { 'n2-2': packetOne },

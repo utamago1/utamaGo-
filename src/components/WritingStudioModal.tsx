@@ -1094,7 +1094,6 @@ export function WritingStudioModal({
                   <SpeechControlBar
                     text={activeItem.exampleWord || activeItem.character}
                     compact
-                    showShadowing
                     showQuickSettings
                   />
                 </div>

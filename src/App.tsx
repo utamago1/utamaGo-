@@ -33,7 +33,6 @@ import { ProfileScreen } from './components/ProfileScreen';
 import type { ReportTab } from './components/ReportAndSimSection';
 import { SettingsModal } from './components/SettingsModal';
 import { TryOutSectionSkeleton } from './components/SkeletonLoaders';
-import { SplashWelcomeScreen } from './components/SplashWelcomeScreen';
 import { VocabDictionaryModal } from './components/VocabDictionaryModal';
 import { WritingStudioModal } from './components/WritingStudioModal';
 import {
@@ -247,7 +246,6 @@ export default function App() {
   );
   const [justCompletedSession, setJustCompletedSession] = useState(false);
 
-  const [showSplash, setShowSplash] = useState(() => !autostartMode);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [authReady, setAuthReady] = useState(() => autostartMode);
   const [needsAuth, setNeedsAuth] = useState(() => !autostartMode);
@@ -2536,26 +2534,6 @@ export default function App() {
         appState.onboarding.selfAssessedLevel,
       ),
   );
-
-  if (showSplash) {
-    return (
-      <SplashWelcomeScreen
-        deckReadyCount={
-          n5Cards.length +
-          n4Cards.length +
-          n3Cards.length +
-          n2Cards.length +
-          n1Cards.length +
-          bunpouN5Items.length +
-          bunpouN4Items.length +
-          bunpouN3Items.length +
-          bunpouN2Items.length +
-          bunpouN1Items.length
-        }
-        onEnter={() => setShowSplash(false)}
-      />
-    );
-  }
 
   if (!authReady) {
     return (

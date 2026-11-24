@@ -127,7 +127,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
 
   const headingSubtitle =
     mode === 'register'
-      ? 'Daftar gratis untuk belajar JLPT N5–N1, flashcard Anki, Bunpou N5–N1, dan 6 paket Try Out JLPT N2 terverifikasi.'
+      ? 'Daftar gratis untuk belajar JLPT N5–N1, flashcard Anki, Bunpou N5–N1, dan 15 paket Try Out JLPT N3, N2 & N1 terverifikasi.'
       : mode === 'forgot'
         ? 'Masukkan email yang kamu daftarkan. Kami akan mengirimkan tautan untuk membuat password baru.'
         : 'Masuk menggunakan username dan password untuk melanjutkan belajar JLPT N5–N1.';
@@ -163,7 +163,10 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
           )}
         </div>
 
-        <h1 className="mt-4 text-center font-display text-2xl font-extrabold tracking-tight text-on-surface">
+        <span className="mt-4 rounded-md border border-primary/35 bg-primary-container/60 px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase text-primary">
+          Versi Beta Tester
+        </span>
+        <h1 className="mt-2.5 text-center font-display text-2xl font-extrabold tracking-tight text-on-surface">
           {headingTitle}
         </h1>
         <p className="mt-1.5 text-center text-xs leading-relaxed text-on-surface-variant sm:text-sm">
@@ -501,8 +504,8 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                 (553 pola: N5 72, N4 99, N3 144, N2 141, N1 97 lengkap rumus, contoh kalimat &amp; komparasi lintas level)
               </li>
               <li>
-                · <strong className="text-on-surface">Try Out JLPT N2 Terverifikasi (6 paket · 2010–2012)</strong>{' '}
-                lengkap soal asli, kunci jawaban resmi, audio &amp; transkrip Choukai (paket lainnya sementara terkunci)
+                · <strong className="text-on-surface">Try Out JLPT N3, N2 &amp; N1 Terverifikasi (15 paket)</strong>{' '}
+                lengkap soal asli, kunci jawaban resmi, audio &amp; transkrip Choukai (5 N3 · 6 N2 · 4 N1)
               </li>
             </ul>
           </div>

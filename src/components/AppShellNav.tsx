@@ -69,6 +69,9 @@ export function MobileTopAppBar({
           <h1 className="truncate font-display text-base font-extrabold tracking-tight text-on-surface">
             {activeTab === 'home' ? 'UtamaGo!' : activeMeta.title}
           </h1>
+          <span className="shrink-0 rounded-md border border-primary/35 bg-primary-container/60 px-1.5 py-0.5 font-mono text-[10px] leading-none font-bold tracking-wider uppercase text-primary">
+            Beta
+          </span>
           {!isOnline && (
             <span
               className="inline-flex shrink-0 items-center gap-1 text-[11px] font-semibold text-warning"
@@ -198,11 +201,16 @@ export function DesktopNavigationRail({
               />
             </div>
             <div className="min-w-0">
-              <p className="truncate font-display text-base font-extrabold tracking-tight text-on-surface">
-                Utama<span className="text-primary">Go!</span>
-              </p>
+              <div className="flex items-center gap-1.5">
+                <p className="truncate font-display text-base font-extrabold tracking-tight text-on-surface">
+                  Utama<span className="text-primary">Go!</span>
+                </p>
+                <span className="shrink-0 rounded-md border border-primary/35 bg-primary-container/60 px-1.5 py-0.5 font-mono text-[9px] leading-none font-bold tracking-wider uppercase text-primary">
+                  Beta
+                </span>
+              </div>
               <p className="truncate text-[11px] font-medium text-on-surface-variant">
-                Belajar JLPT
+                Beta Tester · JLPT
               </p>
             </div>
           </button>

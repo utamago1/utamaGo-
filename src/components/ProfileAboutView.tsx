@@ -3,6 +3,8 @@ import { ArrowLeft, ExternalLink, Instagram } from 'lucide-react';
 import { BRAND_ASSETS } from '../data/utamagoContent';
 import { vibrateTap } from '../utils/haptics';
 import {
+  PARTNER_INSTAGRAM_HANDLE,
+  PARTNER_INSTAGRAM_URL,
   TEACHER_INSTAGRAM_HANDLE,
   TEACHER_INSTAGRAM_URL,
 } from '../utils/jlptReport';
@@ -63,9 +65,14 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
           </div>
 
           <div className="space-y-2">
-            <h3 className="font-display text-lg font-bold text-on-surface">
-              Utama<span className="text-primary">Go!</span>
-            </h3>
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="font-display text-lg font-bold text-on-surface">
+                Utama<span className="text-primary">Go!</span>
+              </h3>
+              <span className="rounded-md border border-primary/35 bg-primary-container/60 px-2 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase text-primary">
+                Beta Tester
+              </span>
+            </div>
             <p className="text-sm leading-relaxed text-on-surface-variant">
               Lahir dari pengalaman pribadi pendiri yang sempat kebingungan
               mencari strategi belajar JLPT, khususnya tingkat N2 dan N1, serta
@@ -76,8 +83,9 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
               JLPT lebih terstruktur dan mudah diikuti dari tingkat pemula
               hingga mahir. Aplikasi ini menggabungkan flashcard Anki Kosakata
               N5-N1, materi &amp; kartu Bunpou N5-N1 (553 pola), tantangan
-              bertahap, hingga 10 paket lebih Try Out JLPT terverifikasi lengkap
-              dengan kunci resmi, audio, dan transkrip Choukai secara gratis.
+              bertahap, hingga 15 paket Try Out JLPT N3, N2 &amp; N1
+              terverifikasi lengkap dengan kunci resmi, audio, dan transkrip
+              Choukai secara gratis.
             </p>
             <p className="rounded-xl border border-outline-variant bg-surface px-3.5 py-2.5 text-xs leading-relaxed text-on-surface-variant">
               (Filosofi nama: UtamaGo! diambil dari nama pendiri, Utama, yang
@@ -175,6 +183,20 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
               <li>· Pemegang sertifikasi JLPT N2</li>
               <li>· Bekerja sebagai staf front office hotel di Jepang</li>
             </ul>
+            <a
+              href={PARTNER_INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => vibrateTap()}
+              className="m3-tactile inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-outline-variant bg-surface px-3.5 py-2 text-xs font-bold text-on-surface transition-colors hover:border-primary/40 hover:text-primary sm:w-auto"
+            >
+              <Instagram className="h-4 w-4 text-primary" aria-hidden="true" />
+              <span>Instagram · {PARTNER_INSTAGRAM_HANDLE}</span>
+              <ExternalLink
+                className="h-3.5 w-3.5 text-on-surface-variant"
+                aria-hidden="true"
+              />
+            </a>
           </div>
         </div>
       </section>

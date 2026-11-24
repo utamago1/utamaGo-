@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Loader2,
-  Repeat,
   SlidersHorizontal,
   Square,
   Volume2,
@@ -18,11 +17,9 @@ import {
   saveSpeechPreferences,
   speakJapanese,
   SPEECH_RATE_PRESETS,
-  startShadowingSequence,
   stopJapaneseSpeech,
   subscribeSpeechPreferences,
   type JapaneseVoiceOption,
-  type ShadowingStage,
   type SpeechPreferences,
   type SpeechVoiceStyle,
 } from '../utils/japaneseSpeech';
@@ -30,7 +27,6 @@ import {
 interface SpeechControlBarProps {
   text: string;
   compact?: boolean;
-  showShadowing?: boolean;
   showQuickSettings?: boolean;
   showAutoPlayToggle?: boolean;
   className?: string;
@@ -47,7 +43,6 @@ const STYLE_OPTIONS: ReadonlyArray<{ id: SpeechVoiceStyle; label: string }> = [
 export function SpeechControlBar({
   text,
   compact = false,
-  showShadowing = true,
   showQuickSettings = true,
   showAutoPlayToggle = false,
   className = '',
@@ -59,14 +54,11 @@ export function SpeechControlBar({
   );
   const [speaking, setSpeaking] = useState(false);
   const [loadingAudio, setLoadingAudio] = useState(false);
-  const [shadowStage, setShadowStage] = useState<ShadowingStage>('idle');
-  const [repeatLeft, setRepeatLeft] = useState<number>(0);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [voices, setVoices] = useState<JapaneseVoiceOption[]>(() =>
     listJapaneseVoices(),
   );
 
-  const shadowHandleRef = useRef<{ stop: () => void } | null>(null);
   const supported = isJapaneseSpeechSupported();
 
   useEffect(() => {
@@ -84,32 +76,16 @@ export function SpeechControlBar({
     };
   }, []);
 
-  useEffect(() => {
-    return () => {
-      shadowHandleRef.current?.stop();
-    };
-  }, []);
-
   // Stop active playback when target text changes
   useEffect(() => {
-    shadowHandleRef.current?.stop();
-    shadowHandleRef.current = null;
-    setShadowStage('idle');
     setSpeaking(false);
     setLoadingAudio(false);
   }, [text]);
 
   if (!supported || !text.trim()) return null;
 
-  const isShadowing = shadowStage !== 'idle';
-
   const handleToggleSpeak = () => {
     vibrateTap();
-    if (isShadowing) {
-      shadowHandleRef.current?.stop();
-      shadowHandleRef.current = null;
-      setShadowStage('idle');
-    }
     if (speaking || loadingAudio) {
       stopJapaneseSpeech();
       setSpeaking(false);
@@ -129,40 +105,6 @@ export function SpeechControlBar({
       setLoadingAudio(false);
     }
   };
-
-  const handleToggleShadowing = () => {
-    vibrateTap();
-    if (speaking) {
-      stopJapaneseSpeech();
-      setSpeaking(false);
-    }
-    if (isShadowing) {
-      shadowHandleRef.current?.stop();
-      shadowHandleRef.current = null;
-      setShadowStage('idle');
-      return;
-    }
-    shadowHandleRef.current = startShadowingSequence(text, {
-      onStageChange: (stage, secLeft) => {
-        setShadowStage(stage);
-        if (typeof secLeft === 'number') {
-          setRepeatLeft(secLeft);
-        }
-      },
-      onComplete: () => {
-        shadowHandleRef.current = null;
-      },
-    });
-  };
-
-  const shadowLabel =
-    shadowStage === 'slow'
-      ? 'Pelan...'
-      : shadowStage === 'repeat'
-        ? `Ucapkan (${repeatLeft}d)`
-        : shadowStage === 'normal'
-          ? 'Normal...'
-          : 'Shadowing';
 
   const btnHeight = compact ? 'min-h-[38px] px-2.5 py-1.5' : 'min-h-[44px] px-3 py-2';
 
@@ -190,30 +132,6 @@ export function SpeechControlBar({
             {loadingAudio ? 'Memuat...' : speaking ? 'Berhenti' : 'Dengar'}
           </span>
         </button>
-
-        {showShadowing && (
-          <button
-            type="button"
-            onClick={handleToggleShadowing}
-            aria-pressed={isShadowing}
-            aria-label={
-              isShadowing
-                ? 'Hentikan mode shadowing'
-                : 'Mulai latihan shadowing: dengar pelan, ucapkan ulang, lalu normal'
-            }
-            className={`m3-tactile inline-flex ${btnHeight} items-center gap-1.5 whitespace-nowrap rounded-xl border text-xs font-bold transition-colors ${
-              isShadowing
-                ? 'border-primary bg-primary-container text-on-primary-container'
-                : 'border-outline-variant bg-surface-container-low text-on-surface-variant hover:border-outline hover:text-on-surface'
-            }`}
-          >
-            <Repeat
-              className={`h-3.5 w-3.5 ${isShadowing ? 'animate-spin' : ''}`}
-              aria-hidden="true"
-            />
-            <span className="font-mono tabular-nums">{shadowLabel}</span>
-          </button>
-        )}
 
         {showQuickSettings && (
           <button
@@ -251,17 +169,6 @@ export function SpeechControlBar({
           </button>
         )}
       </div>
-
-      {isShadowing && (
-        <p className="text-center text-[11px] font-medium text-primary sm:text-left">
-          {shadowStage === 'slow' &&
-            'Tahap 1/3 · Dengarkan pelafalan pelan dengan saksama...'}
-          {shadowStage === 'repeat' &&
-            `Tahap 2/3 · Sekarang giliranmu ucapkan lantang (${repeatLeft} detik)...`}
-          {shadowStage === 'normal' &&
-            `Tahap 3/3 · Bandingkan dengan kecepatan normal (${formatSpeechRateLabel(prefs.rate)})...`}
-        </p>
-      )}
 
       {popoverOpen && (
         <div

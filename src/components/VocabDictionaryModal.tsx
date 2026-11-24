@@ -63,7 +63,7 @@ const STATUS_FILTERS: ReadonlyArray<{
   label: string;
 }> = [
   { id: 'ALL', label: 'Semua Status' },
-  { id: 'SAVED', label: 'Tersimpan' },
+  { id: 'SAVED', label: 'Favorit' },
   { id: 'DIFFICULT', label: 'Kata Sulit' },
   { id: 'LEARNED', label: 'Sudah Dipelajari' },
 ];
@@ -480,7 +480,6 @@ export function VocabDictionaryModal({
                           <SpeechControlBar
                             text={card.word || card.furigana || ''}
                             compact
-                            showShadowing
                             showQuickSettings
                           />
 
