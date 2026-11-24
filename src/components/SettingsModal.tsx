@@ -7,6 +7,7 @@ import {
   Instagram,
   Loader2,
   LogOut,
+  MessageSquarePlus,
   Monitor,
   Moon,
   RotateCcw,
@@ -69,6 +70,7 @@ interface SettingsModalProps {
   onResetAllProgress: () => void;
   accountUsername?: string;
   accountEmail?: string;
+  onOpenFeedback?: () => void;
   onLogout?: () => void;
 }
 
@@ -105,6 +107,7 @@ export function SettingsModal({
   onResetAllProgress,
   accountUsername,
   accountEmail,
+  onOpenFeedback,
   onLogout,
 }: SettingsModalProps) {
   const [confirmResetOpen, setConfirmResetOpen] = useState(false);
@@ -596,6 +599,24 @@ export function SettingsModal({
               )}
 
               <div className="space-y-2.5">
+                {onOpenFeedback && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      vibrateTap();
+                      onClose();
+                      onOpenFeedback();
+                    }}
+                    className="m3-tactile inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-2xl border border-primary/40 bg-primary-container/40 px-4 py-2 text-xs font-bold text-on-surface hover:bg-primary-container/65"
+                  >
+                    <MessageSquarePlus
+                      className="h-4 w-4 text-primary"
+                      aria-hidden="true"
+                    />
+                    <span>Lapor Bug &amp; Masukan Beta</span>
+                  </button>
+                )}
+
                 <a
                   href={TEACHER_INSTAGRAM_URL}
                   target="_blank"

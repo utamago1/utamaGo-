@@ -164,6 +164,12 @@ test('evaluatePartScore grades all questions and builds detailed wrong-answer re
   assert.equal(partial.wrongItems[0].correct, '2');
   assert.ok((partial.wrongItems[0].chosenText ?? '').length > 0);
   assert.ok((partial.wrongItems[0].correctText ?? '').length > 0);
+  assert.ok(partial.wrongItems[0].pageTitle.length > 0);
+  assert.equal(partial.wrongItems[0].optionTexts?.length, 4);
+  assert.ok(
+    (partial.wrongItems[0].passageContext ?? '').length > 40,
+    'Expected Dokkai wrong item to include associated passageContext',
+  );
 });
 
 test('formatAnswerSheetText formats answer key status cleanly', () => {

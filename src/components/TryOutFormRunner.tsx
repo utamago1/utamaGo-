@@ -3,7 +3,6 @@ import {
   AlertCircle,
   ArrowLeft,
   ArrowRight,
-  BookOpen,
   Check,
   CheckCircle2,
   ChevronDown,
@@ -18,7 +17,6 @@ import {
   RotateCcw,
   Send,
   X,
-  XCircle,
   Zap,
   ZoomIn,
   ZoomOut,
@@ -41,6 +39,7 @@ import {
 import type { ChoukaiTranscriptSection } from '../utils/tryOutVerifiedParser';
 import { ChoukaiAudioPlayer } from './ChoukaiAudioPlayer';
 import { ChoukaiTranscriptPanel } from './ChoukaiTranscriptPanel';
+import { TryOutWrongReviewSection } from './TryOutWrongReviewSection';
 
 function renderUnderlinedJapanese(text: string, isInverted = false) {
   const parts = text.split(/(\[\[.*?\]\])/g);
@@ -126,6 +125,9 @@ export function TryOutFormRunner({
   const [sheetModalIndex, setSheetModalIndex] = useState<number | null>(null);
   const [sheetZoom, setSheetZoom] = useState<1 | 1.5 | 2>(1);
   const [showMondaiBreakdown, setShowMondaiBreakdown] = useState(true);
+  const [focusedWrongItemId, setFocusedWrongItemId] = useState<string | null>(
+    null,
+  );
 
   const formTopRef = useRef<HTMLDivElement | null>(null);
   const elapsedRef = useRef(elapsedSeconds);
@@ -868,14 +870,35 @@ export function TryOutFormRunner({
                 const isFlagged = flaggedIds.includes(it.id);
                 const isCorrect =
                   Boolean(it.correctAnswer) && chosen === it.correctAnswer;
+                if (isCorrect) {
+                  return (
+                    <div
+                      key={it.id}
+                      className="flex items-center justify-between rounded-xl border border-success/40 bg-success-container px-2.5 py-2 font-mono text-xs text-on-success-container"
+                    >
+                      <span className="inline-flex items-center gap-1 opacity-85">
+                        #{it.number}
+                        {isFlagged && (
+                          <Flag
+                            className="h-3 w-3"
+                            aria-label="Ditandai ragu"
+                          />
+                        )}
+                      </span>
+                      <span className="font-bold">{chosen} ✓</span>
+                    </div>
+                  );
+                }
                 return (
-                  <div
+                  <button
                     key={it.id}
-                    className={`flex items-center justify-between rounded-xl border px-2.5 py-2 font-mono text-xs ${
-                      isCorrect
-                        ? 'border-success/40 bg-success-container text-on-success-container'
-                        : 'border-primary/40 bg-primary-container text-on-primary-container'
-                    }`}
+                    type="button"
+                    onClick={() => {
+                      vibrateTap();
+                      setFocusedWrongItemId(it.id);
+                    }}
+                    title={`Lihat pembahasan Soal #${it.number}`}
+                    className="m3-tactile flex items-center justify-between rounded-xl border border-primary/40 bg-primary-container px-2.5 py-2 font-mono text-xs text-on-primary-container hover:border-primary"
                   >
                     <span className="inline-flex items-center gap-1 opacity-85">
                       #{it.number}
@@ -884,98 +907,25 @@ export function TryOutFormRunner({
                       )}
                     </span>
                     <span className="font-bold">
-                      {isCorrect ? `${chosen} ✓` : `${chosen}→${it.correctAnswer}`}
+                      {chosen}→{it.correctAnswer}
                     </span>
-                  </div>
+                  </button>
                 );
               })}
             </div>
           </div>
 
-          {scoreSummary.wrongItems.length === 0 ? (
-            <div className="rounded-2xl bg-success-container p-4 text-xs font-semibold text-on-success-container">
-              Sempurna! Semua {scoreSummary.totalGradable} soal pada bagian ini
-              dijawab benar (100%).
-            </div>
-          ) : (
-            <div className="space-y-3 rounded-2xl bg-surface-container p-4">
-              <div className="flex items-center gap-2">
-                <XCircle
-                  className="h-5 w-5 shrink-0 text-primary"
-                  aria-hidden="true"
-                />
-                <h5 className="font-display text-sm font-extrabold text-on-surface">
-                  Review Jawaban Salah ({scoreSummary.wrongItems.length} Soal)
-                </h5>
-              </div>
-
-              <div className="space-y-2.5">
-                {scoreSummary.wrongItems.map((wrong) => {
-                  const matchedChoice = choiceItemById.get(wrong.itemId);
-                  return (
-                    <div
-                      key={wrong.itemId}
-                      className="rounded-xl border border-outline-variant bg-surface-container-low p-3.5 text-xs"
-                    >
-                      <p className="font-mono font-bold text-primary">
-                        #{wrong.number} · {wrong.label}
-                      </p>
-                      {wrong.prompt && (
-                        <p className="mt-1 whitespace-pre-line text-sm font-semibold leading-relaxed text-on-surface">
-                          {renderUnderlinedJapanese(wrong.prompt)}
-                        </p>
-                      )}
-                      {matchedChoice?.image && (
-                        <div className="mt-2.5 flex justify-center rounded-xl border border-outline-variant bg-[#f6f5f0] p-2.5 dark:bg-[#eceae2]">
-                          <img
-                            src={matchedChoice.image.src}
-                            alt={`Ilustrasi ${wrong.label} — ${part.title}`}
-                            width={matchedChoice.image.w}
-                            height={matchedChoice.image.h}
-                            loading="lazy"
-                            decoding="async"
-                            referrerPolicy="no-referrer"
-                            draggable={false}
-                            onContextMenu={(e) => e.preventDefault()}
-                            className="mx-auto h-auto max-h-[260px] w-auto max-w-full select-none rounded-lg object-contain mix-blend-multiply"
-                          />
-                        </div>
-                      )}
-                    <div className="mt-2 space-y-1">
-                      <p className="text-primary">
-                        Jawabanmu: <strong>{wrong.chosen}</strong>
-                        {wrong.chosenText ? (
-                          <span className="ml-1.5 text-on-surface">
-                            ({renderUnderlinedJapanese(wrong.chosenText)})
-                          </span>
-                        ) : null}
-                      </p>
-                        <p className="text-success">
-                        Kunci benar: <strong>{wrong.correct}</strong>
-                        {wrong.correctText ? (
-                          <span className="ml-1.5 text-on-surface">
-                            ({renderUnderlinedJapanese(wrong.correctText)})
-                          </span>
-                        ) : null}
-                      </p>
-                    </div>
-                    {wrong.transcript && (
-                      <div className="mt-3 rounded-xl border border-outline-variant bg-surface-container p-3">
-                        <p className="inline-flex items-center gap-1.5 text-[11px] font-bold text-primary">
-                          <BookOpen className="h-3.5 w-3.5" aria-hidden="true" />
-                          <span>Transkrip Choukai (聴力原文)</span>
-                        </p>
-                        <p className="mt-1.5 whitespace-pre-line text-xs leading-relaxed text-on-surface">
-                          {wrong.transcript}
-                        </p>
-                      </div>
-                    )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+          <TryOutWrongReviewSection
+            levelLabel={levelLabel}
+            examCode={examCode}
+            partId={part.id}
+            partTitle={part.title}
+            totalGradable={scoreSummary.totalGradable}
+            wrongItems={scoreSummary.wrongItems}
+            choiceItemById={choiceItemById}
+            focusedWrongItemId={focusedWrongItemId}
+            onFocusHandled={() => setFocusedWrongItemId(null)}
+          />
 
           {part.id === 'choukai' &&
             choukaiTranscript &&

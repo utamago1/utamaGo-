@@ -278,6 +278,106 @@
         "reviewHistory",
         "updatedAt"
       ]
+    },
+    "BetaFeedback": {
+      "title": "BetaFeedback",
+      "description": "Laporan bug, typo materi, dan saran fitur dari Beta Tester UtamaGo!.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "username": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 24,
+          "pattern": "^[a-z0-9_.]+$"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["bug", "typo", "suggestion", "other"]
+        },
+        "screen": {
+          "type": "string",
+          "enum": ["home", "anki", "learn", "challenge", "tryout", "profile", "other"]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 100
+        },
+        "description": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 1000
+        },
+        "status": {
+          "type": "string",
+          "enum": ["open", "reviewed", "resolved"]
+        },
+        "adminNote": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 300
+        },
+        "jlptLevel": {
+          "type": "string",
+          "enum": ["N5", "N4", "N3", "N2", "N1"]
+        },
+        "appVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 24
+        },
+        "screenshotDataUrl": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 260000
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "userId",
+        "username",
+        "category",
+        "screen",
+        "title",
+        "description",
+        "status",
+        "adminNote",
+        "jlptLevel",
+        "appVersion",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "AdminRole": {
+      "title": "AdminRole",
+      "description": "Penanda akun pengelola resmi UtamaGo! yang berwenang meninjau laporan Beta Tester.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["admin"]
+        }
+      },
+      "required": ["uid", "role"]
     }
   },
   "firestore": {
@@ -296,6 +396,14 @@
     "/usernames/{username}": {
       "schema": { "$ref": "#/entities/UsernameLookup" },
       "description": "Dokumen lookup tunggal per username unik (tanpa izin list)."
+    },
+    "/betaFeedback/{feedbackId}": {
+      "schema": { "$ref": "#/entities/BetaFeedback" },
+      "description": "Laporan bug, typo materi, dan saran dari Beta Tester UtamaGo!."
+    },
+    "/admins/{adminId}": {
+      "schema": { "$ref": "#/entities/AdminRole" },
+      "description": "Daftar UID admin terpercaya (read-only bagi pemilik UID)."
     }
   }
 }

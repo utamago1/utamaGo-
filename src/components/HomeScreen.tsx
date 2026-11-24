@@ -60,8 +60,10 @@ import type {
   JlptWeaknessReport,
   WeaknessActionTarget,
 } from '../utils/weaknessDetector';
+import type { JlptExamSessionPreference } from '../utils/jlptCountdown';
 import type { AppTab } from './AppShellNav';
 import { HomeGreetingCard } from './HomeGreetingCard';
+import { JlptCountdownCard } from './JlptCountdownCard';
 import { WeaknessDetectorCard } from './WeaknessDetectorCard';
 
 interface HomeScreenProps {
@@ -105,6 +107,8 @@ interface HomeScreenProps {
   onStartDailyDrill: (count: 5 | 10, shuffleIndex: number) => void;
   onStartBlitz?: (level: JlptLevel) => void;
   onStartSurvival?: (level: JlptLevel) => void;
+  jlptExamSession?: JlptExamSessionPreference;
+  onChangeJlptExamSession?: (next: JlptExamSessionPreference) => void;
   onStartStage: (stage: ChallengeStage) => void;
   onNavigate: (tab: Exclude<AppTab, 'home'>) => void;
 }
@@ -117,6 +121,7 @@ export function HomeScreen({
   completedPacketCount,
   latestReport,
   activityLog,
+  targetLevel,
   unlockedLevel,
   arenaUnlockedLevel,
   dailyMinutes,
@@ -146,6 +151,8 @@ export function HomeScreen({
   onStartDailyDrill,
   onStartBlitz,
   onStartSurvival,
+  jlptExamSession = 'auto',
+  onChangeJlptExamSession,
   onStartStage,
   onNavigate,
 }: HomeScreenProps) {
@@ -1085,6 +1092,14 @@ export function HomeScreen({
           </div>
         </div>
       </section>
+
+      {/* 4b. Kartu Hitung Mundur Jadwal Ujian JLPT */}
+      <JlptCountdownCard
+        targetLevel={targetLevel}
+        dailyMinutes={dailyMinutes}
+        sessionPreference={jlptExamSession}
+        onChangeSessionPreference={(next) => onChangeJlptExamSession?.(next)}
+      />
 
       {/* 5. Kartu "Lanjutkan belajar" + Akses Cepat Kamus Kosakata */}
       <section aria-label="Lanjutkan Belajar dan Kamus" className="w-full min-w-0 space-y-3">

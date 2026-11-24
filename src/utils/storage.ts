@@ -14,6 +14,10 @@ import type { AnkiSrsMap } from './ankiSrs';
 import { hydrateSrsMapFromLegacy } from './ankiSrs';
 import type { ComputedTryOutReport } from './jlptReport';
 import {
+  isValidJlptExamSession,
+  type JlptExamSessionPreference,
+} from './jlptCountdown';
+import {
   createEmptyArcadeRecords,
   type ArcadeRecords,
   type BlitzBestRecord,
@@ -110,6 +114,7 @@ export interface UtamagoAppStateV2 {
   activityLog: StudyActivityLog;
   choukaiAudio: ChoukaiAudioState;
   reminder: DailyReminderConfig;
+  jlptExamSession: JlptExamSessionPreference;
 }
 
 export const EMPTY_ANSWERS_BY_PART: Record<TryOutPacketPartId, TryOutFormValues> = {
@@ -196,6 +201,7 @@ export function createDefaultAppState(): UtamagoAppStateV2 {
     activityLog: EMPTY_ACTIVITY_LOG,
     choukaiAudio: { currentTime: 0, playbackRate: 1 },
     reminder: { ...DEFAULT_REMINDER_CONFIG },
+    jlptExamSession: 'auto',
   };
 }
 
@@ -831,6 +837,9 @@ export function loadUnifiedAppState(userId?: string | null): UtamagoAppStateV2 {
             ? rawReminder.lastNotifiedDate
             : null,
       },
+      jlptExamSession: isValidJlptExamSession(parsed.jlptExamSession)
+        ? parsed.jlptExamSession
+        : 'auto',
     };
   } catch {
     return storageKey === APP_STATE_STORAGE_KEY

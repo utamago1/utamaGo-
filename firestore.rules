@@ -44,6 +44,29 @@ service cloud.firestore {
       return key is string && key.size() == 10 && key.matches('^\\d{4}-\\d{2}-\\d{2}$');
     }
 
+    function isValidFeedbackCategory(cat) {
+      return cat is string && cat in ['bug', 'typo', 'suggestion', 'other'];
+    }
+
+    function isValidFeedbackScreen(scr) {
+      return scr is string && scr in ['home', 'anki', 'learn', 'challenge', 'tryout', 'profile', 'other'];
+    }
+
+    function isValidFeedbackStatus(st) {
+      return st is string && st in ['open', 'reviewed', 'resolved'];
+    }
+
+    function isValidScreenshotDataUrl(val) {
+      return val is string &&
+        val.size() <= 260000 &&
+        (
+          val == '' ||
+          (val.size() >= 23 && val[0:23] == 'data:image/jpeg;base64,') ||
+          (val.size() >= 22 && val[0:22] == 'data:image/png;base64,') ||
+          (val.size() >= 23 && val[0:23] == 'data:image/webp;base64,')
+        );
+    }
+
     function incoming() {
       return request.resource.data;
     }
@@ -58,6 +81,17 @@ service cloud.firestore {
 
     function isOwner(userId) {
       return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isVerifiedBootstrapAdmin() {
+      return isSignedIn() &&
+        request.auth.token.email_verified == true &&
+        request.auth.token.email == 'utamaryan1@gmail.com';
+    }
+
+    function isAdmin() {
+      return isVerifiedBootstrapAdmin() ||
+        (isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
     }
 
     function isValidUserProfile(data) {
@@ -320,6 +354,51 @@ service cloud.firestore {
         data.updatedAt == request.time;
     }
 
+    function isValidBetaFeedback(data) {
+      return data.keys().hasAll([
+          'userId',
+          'username',
+          'category',
+          'screen',
+          'title',
+          'description',
+          'status',
+          'adminNote',
+          'jlptLevel',
+          'appVersion',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'userId',
+          'username',
+          'category',
+          'screen',
+          'title',
+          'description',
+          'status',
+          'adminNote',
+          'jlptLevel',
+          'appVersion',
+          'screenshotDataUrl',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        isValidId(data.userId) &&
+        isValidUsername(data.username) &&
+        isValidFeedbackCategory(data.category) &&
+        isValidFeedbackScreen(data.screen) &&
+        data.title is string && data.title.size() >= 5 && data.title.size() <= 100 &&
+        data.description is string && data.description.size() >= 10 && data.description.size() <= 1000 &&
+        isValidFeedbackStatus(data.status) &&
+        data.adminNote is string && data.adminNote.size() <= 300 &&
+        isValidJlptLevel(data.jlptLevel) &&
+        data.appVersion is string && data.appVersion.size() >= 1 && data.appVersion.size() <= 24 &&
+        (!('screenshotDataUrl' in data) || isValidScreenshotDataUrl(data.screenshotDataUrl)) &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
     match /users/{userId} {
       allow get: if isOwner(userId) && isValidId(userId);
       allow list: if false;
@@ -418,6 +497,49 @@ service cloud.firestore {
       allow delete: if isValidUsername(username) &&
         isSignedIn() &&
         existing().uid == request.auth.uid;
+    }
+
+    match /betaFeedback/{feedbackId} {
+      allow get: if isSignedIn() &&
+        isValidId(feedbackId) &&
+        (existing().userId == request.auth.uid || isAdmin());
+      allow list: if isSignedIn() &&
+        (resource.data.userId == request.auth.uid || isVerifiedBootstrapAdmin());
+      allow create: if isSignedIn() &&
+        isValidId(feedbackId) &&
+        isValidBetaFeedback(incoming()) &&
+        incoming().userId == request.auth.uid &&
+        incoming().status == 'open' &&
+        incoming().adminNote == '' &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+      allow update: if isSignedIn() &&
+        isValidId(feedbackId) &&
+        isValidBetaFeedback(incoming()) &&
+        incoming().userId == existing().userId &&
+        incoming().username == existing().username &&
+        incoming().category == existing().category &&
+        incoming().screen == existing().screen &&
+        incoming().title == existing().title &&
+        incoming().description == existing().description &&
+        incoming().jlptLevel == existing().jlptLevel &&
+        incoming().appVersion == existing().appVersion &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        isAdmin() &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'status',
+          'adminNote',
+          'updatedAt'
+        ]);
+      allow delete: if isSignedIn() &&
+        isValidId(feedbackId) &&
+        (existing().userId == request.auth.uid || isAdmin());
+    }
+
+    match /admins/{adminId} {
+      allow get: if isOwner(adminId) && isValidId(adminId);
+      allow list, create, update, delete: if false;
     }
 
     match /test/connection {

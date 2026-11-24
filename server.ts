@@ -1,9 +1,10 @@
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { Readable } from 'node:stream';
 import type { ReadableStream as WebReadableStream } from 'node:stream/web';
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI, ThinkingLevel, Type } from '@google/genai';
 import dotenv from 'dotenv';
 import express, { type Request, type Response } from 'express';
 
@@ -174,6 +175,292 @@ async function handleJapaneseTts(req: Request, res: Response): Promise<void> {
       err instanceof Error ? err.message : 'unknown error',
     );
     res.status(503).json({ error: 'TTS service temporarily unavailable.' });
+  }
+}
+
+interface TryOutExplanationResult {
+  focusTag: string;
+  questionMeaning: string;
+  whyChosenWrong: string;
+  whyCorrectRight: string;
+  distractorNotes: string;
+  studyTip: string;
+}
+
+const EXPLAIN_CACHE_MAX_ENTRIES = 500;
+const EXPLAIN_RATE_LIMIT_WINDOW_MS = 60_000;
+const EXPLAIN_RATE_LIMIT_MAX_REQUESTS = 45;
+const ALLOWED_TRYOUT_PART_IDS = new Set(['moji-bunpou', 'dokkai', 'choukai']);
+
+let geminiExplainClient: GoogleGenAI | null = null;
+const explainCache = new Map<string, TryOutExplanationResult>();
+const explainRateLimitBuckets = new Map<string, number[]>();
+
+function getGeminiExplainClient(): GoogleGenAI | null {
+  const apiKey = process.env.GEMINI_API_KEY?.trim();
+  if (!apiKey) return null;
+  if (!geminiExplainClient) {
+    geminiExplainClient = new GoogleGenAI({
+      apiKey,
+      httpOptions: { headers: { 'User-Agent': 'aistudio-build' } },
+    });
+  }
+  return geminiExplainClient;
+}
+
+function checkExplainRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const cutoff = now - EXPLAIN_RATE_LIMIT_WINDOW_MS;
+  const recent = (explainRateLimitBuckets.get(ip) ?? []).filter(
+    (t) => t > cutoff,
+  );
+  if (recent.length >= EXPLAIN_RATE_LIMIT_MAX_REQUESTS) {
+    explainRateLimitBuckets.set(ip, recent);
+    return false;
+  }
+  recent.push(now);
+  explainRateLimitBuckets.set(ip, recent);
+
+  if (explainRateLimitBuckets.size > 500) {
+    for (const [key, timestamps] of explainRateLimitBuckets.entries()) {
+      const kept = timestamps.filter((t) => t > cutoff);
+      if (kept.length === 0) explainRateLimitBuckets.delete(key);
+      else explainRateLimitBuckets.set(key, kept);
+    }
+  }
+  return true;
+}
+
+function setExplainCacheEntry(
+  cacheKey: string,
+  value: TryOutExplanationResult,
+): void {
+  if (explainCache.has(cacheKey)) {
+    explainCache.delete(cacheKey);
+  }
+  explainCache.set(cacheKey, value);
+  if (explainCache.size > EXPLAIN_CACHE_MAX_ENTRIES) {
+    const oldestKey = explainCache.keys().next().value;
+    if (oldestKey) explainCache.delete(oldestKey);
+  }
+}
+
+function cleanBoundedText(value: unknown, maxLen: number): string {
+  if (typeof value !== 'string') return '';
+  return value.replace(/\r\n/g, '\n').trim().slice(0, maxLen);
+}
+
+const TRYOUT_EXPLAIN_SYSTEM_INSTRUCTION = `Kamu adalah pengajar JLPT (Sensei) berbahasa Indonesia yang teliti, hangat, dan to-the-point untuk aplikasi belajar bahasa Jepang UtamaGo!.
+Tugasmu adalah menjelaskan soal Try Out JLPT yang dijawab SALAH oleh peserta dalam bahasa Indonesia yang jelas, akurat, dan mudah dipahami.
+
+Aturan wajib:
+1. Jelaskan secara spesifik mengapa pilihan peserta (chosen) SALAH dan mengapa kunci jawaban resmi (correct) BENAR berdasarkan konteks soal Jepang yang diberikan.
+2. Sesuaikan penjelasan dengan jenis Mondai:
+   - Kanji / Cara Baca (問題1–2): sebutkan cara baca hiragana & arti kata target (yang ditandai [[...]]), lalu jelaskan kesalahan bacaan/kanji pada pilihan peserta (mis. salah dakuon/sokuon/vokal panjang/kanji mirip arti berbeda).
+   - Pembentukan kata / Konteks / Sinonim / Penggunaan (問題3–6): jelaskan arti kata target, kolokasi, serta perbedaan nuansa antara pilihan peserta dan kunci benar.
+   - Tata Bahasa Kalimat (問題7): jelaskan pola bunpou kunci benar, aturan sambungan (接続), dan alasan pola pilihan peserta tidak cocok secara struktur atau makna.
+   - Susunan Kalimat Bintang ★ (問題8): WAJIB tuliskan urutan lengkap kalimat yang benar dari 4 potongan pilihan dan tandai posisi ★ secara jelas agar peserta paham kenapa posisi ★ jatuh pada jawaban kunci.
+   - Tata Bahasa Wacana & Dokkai (問題9–14): rujuk langsung ide/kalimat bukti pada wacana (passageContext) yang membenarkan kunci dan menyanggah pilihan peserta.
+   - Choukai (聴解): rujuk langsung kalimat/alur keputusan pembicara pada transkrip (transcript) dan jelaskan jebakan (distractor) yang membuat pilihan peserta salah (mis. berubah pikiran, bukan yang diminta pertanyaan, atau syarat tidak terpenuhi).
+3. Tulis ringkas dan padat: tiap field maksimal 2–4 kalimat yang langsung ke inti, tanpa basa-basi pembuka, tanpa markdown bullet list berantakan, dan tetap sertakan kata Jepang penting + arti Indonesia.
+4. Jangan pernah mengarang fakta di luar soal/wacana/transkrip. Jika soal Choukai hanya punya nomor opsi tanpa teks tercetak, rujuk langsung bunyi pilihan 1/2/3/4 di dalam transkrip.
+5. Balas HANYA dalam JSON valid sesuai skema yang ditetapkan.`;
+
+async function handleTryOutExplain(req: Request, res: Response): Promise<void> {
+  const body = req.body as Record<string, unknown> | undefined;
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
+    res.status(400).json({ error: 'Data soal tidak valid.' });
+    return;
+  }
+
+  const levelLabel = cleanBoundedText(body.levelLabel, 24) || 'JLPT';
+  const examCode = cleanBoundedText(body.examCode, 24);
+  const partId = cleanBoundedText(body.partId, 24);
+  const mondaiTitle = cleanBoundedText(body.mondaiTitle, 160);
+  const mondaiInstruction = cleanBoundedText(body.mondaiInstruction, 500);
+  const prompt = cleanBoundedText(body.prompt, 1500);
+  const chosen = cleanBoundedText(body.chosen, 8);
+  const chosenText = cleanBoundedText(body.chosenText, 400);
+  const correct = cleanBoundedText(body.correct, 8);
+  const correctText = cleanBoundedText(body.correctText, 400);
+  const passageContext = cleanBoundedText(body.passageContext, 5000);
+  const transcript = cleanBoundedText(body.transcript, 4500);
+  const rawNum = Number(body.questionNumber);
+  const questionNumber =
+    Number.isFinite(rawNum) && rawNum >= 0 && rawNum <= 250
+      ? Math.floor(rawNum)
+      : 0;
+
+  if (!ALLOWED_TRYOUT_PART_IDS.has(partId)) {
+    res.status(400).json({ error: 'Bagian Try Out tidak valid.' });
+    return;
+  }
+  if (!prompt || !chosen || !correct) {
+    res.status(400).json({ error: 'Detail soal, jawabanmu, dan kunci wajib diisi.' });
+    return;
+  }
+
+  const rawOptions = Array.isArray(body.options) ? body.options : [];
+  const options = rawOptions
+    .slice(0, 4)
+    .map((opt) => cleanBoundedText(opt, 400))
+    .filter(Boolean);
+
+  const cacheFingerprint = crypto
+    .createHash('sha256')
+    .update(
+      JSON.stringify({
+        v: 1,
+        levelLabel,
+        partId,
+        mondaiTitle,
+        prompt,
+        options,
+        chosen,
+        chosenText,
+        correct,
+        correctText,
+        passageContext,
+        transcript,
+      }),
+    )
+    .digest('hex');
+
+  const cached = explainCache.get(cacheFingerprint);
+  if (cached) {
+    explainCache.delete(cacheFingerprint);
+    explainCache.set(cacheFingerprint, cached);
+    res.setHeader('X-Explain-Cache', 'HIT');
+    res.status(200).json({ explanation: cached });
+    return;
+  }
+
+  const clientIp = getClientIp(req);
+  if (!checkExplainRateLimit(clientIp)) {
+    res.status(429).json({
+      error:
+        'Terlalu banyak permintaan pembahasan dalam waktu singkat. Tunggu sebentar lalu coba lagi.',
+    });
+    return;
+  }
+
+  const ai = getGeminiExplainClient();
+  if (!ai) {
+    res.status(503).json({
+      error: 'Layanan pembahasan otomatis belum tersedia di server.',
+    });
+    return;
+  }
+
+  const structuredPayload = {
+    level: levelLabel,
+    examCode,
+    part: partId,
+    questionNumber,
+    mondai: mondaiTitle,
+    instruction: mondaiInstruction || undefined,
+    prompt,
+    allOptions:
+      options.length > 0
+        ? options.map((text, idx) => `${idx + 1}. ${text}`)
+        : undefined,
+    userChosenOption: chosenText ? `${chosen} (${chosenText})` : chosen,
+    officialCorrectOption: correctText ? `${correct} (${correctText})` : correct,
+    passageContext: passageContext || undefined,
+    choukaiTranscript: transcript || undefined,
+  };
+
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-4-hydrogen',
+      contents: `Analisislah soal JLPT berikut dan jelaskan dalam bahasa Indonesia mengapa jawaban peserta salah serta mengapa kunci jawaban resmi benar.\n\n<question_data>\n${JSON.stringify(structuredPayload, null, 2)}\n</question_data>`,
+      config: {
+        systemInstruction: TRYOUT_EXPLAIN_SYSTEM_INSTRUCTION,
+        thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            focusTag: {
+              type: Type.STRING,
+              description:
+                'Label singkat topik/skill yang diuji (3-5 kata), mis. "Bacaan Kanji (On\'yomi)", "Pola Bunpou N2", "Susunan Kalimat ★", "Pemahaman Wacana", atau "Choukai — Poin Utama".',
+            },
+            questionMeaning: {
+              type: Type.STRING,
+              description:
+                'Terjemahan natural atau ringkasan inti kalimat/pertanyaan soal dalam bahasa Indonesia (1-2 kalimat).',
+            },
+            whyChosenWrong: {
+              type: Type.STRING,
+              description:
+                'Alasan spesifik mengapa pilihan peserta salah (jelaskan arti/bacaan/sambungan gramatika atau kontradiksi terhadap wacana/transkrip, 2-3 kalimat).',
+            },
+            whyCorrectRight: {
+              type: Type.STRING,
+              description:
+                'Alasan spesifik mengapa kunci jawaban resmi benar, sertakan bukti kalimat/urutan ★ lengkap bila relevan (2-4 kalimat).',
+            },
+            distractorNotes: {
+              type: Type.STRING,
+              description:
+                'Catatan singkat arti/kesalahan opsi pengecoh lain yang relevan (1-2 kalimat, atau string kosong jika tidak perlu).',
+            },
+            studyTip: {
+              type: Type.STRING,
+              description:
+                'Satu tips belajar cepat dan praktis agar tidak terkecoh pada soal JLPT bertipe sama (1-2 kalimat).',
+            },
+          },
+          required: [
+            'focusTag',
+            'questionMeaning',
+            'whyChosenWrong',
+            'whyCorrectRight',
+            'distractorNotes',
+            'studyTip',
+          ],
+        },
+      },
+    });
+
+    const rawText = (response.text ?? '').trim();
+    if (!rawText) {
+      res.status(502).json({
+        error: 'Server tidak menerima isi pembahasan. Coba muat ulang.',
+      });
+      return;
+    }
+
+    const parsed = JSON.parse(rawText) as Partial<TryOutExplanationResult>;
+    const explanation: TryOutExplanationResult = {
+      focusTag: cleanBoundedText(parsed.focusTag, 80) || 'Pembahasan JLPT',
+      questionMeaning: cleanBoundedText(parsed.questionMeaning, 600),
+      whyChosenWrong: cleanBoundedText(parsed.whyChosenWrong, 1000),
+      whyCorrectRight: cleanBoundedText(parsed.whyCorrectRight, 1200),
+      distractorNotes: cleanBoundedText(parsed.distractorNotes, 600),
+      studyTip: cleanBoundedText(parsed.studyTip, 400),
+    };
+
+    if (!explanation.whyChosenWrong || !explanation.whyCorrectRight) {
+      res.status(502).json({
+        error: 'Hasil pembahasan tidak lengkap. Silakan coba lagi.',
+      });
+      return;
+    }
+
+    setExplainCacheEntry(cacheFingerprint, explanation);
+    res.setHeader('X-Explain-Cache', 'MISS');
+    res.status(200).json({ explanation });
+  } catch (err) {
+    console.error(
+      '[TryOutExplain] Gemini explain request failed:',
+      err instanceof Error ? err.message : 'unknown error',
+    );
+    res.status(503).json({
+      error:
+        'Pembahasan otomatis sedang sibuk atau belum dapat dijangkau. Coba beberapa saat lagi.',
+    });
   }
 }
 
@@ -1835,6 +2122,10 @@ async function startServer() {
 
   app.post('/api/tts', express.json({ limit: '8kb' }), (req, res) => {
     void handleJapaneseTts(req, res);
+  });
+
+  app.post('/api/tryout/explain', express.json({ limit: '24kb' }), (req, res) => {
+    void handleTryOutExplain(req, res);
   });
 
   // Monthly Catbox.moe keep-alive endpoint (touches all 18 N2 MP3s at least once every 25 days)

@@ -819,6 +819,11 @@ export interface FormProgressItemRef {
   kind: 'text' | 'date' | 'notice' | 'passage' | 'image' | 'choice';
   id: string;
   label?: string;
+  title?: string;
+  subtitle?: string;
+  paragraphs?: string[];
+  sections?: Array<{ heading: string; lines: string[] }>;
+  notes?: string[];
   required?: boolean;
   number?: number;
   prompt?: string;
@@ -830,6 +835,7 @@ export interface FormProgressItemRef {
 export interface FormProgressPageRef {
   id: string;
   title: string;
+  subtitle?: string;
   items: FormProgressItemRef[];
 }
 
@@ -906,11 +912,16 @@ export interface WrongAnswerDetail {
   itemId: string;
   number: number;
   label: string;
+  pageTitle: string;
+  pageSubtitle?: string;
+  mondaiInstruction?: string;
   prompt: string;
+  optionTexts?: string[];
   chosen: string;
   chosenText?: string;
   correct: string;
   correctText?: string;
+  passageContext?: string;
   transcript?: string;
 }
 
@@ -919,6 +930,58 @@ export interface PartScoreSummary {
   totalGradable: number;
   accuracyPercent: number;
   wrongItems: WrongAnswerDetail[];
+}
+
+function formatPassageForContext(item: FormProgressItemRef): string {
+  const chunks: string[] = [];
+  if (item.title && item.title.trim()) {
+    chunks.push(item.title.trim());
+  }
+  if (item.paragraphs && item.paragraphs.length > 0) {
+    chunks.push(
+      item.paragraphs
+        .map((p) => p.trim())
+        .filter(Boolean)
+        .join('\n'),
+    );
+  }
+  if (item.sections && item.sections.length > 0) {
+    for (const sec of item.sections) {
+      const heading = sec.heading?.trim();
+      const body = sec.lines
+        .map((l) => l.trim())
+        .filter(Boolean)
+        .join('\n');
+      if (heading && body) chunks.push(`[${heading}]\n${body}`);
+      else if (body) chunks.push(body);
+    }
+  }
+  if (item.notes && item.notes.length > 0) {
+    chunks.push(
+      item.notes
+        .map((n) => n.trim())
+        .filter(Boolean)
+        .join('\n'),
+    );
+  }
+  return chunks.join('\n\n').trim().slice(0, 4600);
+}
+
+function isSubstantivePassage(item: FormProgressItemRef): boolean {
+  if (item.kind !== 'passage') return false;
+  if (item.sections && item.sections.length > 0) return true;
+  const paragraphs = (item.paragraphs ?? []).filter((p) => p.trim().length > 0);
+  if (paragraphs.length === 0) return false;
+  const totalLen = paragraphs.reduce((sum, p) => sum + p.trim().length, 0);
+  // Single short Japanese instruction lines (e.g. "下線の言葉の読み方...") are instructions, not reading passages.
+  if (
+    paragraphs.length === 1 &&
+    totalLen < 120 &&
+    /選びなさい|答えなさい|聞いて|選びましょう/.test(paragraphs[0])
+  ) {
+    return false;
+  }
+  return paragraphs.length >= 2 || totalLen >= 80;
 }
 
 export function evaluatePartScore(
@@ -930,7 +993,29 @@ export function evaluatePartScore(
   const wrongItems: WrongAnswerDetail[] = [];
 
   for (const page of pages) {
+    let mondaiInstruction = '';
+    let latestPassageContext = '';
+
     for (const item of page.items) {
+      if (item.kind === 'passage') {
+        if (!mondaiInstruction) {
+          if (item.subtitle && item.subtitle.trim()) {
+            mondaiInstruction = item.subtitle.trim();
+          } else if (
+            item.paragraphs &&
+            item.paragraphs.length === 1 &&
+            item.paragraphs[0].trim().length > 0 &&
+            item.paragraphs[0].trim().length <= 220
+          ) {
+            mondaiInstruction = item.paragraphs[0].trim();
+          }
+        }
+        if (isSubstantivePassage(item)) {
+          latestPassageContext = formatPassageForContext(item);
+        }
+        continue;
+      }
+
       if (item.kind !== 'choice' || !item.correctAnswer) continue;
       totalGradable++;
       const chosen = (values[item.id] ?? '').trim();
@@ -943,7 +1028,14 @@ export function evaluatePartScore(
           itemId: item.id,
           number: item.number ?? 0,
           label: item.label ?? `Soal ${item.number ?? item.id}`,
+          pageTitle: page.title,
+          pageSubtitle: page.subtitle,
+          mondaiInstruction: mondaiInstruction || undefined,
           prompt: item.prompt ?? item.label ?? '',
+          optionTexts:
+            item.optionTexts && item.optionTexts.length > 0
+              ? item.optionTexts
+              : undefined,
           chosen: chosen || '-',
           chosenText:
             chosenIdx >= 0 && item.optionTexts?.[chosenIdx]
@@ -954,6 +1046,7 @@ export function evaluatePartScore(
             correctIdx >= 0 && item.optionTexts?.[correctIdx]
               ? item.optionTexts[correctIdx]
               : undefined,
+          passageContext: latestPassageContext || undefined,
           transcript: item.transcript,
         });
       }

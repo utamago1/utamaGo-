@@ -127,7 +127,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
 
   const headingSubtitle =
     mode === 'register'
-      ? 'Daftar gratis untuk belajar JLPT N5–N1, flashcard Anki, Bunpou N5–N1, dan 15 paket Try Out JLPT N3, N2 & N1 terverifikasi.'
+      ? 'Daftar gratis untuk belajar JLPT N5–N1: Anki Kosakata & Bunpou, Arena Tantangan 30 Stage, Studio Menulis, hingga 15 Paket Try Out.'
       : mode === 'forgot'
         ? 'Masukkan email yang kamu daftarkan. Kami akan mengirimkan tautan untuk membuat password baru.'
         : 'Masuk menggunakan username dan password untuk melanjutkan belajar JLPT N5–N1.';
@@ -497,11 +497,15 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
             <ul className="mt-2 space-y-1.5 text-[11px] leading-relaxed text-on-surface-variant">
               <li>
                 · <strong className="text-on-surface">Anki Kosakata JLPT N5–N1</strong>{' '}
-                (7.413 kartu, 2 contoh kalimat &amp; geser kiri/kanan)
+                (7.413 kartu berjadwal SRS, contoh kalimat &amp; audio pelafalan)
               </li>
               <li>
                 · <strong className="text-on-surface">Materi &amp; Anki Bunpou JLPT N5–N1</strong>{' '}
-                (553 pola: N5 72, N4 99, N3 144, N2 141, N1 97 lengkap rumus, contoh kalimat &amp; komparasi lintas level)
+                (553 pola lengkap rumus, nuansa, contoh kalimat &amp; komparasi lintas level)
+              </li>
+              <li>
+                · <strong className="text-on-surface">Arena Tantangan 30 Stage &amp; Studio Menulis</strong>{' '}
+                (Mode Blitz, Survival, Susun Kalimat, Tebak Audio, Boss Stage N5–N1, serta latihan menulis Kana/Kanji &amp; Kamus N5–N1)
               </li>
               <li>
                 · <strong className="text-on-surface">Try Out JLPT N3, N2 &amp; N1 Terverifikasi (15 paket)</strong>{' '}

@@ -22,6 +22,7 @@ import {
   MobileTopAppBar,
   type AppTab,
 } from './components/AppShellNav';
+import { BetaFeedbackModal } from './components/BetaFeedbackModal';
 import { ChallengeRunnerModal } from './components/ChallengeRunnerModal';
 import { ConfirmDialog } from './components/ConfirmDialog';
 import { DifficultDrillModal } from './components/DifficultDrillModal';
@@ -255,6 +256,7 @@ export default function App() {
   const [justCompletedSession, setJustCompletedSession] = useState(false);
 
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
   const [authReady, setAuthReady] = useState(() => autostartMode);
   const [needsAuth, setNeedsAuth] = useState(() => !autostartMode);
   const [authProfile, setAuthProfile] =
@@ -851,6 +853,7 @@ export default function App() {
   const navSnapshotRef = useRef({
     exitConfirm,
     settingsOpen,
+    feedbackModalOpen,
     tryoutSheetOpen,
     ankiModalOpen,
     activeChallengeStage,
@@ -867,6 +870,7 @@ export default function App() {
   navSnapshotRef.current = {
     exitConfirm,
     settingsOpen,
+    feedbackModalOpen,
     tryoutSheetOpen,
     ankiModalOpen,
     activeChallengeStage,
@@ -1000,7 +1004,13 @@ export default function App() {
         return;
       }
 
-      // 1a. Close Settings modal if open
+      // 1a. Close Beta Feedback modal if open
+      if (snap.feedbackModalOpen) {
+        setFeedbackModalOpen(false);
+        return;
+      }
+
+      // 1b. Close Settings modal if open
       if (snap.settingsOpen) {
         setSettingsOpen(false);
         return;
@@ -2944,6 +2954,10 @@ export default function App() {
                   onStartDailyDrill={handleStartDailyDrill}
                   onStartBlitz={handleStartBlitz}
                   onStartSurvival={handleStartSurvival}
+                  jlptExamSession={appState.jlptExamSession}
+                  onChangeJlptExamSession={(next) =>
+                    setAppState((prev) => ({ ...prev, jlptExamSession: next }))
+                  }
                   onStartStage={handleStartChallenge}
                   onNavigate={(tab) => handleSelectTab(tab)}
                 />
@@ -3085,6 +3099,7 @@ export default function App() {
                   }
                   onNavigateTryOut={handleOpenTryOut}
                   onOpenSettings={handleOpenSettings}
+                  onOpenFeedback={() => setFeedbackModalOpen(true)}
                   onLogout={handleLogout}
                 />
               )}
@@ -3122,7 +3137,21 @@ export default function App() {
         onResetAllProgress={handleResetAllProgress}
         accountUsername={authProfile.username}
         accountEmail={authProfile.email}
+        onOpenFeedback={() => setFeedbackModalOpen(true)}
         onLogout={handleLogout}
+      />
+
+      <BetaFeedbackModal
+        open={feedbackModalOpen}
+        onClose={() => setFeedbackModalOpen(false)}
+        userId={authProfile.uid}
+        username={authProfile.username}
+        jlptLevel={appState.onboarding.targetLevel}
+        defaultScreen={
+          activeTab === 'home' && homeFocusView === 'challenges'
+            ? 'challenge'
+            : activeTab
+        }
       />
 
       {activeChallengeStage && (

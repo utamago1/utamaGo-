@@ -7,6 +7,7 @@ import {
   Info,
   Lock,
   LogOut,
+  MessageSquarePlus,
   Star,
   Zap,
 } from 'lucide-react';
@@ -50,6 +51,7 @@ interface ProfileScreenProps {
   onUpdateOnboarding: (next: Partial<OnboardingSettings>) => void;
   onNavigateTryOut: () => void;
   onOpenSettings: () => void;
+  onOpenFeedback?: () => void;
   onLogout?: () => void;
 }
 
@@ -66,6 +68,7 @@ export function ProfileScreen({
   account,
   onUpdateOnboarding,
   onNavigateTryOut,
+  onOpenFeedback,
   onLogout,
 }: ProfileScreenProps) {
   const [subView, setSubView] = useState<ProfileSubView>('overview');
@@ -515,6 +518,36 @@ export function ProfileScreen({
               aria-hidden="true"
             />
           </button>
+
+          {onOpenFeedback && (
+            <button
+              type="button"
+              onClick={() => {
+                vibrateTap();
+                onOpenFeedback();
+              }}
+              className="group flex min-h-[64px] w-full min-w-0 items-center justify-between gap-3 px-4 py-4 text-left transition-colors hover:bg-surface"
+            >
+              <div className="flex min-w-0 items-center gap-3">
+                <MessageSquarePlus
+                  className="h-5 w-5 shrink-0 text-primary"
+                  aria-hidden="true"
+                />
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-on-surface">
+                    Lapor Bug &amp; Masukan Beta
+                  </p>
+                  <p className="mt-0.5 text-[13px] leading-snug text-on-surface-variant break-words">
+                    Laporkan error, typo materi, atau kirim saran fitur langsung
+                  </p>
+                </div>
+              </div>
+              <ChevronRight
+                className="h-4 w-4 shrink-0 text-on-surface-variant transition-transform duration-150 group-hover:translate-x-0.5"
+                aria-hidden="true"
+              />
+            </button>
+          )}
         </div>
 
         <p className="pt-3 text-xs leading-relaxed text-on-surface-variant">
