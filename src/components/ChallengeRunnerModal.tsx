@@ -146,7 +146,13 @@ export function ChallengeRunnerModal({
 }: ChallengeRunnerModalProps) {
   const mode = stage.mode ?? (unlimitedHearts ? 'daily-drill' : 'stage');
   const isBlitz = mode === 'blitz';
+  const isBlitzMission =
+    isBlitz &&
+    Boolean(stage.isCampaignStage) &&
+    typeof stage.targetCorrect === 'number';
+  const blitzTargetCorrect = stage.targetCorrect ?? 0;
   const isSurvival = mode === 'survival';
+  const isSurvivalMission = stage.stageKind === 'survival-mission';
   const isBoss = mode === 'boss';
   const usesHearts = !unlimitedHearts && !isBlitz;
 
@@ -189,9 +195,13 @@ export function ChallengeRunnerModal({
   );
   const [mascotMood, setMascotMood] = useState<MascotExpression>('idle');
   const [mascotLine, setMascotLine] = useState<string>(() => {
-    if (isBoss) return `Ayo taklukkan ${stage.bossName ?? 'Boss'} bersama!`;
+    if (isBoss) return `Ayo taklukkan ${stage.bossName ?? 'Boss'} untuk naik level!`;
+    if (isBlitzMission) {
+      return `Target minimal ${blitzTargetCorrect} benar dalam 60 detik untuk lulus!`;
+    }
     if (isBlitz) return 'Fokus cepat! Kejar kombo & bonus waktu +3 detik!';
     if (isSurvival) return 'Bertahan selama mungkin dengan 3 nyawa!';
+    if (isSurvivalMission) return 'Ujian ketahanan 8 soal campuran dengan 3 nyawa!';
     return 'Siap! Jawab dengan teliti dan bangun kombomu!';
   });
 
@@ -250,12 +260,16 @@ export function ChallengeRunnerModal({
   const resolvedHeaderLabel =
     headerLabel ??
     (isBoss
-      ? `Boss Stage · ${stage.jlptLevel}`
-      : isBlitz
-        ? `Blitz 60 Detik · ${stage.jlptLevel}`
-        : isSurvival
-          ? `Survival · ${stage.jlptLevel}`
-          : `Level ${stage.order} · ${stage.jlptLevel}`);
+      ? `Level ${stage.order} · Boss ${stage.jlptLevel}`
+      : isBlitzMission
+        ? `Level ${stage.order} · Misi Blitz ${stage.jlptLevel}`
+        : isBlitz
+          ? `Blitz Bebas · ${stage.jlptLevel}`
+          : isSurvival
+            ? `Survival Bebas · ${stage.jlptLevel}`
+            : isSurvivalMission
+              ? `Level ${stage.order} · Survival ${stage.jlptLevel}`
+              : `Level ${stage.order} · ${stage.jlptLevel}`);
   const resolvedCloseLabel = closeButtonLabel ?? 'Kembali ke Arena Tantangan';
   const resolvedShortCloseLabel = closeButtonLabel ?? 'Arena';
 
@@ -362,7 +376,38 @@ export function ChallengeRunnerModal({
 
       let result: ChallengeEvaluation;
 
-      if (isBlitz) {
+      if (isBlitzMission) {
+        const safeAnswered = Math.max(1, finalAnswered);
+        const accuracy = Math.round((finalCorrect / safeAnswered) * 100);
+        const passed = finalCorrect >= blitzTargetCorrect;
+        const stars: 0 | 1 | 2 | 3 = !passed
+          ? 0
+          : finalCorrect >= blitzTargetCorrect + 6 || finalScore >= 2200
+            ? 3
+            : finalCorrect >= blitzTargetCorrect + 3
+              ? 2
+              : 1;
+        const xpAwarded = passed
+          ? previousBestStars === 0
+            ? stage.xpReward + (stars === 3 ? 30 : stars === 2 ? 15 : 0)
+            : stars > previousBestStars
+              ? (stars - previousBestStars) * 20
+              : 15
+          : 0;
+        const isNewRecord =
+          finalScore > 0 && finalScore > previousBestScore;
+        result = {
+          correctCount: finalCorrect,
+          totalQuestions: finalAnswered,
+          accuracy,
+          passed,
+          stars,
+          xpAwarded,
+          score: finalScore,
+          maxCombo: finalMaxCombo,
+          isNewRecord,
+        };
+      } else if (isBlitz) {
         const safeAnswered = Math.max(1, finalAnswered);
         const accuracy = Math.round((finalCorrect / safeAnswered) * 100);
         const passed = finalCorrect > 0;
@@ -479,16 +524,24 @@ export function ChallengeRunnerModal({
         playVictorySfx(isBoss || Boolean(result.isNewRecord), sfxEnabled);
         setMascotMood('happy');
         setMascotLine(
-          result.isNewRecord
-            ? 'WAH! Rekor pribadi baru berhasil dipecahkan!'
-            : isBoss
-              ? 'Luar biasa! Boss berhasil ditaklukkan!'
-              : 'Hebat! Sesi tantangan selesai dengan gemilang!',
+          isBoss && hasNextStage
+            ? 'Luar biasa! Boss tumbang dan Bab JLPT berikutnya terbuka!'
+            : result.isNewRecord
+              ? 'WAH! Rekor pribadi baru berhasil dipecahkan!'
+              : isBoss
+                ? 'Luar biasa! Boss berhasil ditaklukkan!'
+                : isBlitzMission
+                  ? `Target ${blitzTargetCorrect} benar terlampaui! Stage selanjutnya terbuka!`
+                  : 'Hebat! Sesi tantangan selesai dengan gemilang!',
         );
       } else {
         playGameOverSfx(sfxEnabled);
         setMascotMood('bingung_sedih');
-        setMascotLine('Jangan menyerah! Pelajari ulasan lalu coba lagi ya.');
+        setMascotLine(
+          isBlitzMission
+            ? `Baru ${finalCorrect}/${blitzTargetCorrect} benar. Yuk gas lagi sedikit lebih cepat!`
+            : 'Jangan menyerah! Pelajari ulasan lalu coba lagi ya.',
+        );
       }
 
       setEvaluation(result);
@@ -496,8 +549,11 @@ export function ChallengeRunnerModal({
       onComplete(stage, result);
     },
     [
+      blitzTargetCorrect,
       clearBlitzAdvanceTimer,
+      hasNextStage,
       isBlitz,
+      isBlitzMission,
       isBoss,
       isSurvival,
       onComplete,
@@ -1131,40 +1187,49 @@ export function ChallengeRunnerModal({
                 </p>
               )}
 
-              {evaluation.passed && (isBoss || (!unlimitedHearts && !isBlitz && !isSurvival)) && (
-                <div className="mt-3 flex items-center justify-center gap-2">
-                  {[1, 2, 3].map((starNum) => (
-                    <Star
-                      key={starNum}
-                      className={`h-7 w-7 ${
-                        starNum <= evaluation.stars
-                          ? 'fill-amber-400 text-amber-500'
-                          : 'fill-surface-container text-outline'
-                      }`}
-                      aria-hidden="true"
-                    />
-                  ))}
-                </div>
-              )}
+              {evaluation.passed &&
+                (isBoss ||
+                  isBlitzMission ||
+                  (!unlimitedHearts && !isBlitz && !isSurvival)) && (
+                  <div className="mt-3 flex items-center justify-center gap-2">
+                    {[1, 2, 3].map((starNum) => (
+                      <Star
+                        key={starNum}
+                        className={`h-7 w-7 ${
+                          starNum <= evaluation.stars
+                            ? 'fill-amber-400 text-amber-500'
+                            : 'fill-surface-container text-outline'
+                        }`}
+                        aria-hidden="true"
+                      />
+                    ))}
+                  </div>
+                )}
 
               <p
                 className={`mt-3 text-xs font-bold ${
                   evaluation.passed ? 'text-success' : 'text-primary'
                 }`}
               >
-                {isBlitz
-                  ? 'Waktu Blitz Selesai!'
-                  : isSurvival
-                    ? 'Sesi Survival Selesai!'
-                    : isBoss
-                      ? evaluation.passed
-                        ? 'Boss Berhasil Ditaklukkan!'
-                        : 'Boss Masih Bertahan!'
-                      : unlimitedHearts
-                        ? 'Latihan Selesai!'
-                        : evaluation.passed
-                          ? `Level ${stage.order} Selesai!`
-                          : 'Tantangan Belum Lulus'}
+                {isBlitzMission
+                  ? evaluation.passed
+                    ? `Misi Blitz Lulus! (${evaluation.correctCount}/${blitzTargetCorrect} target)`
+                    : `Target ${blitzTargetCorrect} Benar Belum Tercapai`
+                  : isBlitz
+                    ? 'Waktu Blitz Selesai!'
+                    : isSurvival
+                      ? 'Sesi Survival Selesai!'
+                      : isBoss
+                        ? evaluation.passed
+                          ? hasNextStage
+                            ? 'Boss Ditaklukkan · Bab Berikutnya Terbuka!'
+                            : 'Boss Puncak N1 Berhasil Ditaklukkan!'
+                          : 'Boss Masih Bertahan!'
+                        : unlimitedHearts
+                          ? 'Latihan Selesai!'
+                          : evaluation.passed
+                            ? `Level ${stage.order} Selesai!`
+                            : 'Tantangan Belum Lulus'}
               </p>
 
               <h2 className="mt-1 font-display text-xl font-extrabold text-on-surface sm:text-2xl">
@@ -1193,12 +1258,18 @@ export function ChallengeRunnerModal({
                 </div>
                 <div className="rounded-xl border border-outline-variant bg-surface p-3">
                   <p className="text-[11px] font-medium text-on-surface-variant">
-                    {isSurvival || isBlitz ? 'Benar' : 'Akurasi'}
+                    {isBlitzMission
+                      ? 'Target Benar'
+                      : isSurvival || isBlitz
+                        ? 'Benar'
+                        : 'Akurasi'}
                   </p>
                   <p className="mt-0.5 font-mono text-base font-bold tabular-nums text-on-surface">
-                    {isSurvival || isBlitz
-                      ? `${evaluation.correctCount}/${evaluation.totalQuestions}`
-                      : `${evaluation.accuracy}%`}
+                    {isBlitzMission
+                      ? `${evaluation.correctCount}/${blitzTargetCorrect}`
+                      : isSurvival || isBlitz
+                        ? `${evaluation.correctCount}/${evaluation.totalQuestions}`
+                        : `${evaluation.accuracy}%`}
                   </p>
                 </div>
                 <div className="rounded-xl border border-outline-variant bg-surface p-3">
@@ -1214,10 +1285,8 @@ export function ChallengeRunnerModal({
               <div className="mt-6 space-y-2.5">
                 {evaluation.passed &&
                 hasNextStage &&
-                !unlimitedHearts &&
-                !isBlitz &&
-                !isSurvival &&
-                !isBoss ? (
+                stage.isCampaignStage &&
+                !unlimitedHearts ? (
                   <button
                     type="button"
                     onClick={() => {
@@ -1226,7 +1295,24 @@ export function ChallengeRunnerModal({
                     }}
                     className="m3-tactile flex min-h-[48px] w-full items-center justify-center rounded-2xl bg-primary px-5 py-3 text-sm font-bold text-on-primary hover:bg-primary-hover"
                   >
-                    Lanjut ke Level {stage.order + 1}
+                    {isBoss
+                      ? `Lanjut ke Bab Berikutnya (Level ${stage.order + 1})`
+                      : `Lanjut ke Level ${stage.order + 1}`}
+                  </button>
+                ) : !evaluation.passed && stage.isCampaignStage ? (
+                  <button
+                    type="button"
+                    onClick={handleReplay}
+                    className="m3-tactile flex min-h-[48px] w-full items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-3 text-sm font-bold text-on-primary hover:bg-primary-hover"
+                  >
+                    <RotateCcw className="h-4 w-4" aria-hidden="true" />
+                    <span>
+                      {isBoss
+                        ? 'Tantang Boss Lagi'
+                        : isBlitzMission
+                          ? 'Coba Misi Blitz Lagi'
+                          : 'Coba Tantangan Lagi'}
+                    </span>
                   </button>
                 ) : (isBlitz || isSurvival) && onShuffleNewSet ? (
                   <button
@@ -1256,9 +1342,7 @@ export function ChallengeRunnerModal({
                     className="m3-tactile flex min-h-[48px] w-full items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-3 text-sm font-bold text-on-primary hover:bg-primary-hover"
                   >
                     <RotateCcw className="h-4 w-4" aria-hidden="true" />
-                    <span>
-                      {isBoss ? 'Tantang Boss Lagi' : 'Coba Tantangan Lagi'}
-                    </span>
+                    <span>Coba Tantangan Lagi</span>
                   </button>
                 ) : (
                   <button
@@ -1361,6 +1445,20 @@ export function ChallengeRunnerModal({
                 <div className="flex flex-wrap items-center gap-x-2 text-[11px] font-semibold text-on-surface-variant">
                   <span className="text-primary">{currentQuestion.tag}</span>
                   <span aria-hidden="true">·</span>
+                  {isBlitzMission && (
+                    <>
+                      <span
+                        className={`font-mono font-bold tabular-nums ${
+                          correctCount >= blitzTargetCorrect
+                            ? 'text-success'
+                            : 'text-on-surface'
+                        }`}
+                      >
+                        Target {correctCount}/{blitzTargetCorrect}
+                      </span>
+                      <span aria-hidden="true">·</span>
+                    </>
+                  )}
                   <span className="font-mono tabular-nums">
                     Skor {score}
                     {combo >= 2

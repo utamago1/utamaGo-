@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  AUDIO_MISSION_BANK,
   BOSS_CHALLENGE_STAGES,
   SENTENCE_ORDER_BANK,
 } from '../data/challengeArenaData';
@@ -148,7 +149,7 @@ test('BOSS_CHALLENGE_STAGES covers all 5 JLPT levels with 3 question formats and
   }
 });
 
-test('SENTENCE_ORDER_BANK provides 6 curated verified templates per JLPT level', () => {
+test('SENTENCE_ORDER_BANK and AUDIO_MISSION_BANK provide 6 curated verified items per JLPT level', () => {
   const levels: JlptLevel[] = ['N5', 'N4', 'N3', 'N2', 'N1'];
   for (const lv of levels) {
     const items = SENTENCE_ORDER_BANK.filter((item) => item.level === lv);
@@ -156,6 +157,21 @@ test('SENTENCE_ORDER_BANK provides 6 curated verified templates per JLPT level',
     for (const item of items) {
       assert.equal(item.orderedTokens.length, 4);
       assert.ok(item.starSlotIndex >= 0 && item.starSlotIndex < 4);
+    }
+
+    const audios = AUDIO_MISSION_BANK[lv];
+    assert.equal(audios.length, 6, `Expected 6 audio-mission items for ${lv}`);
+    for (const aq of audios) {
+      assert.equal(aq.kind, 'audio-choice');
+      assert.ok(aq.audioText && aq.audioText.length > 0);
+      assert.equal(aq.options.length, 4);
+      assert.equal(new Set(aq.options).size, 4);
+      if (lv === 'N3' || lv === 'N2' || lv === 'N1') {
+        assert.equal(/[a-z]{3,}/i.test(aq.prompt), false);
+        for (const opt of aq.options) {
+          assert.equal(/[a-z]{3,}/i.test(opt), false);
+        }
+      }
     }
   }
 });

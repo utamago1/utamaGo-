@@ -436,24 +436,490 @@ export function templateToSentenceOrderQuestion(
 }
 
 /**
- * 5 Dedicated Curated Boss Stages — one pinnacle battle at the end of every JLPT tier (N5–N1).
+ * 30 Curated Tebak Audio Jepang (聴解ミッション) questions — 6 per JLPT level (N5–N1).
+ * - N5 & N4 test spoken comprehension into clear Indonesian meanings.
+ * - N3, N2, and N1 are 100% Japanese in prompts and options (zero Latin/Indonesian clues).
+ */
+export const AUDIO_MISSION_BANK: Record<JlptLevel, ChallengeQuestion[]> = {
+  N5: [
+    {
+      id: 'am-n5-1',
+      kind: 'audio-choice',
+      tag: 'Misi Audio N5',
+      prompt: 'Dengarkan pelafalan Jepang berikut, lalu pilih arti yang tepat:',
+      audioText: 'おはようございます。',
+      audioReveal: 'おはようございます (ohayou gozaimasu)',
+      options: ['Selamat pagi', 'Selamat malam', 'Sampai jumpa besok', 'Terima kasih banyak'],
+      correctIndex: 0,
+      explanation: 'おはようございます adalah salam sopan yang diucapkan di pagi hari ("Selamat pagi").',
+    },
+    {
+      id: 'am-n5-2',
+      kind: 'audio-choice',
+      tag: 'Misi Audio N5',
+      prompt: 'Dengarkan kalimat berikut, lalu pilih arti yang benar:',
+      audioText: 'いま、なんじですか。',
+      audioReveal: '今、何時ですか (いま、なんじですか)',
+      options: ['Hari ini hari apa?', 'Sekarang jam berapa?', 'Stasiun di sebelah mana?', 'Harganya berapa yen?'],
+      correctIndex: 1,
+      explanation: '今 (いま = sekarang) + 何時ですか (なんじですか = jam berapa?).',
+    },
+    {
+      id: 'am-n5-3',
+      kind: 'audio-choice',
+      tag: 'Misi Audio N5',
+      prompt: 'Dengarkan kata yang diucapkan, lalu pilih artinya:',
+      audioText: 'ちかてつで いきます。',
+      audioReveal: '地下鉄で行きます (ちかてつで いきます)',
+      options: ['Pergi dengan sepeda', 'Pergi jalan kaki', 'Pergi naik kereta bawah tanah', 'Pergi naik pesawat'],
+      correctIndex: 2,
+      explanation: '地下鉄 (ちかてつ) berarti kereta bawah tanah (subway), dan で menyatakan sarana transportasi.',
+    },
+    {
+      id: 'am-n5-4',
+      kind: 'audio-choice',
+      tag: 'Misi Audio N5',
+      prompt: 'Dengarkan kalimat pendek berikut, lalu pilih maksudnya:',
+      audioText: 'みずを ください。',
+      audioReveal: '水をください (みずを ください)',
+      options: ['Tolong buka pintunya', 'Tolong berikan air minum', 'Tolong tulis nama Anda', 'Tolong tunggu sebentar'],
+      correctIndex: 1,
+      explanation: '水 (みず) = air, ～をください = tolong berikan saya…',
+    },
+    {
+      id: 'am-n5-5',
+      kind: 'audio-choice',
+      tag: 'Misi Audio N5',
+      prompt: 'Dengarkan audio berikut, lalu pilih arti yang paling sesuai:',
+      audioText: 'あしたは やすみです。',
+      audioReveal: '明日は休みです (あしたは やすみです)',
+      options: ['Kemarin cuaca hujan', 'Hari ini sangat sibuk', 'Minggu lalu pergi wisata', 'Besok adalah hari libur'],
+      correctIndex: 3,
+      explanation: '明日 (あした) = besok, 休み (やすみ) = libur / istirahat.',
+    },
+    {
+      id: 'am-n5-6',
+      kind: 'audio-choice',
+      tag: 'Misi Audio N5',
+      prompt: 'Dengarkan kalimat berikut, lalu pilih arti yang tepat:',
+      audioText: 'ゆうびんきょくは 駅の まえに あります。',
+      audioReveal: '郵便局は駅の前にあります (ゆうびんきょくは えきの まえに あります)',
+      options: [
+        'Kantor pos ada di depan stasiun',
+        'Rumah sakit ada di belakang taman',
+        'Bank ada di dalam stasiun',
+        'Sekolah ada di sebelah toko',
+      ],
+      correctIndex: 0,
+      explanation: '郵便局 (ゆうびんきょく) = kantor pos, 駅の前 (えきのまえ) = di depan stasiun.',
+    },
+  ],
+  N4: [
+    {
+      id: 'am-n4-1',
+      kind: 'audio-choice',
+      tag: 'Misi Audio N4',
+      prompt: 'Dengarkan kalimat berikut, lalu pilih maksud yang tepat:',
+      audioText: 'すみませんが、もう少しゆっくり話していただけますか。',
+      audioReveal: 'すみませんが、もう少しゆっくり話していただけますか。',
+      options: [
+        'Maaf, bisakah Anda berbicara sedikit lebih pelan?',
+        'Maaf, apakah rapat hari ini sudah selesai?',
+        'Maaf, bolehkah saya duduk di kursi ini?',
+        'Maaf, bisakah Anda menuliskannya dengan huruf besar?',
+      ],
+      correctIndex: 0,
+      explanation: '「ゆっくり話していただけますか」 adalah permintaan sangat sopan agar lawan bicara berbicara lebih pelan.',
+    },
+    {
+      id: 'am-n4-2',
+      kind: 'audio-choice',
+      tag: 'Misi Audio N4',
+      prompt: 'Dengarkan audio Jepang, lalu pilih arti yang benar:',
+      audioText: '電車の事故で、三十分ぐらい遅れそうです。',
+      audioReveal: '電車の事故で、30分ぐらい遅れそうです。',
+      options: [
+        'Kereta berangkat 30 menit lebih awal',
+        'Karena kecelakaan kereta, sepertinya terlambat sekitar 30 menit',
+        'Stasiun ditutup selama 30 menit untuk pemeriksaan',
+        'Saya menunggu teman di peron selama 30 menit',
+      ],
+      correctIndex: 1,
+      explanation: '事故 (じこ) = kecelakaan, 遅れそうです (おくれそうです) = sepertinya akan terlambat.',
+    },
+    {
+      id: 'am-n4-3',
+      kind: 'audio-choice',
+      tag: 'Misi Audio N4',
+      prompt: 'Dengarkan kalimat berikut, lalu pilih makna yang paling tepat:',
+      audioText: '風邪をひかないように、毎日うがいをしています。',
+      audioReveal: '風邪をひかないように、毎日うがいをしています。',
+      options: [
+        'Karena sedang flu, saya minum obat setiap pagi',
+        'Supaya tidak masuk angin, saya berkumur setiap hari',
+        'Saya lupa membawa jaket saat cuaca dingin',
+        'Dokter melarang saya keluar rumah minggu ini',
+      ],
+      correctIndex: 1,
+      explanation: '「～ないように」 menyatakan tujuan pencegahan ("agar tidak kena flu"), うがい = berkumur.',
+    },
+    {
+      id: 'am-n4-4',
+      kind: 'audio-choice',
+      tag: 'Misi Audio N4',
+      prompt: 'Dengarkan audio berikut, lalu pilih arti yang benar:',
+      audioText: '部屋の電気をつけたまま、寝てしまいました。',
+      audioReveal: '部屋の電気をつけたまま、寝てしまいました。',
+      options: [
+        'Saya mematikan lampu sebelum tidur',
+        'Lampu kamar tiba-tiba padam tengah malam',
+        'Saya telanjur tertidur dengan lampu kamar masih menyala',
+        'Saya bangun pagi lalu menyalakan lampu kamar',
+      ],
+      correctIndex: 2,
+      explanation: '「V-たまま」 menyatakan kondisi tetap bertahan (lampu dibiarkan menyala), 「寝てしまいました」 = telanjur tertidur.',
+    },
+    {
+      id: 'am-n4-5',
+      kind: 'audio-choice',
+      tag: 'Misi Audio N4',
+      prompt: 'Dengarkan kalimat berikut, lalu pilih maksudnya:',
+      audioText: '来月、大阪へ出張することになりました。',
+      audioReveal: '来月、大阪へ出張することになりました。',
+      options: [
+        'Bulan lalu saya baru pulang wisata dari Osaka',
+        'Saya berencana pindah rumah ke Osaka tahun depan',
+        'Sudah diputuskan bahwa bulan depan saya dinas ke Osaka',
+        'Perjalanan dinas ke Osaka akhirnya dibatalkan',
+      ],
+      correctIndex: 2,
+      explanation: '出張 (しゅっちょう) = perjalanan dinas, 「～ことになりました」 = telah diputuskan (oleh kantor/pihak luar).',
+    },
+    {
+      id: 'am-n4-6',
+      kind: 'audio-choice',
+      tag: 'Misi Audio N4',
+      prompt: 'Dengarkan audio Jepang, lalu pilih arti yang tepat:',
+      audioText: 'この書類は明日までに提出しなければなりません。',
+      audioReveal: 'この書類は明日までに提出しなければなりません。',
+      options: [
+        'Dokumen ini harus dikumpulkan paling lambat besok',
+        'Dokumen ini boleh diserahkan minggu depan',
+        'Dokumen ini sudah diperiksa oleh atasan kemarin',
+        'Dokumen ini tidak perlu dibawa saat rapat',
+      ],
+      correctIndex: 0,
+      explanation: '書類 (しょるい) = dokumen, 提出 (ていしゅつ) = pengumpulan, 「明日までに」 = paling lambat besok.',
+    },
+  ],
+  N3: [
+    {
+      id: 'am-n3-1',
+      kind: 'audio-choice',
+      tag: '聴解ミッション N3',
+      prompt: '音声を聞いて、内容に最も合うものを選んでください。',
+      audioText: '雨のせいで、予定していた試合は来週に延期された。',
+      audioReveal: '雨のせいで、予定していた試合は来週に延期された。',
+      options: [
+        '雨のため試合の日程が来週へ延びた',
+        '雨が降ったが予定どおり試合を行った',
+        '天気予報が外れて試合は中止になった',
+        '先週の試合の結果が今日発表された',
+      ],
+      correctIndex: 0,
+      explanation: '「延期された」(えんきされた) berarti ditunda ke jadwal berikutnya (minggu depan) karena hujan.',
+    },
+    {
+      id: 'am-n3-2',
+      kind: 'audio-choice',
+      tag: '聴解ミッション N3',
+      prompt: '音声で読まれた言葉の正しい漢字表記を選んでください。',
+      audioText: '内容をかくにんする',
+      audioReveal: '内容を確認する (ないようを かくにんする)',
+      options: ['内容を確認する', '内容を拡張する', '内容を覚悟する', '内容を獲得する'],
+      correctIndex: 0,
+      explanation: '確認 (かくにん) = memastikan / mengecek kembali isi.',
+    },
+    {
+      id: 'am-n3-3',
+      kind: 'audio-choice',
+      tag: '聴解ミッション N3',
+      prompt: '音声を聞いて、話者の気持ちに最も近いものを選んでください。',
+      audioText: 'せっかく早起きしたのに、一番見たかった展示が休みだった。',
+      audioReveal: 'せっかく早起きしたのに、一番見たかった展示が休みだった。',
+      options: [
+        'せっかく早く起きたのに目当てが見られず残念だ',
+        '早起きしたおかげで人気の展示をゆっくり見られた',
+        '展示が休みだと知っていたので家でゆっくり寝た',
+        '思ったより人が少なくてすぐに入場できた',
+      ],
+      correctIndex: 0,
+      explanation: '「せっかく～のに」 mengungkapkan rasa kecewa/sayang karena usaha bangun pagi tidak membuahkan hasil.',
+    },
+    {
+      id: 'am-n3-4',
+      kind: 'audio-choice',
+      tag: '聴解ミッション N3',
+      prompt: '音声で流れた文の意味に最も近いものはどれですか。',
+      audioText: '部長はさきほど会議室へいらっしゃいました。',
+      audioReveal: '部長はさきほど会議室へいらっしゃいました。',
+      options: [
+        '部長は少し前に会議室へ行った',
+        '部長はまだ会社に到着していない',
+        '部長は会議室から自分の席へ戻った',
+        '部長は今日の会議を欠席する予定だ',
+      ],
+      correctIndex: 0,
+      explanation: '「いらっしゃいました」 adalah bentuk Sonkeigo (hormat) untuk 行く/来る/いる; さきほど = baru saja/beberapa saat lalu.',
+    },
+    {
+      id: 'am-n3-5',
+      kind: 'audio-choice',
+      tag: '聴解ミッション N3',
+      prompt: '音声を聞いて、正しい漢字の組み合わせを選んでください。',
+      audioText: '問題をかいけつする',
+      audioReveal: '問題を解決する (もんだいを かいけつする)',
+      options: ['問題を解説する', '問題を解決する', '問題を改正する', '問題を解散する'],
+      correctIndex: 1,
+      explanation: '解決 (かいけつ) = menyelesaikan masalah. Jangan tertukar dengan 解説 (かいせつ = penjelasan).',
+    },
+    {
+      id: 'am-n3-6',
+      kind: 'audio-choice',
+      tag: '聴解ミッション N3',
+      prompt: '音声を聞いて、内容と合っているものを選んでください。',
+      audioText: 'スープが冷めないうちに、どうぞ召し上がってください。',
+      audioReveal: 'スープが冷めないうちに、どうぞ召し上がってください。',
+      options: [
+        'スープが温かいうちに早く食べてほしい',
+        'スープが冷めてから食べたほうがおいしい',
+        'スープを作り直すので少し待ってほしい',
+        'スープの味が薄いので塩を足してほしい',
+      ],
+      correctIndex: 0,
+      explanation: '「冷めないうちに」(selagi belum dingin) + 「召し上がってください」(silakan disantap, Sonkeigo).',
+    },
+  ],
+  N2: [
+    {
+      id: 'am-n2-1',
+      kind: 'audio-choice',
+      tag: '聴解ミッション N2',
+      prompt: '音声を聞いて、話の内容に最も合うものを選んでください。',
+      audioText: '来期の予算配分については、次回の役員会で改めて検討する予定です。',
+      audioReveal: '来期の予算配分については、次回の役員会で改めて検討する予定です。',
+      options: [
+        '次の役員会で予算の振り分け方をもう一度話し合う',
+        '来期の予算はすでに今回の会議で最終決定した',
+        '役員会が中止になったため予算案を白紙に戻す',
+        '予算配分は各部署の判断だけで決めることにした',
+      ],
+      correctIndex: 0,
+      explanation: '改めて検討する (あらためて けんとうする) = meninjau/membahas kembali secara saksama di rapat direksi berikutnya.',
+    },
+    {
+      id: 'am-n2-2',
+      kind: 'audio-choice',
+      tag: '聴解ミッション N2',
+      prompt: '音声で読まれた表現の正しい表記を選んでください。',
+      audioText: 'さいがいへの たいさくを てっていする',
+      audioReveal: '災害への対策を徹底する (さいがいへの たいさくを てっていする)',
+      options: [
+        '災害への対策を徹底する',
+        '災害への対策を撤回する',
+        '災害への対策を訂正する',
+        '災害への対策を停滞する',
+      ],
+      correctIndex: 0,
+      explanation: '徹底する (てっていする) = menerapkan secara menyeluruh dan konsisten tanpa celah.',
+    },
+    {
+      id: 'am-n2-3',
+      kind: 'audio-choice',
+      tag: '聴解ミッション N2',
+      prompt: '音声を聞いて、文の意味に最も近いものを選んでください。',
+      audioText: '台風で交通機関が止まったため、本日の説明会は中止にせざるを得ない。',
+      audioReveal: '台風で交通機関が止まったため、本日の説明会は中止にせざるを得ない。',
+      options: [
+        '交通が止まったのでやむを得ず説明会を中止する',
+        '台風が近づいているが説明会は予定どおり開催する',
+        '参加者が少ないため説明会の開始時刻を早める',
+        'オンラインに切り替えて説明会を続けることにした',
+      ],
+      correctIndex: 0,
+      explanation: '「～ざるを得ない」 menyatakan keterpaksaan karena tidak ada pilihan lain akibat transportasi lumpuh.',
+    },
+    {
+      id: 'am-n2-4',
+      kind: 'audio-choice',
+      tag: '聴解ミッション N2',
+      prompt: '音声を聞いて、正しい内容を選んでください。',
+      audioText: 'このコンテストは年齢や経験を問わず、どなたでも応募できます。',
+      audioReveal: 'このコンテストは年齢や経験を問わず、どなたでも応募できます。',
+      options: [
+        '年齢や経験の制限はなく誰でも参加を申し込める',
+        '実務経験が三年以上ある人だけが応募できる',
+        '学生を対象としているため社会人は参加できない',
+        '過去の受賞者のみが招待されて出場できる',
+      ],
+      correctIndex: 0,
+      explanation: '「～を問わず」 = tanpa memandang / tidak dibatasi oleh usia maupun pengalaman.',
+    },
+    {
+      id: 'am-n2-5',
+      kind: 'audio-choice',
+      tag: '聴解ミッション N2',
+      prompt: '音声で流れた熟語の正しい表記を選んでください。',
+      audioText: 'げんじょうを せいかくに はあくする',
+      audioReveal: '現状を正確に把握する (げんじょうを せいかくに はあくする)',
+      options: [
+        '現状を正確に把握する',
+        '現状を正確に発揮する',
+        '現状を正確に発覚する',
+        '現状を正確に配置する',
+      ],
+      correctIndex: 0,
+      explanation: '把握する (はあくする) = memahami/menguasai kondisi saat ini secara akurat.',
+    },
+    {
+      id: 'am-n2-6',
+      kind: 'audio-choice',
+      tag: '聴解ミッション N2',
+      prompt: '音声を聞いて、話者の言いたいことに最も近いものを選んでください。',
+      audioText: '高い参考書を買ったからといって、必ず合格するとは限らない。',
+      audioReveal: '高い参考書を買ったからといって、必ず合格するとは限らない。',
+      options: [
+        '高価な教材を買っても合格できるとは言い切れない',
+        '高い参考書を使えば誰でも確実に合格できる',
+        '安い参考書では試験に合格するのは難しい',
+        '参考書を何冊も買うほど点数が上がりやすい',
+      ],
+      correctIndex: 0,
+      explanation: '「～からといって～とは限らない」 menyangkal anggapan mutlak: membeli buku mahal belum tentu menjamin kelulusan.',
+    },
+  ],
+  N1: [
+    {
+      id: 'am-n1-1',
+      kind: 'audio-choice',
+      tag: '聴解ミッション N1',
+      prompt: '音声を聞いて、文の趣旨に最も近いものを選んでください。',
+      audioText: '安全基準に関しては、いかなる事情があっても一切妥協は許されない。',
+      audioReveal: '安全基準に関しては、いかなる事情があっても一切妥協は許されない。',
+      options: [
+        'どのような理由があっても安全基準を緩めてはならない',
+        '緊急時には状況に応じて安全基準を柔軟に緩和すべきだ',
+        'コスト削減のため一部の安全確認は省略しても構わない',
+        '安全基準の見直しは現場の裁量に任せるのが望ましい',
+      ],
+      correctIndex: 0,
+      explanation: 'いかなる事情があっても = apa pun alasannya; 妥協 (だきょう) = kompromi.',
+    },
+    {
+      id: 'am-n1-2',
+      kind: 'audio-choice',
+      tag: '聴解ミッション N1',
+      prompt: '音声で読まれた語句の正しい表記を選んでください。',
+      audioText: 'じんそくな たいおうに かんしゃいたします',
+      audioReveal: '迅速な対応に感謝いたします (じんそくな たいおうに かんしゃいたします)',
+      options: [
+        '迅速な対応に感謝いたします',
+        '深刻な対応に感謝いたします',
+        '慎重な対応に感謝いたします',
+        '新設な対応に感謝いたします',
+      ],
+      correctIndex: 0,
+      explanation: '迅速 (じんそく) = cepat, tanggap, dan sigap.',
+    },
+    {
+      id: 'am-n1-3',
+      kind: 'audio-choice',
+      tag: '聴解ミッション N1',
+      prompt: '音声を聞いて、内容に最も合致するものを選んでください。',
+      audioText: '前回の調査で明らかになった課題を踏まえて、次期の施策を見直す必要がある。',
+      audioReveal: '前回の調査で明らかになった課題を踏まえて、次期の施策を見直す必要がある。',
+      options: [
+        '前回調査の課題をもとに次期の方針を改善すべきだ',
+        '前回調査の結果は古いため完全に無視して新計画を立てる',
+        'すでに十分な成果が出ているので次期の変更は不要だ',
+        '調査をやり直してから来年の予算を削減する予定だ',
+      ],
+      correctIndex: 0,
+      explanation: '「～を踏まえて」 = berpijak pada / mempertimbangkan temuan masalah sebelumnya.',
+    },
+    {
+      id: 'am-n1-4',
+      kind: 'audio-choice',
+      tag: '聴解ミッション N1',
+      prompt: '音声を聞いて、文の意味として最も適切なものを選んでください。',
+      audioText: '周囲の強い反対をよそに、彼は自分の信じた研究テーマを貫いた。',
+      audioReveal: '周囲の強い反対をよそに、彼は自分の信じた研究テーマを貫いた。',
+      options: [
+        '周りの反対を気にせず自分の研究方針を最後まで押し通した',
+        '周囲の意見を受け入れて研究テーマを途中で変更した',
+        '周囲の強い支援に支えられて研究を早期に完了させた',
+        '反対意見が多かったため研究計画を無期限に延期した',
+      ],
+      correctIndex: 0,
+      explanation: '「～をよそに」 = mengabaikan / tak menghiraukan penentangan sekitar; 貫く (つらぬく) = teguh menjalankan sampai tuntas.',
+    },
+    {
+      id: 'am-n1-5',
+      kind: 'audio-choice',
+      tag: '聴解ミッション N1',
+      prompt: '音声で読まれた表現の正しい漢字表記を選んでください。',
+      audioText: 'せっとくりょくに とむ ていあん',
+      audioReveal: '説得力に富む提案 (せっとくりょくに とむ ていあん)',
+      options: [
+        '説得力に富む提案',
+        '説得力に飛ぶ提案',
+        '説得力に止む提案',
+        '説得力に組む提案',
+      ],
+      correctIndex: 0,
+      explanation: '「～に富む」(にとむ) berarti kaya akan / penuh dengan (daya persuasi yang kuat).',
+    },
+    {
+      id: 'am-n1-6',
+      kind: 'audio-choice',
+      tag: '聴解ミッション N1',
+      prompt: '音声を聞いて、話者の主張に最も近いものを選んでください。',
+      audioText: '地域住民の協力なくしては、この防災計画の実現は不可能だっただろう。',
+      audioReveal: '地域住民の協力なくしては、この防災計画の実現は不可能だっただろう。',
+      options: [
+        '住民の協力があったからこそ防災計画を実現できた',
+        '行政だけの力で十分に防災計画を達成できたはずだ',
+        '住民の協力を得られず防災計画は実現に至らなかった',
+        '防災計画の策定には地域住民の参加は不可欠ではない',
+      ],
+      correctIndex: 0,
+      explanation: '「～なくしては…不可能だった」 menegaskan bahwa kerja sama warga merupakan syarat mutlak terwujudnya rencana.',
+    },
+  ],
+};
+
+/**
+ * 5 Dedicated Curated Boss Stages — Stage 6 of every JLPT chapter (Stages 6, 12, 18, 24, 30).
+ * Defeating a chapter Boss unlocks Stage 1 of the next JLPT chapter!
  * Each Boss has 8 HP and mixes all 3 question formats: MCQ, Susun Kalimat JLPT (★), and Tebak Audio Jepang.
  */
 export const BOSS_CHALLENGE_STAGES: ChallengeStage[] = [
   // =========================================================================
-  // BOSS N5
+  // BOSS N5 (Stage 6)
   // =========================================================================
   {
     id: 'boss-n5',
-    order: 101,
+    order: 6,
     chapter: 'Bab 1 · EGG (N5 Dasar)',
     jlptLevel: 'N5',
     mode: 'boss',
+    stageKind: 'boss',
+    isCampaignStage: true,
     bossName: 'Tamago Guardian',
     bossTitle: 'Boss Akhir N5 · Gerbang Fondasi',
     bossMaxHp: 8,
     title: 'Boss Stage N5 · Gerbang Fondasi',
-    subtitle: '8 HP Boss · Pilihan Ganda, Susun Kalimat & Audio N5',
+    subtitle: '8 HP Boss · Kalahkan untuk membuka Bab 2 (N4)',
     xpReward: 150,
     questions: [
       {
@@ -527,19 +993,21 @@ export const BOSS_CHALLENGE_STAGES: ChallengeStage[] = [
   },
 
   // =========================================================================
-  // BOSS N4
+  // BOSS N4 (Stage 12)
   // =========================================================================
   {
     id: 'boss-n4',
-    order: 102,
+    order: 12,
     chapter: 'Bab 2 · HATCH (N4 Menengah Awal)',
     jlptLevel: 'N4',
     mode: 'boss',
+    stageKind: 'boss',
+    isCampaignStage: true,
     bossName: 'Hatch Sentinel',
     bossTitle: 'Boss Akhir N4 · Jembatan Menetas',
     bossMaxHp: 8,
     title: 'Boss Stage N4 · Jembatan Menetas',
-    subtitle: '8 HP Boss · Pilihan Ganda, Susun Kalimat & Audio N4',
+    subtitle: '8 HP Boss · Kalahkan untuk membuka Bab 3 (N3)',
     xpReward: 180,
     questions: [
       {
@@ -597,7 +1065,7 @@ export const BOSS_CHALLENGE_STAGES: ChallengeStage[] = [
           '先生は明日いらっしゃいますか。',
           '先生は明日まいりますか。',
           '先生は明日おりますか。',
-          '先生は明日いたしましますか。',
+          '先生は明日いたしますか。',
         ],
         correctIndex: 0,
         explanation:
@@ -618,19 +1086,21 @@ export const BOSS_CHALLENGE_STAGES: ChallengeStage[] = [
   },
 
   // =========================================================================
-  // BOSS N3 (FULL JAPANESE)
+  // BOSS N3 (Stage 18 — FULL JAPANESE)
   // =========================================================================
   {
     id: 'boss-n3',
-    order: 103,
+    order: 18,
     chapter: 'Bab 3 · CHICK (N3 Menengah)',
     jlptLevel: 'N3',
     mode: 'boss',
+    stageKind: 'boss',
+    isCampaignStage: true,
     bossName: '試練の番人',
     bossTitle: 'Boss Akhir N3 · 試練の番人',
     bossMaxHp: 8,
     title: 'Boss Stage N3 · 試練の番人',
-    subtitle: '8 HP Boss · 全問日本語（選択・並べ替え・聴解）',
+    subtitle: '8 HP Boss · Full Jepang · Kalahkan untuk membuka Bab 4 (N2)',
     xpReward: 220,
     questions: [
       {
@@ -699,19 +1169,21 @@ export const BOSS_CHALLENGE_STAGES: ChallengeStage[] = [
   },
 
   // =========================================================================
-  // BOSS N2 (FULL JAPANESE)
+  // BOSS N2 (Stage 24 — FULL JAPANESE)
   // =========================================================================
   {
     id: 'boss-n2',
-    order: 104,
-    chapter: 'Bab 4 · GROW (N2 Pra-Mahir)',
+    order: 24,
+    chapter: 'Bab 4 · GROW (N2 Menengah Atas)',
     jlptLevel: 'N2',
     mode: 'boss',
+    stageKind: 'boss',
+    isCampaignStage: true,
     bossName: '実戦の覇者',
     bossTitle: 'Boss Akhir N2 · 実戦の覇者',
     bossMaxHp: 8,
     title: 'Boss Stage N2 · 実戦の覇者',
-    subtitle: '8 HP Boss · 全問日本語（選択・並べ替え・聴解）',
+    subtitle: '8 HP Boss · Full Jepang · Kalahkan untuk membuka Bab 5 (N1)',
     xpReward: 260,
     questions: [
       {
@@ -780,19 +1252,21 @@ export const BOSS_CHALLENGE_STAGES: ChallengeStage[] = [
   },
 
   // =========================================================================
-  // BOSS N1 (FULL JAPANESE)
+  // BOSS N1 (Stage 30 — FULL JAPANESE)
   // =========================================================================
   {
     id: 'boss-n1',
-    order: 105,
+    order: 30,
     chapter: 'Bab 5 · FLY (N1 Mahir)',
     jlptLevel: 'N1',
     mode: 'boss',
+    stageKind: 'boss',
+    isCampaignStage: true,
     bossName: '極みの賢者',
     bossTitle: 'Boss Akhir N1 · 極みの賢者',
     bossMaxHp: 8,
     title: 'Boss Stage N1 · 極みの賢者',
-    subtitle: '8 HP Boss · 全問日本語（選択・並べ替え・聴解）',
+    subtitle: '8 HP Boss · Ujian Puncak JLPT N1 (Full Jepang)',
     xpReward: 320,
     questions: [
       {

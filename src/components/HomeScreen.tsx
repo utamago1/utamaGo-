@@ -18,7 +18,6 @@ import {
   Trophy,
   Volume2,
 } from 'lucide-react';
-import { getBossStageForLevel } from '../data/challengeArenaData';
 import {
   CHALLENGE_STAGES,
   type ChallengeStage,
@@ -77,6 +76,7 @@ interface HomeScreenProps {
   activityLog: StudyActivityLog;
   targetLevel: JlptLevel;
   unlockedLevel: JlptLevel;
+  arenaUnlockedLevel?: JlptLevel;
   equivalentEstimate: EquivalentJlptEstimate;
   dailyMinutes: number;
   learnerName?: string;
@@ -118,6 +118,7 @@ export function HomeScreen({
   latestReport,
   activityLog,
   unlockedLevel,
+  arenaUnlockedLevel,
   dailyMinutes,
   learnerName,
   gender = 'cowok',
@@ -151,22 +152,34 @@ export function HomeScreen({
   const [showDifficultView, setShowDifficultView] = useState(false);
   const [dailyDrillCount, setDailyDrillCount] = useState<5 | 10>(5);
   const [dailyShuffleIndex, setDailyShuffleIndex] = useState(0);
-  const [arenaLevel, setArenaLevel] = useState<JlptLevel>(unlockedLevel);
+  const freePlayMaxLevel = arenaUnlockedLevel ?? unlockedLevel;
+  const [arenaLevel, setArenaLevel] = useState<JlptLevel>(freePlayMaxLevel);
   const resolvedArcade = arcadeRecords ?? createEmptyArcadeRecords();
-  const effectiveArenaLevel = isJlptLevelUnlocked(arenaLevel, unlockedLevel)
+  const effectiveArenaLevel = isJlptLevelUnlocked(arenaLevel, freePlayMaxLevel)
     ? arenaLevel
-    : unlockedLevel;
-  const defeatedBossCount = Object.keys(resolvedArcade.defeatedBosses).length;
+    : freePlayMaxLevel;
   const speechSupported = useMemo(() => isJapaneseSpeechSupported(), []);
 
   const stageIds = useMemo(() => CHALLENGE_STAGES.map((s) => s.id), []);
   const totalStars = getTotalStarsEarned(completedLevels);
   const maxStars = CHALLENGE_STAGES.length * 3;
-  const completedStagesCount = Object.keys(completedLevels).length;
+  const completedStagesCount = useMemo(
+    () => CHALLENGE_STAGES.filter((s) => Boolean(completedLevels[s.id])).length,
+    [completedLevels],
+  );
+  const defeatedBossCount = useMemo(
+    () =>
+      CHALLENGE_STAGES.filter(
+        (s) =>
+          s.stageKind === 'boss' &&
+          Boolean(completedLevels[s.id] || resolvedArcade.defeatedBosses[s.id]),
+      ).length,
+    [completedLevels, resolvedArcade.defeatedBosses],
+  );
 
-  const isChallengeStageOpen = (stage: ChallengeStage, idx: number) =>
-    isStageUnlocked(idx, stageIds, completedLevels) &&
-    isJlptLevelUnlocked(stage.jlptLevel, unlockedLevel);
+  // Pure sequential campaign unlock: defeating Stage 6 (Boss) unlocks Stage 1 of the next JLPT chapter
+  const isChallengeStageOpen = (_stage: ChallengeStage, idx: number) =>
+    isStageUnlocked(idx, stageIds, completedLevels);
 
   const nextStage =
     CHALLENGE_STAGES.find((s, idx) => {
@@ -290,25 +303,25 @@ export function HomeScreen({
           </button>
         </div>
 
-        {/* Mode Arena Cepat: Blitz 60 Detik & Survival Tanpa Batas */}
-        <section aria-label="Mode Arena Cepat" className="space-y-3">
+        {/* Mode Bebas (Kejar Rekor): Blitz 60 Detik & Survival Tanpa Batas */}
+        <section aria-label="Mode Bebas Kejar Rekor" className="space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
               <h3 className="font-display text-sm font-extrabold text-on-surface sm:text-base">
-                Mode Arena Cepat
+                Mode Bebas (Kejar Rekor)
               </h3>
               <p className="text-xs text-on-surface-variant">
-                Kombo berjenjang · FEVER x4 · Susun Kalimat · Tebak Audio · Reaksi Maskot
+                Latihan bebas kapan saja · Kombo berjenjang · FEVER x4 · Audio · Susun Kalimat
               </p>
             </div>
 
             <div
               role="group"
-              aria-label="Pilih level JLPT untuk Mode Arena"
+              aria-label="Pilih level JLPT untuk Mode Bebas"
               className="inline-flex items-center gap-1 rounded-xl border border-outline-variant bg-surface-container-low p-1"
             >
               {JLPT_LEVELS_ASC.map((lv) => {
-                const lvUnlocked = isJlptLevelUnlocked(lv, unlockedLevel);
+                const lvUnlocked = isJlptLevelUnlocked(lv, freePlayMaxLevel);
                 const active = effectiveArenaLevel === lv;
                 return (
                   <button
@@ -323,8 +336,8 @@ export function HomeScreen({
                     }}
                     title={
                       lvUnlocked
-                        ? `Pilih Arena ${lv}`
-                        : `Butuh level minimal ${lv} (atur di Profil)`
+                        ? `Pilih Mode Bebas ${lv}`
+                        : `Kalahkan Boss sebelumnya atau atur level ${lv} di Profil`
                     }
                     className={`inline-flex min-h-[36px] items-center gap-1 whitespace-nowrap rounded-lg px-2.5 py-1 font-mono text-xs font-bold transition-colors ${
                       !lvUnlocked
@@ -523,249 +536,224 @@ export function HomeScreen({
           </div>
         </section>
 
-        <section aria-label="Daftar Level Tantangan" className="space-y-6">
-          {chapters.map((group) => (
-            <div key={group.chapter} className="space-y-2.5">
-              <h3 className="font-display text-xs font-extrabold tracking-wider text-on-surface-variant">
-                {group.chapter}
-              </h3>
+        <section
+          aria-label="Jalur Naik Level JLPT (30 Stage)"
+          className="space-y-6"
+        >
+          <div className="space-y-0.5">
+            <h3 className="font-display text-sm font-extrabold text-on-surface sm:text-base">
+              Jalur Naik Level JLPT (6 Stage per Bab)
+            </h3>
+            <p className="text-xs text-on-surface-variant">
+              Selesaikan tiap mode secara berurutan dan kalahkan Boss akhir bab untuk membuka bab JLPT berikutnya.
+            </p>
+          </div>
 
-              <div className="divide-y divide-outline-variant overflow-hidden rounded-2xl border border-outline-variant bg-surface-container-low">
-                {group.stages.map(({ stage, index }) => {
-                  const sequentialUnlocked = isStageUnlocked(
-                    index,
-                    stageIds,
-                    completedLevels,
-                  );
-                  const levelUnlocked = isJlptLevelUnlocked(
-                    stage.jlptLevel,
-                    unlockedLevel,
-                  );
-                  const unlocked = sequentialUnlocked && levelUnlocked;
-                  const record = completedLevels[stage.id];
-                  const isNextFrontier = unlocked && !record;
+          {chapters.map((group, chapterIdx) => {
+            const chapterClearedCount = group.stages.filter(({ stage }) =>
+              Boolean(completedLevels[stage.id]),
+            ).length;
+            const firstStageInChapter = group.stages[0];
+            const chapterUnlocked = firstStageInChapter
+              ? isStageUnlocked(
+                  firstStageInChapter.index,
+                  stageIds,
+                  completedLevels,
+                )
+              : true;
+            const prevChapterLevel =
+              chapterIdx > 0
+                ? chapters[chapterIdx - 1]?.stages[0]?.stage.jlptLevel
+                : null;
 
-                  const lockReason = !levelUnlocked
-                    ? `Butuh level minimal ${stage.jlptLevel} (atur di Profil)`
-                    : `Selesaikan Level ${stage.order - 1} dahulu`;
+            return (
+              <div key={group.chapter} className="space-y-2.5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h4 className="font-display text-xs font-extrabold tracking-wider text-on-surface-variant">
+                    {group.chapter}
+                  </h4>
+                  <span className="font-mono text-xs font-semibold tabular-nums text-on-surface-variant">
+                    {chapterUnlocked
+                      ? `${chapterClearedCount}/${group.stages.length} selesai`
+                      : `Kalahkan Boss ${prevChapterLevel ?? 'sebelumnya'} untuk membuka`}
+                  </span>
+                </div>
 
-                  return (
-                    <button
-                      key={stage.id}
-                      type="button"
-                      disabled={!unlocked}
-                      onClick={() => {
-                        if (!unlocked) return;
-                        vibrateTap();
-                        onStartStage(stage);
-                      }}
-                      aria-label={
-                        unlocked
-                          ? `Main Level ${stage.order}: ${stage.title}`
-                          : `Level ${stage.order} terkunci: ${stage.title}`
+                <div className="divide-y divide-outline-variant overflow-hidden rounded-2xl border border-outline-variant bg-surface-container-low">
+                  {group.stages.map(({ stage, index }) => {
+                    const unlocked = isStageUnlocked(
+                      index,
+                      stageIds,
+                      completedLevels,
+                    );
+                    const record = completedLevels[stage.id];
+                    const isNextFrontier = unlocked && !record;
+                    const isBossStage = stage.stageKind === 'boss';
+                    const prevStage =
+                      index > 0 ? CHALLENGE_STAGES[index - 1] : null;
+                    const lockReason =
+                      prevStage?.stageKind === 'boss'
+                        ? `Kalahkan Boss ${prevStage.jlptLevel} (Level ${prevStage.order}) untuk membuka bab ini`
+                        : `Selesaikan Level ${stage.order - 1} dahulu`;
+
+                    const modeLabel =
+                      stage.stageKind === 'audio'
+                        ? 'Misi Audio'
+                        : stage.stageKind === 'sentence'
+                          ? 'Susun Kalimat ★'
+                          : stage.stageKind === 'blitz-mission'
+                            ? `Misi Blitz 60s · Target ${stage.targetCorrect ?? 6}`
+                            : stage.stageKind === 'survival-mission'
+                              ? 'Misi Survival · 8 Soal'
+                              : isBossStage
+                                ? `Boss Stage · ${stage.bossMaxHp ?? stage.questions.length} HP`
+                                : 'Pilihan Ganda';
+
+                    const renderStageBadgeIcon = () => {
+                      if (!unlocked) {
+                        return <Lock className="h-4 w-4" aria-hidden="true" />;
                       }
-                      className={`m3-tactile flex min-h-[76px] w-full items-center justify-between gap-3 px-4 py-3.5 text-left transition-colors ${
-                        !unlocked
-                          ? 'cursor-not-allowed bg-surface-container/40 opacity-65'
+                      if (isBossStage) {
+                        return <Swords className="h-4 w-4" aria-hidden="true" />;
+                      }
+                      if (record) {
+                        return <Check className="h-4 w-4" aria-hidden="true" />;
+                      }
+                      if (stage.stageKind === 'audio') {
+                        return <Volume2 className="h-4 w-4" aria-hidden="true" />;
+                      }
+                      if (stage.stageKind === 'sentence') {
+                        return <PenTool className="h-4 w-4" aria-hidden="true" />;
+                      }
+                      if (stage.stageKind === 'blitz-mission') {
+                        return <Timer className="h-4 w-4" aria-hidden="true" />;
+                      }
+                      if (stage.stageKind === 'survival-mission') {
+                        return (
+                          <ShieldAlert className="h-4 w-4" aria-hidden="true" />
+                        );
+                      }
+                      return stage.order;
+                    };
+
+                    const rowHighlight = !unlocked
+                      ? 'cursor-not-allowed bg-surface-container/40 opacity-65'
+                      : isBossStage
+                        ? record
+                          ? 'bg-success-container/20 hover:bg-success-container/35'
+                          : 'bg-warning-container/35 hover:bg-warning-container/55'
+                        : isNextFrontier
+                          ? 'bg-primary-container/20 hover:bg-primary-container/30'
+                          : 'hover:bg-surface-container/60';
+
+                    const badgeStyle = !unlocked
+                      ? 'bg-surface-container-high text-on-surface-variant'
+                      : record
+                        ? 'bg-success text-white'
+                        : isBossStage
+                          ? 'bg-primary text-on-primary'
                           : isNextFrontier
-                            ? 'bg-primary-container/20 hover:bg-primary-container/30'
-                            : 'hover:bg-surface-container/60'
-                      }`}
-                    >
-                      <div className="flex min-w-0 flex-1 items-center gap-3">
-                        <span
-                          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-display text-sm font-extrabold ${
-                            !unlocked
-                              ? 'bg-surface-container-high text-on-surface-variant'
-                              : record
-                                ? 'bg-success text-white'
-                                : isNextFrontier
-                                  ? 'bg-primary text-on-primary'
-                                  : 'bg-surface-container text-on-surface'
-                          }`}
-                        >
-                          {!unlocked ? (
-                            <Lock className="h-4 w-4" aria-hidden="true" />
-                          ) : record ? (
-                            <Check className="h-4 w-4" aria-hidden="true" />
-                          ) : (
-                            stage.order
-                          )}
-                        </span>
+                            ? 'bg-primary text-on-primary'
+                            : 'bg-surface-container text-on-surface';
 
-                        <div className="min-w-0 flex-1">
-                          <div className="flex flex-wrap items-center gap-x-1.5 text-xs font-semibold">
-                            <span
-                              className={
-                                unlocked
-                                  ? 'text-primary'
-                                  : 'text-on-surface-variant'
-                              }
-                            >
-                              Level {stage.order} · {stage.jlptLevel}
-                            </span>
-                            <span aria-hidden="true" className="text-outline">
-                              ·
-                            </span>
-                            <span className="font-mono tabular-nums text-[#4b4b53] dark:text-[#b4b4c0]">
-                              +{stage.xpReward} XP
-                            </span>
-                          </div>
-                          <p className="mt-0.5 truncate font-display text-[15px] font-bold text-on-surface">
-                            {stage.title}
-                          </p>
-                          <p className="mt-0.5 truncate text-[13px] text-[#4b4b53] dark:text-[#b4b4c0]">
-                            {unlocked ? stage.subtitle : lockReason}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex shrink-0 flex-col items-end gap-1.5">
-                        <div className="flex items-center gap-0.5">
-                          {[1, 2, 3].map((s) => (
-                            <Star
-                              key={s}
-                              className={`h-3.5 w-3.5 ${
-                                record && s <= record.stars
-                                  ? 'fill-amber-400 text-amber-500'
-                                  : 'text-outline'
-                              }`}
-                              aria-hidden="true"
-                            />
-                          ))}
-                        </div>
-                        {unlocked && (
+                    return (
+                      <button
+                        key={stage.id}
+                        type="button"
+                        disabled={!unlocked}
+                        onClick={() => {
+                          if (!unlocked) return;
+                          vibrateTap();
+                          onStartStage(stage);
+                        }}
+                        aria-label={
+                          unlocked
+                            ? `Main Level ${stage.order}: ${stage.title}`
+                            : `Level ${stage.order} terkunci: ${stage.title}`
+                        }
+                        className={`m3-tactile flex min-h-[78px] w-full items-center justify-between gap-3 px-4 py-3.5 text-left transition-colors ${rowHighlight}`}
+                      >
+                        <div className="flex min-w-0 flex-1 items-center gap-3">
                           <span
-                            className={`whitespace-nowrap text-xs font-bold ${
-                              isNextFrontier
-                                ? 'text-primary'
-                                : 'text-[#4b4b53] dark:text-[#b4b4c0]'
-                            }`}
+                            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-display text-sm font-extrabold ${badgeStyle}`}
                           >
-                            {record ? 'Ulangi' : 'Mulai'}
+                            {renderStageBadgeIcon()}
                           </span>
-                        )}
-                      </div>
-                    </button>
-                  );
-                })}
 
-                {/* Chapter Boss Stage Row */}
-                {(() => {
-                  const chapterLevel = group.stages[0]?.stage.jlptLevel;
-                  const bossStage = chapterLevel
-                    ? getBossStageForLevel(chapterLevel)
-                    : undefined;
-                  if (!bossStage) return null;
+                          <div className="min-w-0 flex-1">
+                            <div className="flex flex-wrap items-center gap-x-1.5 text-xs font-semibold">
+                              <span
+                                className={
+                                  unlocked
+                                    ? isBossStage && !record
+                                      ? 'text-warning'
+                                      : isBossStage && record
+                                        ? 'text-success'
+                                        : 'text-primary'
+                                    : 'text-on-surface-variant'
+                                }
+                              >
+                                Level {stage.order} · {modeLabel}
+                              </span>
+                              <span aria-hidden="true" className="text-outline">
+                                ·
+                              </span>
+                              <span className="font-mono tabular-nums text-[#4b4b53] dark:text-[#b4b4c0]">
+                                +{stage.xpReward} XP
+                              </span>
+                            </div>
+                            <p className="mt-0.5 truncate font-display text-[15px] font-bold text-on-surface">
+                              {stage.title}
+                            </p>
+                            <p className="mt-0.5 truncate text-[13px] text-[#4b4b53] dark:text-[#b4b4c0]">
+                              {unlocked ? stage.subtitle : lockReason}
+                            </p>
+                          </div>
+                        </div>
 
-                  const bossUnlocked = isJlptLevelUnlocked(
-                    bossStage.jlptLevel,
-                    unlockedLevel,
-                  );
-                  const bossRecord =
-                    resolvedArcade.defeatedBosses[bossStage.id];
-
-                  return (
-                    <button
-                      key={bossStage.id}
-                      type="button"
-                      disabled={!bossUnlocked}
-                      onClick={() => {
-                        if (!bossUnlocked) return;
-                        vibrateTap();
-                        onStartStage(bossStage);
-                      }}
-                      aria-label={
-                        bossUnlocked
-                          ? `Tantang ${bossStage.title}`
-                          : `${bossStage.title} terkunci`
-                      }
-                      className={`m3-tactile flex min-h-[82px] w-full items-center justify-between gap-3 px-4 py-3.5 text-left transition-colors ${
-                        !bossUnlocked
-                          ? 'cursor-not-allowed bg-surface-container/40 opacity-65'
-                          : bossRecord
-                            ? 'bg-success-container/25 hover:bg-success-container/40'
-                            : 'bg-warning-container/35 hover:bg-warning-container/55'
-                      }`}
-                    >
-                      <div className="flex min-w-0 flex-1 items-center gap-3">
-                        <span
-                          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
-                            !bossUnlocked
-                              ? 'bg-surface-container-high text-on-surface-variant'
-                              : bossRecord
-                                ? 'bg-success text-white'
-                                : 'bg-primary text-on-primary'
-                          }`}
-                        >
-                          {!bossUnlocked ? (
-                            <Lock className="h-4 w-4" aria-hidden="true" />
-                          ) : (
-                            <Swords className="h-4 w-4" aria-hidden="true" />
-                          )}
-                        </span>
-
-                        <div className="min-w-0 flex-1">
-                          <div className="flex flex-wrap items-center gap-x-1.5 text-xs font-semibold">
+                        <div className="flex shrink-0 flex-col items-end gap-1.5">
+                          <div className="flex items-center gap-0.5">
+                            {[1, 2, 3].map((s) => (
+                              <Star
+                                key={s}
+                                className={`h-3.5 w-3.5 ${
+                                  record && s <= record.stars
+                                    ? 'fill-amber-400 text-amber-500'
+                                    : 'text-outline'
+                                }`}
+                                aria-hidden="true"
+                              />
+                            ))}
+                          </div>
+                          {unlocked && (
                             <span
-                              className={
-                                bossUnlocked
-                                  ? bossRecord
+                              className={`whitespace-nowrap text-xs font-bold ${
+                                isBossStage
+                                  ? record
                                     ? 'text-success'
-                                    : 'text-warning'
-                                  : 'text-on-surface-variant'
-                              }
-                            >
-                              Boss Stage · {bossStage.jlptLevel}
-                            </span>
-                            <span aria-hidden="true" className="text-outline">
-                              ·
-                            </span>
-                            <span className="font-mono tabular-nums text-on-surface-variant">
-                              {bossStage.bossMaxHp ?? bossStage.questions.length} HP · +{bossStage.xpReward} XP
-                            </span>
-                          </div>
-                          <p className="mt-0.5 truncate font-display text-[15px] font-extrabold text-on-surface">
-                            {bossStage.title}
-                          </p>
-                          <p className="mt-0.5 truncate text-[13px] text-on-surface-variant">
-                            {bossUnlocked
-                              ? bossStage.subtitle
-                              : `Butuh level minimal ${bossStage.jlptLevel} (atur di Profil)`}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex shrink-0 flex-col items-end gap-1.5">
-                        <div className="flex items-center gap-0.5">
-                          {[1, 2, 3].map((s) => (
-                            <Star
-                              key={s}
-                              className={`h-3.5 w-3.5 ${
-                                bossRecord && s <= bossRecord.stars
-                                  ? 'fill-amber-400 text-amber-500'
-                                  : 'text-outline'
+                                    : 'text-primary'
+                                  : isNextFrontier
+                                    ? 'text-primary'
+                                    : 'text-[#4b4b53] dark:text-[#b4b4c0]'
                               }`}
-                              aria-hidden="true"
-                            />
-                          ))}
+                            >
+                              {isBossStage
+                                ? record
+                                  ? 'Tanding Ulang'
+                                  : 'Lawan Boss'
+                                : record
+                                  ? 'Ulangi'
+                                  : 'Mulai'}
+                            </span>
+                          )}
                         </div>
-                        {bossUnlocked && (
-                          <span
-                            className={`whitespace-nowrap text-xs font-bold ${
-                              bossRecord ? 'text-success' : 'text-primary'
-                            }`}
-                          >
-                            {bossRecord ? 'Tanding Ulang' : 'Lawan Boss'}
-                          </span>
-                        )}
-                      </div>
-                    </button>
-                  );
-                })()}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </section>
       </div>
     );

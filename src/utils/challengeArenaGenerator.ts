@@ -1,5 +1,4 @@
 import {
-  BOSS_CHALLENGE_STAGES,
   SENTENCE_ORDER_BANK,
   templateToSentenceOrderQuestion,
 } from '../data/challengeArenaData';
@@ -378,15 +377,18 @@ export function generateArenaQuestionBatch(
 
   const levelSentences = SENTENCE_ORDER_BANK.filter((s) => s.level === level);
 
-  // Also borrow curated MCQ/audio items from existing stages & bosses of the same level
-  const curatedPool: ChallengeQuestion[] = [
-    ...CHALLENGE_STAGES.filter((s) => s.jlptLevel === level).flatMap(
-      (s) => s.questions,
-    ),
-    ...BOSS_CHALLENGE_STAGES.filter((b) => b.jlptLevel === level).flatMap(
-      (b) => b.questions,
-    ),
-  ];
+  // Also borrow curated MCQ/audio/sentence items from campaign stages of the same level (deduplicated)
+  const seenCuratedKey = new Set<string>();
+  const curatedPool: ChallengeQuestion[] = [];
+  for (const s of CHALLENGE_STAGES) {
+    if (s.jlptLevel !== level || s.stageKind === 'blitz-mission') continue;
+    for (const q of s.questions) {
+      const dedupeKey = `${q.kind ?? 'mcq'}::${q.prompt}::${q.audioText ?? ''}::${q.orderedTokens?.join('|') ?? ''}`;
+      if (seenCuratedKey.has(dedupeKey)) continue;
+      seenCuratedKey.add(dedupeKey);
+      curatedPool.push(q);
+    }
+  }
 
   const mcqBucket: ChallengeQuestion[] = [];
   const audioBucket: ChallengeQuestion[] = [];
