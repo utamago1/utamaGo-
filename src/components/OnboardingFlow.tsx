@@ -97,12 +97,12 @@ export function OnboardingFlow({
     <div className="flex min-h-dvh flex-col bg-surface text-on-surface pt-safe pb-safe pl-safe pr-safe">
       <header className="mx-auto flex w-full max-w-lg items-center justify-between px-4 pt-5 pb-2">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl border border-outline-variant bg-white p-0.5">
+          <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl border border-outline-variant bg-[#f6f5f0] p-0.5 dark:border-white/15 dark:bg-[#eae7df]">
             <img
               src={BRAND_ASSETS.logoPath}
               alt="Logo UtamaGo!"
               referrerPolicy="no-referrer"
-              className="h-full w-full object-contain"
+              className="h-full w-full object-contain mix-blend-multiply"
             />
           </div>
           <span className="font-display text-base font-extrabold tracking-tight text-on-surface">
@@ -123,12 +123,12 @@ export function OnboardingFlow({
           className="space-y-6 rounded-3xl border border-outline-variant bg-surface-container-low p-5 shadow-lg sm:p-7"
         >
           <div className="flex items-center gap-4 rounded-2xl border border-outline-variant bg-surface p-4">
-            <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-outline-variant bg-white p-1.5 shadow-xs">
+            <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-outline-variant bg-[#f6f5f0] p-1.5 shadow-xs dark:border-white/15 dark:bg-[#e8e5dd]">
               <img
                 key={`${previewStage}-${gender}`}
                 src={mainMascotSrc}
                 alt={`Maskot ayam ${gender} level ${jlptLevel}`}
-                className="h-full w-full object-contain"
+                className="h-full w-full object-contain mix-blend-multiply"
               />
             </div>
             <div className="min-w-0 flex-1">
@@ -198,11 +198,11 @@ export function OnboardingFlow({
                         : 'border-outline-variant bg-surface text-on-surface hover:border-outline'
                     }`}
                   >
-                    <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-xl border border-outline-variant bg-white p-1">
+                    <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-xl border border-outline-variant bg-[#f6f5f0] p-1 dark:border-white/15 dark:bg-[#e8e5dd]">
                       <img
                         src={thumbSrc}
                         alt={`Gambar ayam ${opt.label}`}
-                        className="h-full w-full object-contain"
+                        className="h-full w-full object-contain mix-blend-multiply"
                       />
                     </div>
                     <div>
@@ -264,7 +264,7 @@ export function OnboardingFlow({
               <img
                 src={chickMascotSrc}
                 alt="Ikon ayam"
-                className="h-5 w-5 rounded bg-white object-contain p-0.5"
+                className="h-5 w-5 rounded bg-[#f6f5f0] object-contain p-0.5 dark:bg-[#e8e5dd]"
               />
               <span>
                 Materi &amp; tantangan JLPT {jlptLevel} dan di bawahnya akan

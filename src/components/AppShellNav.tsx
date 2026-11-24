@@ -3,8 +3,10 @@ import {
   ClipboardCheck,
   Home,
   Layers,
+  Moon,
   Settings,
   Star,
+  Sun,
   User,
   WifiOff,
 } from 'lucide-react';
@@ -45,6 +47,8 @@ const TAB_ITEMS: Array<{
 
 export function MobileTopAppBar({
   activeTab,
+  isDark,
+  onToggleDarkLight,
   onOpenSettings,
 }: Pick<
   AppShellNavProps,
@@ -58,12 +62,12 @@ export function MobileTopAppBar({
     <header className="sticky top-0 z-40 border-b border-outline-variant bg-surface/95 pt-safe pl-safe pr-safe backdrop-blur-md lg:hidden">
       <div className="flex h-13 items-center justify-between gap-2 px-4">
         <div className="flex min-w-0 items-center gap-2.5">
-          <div className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-outline-variant bg-white p-0.5">
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-outline-variant bg-[#f6f5f0] p-0.5 dark:border-white/15 dark:bg-[#eae7df]">
             <img
               src={BRAND_ASSETS.logoPath}
               alt="Logo UtamaGo!"
               referrerPolicy="no-referrer"
-              className="h-full w-full object-contain"
+              className="h-full w-full object-contain mix-blend-multiply"
             />
           </div>
           <h1 className="truncate font-display text-base font-extrabold tracking-tight text-on-surface">
@@ -84,6 +88,22 @@ export function MobileTopAppBar({
         </div>
 
         <div className="flex shrink-0 items-center gap-0.5">
+          <button
+            type="button"
+            onClick={() => {
+              vibrateTap();
+              onToggleDarkLight();
+            }}
+            aria-label={isDark ? 'Aktifkan Mode Terang' : 'Aktifkan Mode Malam'}
+            title={isDark ? 'Mode Terang' : 'Mode Malam'}
+            className="m3-tactile inline-flex h-11 w-11 items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
+          >
+            {isDark ? (
+              <Sun className="h-5 w-5" aria-hidden="true" />
+            ) : (
+              <Moon className="h-5 w-5" aria-hidden="true" />
+            )}
+          </button>
           <button
             type="button"
             onClick={() => {
@@ -179,6 +199,8 @@ export function DesktopNavigationRail({
   maxStars,
   totalDeckCards,
   dueAnkiCount,
+  isDark,
+  onToggleDarkLight,
   onOpenSettings,
 }: AppShellNavProps) {
   const isOnline = useOnlineStatus();
@@ -192,12 +214,12 @@ export function DesktopNavigationRail({
             onClick={() => onSelectTab('home')}
             className="m3-tactile flex min-h-[44px] min-w-0 flex-1 items-center gap-2.5 rounded-xl px-1 text-left hover:bg-surface-container"
           >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-outline-variant bg-white p-0.5">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-outline-variant bg-[#f6f5f0] p-0.5 dark:border-white/15 dark:bg-[#eae7df]">
               <img
                 src={BRAND_ASSETS.logoPath}
                 alt="Logo UtamaGo!"
                 referrerPolicy="no-referrer"
-                className="h-full w-full object-contain"
+                className="h-full w-full object-contain mix-blend-multiply"
               />
             </div>
             <div className="min-w-0">
@@ -216,6 +238,22 @@ export function DesktopNavigationRail({
           </button>
 
           <div className="flex shrink-0 items-center gap-0.5">
+            <button
+              type="button"
+              onClick={() => {
+                vibrateTap();
+                onToggleDarkLight();
+              }}
+              aria-label={isDark ? 'Aktifkan Mode Terang' : 'Aktifkan Mode Malam'}
+              title={isDark ? 'Mode Terang' : 'Mode Malam'}
+              className="m3-tactile inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
+            >
+              {isDark ? (
+                <Sun className="h-4.5 w-4.5" aria-hidden="true" />
+              ) : (
+                <Moon className="h-4.5 w-4.5" aria-hidden="true" />
+              )}
+            </button>
             <button
               type="button"
               onClick={() => {

@@ -49,7 +49,7 @@ export function WeaknessDetectorCard({
           <h3 className="mt-0.5 font-display text-[15px] font-extrabold text-on-surface">
             {report.readinessLabel}
           </h3>
-          <p className="mt-0.5 text-xs leading-relaxed text-[#4b4b53]">
+          <p className="mt-0.5 text-xs leading-relaxed text-on-surface-variant">
             {report.readinessDetail}
           </p>
         </div>
@@ -89,7 +89,7 @@ export function WeaknessDetectorCard({
                 <p className="font-display text-sm font-bold text-on-surface">
                   {insight.title}
                 </p>
-                <p className="mt-0.5 text-xs leading-relaxed text-[#4b4b53]">
+                <p className="mt-0.5 text-xs leading-relaxed text-on-surface-variant">
                   {insight.reason}
                 </p>
               </div>

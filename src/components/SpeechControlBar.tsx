@@ -237,6 +237,9 @@ export function SpeechControlBar({
                     type="button"
                     onClick={() => {
                       vibrateTap();
+                      stopJapaneseSpeech();
+                      setSpeaking(false);
+                      setLoadingAudio(false);
                       saveSpeechPreferences({
                         voiceStyle: opt.id,
                         voiceURI: '',

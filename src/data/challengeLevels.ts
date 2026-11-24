@@ -119,9 +119,15 @@ export const CHALLENGE_STAGES: ChallengeStage[] = [
         id: 's2-q2',
         tag: 'Lokasi N5',
         prompt: '「駅の＿＿に銀行があります。」 (Ada bank di sebelah stasiun)',
-        options: ['隣 (となり)', '昨日 (きのう)', '午前 (ごぜん)', '半分 (はんぶん)'],
+        options: [
+          '隣 (となり)',
+          '中 (なか)',
+          '上 (うえ)',
+          '後ろ (うしろ)',
+        ],
         correctIndex: 0,
-        explanation: '隣 (となり) berarti di sebelah / samping.',
+        explanation:
+          '隣 (となり) berarti di sebelah / samping, sedangkan 中 = di dalam, 上 = di atas, dan 後ろ = di belakang.',
       },
       {
         id: 's2-q3',
@@ -178,10 +184,10 @@ export const CHALLENGE_STAGES: ChallengeStage[] = [
         id: 's3-q1',
         tag: 'Tata Bahasa N4',
         prompt: '「窓を＿＿＿＿もいいですか。」 (Bolehkah saya membuka jendela?)',
-        options: ['開けって', '開けて (あけて)', '開くで', '開けた'],
+        options: ['開けって', '開けて', '開くで', '開けた'],
         correctIndex: 1,
         explanation:
-          'Pola izin meminta dengan sopan menggunakan Bentuk-て + もいいですか → 開けてもいいですか。',
+          'Pola meminta izin dengan sopan menggunakan Bentuk-て + もいいですか → 開けて (あけて) もいいですか。',
       },
       {
         id: 's3-q2',
@@ -267,16 +273,11 @@ export const CHALLENGE_STAGES: ChallengeStage[] = [
         id: 'sn4-2-q4',
         tag: 'Kata Kerja N4',
         prompt:
-          'Pilih pasangan transitif yang tepat untuk melengkapi: 「部屋が暗いので、電気を＿＿＿＿。」 (Menyalakan lampu)',
-        options: [
-          'つきます',
-          '消えます (きえます)',
-          '開きます (あきます)',
-          'つけます',
-        ],
+          'Pilih kata kerja yang tepat: 「部屋が暗いので、電気を＿＿＿＿。」 (Menyalakan lampu)',
+        options: ['つきます', '消えます', '消します', 'つけます'],
         correctIndex: 3,
         explanation:
-          'つける (transitif, dengan を) berarti menyalakan, sedangkan つく (intransitif, dengan が) berarti menyala.',
+          'つけます (transitif, dengan partikel を) berarti menyalakan, sedangkan つきます (intransitif, dengan が) berarti menyala.',
       },
       {
         id: 'sn4-2-q5',
@@ -292,74 +293,61 @@ export const CHALLENGE_STAGES: ChallengeStage[] = [
   },
 
   // =========================================================================
-  // BAB 3 · CHICK (N3 Menengah) — Stages 5–7
+  // BAB 3 · CHICK (N3 Menengah) — Stages 5–7 (Full Japanese)
   // =========================================================================
   {
     id: 'stage-4',
     order: 5,
     chapter: 'Bab 3 · CHICK (N3 Menengah)',
     jlptLevel: 'N3',
-    title: 'Situasi Percakapan & Nuansa',
-    subtitle: 'Jembatan menuju konteks sehari-hari tingkat N3',
+    title: '日常の語彙と基本文法',
+    subtitle: 'Soal full bahasa Jepang · Kosakata & tata bahasa inti N3',
     xpReward: 95,
     questions: [
       {
         id: 's4-q1',
-        tag: 'Kosakata N3',
-        prompt: 'Apa arti dari 「確認 (かくにん)」?',
-        options: [
-          'Perbandingan',
-          'Konfirmasi / pengecekan',
-          'Pengumuman',
-          'Pendaftaran',
-        ],
+        tag: '語彙 N3',
+        prompt: 'メールを送る前に、まちがいがないかもう一度（　　　）してください。',
+        options: ['比較', '確認', '発表', '登録'],
         correctIndex: 1,
-        explanation: '確認 (かくにん) berarti mengecek atau memastikan kembali.',
+        explanation:
+          '確認 (かくにん) berarti memeriksa / memastikan kembali sebelum mengirim email. (比較 = perbandingan, 発表 = pengumuman, 登録 = pendaftaran).',
       },
       {
         id: 's4-q2',
-        tag: 'Bunpou N3',
-        prompt:
-          '「風邪をひいた＿＿＿、今日は早く寝ます。」 (Karena masuk angin, hari ini tidur lebih cepat)',
+        tag: '文法 N3',
+        prompt: '朝から少し熱がある（　　　）、今日の飲み会は欠席します。',
         options: ['のに', 'ながら', 'ので', 'ばかり'],
         correctIndex: 2,
-        explanation: 'ので menyatakan alasan dengan nuansa objektif dan halus.',
+        explanation:
+          'ので menyatakan alasan secara objektif dan halus ("karena agak demam sejak pagi, saya izin tidak ikut").',
       },
       {
         id: 's4-q3',
-        tag: 'Bunpou N3',
-        prompt:
-          '「毎日練習した＿＿、試合に負けてしまった。」 (Padahal sudah latihan tiap hari, tetap kalah)',
+        tag: '文法 N3',
+        prompt: '毎日おそくまで練習した（　　　）、試合に負けてしまった。',
         options: ['のに', 'ので', 'ため', 'ように'],
         correctIndex: 0,
         explanation:
-          'のに menyatakan hasil yang berlawanan atau di luar dugaan ("padahal...").',
+          'のに menyatakan hasil yang berlawanan dengan harapan ("padahal sudah latihan sampai malam setiap hari, tetap kalah").',
       },
       {
         id: 's4-q4',
-        tag: 'Kosakata N3',
-        prompt: 'Cara baca yang tepat untuk 「努力」 adalah...',
-        options: [
-          'つとめりょく',
-          'のうりょく',
-          'どうりょく',
-          'どりょく (doryoku)',
-        ],
+        tag: '漢字 N3',
+        prompt: '「努力」の読み方として最もよいものを一つ選びなさい。',
+        options: ['つとめりょく', 'のうりょく', 'どうりょく', 'どりょく'],
         correctIndex: 3,
-        explanation: '努力 dibaca どりょく (doryoku) yang berarti usaha keras.',
+        explanation:
+          '努力 dibaca どりょく yang berarti usaha keras. (能力 = のうりょく, 動力 = どうりょく).',
       },
       {
         id: 's4-q5',
-        tag: 'Konteks N3',
-        prompt: 'Saat menunda jadwal rapat, kata yang tepat digunakan adalah...',
-        options: [
-          '参加 (さんか)',
-          '延期 (えんき)',
-          '賛成 (さんせい)',
-          '到着 (とうちゃく)',
-        ],
+        tag: '語彙 N3',
+        prompt: '台風が近づいているため、明日の運動会は来週に（　　　）された。',
+        options: ['参加', '延期', '賛成', '到着'],
         correctIndex: 1,
-        explanation: '延期 (えんき) berarti penundaan jadwal.',
+        explanation:
+          '延期 (えんき) berarti ditunda ke jadwal lain ("karena topan mendekat, festival olahraga besok ditunda ke minggu depan").',
       },
     ],
   },
@@ -368,58 +356,54 @@ export const CHALLENGE_STAGES: ChallengeStage[] = [
     order: 6,
     chapter: 'Bab 3 · CHICK (N3 Menengah)',
     jlptLevel: 'N3',
-    title: 'Sebab-Akibat & Perubahan Kondisi',
-    subtitle: 'Membedakan 「〜おかげで」「〜せいで」「〜うちに」',
+    title: '原因・条件・対比の文法',
+    subtitle: 'Soal full bahasa Jepang · 「〜おかげで」「〜せいで」「〜うちに」',
     xpReward: 100,
     questions: [
       {
         id: 'sn3-2-q1',
-        tag: 'Bunpou N3',
-        prompt:
-          '「先生のご指導の＿＿＿＿、無事にJLPTに合格できました。」 (Berkat bimbingan guru, berhasil lulus JLPT)',
+        tag: '文法 N3',
+        prompt: '先生のご指導の（　　　）、無事にJLPTに合格することができた。',
         options: ['せいで', 'おかげで', 'わりに', 'くせに'],
         correctIndex: 1,
         explanation:
-          '〜おかげで digunakan untuk penyebab yang menghasilkan akibat positif ("berkat...").',
+          '〜おかげで digunakan untuk penyebab yang membawa hasil positif ("berkat bimbingan guru, berhasil lulus JLPT").',
       },
       {
         id: 'sn3-2-q2',
-        tag: 'Bunpou N3',
-        prompt:
-          '「昨夜遅くまで起きていた＿＿＿＿、今日は頭が痛い。」 (Gara-gara begadang semalam, hari ini sakit kepala)',
-        options: ['おかげで', 'ために', 'せいで', 'とおりに'],
+        tag: '文法 N3',
+        prompt: '昨夜遅くまで起きていた（　　　）、今日は一日中頭が痛い。',
+        options: ['おかげで', 'わりに', 'せいで', 'とおりに'],
         correctIndex: 2,
         explanation:
-          '〜せいで digunakan untuk penyebab yang menimbulkan akibat negatif ("gara-gara...").',
+          '〜せいで digunakan untuk penyebab yang menimbulkan akibat negatif ("gara-gara begadang semalam, hari ini sakit kepala").',
       },
       {
         id: 'sn3-2-q3',
-        tag: 'Bunpou N3',
-        prompt:
-          '「冷めない＿＿＿＿、どうぞ召し上がってください。」 (Selagi belum dingin, silakan dinikmati)',
+        tag: '文法 N3',
+        prompt: 'スープが冷めない（　　　）、どうぞ召し上がってください。',
         options: ['うちに', 'たびに', 'ばかりに', 'ところに'],
         correctIndex: 0,
         explanation:
-          '〜うちに berarti "selagi kondisi masih berlangsung sebelum berubah".',
+          '〜うちに berarti "selagi kondisi masih berlangsung sebelum berubah" (selagi supnya belum dingin).',
       },
       {
         id: 'sn3-2-q4',
-        tag: 'Kosakata N3',
-        prompt: 'Apa arti dari 「影響 (えいきょう)」?',
-        options: ['Keuntungan', 'Persiapan', 'Kebiasaan', 'Pengaruh / dampak'],
+        tag: '語彙 N3',
+        prompt: '長雨が続いたことが、今年の野菜の値段に大きな（　　　）を与えた。',
+        options: ['利益', '準備', '習慣', '影響'],
         correctIndex: 3,
         explanation:
-          '影響 (えいきょう) berarti pengaruh atau dampak. Contoh: 天気は売上に影響を与える。',
+          '影響を与える (えいきょうをあたえる) adalah kolokasi alami yang berarti "memberikan pengaruh/dampak".',
       },
       {
         id: 'sn3-2-q5',
-        tag: 'Bunpou N3',
-        prompt:
-          '「この店は安い＿＿＿＿、味もとてもおいしい。」 (Dibanding harganya yang murah, rasanya juga sangat enak)',
+        tag: '文法 N3',
+        prompt: 'このレストランは値段が安い（　　　）、料理がとてもおいしい。',
         options: ['せいで', 'わりに', 'とおり', 'ほど'],
         correctIndex: 1,
         explanation:
-          '〜わりに berarti "untuk ukuran... / padahal..., ternyata di luar ekspektasi".',
+          '〜わりに berarti "untuk ukuran harganya yang murah, masakannya ternyata sangat enak" (di luar ekspektasi).',
       },
     ],
   },
@@ -428,15 +412,14 @@ export const CHALLENGE_STAGES: ChallengeStage[] = [
     order: 7,
     chapter: 'Bab 3 · CHICK (N3 Menengah)',
     jlptLevel: 'N3',
-    title: 'Boss Bacaan & Keigo Dasar N3',
-    subtitle: 'Uji pemahaman paragraf pendek & kesopanan kerja N3',
+    title: '読解・敬語ボスステージ N3',
+    subtitle: 'Soal full bahasa Jepang · Bacaan pendek & Keigo dasar N3',
     xpReward: 110,
     questions: [
       {
         id: 'sn3-3-q1',
-        tag: 'Keigo N3',
-        prompt:
-          'Bagaimana cara sopan (Sonkeigo) menanyakan kepada atasan: "Apakah Anda sudah makan siang?"',
+        tag: '敬語 N3',
+        prompt: '部長に対して「昼ごはんを食べましたか」とていねいに聞くときの表現として最も適切なものはどれか。',
         options: [
           '昼ごはんをいただきましたか。',
           '昼ごはんを召し上がりましたか。',
@@ -445,129 +428,110 @@ export const CHALLENGE_STAGES: ChallengeStage[] = [
         ],
         correctIndex: 1,
         explanation:
-          '召し上がる (めしあがる) adalah bentuk hormat (Sonkeigo) dari 食べる/飲む untuk meninggikan tindakan lawan bicara.',
+          '召し上がる (めしあがる) adalah bentuk hormat (Sonkeigo) dari 食べる/飲む untuk menanyakan tindakan atasan, sedangkan いただく adalah Kenjougo untuk diri sendiri.',
       },
       {
         id: 'sn3-3-q2',
-        tag: 'Dokkai N3',
+        tag: '読解 N3',
         passage:
           '最近の調査によると、毎日15分だけでも読書を続ける人は、休日にまとめて読む人より語彙力が伸びやすいという結果が出た。大切なのは一度の量ではなく、習慣にすることだ。',
-        prompt: 'Menurut teks di atas, kunci utama agar kosakata berkembang adalah...',
+        prompt: 'この文章によると、語彙力を伸ばすために大切なことは何か。',
         options: [
-          'Membaca buku tebal sekaligus di hari libur',
-          'Menghafal kamus dalam satu hari',
-          'Menjadikan membaca sebagai kebiasaan rutin meski sebentar',
-          'Membeli banyak buku baru setiap bulan',
+          '休日にまとめて長い本を読むこと',
+          '毎日少しずつでも読み続けること',
+          '難しい専門書を優先して選ぶこと',
+          '一日に読むページ数を増やすこと',
         ],
-        correctIndex: 2,
+        correctIndex: 1,
         explanation:
-          'Kalimat penutup 「大切なのは一度の量ではなく、習慣にすることだ」 menegaskan konsistensi kebiasaan lebih penting daripada kuantitas sekaligus.',
+          'Kalimat penutup 「大切なのは一度の量ではなく、習慣にすることだ」 menegaskan bahwa membaca sedikit demi sedikit setiap hari lebih efektif daripada membaca sekaligus di hari libur.',
       },
       {
         id: 'sn3-3-q3',
-        tag: 'Bunpou N3',
-        prompt:
-          '「説明書に書いてある＿＿＿＿、組み立ててみた。」 (Mencoba merakit persis sesuai yang tertulis di buku panduan)',
+        tag: '文法 N3',
+        prompt: '説明書に書いてある（　　　）組み立てたら、うまくできた。',
         options: ['とおりに', 'かわりに', 'ついでに', 'とたんに'],
         correctIndex: 0,
         explanation:
-          '〜とおりに berarti "sesuai dengan / persis seperti yang dikatakan atau ditulis".',
+          '〜とおりに berarti "sesuai dengan / persis seperti yang tertulis di buku petunjuk".',
       },
       {
         id: 'sn3-3-q4',
-        tag: 'Kosakata N3',
-        prompt: 'Cara baca yang tepat untuk 「解決」 adalah...',
-        options: [
-          'かいけつ (kaiketsu)',
-          'げけつ (geketsu)',
-          'かいせつ (kaisetsu)',
-          'かっけつ (kakketsu)',
-        ],
+        tag: '漢字 N3',
+        prompt: '「問題を解決する」の「解決」の読み方として最もよいものはどれか。',
+        options: ['かいけつ', 'げけつ', 'かいせつ', 'かっけつ'],
         correctIndex: 0,
         explanation:
-          '解決 dibaca かいけつ (kaiketsu) yang berarti penyelesaian masalah. (解説 = かいせつ = penjelasan).',
+          '解決 dibaca かいけつ (penyelesaian masalah). Hati-hati tertukar dengan 解説 (かいせつ = penjelasan).',
       },
       {
         id: 'sn3-3-q5',
-        tag: 'Bunpou N3',
-        prompt:
-          '「駅に着いた＿＿＿＿、大雨が降り出した。」 (Begitu tiba di stasiun, hujan deras langsung turun)',
+        tag: '文法 N3',
+        prompt: '駅を出た（　　　）、急に強い雨が降り出した。',
         options: ['うちに', 'おかげで', 'かわりに', 'とたんに'],
         correctIndex: 3,
         explanation:
-          'Bentuk-た + とたんに menyatakan kejadian tak terduga yang terjadi seketika tepat setelah A.',
+          'Bentuk-た + とたんに menyatakan kejadian tak terduga yang terjadi seketika tepat setelah aksi pertama.',
       },
     ],
   },
 
   // =========================================================================
-  // BAB 4 · GROW (N2 Menengah Atas) — Stages 8–10
+  // BAB 4 · GROW (N2 Menengah Atas) — Stages 8–10 (Full Japanese)
   // =========================================================================
   {
     id: 'stage-5',
     order: 8,
     chapter: 'Bab 4 · GROW (N2 Menengah Atas)',
     jlptLevel: 'N2',
-    title: 'Bunpou Nuansa N2',
-    subtitle: 'Membedakan pola tata bahasa yang sekilas mirip',
+    title: 'N2 類義文法・文字語彙',
+    subtitle: 'Soal full bahasa Jepang · Pembeda nuansa pola & kosakata N2',
     xpReward: 115,
     questions: [
       {
         id: 's5-q1',
-        tag: 'Bunpou N2',
-        prompt:
-          '「日本に住んでいるからといって、漢字が全部読める＿＿＿＿。」',
+        tag: '文法 N2',
+        prompt: '日本に長く住んでいるからといって、漢字が全部読める（　　　）。',
         options: ['に違いない', 'わけではない', 'はずだ', 'ばかりだ'],
         correctIndex: 1,
         explanation:
-          '〜わけではない menyangkal kesimpulan mutlak ("bukan berarti selalu...").',
+          '〜からといって〜わけではない adalah pasangan tetap N2 untuk menyangkal kesimpulan mutlak ("meski tinggal lama di Jepang, bukan berarti bisa membaca semua kanji").',
       },
       {
         id: 's5-q2',
-        tag: 'Bunpou N2',
-        prompt: '「高い教材を買えば、必ず合格する＿＿＿＿。」',
+        tag: '文法 N2',
+        prompt: '高い参考書を買ったからといって、必ず合格する（　　　）。',
         options: ['とは限らない', 'に過ぎない', 'わけがない', 'どころではない'],
         correctIndex: 0,
         explanation:
-          '〜とは限らない berarti "belum tentu / tidak selalu demikian".',
+          '〜とは限らない berarti "belum tentu / tidak selalu demikian" (sering berpasangan dengan 必ず).',
       },
       {
         id: 's5-q3',
-        tag: 'Bunpou N2',
-        prompt:
-          '「忙しくて、テレビを見る＿＿＿＿ではない。」 (Saking sibuknya, jangankan menonton TV...)',
+        tag: '文法 N2',
+        prompt: '期末試験の直前で忙しく、テレビを見る（　　　）ではない。',
         options: ['ばかり', 'ほど', 'どころ', 'きり'],
         correctIndex: 2,
         explanation:
-          '〜どころではない berarti keadaannya jauh dari memungkinkan untuk melakukan hal tersebut.',
+          '〜どころではない berarti situasi sangat tidak memungkinkan untuk melakukan hal tersebut ("jangankan menonton TV...").',
       },
       {
         id: 's5-q4',
-        tag: 'Moji-Goi N2',
-        prompt: 'Cara baca yang tepat untuk 「把握」 adalah...',
-        options: [
-          'は握 (hanigi)',
-          'ばあく (baaku)',
-          'はく (haku)',
-          'はあく (haaku)',
-        ],
+        tag: '文字・語彙 N2',
+        prompt: '「現状を正確に把握する」の「把握」の読み方として最もよいものはどれか。',
+        options: ['はく', 'ばあく', 'はぎ', 'はあく'],
         correctIndex: 3,
         explanation:
-          '把握 dibaca はあく (haaku) yang berarti memahami kondisi secara menyeluruh.',
+          '把握 dibaca はあく yang berarti memahami / menguasai kondisi secara menyeluruh.',
       },
       {
         id: 's5-q5',
-        tag: 'Moji-Goi N2',
-        prompt: '「会議の日程を 変更 する。」 Arti & bacaan 変更 adalah...',
-        options: [
-          'へんこう · mengubah jadwal',
-          'へんか · berubah bentuk',
-          'かいこう · membuka rapat',
-          'てんこう · pindah sekolah',
-        ],
+        tag: '文字・語彙 N2',
+        prompt: '都合により、来週の会議の日程を（　　　）することになった。',
+        options: ['変更', '変化', '交換', '転向'],
         correctIndex: 0,
         explanation:
-          '変更 (へんこう) berarti mengubah rencana, jadwal, atau ketentuan.',
+          '変更 (へんこう) berarti mengubah jadwal/rencana secara sengaja. (変化 = perubahan alami, 交換 = pertukaran, 転向 = berganti haluan).',
       },
     ],
   },
@@ -576,79 +540,75 @@ export const CHALLENGE_STAGES: ChallengeStage[] = [
     order: 9,
     chapter: 'Bab 4 · GROW (N2 Menengah Atas)',
     jlptLevel: 'N2',
-    title: 'Boss Dokkai & Choukai N2',
-    subtitle: 'Tantangan pemahaman teks & dialog tingkat menengah atas',
+    title: 'N2 読解・聴解ボスステージ',
+    subtitle: 'Soal full bahasa Jepang · Pemahaman wacana & dialog kerja N2',
     xpReward: 135,
     questions: [
       {
         id: 's6-q1',
-        tag: 'Dokkai N2',
+        tag: '読解 N2',
         passage:
           'オンライン学習は時間や場所を選ばないという利点がある一方で、学習計画を自分で立てなければ継続が難しい。そのため、定期的な進捗確認の仕組みが重要になる。',
-        prompt: 'Kata penanda 「そのため」 pada teks di atas berfungsi untuk...',
+        prompt: '筆者がこの文章で最も述べたいことは何か。',
         options: [
-          'Menambahkan contoh kejadian masa lalu',
-          'Menunjukkan kesimpulan / solusi utama penulis',
-          'Menyangkal seluruh kalimat sebelumnya',
-          'Mengubah topik ke pembahasan baru',
+          'オンライン学習は通学より効率が高い',
+          '学習を続けるには定期的な振り返りの仕組みが欠かせない',
+          '自分の予定に合わせて学習時間を減らすべきだ',
+          '学習計画は専門家だけに任せたほうがよい',
         ],
         correctIndex: 1,
         explanation:
-          'そのため ("oleh karena itu") mengantar kesimpulan penulis mengenai pentingnya cek progres berkala.',
+          'Penanda 「そのため」 mengantar kesimpulan utama penulis: mekanisme pengecekan progres berkala (定期的な進捗確認の仕組み) sangat penting agar belajar online bisa berlanjut.',
       },
       {
         id: 's6-q2',
-        tag: 'Dokkai N2',
+        tag: '読解 N2',
         passage:
           '新しいシステムは作業時間を短縮できる一方、慣れるまでは確認作業が増えるため、導入直後は負担が減らないこともある。',
-        prompt: 'Apa pesan utama penulis tentang sistem baru tersebut?',
+        prompt: '新しいシステムについて、文章の内容と合っているものはどれか。',
         options: [
-          'Sistem baru selalu menambah beban kerja selamanya.',
-          'Pekerja tidak perlu melakukan pengecekan tambahan sama sekali.',
-          'Tepat setelah diterapkan, beban kerja tidak selalu langsung turun sebelum terbiasa.',
-          'Sistem baru hanya berguna untuk perusahaan kecil.',
+          '導入してすぐは作業時間が増え続ける',
+          '慣れてくると確認作業が不要になる',
+          '導入したばかりの時期は負担が軽くならない場合がある',
+          '作業時間を短くする効果は期待できない',
         ],
         correctIndex: 2,
         explanation:
-          '慣れるまでは確認作業が増える menunjukkan perlu masa adaptasi sebelum beban kerja berkurang.',
+          'Frasa 「導入直後は負担が減らないこともある」 selaras dengan opsi 3: sesaat setelah diterapkan, beban kerja ada kalanya belum langsung berkurang sebelum terbiasa.',
       },
       {
         id: 's6-q3',
-        tag: 'Choukai N2',
+        tag: '聴解 N2',
         passage:
-          'A:「資料の印刷、今からお願いできますか。」 B:「すみません、今プリンターの紙が切れていて。補充してからすぐやりますね。」',
-        prompt: 'Apa yang akan langsung dilakukan pembicara B?',
+          '女：「資料の印刷、今からお願いできますか。」\n男：「すみません、今プリンターの紙が切れていて。補充してからすぐやりますね。」',
+        prompt: '男の人はこの後まず何をするか。',
         options: [
-          'Mengisi kertas printer lalu mencetak dokumennya.',
-          'Menolak mencetak dokumen sama sekali.',
-          'Meminta A mencetak sendiri di ruang lain.',
-          'Menyerahkan dokumen yang sudah dicetak.',
+          'プリンターに紙を入れる',
+          '別の部署へ資料を取りに行く',
+          '女の人に印刷を代わってもらう',
+          '印刷済みの資料を会議室へ運ぶ',
         ],
         correctIndex: 0,
         explanation:
-          '補充してからすぐやります berarti mengisi ulang kertas dulu lalu segera mencetak.',
+          '補充してからすぐやります berarti pembicara laki-laki akan mengisi ulang kertas printer terlebih dahulu sebelum mencetak.',
       },
       {
         id: 's6-q4',
-        tag: 'Moji-Goi N2',
-        prompt: 'Apa arti dari 「傾向 (けいこう)」?',
-        options: [
-          'Keputusan resmi',
-          'Keterbatasan waktu',
-          'Kerjasama tim',
-          'Kecenderungan / tren',
-        ],
+        tag: '文字・語彙 N2',
+        prompt: '最近の若者は、テレビより動画サイトを見る（　　　）が強い。',
+        options: ['決定', '制限', '協力', '傾向'],
         correctIndex: 3,
-        explanation: '傾向 (けいこう) berarti tren atau kecenderungan.',
+        explanation:
+          '傾向が強い (けいこうがつよい) adalah frasa umum N2 yang berarti "memiliki kecenderungan/tren yang kuat".',
       },
       {
         id: 's6-q5',
-        tag: 'Bunpou N2',
-        prompt: '「毎日練習した＿＿＿＿、試合で勝つことができなかった。」',
+        tag: '文法 N2',
+        prompt: '何度も注意した（　　　）、同じミスが繰り返されている。',
         options: ['おかげで', 'にもかかわらず', 'ばかりに', 'ついでに'],
         correctIndex: 1,
         explanation:
-          '〜にもかかわらず berarti "meskipun sudah..." (hasil bertolak belakang).',
+          '〜にもかかわらず berarti "meskipun sudah berulang kali diingatkan, kesalahan yang sama tetap terulang".',
       },
     ],
   },
@@ -657,35 +617,32 @@ export const CHALLENGE_STAGES: ChallengeStage[] = [
     order: 10,
     chapter: 'Bab 4 · GROW (N2 Menengah Atas)',
     jlptLevel: 'N2',
-    title: 'Konteks Bisnis & Formal N2',
-    subtitle: 'Pola resmi 「〜に際して」「〜をもとに」「〜ざるを得ない」',
+    title: 'N2 ビジネス・フォーマル表現',
+    subtitle: 'Soal full bahasa Jepang · 「〜に際して」「〜をもとに」「〜ざるを得ない」',
     xpReward: 145,
     questions: [
       {
         id: 'sn2-3-q1',
-        tag: 'Bunpou N2',
-        prompt:
-          '「海外出張＿＿＿＿、事前のビザ確認が必要です。」 (Pada kesempatan / saat melakukan dinas luar negeri)',
+        tag: '文法 N2',
+        prompt: '海外出張（　　　）、事前にビザの有効期限を確認してください。',
         options: ['に際して', 'にかけて', 'につれて', 'にしたがって'],
         correctIndex: 0,
         explanation:
-          '〜に際して dipakai dalam bahasa formal untuk menyatakan "pada saat / kesempatan khusus melakukan suatu hal".',
+          '〜に際して dipakai dalam konteks formal untuk menyatakan "pada saat / kesempatan khusus melakukan suatu hal".',
       },
       {
         id: 'sn2-3-q2',
-        tag: 'Bunpou N2',
-        prompt:
-          '「今回のアンケート結果＿＿＿＿、新しい研修プランを作成しました。」 (Berdasarkan hasil survei kali ini)',
+        tag: '文法 N2',
+        prompt: '今回のアンケート結果（　　　）、新しい研修プログラムを作成した。',
         options: ['をめぐって', 'をもとに', 'をはじめ', 'にかわって'],
         correctIndex: 1,
         explanation:
-          '〜をもとに berarti "berdasarkan / menjadikan A sebagai bahan dasar untuk membuat B".',
+          '〜をもとに berarti "berdasarkan / menjadikan A sebagai bahan dasar untuk menyusun B".',
       },
       {
         id: 'sn2-3-q3',
-        tag: 'Bunpou N2',
-        prompt:
-          '「台風で電車が止まったため、会議は中止に＿＿＿＿。」 (Terpaksa dibatalkan karena tidak ada pilihan lain)',
+        tag: '文法 N2',
+        prompt: '台風で交通機関が止まったため、本日の説明会は中止に（　　　）。',
         options: [
           'するわけがない',
           'しないではいられない',
@@ -694,104 +651,85 @@ export const CHALLENGE_STAGES: ChallengeStage[] = [
         ],
         correctIndex: 2,
         explanation:
-          '〜ざるを得ない (dengan する → せざるを得ない) berarti "terpaksa harus melakukan meski sebenarnya tidak ingin".',
+          '〜ざるを得ない (dengan する → せざるを得ない) berarti "terpaksa harus dilakukan karena tidak ada pilihan lain".',
       },
       {
         id: 'sn2-3-q4',
-        tag: 'Moji-Goi N2',
-        prompt: 'Apa arti dari 「検討 (けんとう)」 dalam kalimat 「企画案を検討する」?',
-        options: [
-          'Menolak secara sepihak',
-          'Menyalin laporan',
-          'Membatalkan kontrak',
-          'Meninjau / mempertimbangkan dengan cermat',
-        ],
+        tag: '文字・語彙 N2',
+        prompt: '来期の予算配分については、次回の役員会で改めて（　　　）する予定だ。',
+        options: ['拒否', '複製', '解約', '検討'],
         correctIndex: 3,
         explanation:
-          '検討 (けんとう) sangat sering muncul di lingkungan kerja Jepang dan berarti meninjau atau mempertimbangkan secara matang.',
+          '検討する (けんとうする) berarti meninjau atau mempertimbangkan secara cermat dalam rapat.',
       },
       {
         id: 'sn2-3-q5',
-        tag: 'Bunpou N2',
-        prompt:
-          '「年齢や性別＿＿＿＿、誰でも応募できます。」 (Tanpa memandang usia maupun jenis kelamin)',
+        tag: '文法 N2',
+        prompt: 'このコンテストは年齢や経験（　　　）、どなたでも応募できます。',
         options: ['を問わず', 'を通じて', 'をこめて', 'を機に'],
         correctIndex: 0,
         explanation:
-          '〜を問わず berarti "tanpa mempedulikan / tidak bergantung pada (usia, pengalaman, cuaca, dsb.)".',
+          '〜を問わず berarti "tanpa memandang / tidak dibatasi oleh (usia, pengalaman, dsb.)".',
       },
     ],
   },
 
   // =========================================================================
-  // BAB 5 · FLY (N1 Mahir) — Stages 11–12
+  // BAB 5 · FLY (N1 Mahir) — Stages 11–12 (Full Japanese)
   // =========================================================================
   {
     id: 'stage-n1-1',
     order: 11,
     chapter: 'Bab 5 · FLY (N1 Mahir)',
     jlptLevel: 'N1',
-    title: 'Nuansa Bunpou & Kosakata N1',
-    subtitle: 'Ungkapan tingkat lanjut, penekanan, dan kosakata abstrak N1',
+    title: 'N1 語彙・上級文法ニュアンス',
+    subtitle: 'Soal full bahasa Jepang · Ungkapan formal & kosakata abstrak N1',
     xpReward: 165,
     questions: [
       {
         id: 'sn1-1-q1',
-        tag: 'Bunpou N1',
-        prompt:
-          '「プロの料理人＿＿＿＿、この味付けは真似できない。」 (Bahkan koki profesional pun tidak bisa meniru bumbu ini)',
+        tag: '文法 N1',
+        prompt: '長年経験を積んだプロの料理人（　　　）、この繊細な味付けを再現するのは容易ではない。',
         options: ['ならでは', 'といえども', 'ながらも', 'ともなると'],
         correctIndex: 1,
         explanation:
-          '〜といえども adalah bentuk formal tingkat N1 dari 「〜ても」 ("meskipun / sekalipun seorang...").',
+          '〜といえども adalah bentuk formal tingkat N1 dari 「〜ても」 ("sekalipun seorang koki profesional berpengalaman...").',
       },
       {
         id: 'sn1-1-q2',
-        tag: 'Bunpou N1',
-        prompt:
-          '「あの老舗の職人＿＿＿＿、この繊細な模様は作れない。」 (Hanya pengrajin toko legendaris itu yang mampu membuatnya)',
-        options: ['ならではの', 'をよそに', 'ならまだしも', 'なくして'],
+        tag: '文法 N1',
+        prompt: 'この柔らかな光沢は、老舗の職人の手仕事（　　　）仕上がりだ。',
+        options: ['ならではの', 'をよそに', 'ならまだしも', 'なくしての'],
         correctIndex: 0,
         explanation:
-          '〜ならでは(の) memuji keistimewaan yang hanya dimiliki oleh subjek tersebut ("khas / hanya bisa oleh...").',
+          '〜ならではの memuji keistimewaan yang hanya mungkin dihasilkan oleh subjek tersebut ("hasil khas yang hanya bisa dibuat oleh...").',
       },
       {
         id: 'sn1-1-q3',
-        tag: 'Moji-Goi N1',
-        prompt: 'Cara baca yang tepat untuk 「迅速」 (cepat & tanggap) adalah...',
-        options: [
-          'しんそく (shinsoku)',
-          'じんそく (jinsoku)',
-          'じゅんそく (junsoku)',
-          'ぜんそく (zensoku)',
-        ],
+        tag: '文字・語彙 N1',
+        prompt: '「迅速な対応に感謝いたします」の「迅速」の読み方として最もよいものはどれか。',
+        options: ['しんそく', 'じんそく', 'じゅんそく', 'ぜんそく'],
         correctIndex: 1,
         explanation:
-          '迅速 dibaca じんそく (jinsoku) yang berarti cepat dan sigap. Contoh: 迅速な対応に感謝いたします。',
+          '迅速 dibaca じんそく yang berarti cepat, tanggap, dan sigap.',
       },
       {
         id: 'sn1-1-q4',
-        tag: 'Bunpou N1',
-        prompt:
-          '「家族の協力＿＿＿＿、この研究は完成しなかっただろう。」 (Tanpa kerja sama keluarga, penelitian ini tak mungkin selesai)',
+        tag: '文法 N1',
+        prompt: '地域住民の協力（　　　）、この防災計画の実現は不可能だっただろう。',
         options: ['を皮切りに', 'を余儀なくされ', 'なくしては', 'にひきかえ'],
         correctIndex: 2,
         explanation:
-          '〜なくしては menyatakan syarat mutlak ("tanpa A, mustahil terjadi B").',
+          '〜なくしては menyatakan syarat mutlak ("tanpa kerja sama warga setempat, rencana ini mustahil terwujud").',
       },
       {
         id: 'sn1-1-q5',
-        tag: 'Moji-Goi N1',
-        prompt: 'Apa arti dari 「妥協 (だきょう)」?',
-        options: [
-          'Kewajiban mutlak',
-          'Pertentangan tajam',
-          'Pengabaian aturan',
-          'Kompromi / jalan tengah',
-        ],
+        tag: '文字・語彙 N1',
+        prompt: '安全基準に関しては、いかなる事情があっても一切（　　　）は許されない。',
+        options: ['義務', '対立', '省略', '妥協'],
         correctIndex: 3,
         explanation:
-          '妥協 (だきょう) berarti kompromi. Contoh: 品質に関しては一切妥協しない (Tidak berkompromi sedikit pun soal kualitas).',
+          '妥協 (だきょう) berarti kompromi ("soal standar keselamatan, kompromi sedikit pun tidak dapat ditoleransi").',
       },
     ],
   },
@@ -800,31 +738,30 @@ export const CHALLENGE_STAGES: ChallengeStage[] = [
     order: 12,
     chapter: 'Bab 5 · FLY (N1 Mahir)',
     jlptLevel: 'N1',
-    title: 'Boss Final JLPT N1',
-    subtitle: 'Analisis argumen Dokkai N1 & pola bunpou pembeda halus',
+    title: 'JLPT N1 総合ボスステージ',
+    subtitle: 'Soal full bahasa Jepang · Analisis argumen Dokkai & Bunpou N1',
     xpReward: 190,
     questions: [
       {
         id: 'sn1-2-q1',
-        tag: 'Dokkai N1',
+        tag: '読解 N1',
         passage:
           '効率ばかりを追い求めるあまり、試行錯誤の時間を削ってしまっては、長期的な革新は生まれない。一見無駄に見える回り道こそが、新たな発想の土壌となるのである。',
-        prompt: 'Apa gagasan inti penulis dalam paragraf tersebut?',
+        prompt: '筆者の主張に最も近いものはどれか。',
         options: [
-          'Efisiensi tinggi selalu menjamin lahirnya inovasi jangka panjang.',
-          'Proses coba-coba yang tampak membuang waktu justru menjadi fondasi ide baru.',
-          'Segala aktivitas yang tidak langsung menghasilkan output harus dihapus.',
-          'Inovasi hanya dapat muncul di perusahaan dengan anggaran besar.',
+          '成果を早く出すには回り道を省くべきだ',
+          '一見遠回りに見える試行錯誤が革新の土台になる',
+          '効率を重視する組織ほど新しい発想が生まれやすい',
+          '長期的な計画よりも短期的な成果を優先すべきだ',
         ],
         correctIndex: 1,
         explanation:
-          'Frasa 「一見無駄に見える回り道こそが、新たな発想の土壌となる」 menekankan bahwa jalan memutar / trial-and-error adalah lahan subur bagi inovasi.',
+          'Frasa 「一見無駄に見える回り道こそが、新たな発想の土壌となる」 menegaskan bahwa proses coba-coba (試行錯誤) yang tampak memutar justru menjadi tanah subur bagi inovasi.',
       },
       {
         id: 'sn1-2-q2',
-        tag: 'Bunpou N1',
-        prompt:
-          '「大雨による土砂崩れのため、イベントは中止＿＿＿＿。」 (Terpaksa dibatalkan akibat tanah longsor)',
+        tag: '文法 N1',
+        prompt: '大雨による土砂崩れのため、屋外イベントは中止（　　　）。',
         options: [
           'を余儀なくされた',
           'にとどまらず',
@@ -833,38 +770,30 @@ export const CHALLENGE_STAGES: ChallengeStage[] = [
         ],
         correctIndex: 0,
         explanation:
-          '〜を余儀なくされる adalah ungkapan formal/berita N1 yang berarti "terpaksa mengalami/melakukan akibat keadaan di luar kendali".',
+          '〜を余儀なくされる adalah ungkapan formal/berita N1 yang berarti "terpaksa mengalami/melakukan akibat situasi di luar kendali".',
       },
       {
         id: 'sn1-2-q3',
-        tag: 'Bunpou N1',
-        prompt:
-          '「今回の失敗＿＿＿＿、次回の計画を見直す必要がある。」 (Dengan mempertimbangkan/berpijak pada kegagalan kali ini)',
+        tag: '文法 N1',
+        prompt: '前回の調査で明らかになった課題（　　　）、次期の施策を見直す必要がある。',
         options: ['をよそに', 'を踏まえて', 'にかまけて', 'をものともせず'],
         correctIndex: 1,
         explanation:
-          '〜を踏まえて berarti "berpijak pada / dengan mempertimbangkan fakta atau hasil sebelumnya".',
+          '〜を踏まえて berarti "berpijak pada / dengan mempertimbangkan hasil atau fakta sebelumnya".',
       },
       {
         id: 'sn1-2-q4',
-        tag: 'Moji-Goi N1',
-        prompt:
-          'Dalam kalimat 「彼女の意見は説得力に富んでいる」, arti 「説得力 (せっとくりょく)」 adalah...',
-        options: [
-          'Daya tahan fisik',
-          'Kecepatan berpikir',
-          'Daya persuasi / kemampuan meyakinkan',
-          'Kewenangan hukum',
-        ],
+        tag: '文字・語彙 N1',
+        prompt: '具体的なデータに裏づけられた彼女の提案は、極めて（　　　）に富んでいる。',
+        options: ['持久力', '判断力', '説得力', '強制力'],
         correctIndex: 2,
         explanation:
-          '説得力 (せっとくりょく) berarti daya persuasi atau kekuatan argumen untuk meyakinkan orang lain.',
+          '説得力に富む (せっとくりょくにとむ) adalah ungkapan alami N1 yang berarti "kaya akan daya persuasi / sangat meyakinkan".',
       },
       {
         id: 'sn1-2-q5',
-        tag: 'Bunpou N1',
-        prompt:
-          '「周囲の反対＿＿＿＿、彼は自分の信じた道を突き進んだ。」 (Tanpa mempedulikan penentangan orang sekitar)',
+        tag: '文法 N1',
+        prompt: '周囲の強い反対（　　　）、彼は自分の信じた研究テーマを貫いた。',
         options: ['に際して', 'に即して', 'にあたって', 'をよそに'],
         correctIndex: 3,
         explanation:

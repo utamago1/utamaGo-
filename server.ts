@@ -336,8 +336,8 @@ function buildDriveDownloadUrl(fileId: string): string {
   return `https://drive.usercontent.google.com/download?id=${encodeURIComponent(fileId)}&export=download&confirm=t`;
 }
 
-// Official JLPT N3, N2, and N1 Choukai audio tracks hosted on Catbox.moe (50 files total:
-// 15 N3 MP3 + 18 N2 MP3 + 17 N1 M4A). Hardcoded allowlist prevents SSRF and guarantees all
+// Official JLPT N3, N2, and N1 Choukai audio tracks hosted on Catbox.moe (51 files total:
+// 15 N3 MP3 + 18 N2 MP3 + 18 N1 M4A). Hardcoded allowlist prevents SSRF and guarantees all
 // files receive monthly access so Catbox's 2-year inactivity expiration never removes any audio.
 const CATBOX_CHOUKAI_AUDIO: ReadonlyArray<{
   level: 'N3' | 'N2' | 'N1';
@@ -380,7 +380,7 @@ const CATBOX_CHOUKAI_AUDIO: ReadonlyArray<{
   { level: 'N2', examCode: '2017.12', fileName: '2017年12月N2.mp3', url: 'https://files.catbox.moe/odph8a.mp3' },
   { level: 'N2', examCode: '2018.07', fileName: '2018年7月N2.mp3', url: 'https://files.catbox.moe/iw65xx.mp3' },
   { level: 'N2', examCode: '2018.12', fileName: '2018年12月N2.mp3', url: 'https://files.catbox.moe/n1uprt.mp3' },
-  // JLPT N1 (2010.07 - 2018.12, 17 files on Catbox; 2017.07 falls back to Drive proxy)
+  // JLPT N1 (2010.07 - 2018.12, 18 files on Catbox)
   { level: 'N1', examCode: '2010.07', fileName: '2010年07月N1.m4a', url: 'https://files.catbox.moe/kssn7r.m4a' },
   { level: 'N1', examCode: '2010.12', fileName: '2010年12月N1.m4a', url: 'https://files.catbox.moe/yha7n7.m4a' },
   { level: 'N1', examCode: '2011.07', fileName: '2011年07月N1.m4a', url: 'https://files.catbox.moe/z0wq68.m4a' },
@@ -395,6 +395,7 @@ const CATBOX_CHOUKAI_AUDIO: ReadonlyArray<{
   { level: 'N1', examCode: '2015.12', fileName: '2015年12月N1.m4a', url: 'https://files.catbox.moe/8o3176.m4a' },
   { level: 'N1', examCode: '2016.07', fileName: '2016年07月N1.m4a', url: 'https://files.catbox.moe/xdqxf9.m4a' },
   { level: 'N1', examCode: '2016.12', fileName: '2016年12月N1.m4a', url: 'https://files.catbox.moe/eftt4e.m4a' },
+  { level: 'N1', examCode: '2017.07', fileName: '2017年07月N1.m4a', url: 'https://files.catbox.moe/1vhrdb.m4a' },
   { level: 'N1', examCode: '2017.12', fileName: '2017年12月N1.m4a', url: 'https://files.catbox.moe/afjymx.m4a' },
   { level: 'N1', examCode: '2018.07', fileName: '2018年07月N1.m4a', url: 'https://files.catbox.moe/9vlon0.m4a' },
   { level: 'N1', examCode: '2018.12', fileName: '2018年12月N1.m4a', url: 'https://files.catbox.moe/n2mwx5.m4a' },
@@ -1892,6 +1893,21 @@ async function startServer() {
   });
   app.head('/api/audio/choukai/:packetId', (req, res) => {
     handleLocalOrPracticeChoukaiAudio(req, res, req.params.packetId ?? 'n2-1');
+  });
+
+  // Protect raw curriculum .txt datasets from direct browser opening, cross-site scraping, and search indexing
+  app.use('/assets/aistudio', (req, res, next) => {
+    res.setHeader('X-Robots-Tag', 'noindex, noarchive, nosnippet');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    if (req.path.endsWith('.txt')) {
+      const fetchDest = String(req.headers['sec-fetch-dest'] ?? '').toLowerCase();
+      const fetchSite = String(req.headers['sec-fetch-site'] ?? '').toLowerCase();
+      if (fetchDest === 'document' || fetchSite === 'cross-site') {
+        res.status(403).type('text/plain').send('Forbidden');
+        return;
+      }
+    }
+    next();
   });
 
   // Guard legacy static path if offline MP3 was not bundled

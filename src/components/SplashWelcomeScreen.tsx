@@ -59,7 +59,7 @@ export function SplashWelcomeScreen({
           Utama<span className="text-primary">Go!</span>
         </h1>
         <p className="mt-1 text-xs font-semibold tracking-wide text-on-surface-variant sm:text-sm">
-          Belajar JLPT N5–N1 · Anki, Bunpou N5–N1 &amp; 6 Paket Try Out N2 Terverifikasi
+          Belajar JLPT N5–N1 · Anki, Bunpou N5–N1 &amp; 15 Paket Try Out N3, N2 &amp; N1 Terverifikasi
         </p>
 
         <blockquote className="mt-6 w-full rounded-2xl border border-outline-variant bg-surface-container px-4 py-4">

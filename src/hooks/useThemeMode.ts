@@ -1,56 +1,92 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { StatusBar, Style } from '@capacitor/status-bar';
-import { safeStorageSet, THEME_STORAGE_KEY } from '../utils/storage';
+import {
+  safeStorageGet,
+  safeStorageSet,
+  THEME_STORAGE_KEY,
+} from '../utils/storage';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
 
 const LIGHT_BG_COLOR = '#fafaf8';
+const DARK_BG_COLOR = '#111114';
 
-/**
- * UtamaGo! always renders in Light Mode regardless of OS / system theme settings.
- */
+function readStoredThemeMode(): ThemeMode {
+  const saved = safeStorageGet(THEME_STORAGE_KEY);
+  if (saved === 'light' || saved === 'dark' || saved === 'system') {
+    return saved;
+  }
+  return 'light';
+}
+
+function getSystemPrefersDark(): boolean {
+  if (typeof window === 'undefined' || !window.matchMedia) return false;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+
+function applyThemeToDocument(isDark: boolean): void {
+  if (typeof document !== 'undefined') {
+    const root = document.documentElement;
+    root.classList.toggle('dark', isDark);
+    root.style.colorScheme = isDark ? 'dark' : 'light';
+
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    if (metaTheme) {
+      metaTheme.setAttribute('content', isDark ? DARK_BG_COLOR : LIGHT_BG_COLOR);
+    }
+  }
+
+  try {
+    if (Capacitor.isNativePlatform()) {
+      void StatusBar.setStyle({
+        style: isDark ? Style.Dark : Style.Light,
+      }).catch(() => {});
+      void StatusBar.setBackgroundColor({
+        color: isDark ? DARK_BG_COLOR : LIGHT_BG_COLOR,
+      }).catch(() => {});
+    }
+  } catch {
+    // Ignore outside Capacitor native shell
+  }
+}
+
 export function useThemeMode() {
-  const themeMode: ThemeMode = 'light';
-  const isDark = false;
+  const [themeMode, setThemeModeState] = useState<ThemeMode>(() =>
+    readStoredThemeMode(),
+  );
+  const [systemDark, setSystemDark] = useState<boolean>(() =>
+    getSystemPrefersDark(),
+  );
+
+  const isDark = themeMode === 'dark' || (themeMode === 'system' && systemDark);
 
   useEffect(() => {
-    safeStorageSet(THEME_STORAGE_KEY, 'light');
-
-    if (typeof document !== 'undefined') {
-      const root = document.documentElement;
-      root.classList.remove('dark');
-      root.style.colorScheme = 'light';
-
-      const metaTheme = document.querySelector('meta[name="theme-color"]');
-      if (metaTheme) {
-        metaTheme.setAttribute('content', LIGHT_BG_COLOR);
-      }
-    }
-
-    try {
-      if (Capacitor.isNativePlatform()) {
-        void StatusBar.setStyle({ style: Style.Light }).catch(() => {});
-        void StatusBar.setBackgroundColor({ color: LIGHT_BG_COLOR }).catch(
-          () => {},
-        );
-      }
-    } catch {
-      // Ignore outside Capacitor native shell
-    }
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e: MediaQueryListEvent) => {
+      setSystemDark(e.matches);
+    };
+    setSystemDark(mq.matches);
+    mq.addEventListener?.('change', handleChange);
+    return () => {
+      mq.removeEventListener?.('change', handleChange);
+    };
   }, []);
 
-  const setThemeMode = useCallback((_nextMode: ThemeMode) => {
-    safeStorageSet(THEME_STORAGE_KEY, 'light');
-    if (typeof document !== 'undefined') {
-      document.documentElement.classList.remove('dark');
-      document.documentElement.style.colorScheme = 'light';
-    }
+  useEffect(() => {
+    safeStorageSet(THEME_STORAGE_KEY, themeMode);
+    applyThemeToDocument(isDark);
+  }, [themeMode, isDark]);
+
+  const setThemeMode = useCallback((nextMode: ThemeMode) => {
+    setThemeModeState(nextMode);
+    safeStorageSet(THEME_STORAGE_KEY, nextMode);
   }, []);
 
   const toggleDarkLight = useCallback(() => {
-    setThemeMode('light');
-  }, [setThemeMode]);
+    setThemeMode(isDark ? 'light' : 'dark');
+  }, [isDark, setThemeMode]);
 
   return {
     themeMode,

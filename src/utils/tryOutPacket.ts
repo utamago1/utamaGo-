@@ -594,6 +594,7 @@ const N1_SESSIONS: SessionSeedSpec[] = [
     examCode: '2017.07',
     yearLabel: 'Juli 2017',
     fileId: '1xAVxWamYNm0dLfreSYaYc5ggpWiQkKkI',
+    directAudioUrl: 'https://files.catbox.moe/1vhrdb.m4a',
   },
   {
     id: 'n1-16',

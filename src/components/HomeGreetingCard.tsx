@@ -63,13 +63,13 @@ function getExpressionBadgeTone(expression: MascotExpression): string {
     case 'tap_kaget':
       return 'text-primary';
     case 'mikir_loading':
-      return 'text-sky-700';
+      return 'text-sky-700 dark:text-sky-400';
     case 'bingung_sedih':
-      return 'text-indigo-700';
+      return 'text-indigo-700 dark:text-indigo-400';
     case 'ngantuk_tidur':
-      return 'text-amber-700';
+      return 'text-amber-700 dark:text-amber-400';
     default:
-      return 'text-[#4b4b53]';
+      return 'text-on-surface-variant';
   }
 }
 
@@ -420,7 +420,7 @@ export function HomeGreetingCard({
       {/* Bottom full-width XP progress bar */}
       <div className="mt-3 space-y-1.5">
         <div className="flex items-center justify-between gap-2 text-[13px]">
-          <span className="text-[#4b4b53]">
+          <span className="text-on-surface-variant">
             Menuju Level{' '}
             <span className="font-mono tabular-nums">
               {levelProgress.level + 1}

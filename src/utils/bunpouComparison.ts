@@ -1,6 +1,9 @@
 import type { JlptLevel } from '../data/utamagoContent';
 import { formatBunpouExplanation } from './bunpouExplanationFormatter';
-import type { BunpouN2Item } from './bunpouN2Parser';
+import {
+  formatBunpouLessonLabel,
+  type BunpouN2Item,
+} from './bunpouN2Parser';
 import {
   BUNPOU_TAXONOMY_TOPICS,
   getSimilarPatternIds,
@@ -723,21 +726,11 @@ export const BEGINNER_BUNPOU_COMPARISONS: Record<
 function cleanComparisonGroupLabel(item: BunpouN2Item): string {
   const full = item.lessonFullTitle.trim();
   if (full) return full;
-  return `${item.lessonNumber}課`;
+  return formatBunpouLessonLabel(item.lessonNumber);
 }
 
 function formatEntryLessonLabel(item: BunpouN2Item): string {
-  if (item.lessonFullTitle.startsWith('Ringkasan ')) {
-    return item.lessonFullTitle.split('·')[0].trim();
-  }
-  if (item.lessonFullTitle.startsWith('Bab ')) {
-    return item.lessonFullTitle.split('·')[0].trim();
-  }
-  if (item.lessonFullTitle.startsWith('Bag.')) {
-    const match = item.lessonFullTitle.match(/^(Bag\.\d+\s*·\s*\d+課)/);
-    if (match) return match[1];
-  }
-  return `${item.lessonNumber}課`;
+  return formatBunpouLessonLabel(item.lessonNumber);
 }
 
 function itemToComparisonEntry(

@@ -58,6 +58,7 @@ import {
   type AnkiCardState,
   type AnkiSrsMap,
 } from '../utils/ankiSrs';
+import { formatBunpouFormulaInline } from '../utils/bunpouFormulaFormatter';
 import {
   getBunpouGroupsForLevel,
   type BunpouDeckLevel,
@@ -91,6 +92,7 @@ import {
   type StudyNotesStore,
 } from '../utils/studyNotes';
 import { extractKanjiCharacters } from '../utils/writingPractice';
+import { BunpouFormula } from './BunpouFormula';
 import { ConfirmDialog } from './ConfirmDialog';
 import { BunpouExplanation } from './BunpouExplanation';
 import { HighlightedJapaneseText } from './HighlightedJapaneseText';
@@ -1736,8 +1738,8 @@ export function AnkiN5Section({
                                     </span>
                                   </div>
                                   {card.formula && (
-                                    <p className="mt-0.5 truncate font-mono text-[11px] text-on-surface-variant">
-                                      {card.formula}
+                                    <p className="mt-0.5 truncate text-[11px] font-medium text-on-surface-variant">
+                                      {formatBunpouFormulaInline(card.formula)}
                                     </p>
                                   )}
                                   <p className="mt-1 line-clamp-2 text-xs text-on-surface-variant sm:text-sm">
@@ -2722,11 +2724,13 @@ export function AnkiN5Section({
                           {activeCard.formula && (
                             <div className="border-t border-outline-variant pt-2.5">
                               <p className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">
-                                Rumus Sambungan
+                                Rumus Bunpou
                               </p>
-                              <p className="mt-1 font-mono text-xs font-semibold text-on-surface sm:text-sm">
-                                {activeCard.formula}
-                              </p>
+                              <BunpouFormula
+                                formula={activeCard.formula}
+                                compact
+                                className="mt-1.5"
+                              />
                             </div>
                           )}
 

@@ -155,7 +155,7 @@ export function ProfileScreen({
                 · {levelProgress.rank.title}
               </p>
 
-              <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[13px] text-[#4b4b53]">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[13px] text-on-surface-variant">
                 <span className="inline-flex items-center gap-1 font-medium text-on-surface">
                   <Zap
                     className="h-3.5 w-3.5 shrink-0 fill-amber-400 text-amber-500"
@@ -213,16 +213,16 @@ export function ProfileScreen({
 
         <div className="grid w-full grid-cols-[repeat(2,minmax(0,1fr))] overflow-hidden rounded-2xl border border-outline-variant bg-surface-container-low sm:grid-cols-[repeat(4,minmax(0,1fr))]">
           <div className="min-w-0 border-r border-b border-outline-variant p-4 sm:border-b-0">
-            <p className="text-[13px] font-medium text-[#4b4b53]">
+            <p className="text-[13px] font-medium text-on-surface-variant">
               Streak Harian
             </p>
             <p className="mt-2 font-display text-2xl font-bold leading-none text-on-surface">
               <span className="font-mono tabular-nums">{streakDays}</span>{' '}
-              <span className="text-sm font-medium text-[#4b4b53]">
+              <span className="text-sm font-medium text-on-surface-variant">
                 Hari
               </span>
             </p>
-            <p className="mt-2 text-[13px] text-[#4b4b53]">
+            <p className="mt-2 text-[13px] text-on-surface-variant">
               Target{' '}
               <span className="font-mono tabular-nums">
                 {onboarding.dailyMinutes}
@@ -232,13 +232,13 @@ export function ProfileScreen({
           </div>
 
           <div className="min-w-0 border-b border-outline-variant p-4 sm:border-r sm:border-b-0">
-            <p className="text-[13px] font-medium text-[#4b4b53]">
+            <p className="text-[13px] font-medium text-on-surface-variant">
               Kartu Anki
             </p>
             <p className="mt-2 font-mono text-2xl font-bold leading-none tabular-nums text-on-surface">
               {studiedAnkiCount}
             </p>
-            <p className="mt-2 text-[13px] text-[#4b4b53] break-words">
+            <p className="mt-2 text-[13px] text-on-surface-variant break-words">
               <span className="font-mono tabular-nums">{dueAnkiCount}</span>{' '}
               tempo ·{' '}
               <span className="font-mono tabular-nums">
@@ -249,16 +249,16 @@ export function ProfileScreen({
           </div>
 
           <div className="min-w-0 border-r border-outline-variant p-4">
-            <p className="text-[13px] font-medium text-[#4b4b53]">
+            <p className="text-[13px] font-medium text-on-surface-variant">
               Tantangan
             </p>
             <p className="mt-2 font-mono text-2xl font-bold leading-none tabular-nums text-on-surface">
               {completedStagesCount}
-              <span className="text-sm font-medium text-[#4b4b53]">
+              <span className="text-sm font-medium text-on-surface-variant">
                 /{CHALLENGE_STAGES.length}
               </span>
             </p>
-            <p className="mt-2 inline-flex flex-wrap items-center gap-1 text-[13px] text-[#4b4b53]">
+            <p className="mt-2 inline-flex flex-wrap items-center gap-1 text-[13px] text-on-surface-variant">
               <Star
                 className="h-3.5 w-3.5 shrink-0 fill-amber-400 text-amber-500"
                 aria-hidden="true"
@@ -281,7 +281,7 @@ export function ProfileScreen({
             className="group flex min-h-[44px] min-w-0 flex-col justify-between p-4 text-left transition-colors hover:bg-surface"
           >
             <div className="min-w-0">
-              <p className="text-[13px] font-medium text-[#4b4b53]">
+              <p className="text-[13px] font-medium text-on-surface-variant">
                 Estimasi Try Out
               </p>
               <p className="mt-2 font-display text-xl font-bold leading-tight text-primary sm:text-2xl sm:leading-none">
@@ -310,7 +310,7 @@ export function ProfileScreen({
           <h3 className="font-display text-base font-bold text-on-surface">
             Data Diri &amp; Level Belajar
           </h3>
-          <p className="mt-1 text-[13px] leading-snug text-[#4b4b53]">
+          <p className="mt-1 text-[13px] leading-snug text-on-surface-variant">
             Atur nama tampilan, maskot, dan batas level JLPT yang ingin kamu
             pelajari.
           </p>
@@ -320,7 +320,7 @@ export function ProfileScreen({
           <div className="min-w-0 space-y-1.5">
             <label
               htmlFor="profile-name-input"
-              className="block text-[13px] font-semibold text-[#4b4b53]"
+              className="block text-[13px] font-semibold text-on-surface-variant"
             >
               Nama
             </label>
@@ -336,7 +336,7 @@ export function ProfileScreen({
           </div>
 
           <div className="min-w-0 space-y-1.5">
-            <span className="block text-[13px] font-semibold text-[#4b4b53]">
+            <span className="block text-[13px] font-semibold text-on-surface-variant">
               Jenis Kelamin Maskot
             </span>
             <div
@@ -388,7 +388,7 @@ export function ProfileScreen({
         {/* Pilihan Akses Level N5–N1 — Jelas membedakan level terbuka vs terkunci */}
         <div className="space-y-3 border-t border-outline-variant pt-4">
           <div className="flex items-baseline justify-between gap-2">
-            <span className="text-[13px] font-semibold text-[#4b4b53]">
+            <span className="text-[13px] font-semibold text-on-surface-variant">
               Akses Level Belajar
             </span>
             <span className="shrink-0 text-[13px] font-semibold text-primary">
@@ -443,7 +443,7 @@ export function ProfileScreen({
             })}
           </div>
 
-          <p className="text-[13px] leading-snug text-[#4b4b53]">
+          <p className="text-[13px] leading-snug text-on-surface-variant">
             {onboarding.selfAssessedLevel === 'N1'
               ? 'Seluruh materi dan tantangan JLPT N5 hingga N1 terbuka.'
               : `Level N5 hingga ${onboarding.selfAssessedLevel} terbuka. Ketuk level lebih tinggi untuk membukanya.`}
@@ -475,7 +475,7 @@ export function ProfileScreen({
                 <p className="text-sm font-semibold text-on-surface">
                   Tentang UtamaGo!
                 </p>
-                <p className="mt-0.5 text-[13px] leading-snug text-[#4b4b53] break-words">
+                <p className="mt-0.5 text-[13px] leading-snug text-on-surface-variant break-words">
                   Profil aplikasi, misi belajar, dan pendiri
                 </p>
               </div>
@@ -503,7 +503,7 @@ export function ProfileScreen({
                 <p className="text-sm font-semibold text-on-surface">
                   FAQ &amp; Bantuan
                 </p>
-                <p className="mt-0.5 text-[13px] leading-snug text-[#4b4b53] break-words">
+                <p className="mt-0.5 text-[13px] leading-snug text-on-surface-variant break-words">
                   Pertanyaan umum seputar UtamaGo! (
                   <span className="font-mono tabular-nums">{FAQS.length}</span>{' '}
                   topik)
@@ -517,7 +517,7 @@ export function ProfileScreen({
           </button>
         </div>
 
-        <p className="pt-3 text-xs leading-relaxed text-[#4b4b53]">
+        <p className="pt-3 text-xs leading-relaxed text-on-surface-variant">
           *UtamaGo! bukan penyelenggara resmi JLPT. © 2026 UtamaGo!
         </p>
       </section>

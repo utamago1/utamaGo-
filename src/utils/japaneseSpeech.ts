@@ -3,11 +3,14 @@
  * - Primary: Server TTS (Gemini 3.8 Flash Lite TTS) for genuine Male (Charon)
  *   and Female (Kore) Japanese voices across all devices (including Android phones
  *   with only a single built-in TTS voice), backed by 2-layer browser Cache Storage
- *   + in-memory Blob URL caching for instant offline replay.
- * - Fallback: Device Web Speech API whenever offline & uncached, when the server
+ *   + in-memory Blob/ArrayBuffer caching for instant offline replay.
+ * - Mobile Autoplay Safe: Synchronously unlocks both a reusable HTMLAudioElement
+ *   and Web Audio API AudioContext inside the user tap gesture before any async
+ *   fetch, with automatic Web Audio decodeAudioData backup so async Male/Female
+ *   server WAVs play reliably on Android Chrome & iOS Safari instead of falling
+ *   back to the device's single female voice.
+ * - Fallback: Device Web Speech API only when offline & uncached, when the server
  *   is unavailable, or when the user explicitly selects a multi-voice device voice.
- * - Supports persistent speed (0.6x–1.3x), pitch preservation, reactive UI sync,
- *   and guided 3-stage Shadowing mode.
  */
 
 export type SpeechVoiceStyle = 'auto' | 'female' | 'male';
@@ -30,7 +33,7 @@ export interface JapaneseVoiceOption {
 export type ShadowingStage = 'idle' | 'slow' | 'repeat' | 'normal';
 
 export const SPEECH_PREFS_STORAGE_KEY = 'utamago_speech_prefs_v1';
-export const TTS_BROWSER_CACHE_NAME = 'utamago-jp-tts-v1';
+export const TTS_BROWSER_CACHE_NAME = 'utamago-jp-tts-v2';
 
 export const SPEECH_RATE_PRESETS = [0.6, 0.75, 0.9, 1.0, 1.15, 1.3] as const;
 
@@ -76,15 +79,27 @@ const MALE_VOICE_PATTERNS = [
 ];
 
 const MEMORY_AUDIO_CACHE_MAX = 120;
-const SERVER_TTS_TIMEOUT_MS = 9000;
+const SERVER_TTS_TIMEOUT_MS = 15000;
+const SILENT_WAV_DATA_URI =
+  'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA';
+
+interface CachedAudioAsset {
+  blobUrl: string;
+  arrayBuffer: ArrayBuffer;
+}
 
 let cachedPrefs: SpeechPreferences | null = null;
 const prefListeners = new Set<(prefs: SpeechPreferences) => void>();
 
 let activePlaybackToken = 0;
-let activeAudioEl: HTMLAudioElement | null = null;
+let sharedAudioEl: HTMLAudioElement | null = null;
+let sharedAudioUnlocked = false;
+let sharedAudioCtx: AudioContext | null = null;
+let activeBufferSource: AudioBufferSourceNode | null = null;
 let activeAbortController: AbortController | null = null;
-const memoryBlobUrlCache = new Map<string, string>();
+
+const memoryAudioCache = new Map<string, CachedAudioAsset>();
+const inflightTtsRequests = new Map<string, Promise<CachedAudioAsset | null>>();
 
 export function clampSpeechRate(rate: number): number {
   if (!Number.isFinite(rate)) return DEFAULT_SPEECH_PREFERENCES.rate;
@@ -187,7 +202,7 @@ export function resolveServerTtsVoice(style: SpeechVoiceStyle): {
 
 export function buildTtsCacheKey(text: string, style: SpeechVoiceStyle): string {
   const { normalizedStyle } = resolveServerTtsVoice(style);
-  return `/_utamago-tts-cache/v1/${normalizedStyle}/${encodeURIComponent(text)}`;
+  return `/_utamago-tts-cache/v2/${normalizedStyle}/${encodeURIComponent(text)}`;
 }
 
 export function detectJapaneseVoiceGender(
@@ -302,41 +317,126 @@ export function cleanJapaneseSpeechText(rawText: string): string {
     .trim();
 }
 
-function storeMemoryBlobUrl(cacheKey: string, blob: Blob): string {
-  const existing = memoryBlobUrlCache.get(cacheKey);
+function getOrCreateSharedAudioEl(): HTMLAudioElement | null {
+  if (typeof window === 'undefined' || typeof window.Audio !== 'function') {
+    return null;
+  }
+  if (!sharedAudioEl) {
+    sharedAudioEl = new window.Audio();
+    sharedAudioEl.preload = 'auto';
+  }
+  return sharedAudioEl;
+}
+
+function getOrCreateAudioContext(): AudioContext | null {
+  if (typeof window === 'undefined') return null;
+  const AudioCtxCtor =
+    window.AudioContext ??
+    (window as Window & { webkitAudioContext?: typeof AudioContext })
+      .webkitAudioContext;
+  if (typeof AudioCtxCtor !== 'function') return null;
+  if (!sharedAudioCtx) {
+    try {
+      sharedAudioCtx = new AudioCtxCtor();
+    } catch {
+      return null;
+    }
+  }
+  return sharedAudioCtx;
+}
+
+/**
+ * Must be called synchronously inside the click/tap gesture before any await.
+ * Unlocks both the reusable HTMLAudioElement and Web Audio AudioContext so
+ * async server-generated male/female WAV audio is never blocked by Android
+ * Chrome or iOS Safari autoplay policies.
+ */
+function unlockAudioPlaybackFromGesture(skipSilentHtmlPrime = false): void {
+  const ctx = getOrCreateAudioContext();
+  if (ctx && ctx.state === 'suspended') {
+    void ctx.resume().catch(() => {});
+  }
+
+  if (skipSilentHtmlPrime || sharedAudioUnlocked) return;
+  const audio = getOrCreateSharedAudioEl();
+  if (!audio) return;
+
+  try {
+    audio.onplay = null;
+    audio.onended = null;
+    audio.onerror = null;
+    audio.muted = true;
+    audio.src = SILENT_WAV_DATA_URI;
+    const playPromise = audio.play();
+    if (playPromise && typeof playPromise.then === 'function') {
+      void playPromise
+        .then(() => {
+          sharedAudioUnlocked = true;
+          if (audio.src === SILENT_WAV_DATA_URI) {
+            audio.pause();
+            audio.muted = false;
+          }
+        })
+        .catch(() => {
+          audio.muted = false;
+        });
+    } else {
+      sharedAudioUnlocked = true;
+      audio.muted = false;
+    }
+  } catch {
+    audio.muted = false;
+  }
+}
+
+function storeMemoryAudioAsset(
+  cacheKey: string,
+  arrayBuffer: ArrayBuffer,
+  mimeType = 'audio/wav',
+): CachedAudioAsset {
+  const existing = memoryAudioCache.get(cacheKey);
   if (existing) {
-    memoryBlobUrlCache.delete(cacheKey);
-    memoryBlobUrlCache.set(cacheKey, existing);
+    memoryAudioCache.delete(cacheKey);
+    memoryAudioCache.set(cacheKey, existing);
     return existing;
   }
 
-  const objectUrl = URL.createObjectURL(blob);
-  memoryBlobUrlCache.set(cacheKey, objectUrl);
+  const blob = new Blob([arrayBuffer], { type: mimeType });
+  const blobUrl = URL.createObjectURL(blob);
+  const asset: CachedAudioAsset = { blobUrl, arrayBuffer };
+  memoryAudioCache.set(cacheKey, asset);
 
-  if (memoryBlobUrlCache.size > MEMORY_AUDIO_CACHE_MAX) {
-    const oldestKey = memoryBlobUrlCache.keys().next().value;
+  if (memoryAudioCache.size > MEMORY_AUDIO_CACHE_MAX) {
+    const oldestKey = memoryAudioCache.keys().next().value;
     if (oldestKey) {
-      const oldestUrl = memoryBlobUrlCache.get(oldestKey);
-      memoryBlobUrlCache.delete(oldestKey);
-      if (oldestUrl) {
+      const oldest = memoryAudioCache.get(oldestKey);
+      memoryAudioCache.delete(oldestKey);
+      if (oldest?.blobUrl) {
         try {
-          URL.revokeObjectURL(oldestUrl);
+          URL.revokeObjectURL(oldest.blobUrl);
         } catch {
           // Ignore revoke failures
         }
       }
     }
   }
-  return objectUrl;
+  return asset;
 }
 
-async function readPersistentTtsCache(cacheKey: string): Promise<Blob | null> {
+async function readPersistentTtsCache(
+  cacheKey: string,
+): Promise<{ arrayBuffer: ArrayBuffer; mimeType: string } | null> {
   if (typeof window === 'undefined' || !('caches' in window)) return null;
   try {
     const cache = await window.caches.open(TTS_BROWSER_CACHE_NAME);
     const match = await cache.match(cacheKey);
     if (!match) return null;
-    return await match.blob();
+    const arrayBuffer = await match.arrayBuffer();
+    if (arrayBuffer.byteLength <= 44) return null;
+    return {
+      arrayBuffer,
+      mimeType: match.headers.get('content-type') || 'audio/wav',
+    };
   } catch {
     return null;
   }
@@ -344,14 +444,15 @@ async function readPersistentTtsCache(cacheKey: string): Promise<Blob | null> {
 
 async function writePersistentTtsCache(
   cacheKey: string,
-  blob: Blob,
+  arrayBuffer: ArrayBuffer,
+  mimeType = 'audio/wav',
 ): Promise<void> {
   if (typeof window === 'undefined' || !('caches' in window)) return;
   try {
     const cache = await window.caches.open(TTS_BROWSER_CACHE_NAME);
-    const response = new Response(blob, {
+    const response = new Response(arrayBuffer.slice(0), {
       status: 200,
-      headers: { 'Content-Type': blob.type || 'audio/wav' },
+      headers: { 'Content-Type': mimeType },
     });
     await cache.put(cacheKey, response);
   } catch {
@@ -359,26 +460,25 @@ async function writePersistentTtsCache(
   }
 }
 
-async function resolveServerTtsBlobUrl(
+async function fetchServerTtsAsset(
   cleanedText: string,
   voiceStyle: SpeechVoiceStyle,
-  signal: AbortSignal,
-  onLoadingChange?: (loading: boolean) => void,
-): Promise<string | null> {
+  externalSignal?: AbortSignal,
+): Promise<CachedAudioAsset | null> {
   const cacheKey = buildTtsCacheKey(cleanedText, voiceStyle);
 
-  // 1. Instant in-memory Blob URL hit
-  const memHit = memoryBlobUrlCache.get(cacheKey);
+  // 1. Instant in-memory hit
+  const memHit = memoryAudioCache.get(cacheKey);
   if (memHit) {
-    memoryBlobUrlCache.delete(cacheKey);
-    memoryBlobUrlCache.set(cacheKey, memHit);
+    memoryAudioCache.delete(cacheKey);
+    memoryAudioCache.set(cacheKey, memHit);
     return memHit;
   }
 
   // 2. Persistent offline browser Cache Storage hit
   const diskHit = await readPersistentTtsCache(cacheKey);
-  if (diskHit && diskHit.size > 44) {
-    return storeMemoryBlobUrl(cacheKey, diskHit);
+  if (diskHit) {
+    return storeMemoryAudioAsset(cacheKey, diskHit.arrayBuffer, diskHit.mimeType);
   }
 
   // 3. Offline check — fall back immediately if uncached and offline
@@ -386,43 +486,220 @@ async function resolveServerTtsBlobUrl(
     return null;
   }
 
-  // 4. Fetch authentic Japanese male/female WAV from server TTS endpoint
-  onLoadingChange?.(true);
-  const timeoutId =
-    typeof window !== 'undefined'
-      ? window.setTimeout(() => {
-          activeAbortController?.abort();
-        }, SERVER_TTS_TIMEOUT_MS)
-      : null;
+  // 4. Deduplicate concurrent requests for the same phrase + voice style
+  const existingInflight = inflightTtsRequests.get(cacheKey);
+  if (existingInflight) {
+    return existingInflight;
+  }
+
+  const requestPromise = (async (): Promise<CachedAudioAsset | null> => {
+    const localController = new AbortController();
+    const onExternalAbort = () => localController.abort();
+    if (externalSignal) {
+      if (externalSignal.aborted) {
+        localController.abort();
+      } else {
+        externalSignal.addEventListener('abort', onExternalAbort, {
+          once: true,
+        });
+      }
+    }
+
+    const timeoutId =
+      typeof window !== 'undefined'
+        ? window.setTimeout(() => localController.abort(), SERVER_TTS_TIMEOUT_MS)
+        : null;
+
+    try {
+      const response = await fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: cleanedText,
+          voiceStyle,
+        }),
+        signal: localController.signal,
+      });
+
+      if (!response.ok) return null;
+      const contentType = response.headers.get('content-type') ?? '';
+      if (!contentType.includes('audio/')) return null;
+
+      const arrayBuffer = await response.arrayBuffer();
+      if (arrayBuffer.byteLength <= 44) return null;
+
+      const mimeType = contentType.split(';')[0].trim() || 'audio/wav';
+      void writePersistentTtsCache(cacheKey, arrayBuffer, mimeType);
+      return storeMemoryAudioAsset(cacheKey, arrayBuffer, mimeType);
+    } catch {
+      return null;
+    } finally {
+      if (timeoutId !== null && typeof window !== 'undefined') {
+        window.clearTimeout(timeoutId);
+      }
+      externalSignal?.removeEventListener('abort', onExternalAbort);
+      inflightTtsRequests.delete(cacheKey);
+    }
+  })();
+
+  inflightTtsRequests.set(cacheKey, requestPromise);
+  return requestPromise;
+}
+
+/**
+ * Quietly pre-warms the server TTS cache for a phrase (e.g. test sentence when
+ * switching Cowok/Cewek in Settings) so clicking play hits memory in 0ms.
+ */
+export function prefetchJapaneseSpeech(
+  rawText: string,
+  voiceStyle?: SpeechVoiceStyle,
+): void {
+  if (typeof window === 'undefined' || typeof fetch !== 'function') return;
+  const cleaned = cleanJapaneseSpeechText(rawText);
+  if (!cleaned) return;
+  const style = voiceStyle ?? loadSpeechPreferences().voiceStyle;
+  void fetchServerTtsAsset(cleaned, style);
+}
+
+async function playAssetViaWebAudio(
+  asset: CachedAudioAsset,
+  rate: number,
+  token: number,
+  callbacks: { onStart?: () => void; onEnd?: () => void },
+): Promise<boolean> {
+  const ctx = getOrCreateAudioContext();
+  if (!ctx) return false;
 
   try {
-    const response = await fetch('/api/tts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        text: cleanedText,
-        voiceStyle,
-      }),
-      signal,
-    });
-
-    if (!response.ok) return null;
-    const contentType = response.headers.get('content-type') ?? '';
-    if (!contentType.includes('audio/')) return null;
-
-    const blob = await response.blob();
-    if (blob.size <= 44) return null;
-
-    void writePersistentTtsCache(cacheKey, blob);
-    return storeMemoryBlobUrl(cacheKey, blob);
-  } catch {
-    return null;
-  } finally {
-    if (timeoutId !== null && typeof window !== 'undefined') {
-      window.clearTimeout(timeoutId);
+    if (ctx.state === 'suspended') {
+      await ctx.resume();
     }
-    onLoadingChange?.(false);
+    if (activePlaybackToken !== token) return true;
+
+    const decoded = await ctx.decodeAudioData(asset.arrayBuffer.slice(0));
+    if (activePlaybackToken !== token) return true;
+
+    const source = ctx.createBufferSource();
+    source.buffer = decoded;
+    source.playbackRate.value = rate;
+    source.connect(ctx.destination);
+    activeBufferSource = source;
+
+    source.onended = () => {
+      if (activeBufferSource === source) {
+        activeBufferSource = null;
+      }
+      if (activePlaybackToken === token) {
+        callbacks.onEnd?.();
+      }
+    };
+
+    source.start(0);
+    if (activePlaybackToken === token) {
+      callbacks.onStart?.();
+    }
+    return true;
+  } catch {
+    return false;
   }
+}
+
+async function playAssetViaHtmlAudio(
+  asset: CachedAudioAsset,
+  rate: number,
+  token: number,
+  callbacks: { onStart?: () => void; onEnd?: () => void },
+): Promise<boolean> {
+  const audio = getOrCreateSharedAudioEl();
+  if (!audio) return false;
+
+  return new Promise<boolean>((resolve) => {
+    let settled = false;
+    let started = false;
+    let ended = false;
+
+    const cleanup = () => {
+      audio.onplay = null;
+      audio.onended = null;
+      audio.onerror = null;
+    };
+
+    const finishOnce = () => {
+      if (ended) return;
+      ended = true;
+      cleanup();
+      if (activePlaybackToken === token) {
+        callbacks.onEnd?.();
+      }
+    };
+
+    try {
+      cleanup();
+      audio.pause();
+      audio.muted = false;
+      audio.volume = 1;
+      audio.src = asset.blobUrl;
+      audio.playbackRate = rate;
+      if ('preservesPitch' in audio) {
+        (audio as HTMLAudioElement & { preservesPitch: boolean }).preservesPitch =
+          true;
+      }
+
+      audio.onplay = () => {
+        started = true;
+        sharedAudioUnlocked = true;
+        if (!settled) {
+          settled = true;
+          resolve(true);
+        }
+        if (activePlaybackToken === token) {
+          callbacks.onStart?.();
+        }
+      };
+
+      audio.onended = finishOnce;
+
+      audio.onerror = () => {
+        cleanup();
+        if (!settled) {
+          settled = true;
+          resolve(false);
+        } else if (!ended) {
+          ended = true;
+          if (activePlaybackToken === token) {
+            callbacks.onEnd?.();
+          }
+        }
+      };
+
+      const playPromise = audio.play();
+      if (playPromise && typeof playPromise.then === 'function') {
+        void playPromise
+          .then(() => {
+            sharedAudioUnlocked = true;
+            if (!settled) {
+              settled = true;
+              resolve(true);
+            }
+          })
+          .catch(() => {
+            if (!started) {
+              cleanup();
+              if (!settled) {
+                settled = true;
+                resolve(false);
+              }
+            }
+          });
+      }
+    } catch {
+      cleanup();
+      if (!settled) {
+        settled = true;
+        resolve(false);
+      }
+    }
+  });
 }
 
 function speakViaDeviceWebSpeech(
@@ -494,17 +771,29 @@ export function stopJapaneseSpeech(): void {
     activeAbortController = null;
   }
 
-  if (activeAudioEl) {
+  if (sharedAudioEl) {
     try {
-      activeAudioEl.onended = null;
-      activeAudioEl.onerror = null;
-      activeAudioEl.onplay = null;
-      activeAudioEl.pause();
-      activeAudioEl.currentTime = 0;
+      sharedAudioEl.onended = null;
+      sharedAudioEl.onerror = null;
+      sharedAudioEl.onplay = null;
+      sharedAudioEl.pause();
+      if (sharedAudioEl.readyState > 0) {
+        sharedAudioEl.currentTime = 0;
+      }
     } catch {
       // Ignore audio stop errors
     }
-    activeAudioEl = null;
+  }
+
+  if (activeBufferSource) {
+    try {
+      activeBufferSource.onended = null;
+      activeBufferSource.stop();
+      activeBufferSource.disconnect();
+    } catch {
+      // Ignore Web Audio stop errors
+    }
+    activeBufferSource = null;
   }
 
   if (isDeviceSpeechSynthesisSupported()) {
@@ -561,87 +850,60 @@ export function speakJapanese(
     });
   }
 
+  const cacheKey = buildTtsCacheKey(cleaned, effectiveStyle);
+  const immediateAsset = memoryAudioCache.get(cacheKey);
+
+  // Synchronously unlock audio pipelines inside the user tap gesture!
+  unlockAudioPlaybackFromGesture(Boolean(immediateAsset));
+
   const controller = new AbortController();
   activeAbortController = controller;
 
   void (async () => {
-    const blobUrl = await resolveServerTtsBlobUrl(
-      cleaned,
-      effectiveStyle,
-      controller.signal,
-      options?.onLoadingChange,
-    );
+    let asset: CachedAudioAsset | null = immediateAsset ?? null;
+    if (!asset) {
+      options?.onLoadingChange?.(true);
+      try {
+        asset = await fetchServerTtsAsset(
+          cleaned,
+          effectiveStyle,
+          controller.signal,
+        );
+      } finally {
+        if (activePlaybackToken === token) {
+          options?.onLoadingChange?.(false);
+        }
+      }
+    }
 
     if (activePlaybackToken !== token) return;
 
-    if (!blobUrl) {
-      speakViaDeviceWebSpeech(cleaned, {
-        rate: effectiveRate,
-        voiceStyle: effectiveStyle,
-        voiceURI: effectiveVoiceURI,
-        token,
+    if (asset) {
+      // Primary: gesture-unlocked HTMLAudioElement (preserves pitch across speeds)
+      const htmlOk = await playAssetViaHtmlAudio(asset, effectiveRate, token, {
         onStart: options?.onStart,
         onEnd: options?.onEnd,
       });
-      return;
-    }
+      if (htmlOk || activePlaybackToken !== token) return;
 
-    try {
-      const audio = new window.Audio(blobUrl);
-      audio.playbackRate = effectiveRate;
-      if ('preservesPitch' in audio) {
-        (audio as HTMLAudioElement & { preservesPitch: boolean }).preservesPitch =
-          true;
-      }
-      activeAudioEl = audio;
-
-      let finished = false;
-      const finishOnce = () => {
-        if (finished) return;
-        finished = true;
-        if (activeAudioEl === audio) {
-          activeAudioEl = null;
-        }
-        if (activePlaybackToken === token) {
-          options?.onEnd?.();
-        }
-      };
-
-      audio.onplay = () => {
-        if (activePlaybackToken === token) {
-          options?.onStart?.();
-        }
-      };
-      audio.onended = finishOnce;
-      audio.onerror = () => {
-        if (activePlaybackToken !== token || finished) return;
-        finished = true;
-        if (activeAudioEl === audio) {
-          activeAudioEl = null;
-        }
-        speakViaDeviceWebSpeech(cleaned, {
-          rate: effectiveRate,
-          voiceStyle: effectiveStyle,
-          voiceURI: effectiveVoiceURI,
-          token,
-          onStart: options?.onStart,
-          onEnd: options?.onEnd,
-        });
-      };
-
-      await audio.play();
-    } catch {
-      if (activePlaybackToken !== token) return;
-      activeAudioEl = null;
-      speakViaDeviceWebSpeech(cleaned, {
-        rate: effectiveRate,
-        voiceStyle: effectiveStyle,
-        voiceURI: effectiveVoiceURI,
-        token,
+      // Secondary: gesture-unlocked Web Audio API decodeAudioData playback of the exact same server WAV
+      const webAudioOk = await playAssetViaWebAudio(asset, effectiveRate, token, {
         onStart: options?.onStart,
         onEnd: options?.onEnd,
       });
+      if (webAudioOk || activePlaybackToken !== token) return;
     }
+
+    // Last-resort fallback only when offline/server error/audio unavailable
+    if (activePlaybackToken !== token) return;
+    speakViaDeviceWebSpeech(cleaned, {
+      rate: effectiveRate,
+      voiceStyle: effectiveStyle,
+      voiceURI: effectiveVoiceURI,
+      token,
+      onStart: options?.onStart,
+      onEnd: options?.onEnd,
+    });
   })();
 
   return true;

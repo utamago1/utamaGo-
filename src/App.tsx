@@ -168,7 +168,7 @@ const LazyReportAndSimSection = lazy(() =>
   })),
 );
 
-const DECK_CACHE_VERSION = '2026-11-23-v7';
+const DECK_CACHE_VERSION = '2026-11-24-v8';
 const AUDIO_KEEPALIVE_STORAGE_KEY = 'utamago_catbox_keepalive_at';
 const AUDIO_KEEPALIVE_INTERVAL_MS = 25 * 24 * 60 * 60 * 1000;
 

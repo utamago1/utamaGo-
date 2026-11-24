@@ -36,7 +36,7 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
           <h2 className="font-display text-xl font-bold tracking-tight text-on-surface sm:text-2xl">
             Tentang UtamaGo!
           </h2>
-          <p className="mt-1 text-[13px] text-[#4b4b53]">
+          <p className="mt-1 text-[13px] text-on-surface-variant">
             Informasi aplikasi dan tim pengajar di balik UtamaGo!.
           </p>
         </div>
@@ -45,7 +45,7 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
       {/* App Overview */}
       <section className="rounded-2xl border border-outline-variant bg-surface-container-low p-4 sm:p-6">
         <div className="flex flex-col items-start gap-5 sm:flex-row sm:items-center">
-          <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-outline-variant bg-white p-2">
+          <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-outline-variant bg-[#f6f5f0] p-2 dark:border-white/15 dark:bg-[#eae7df]">
             {!logoFailed ? (
               <img
                 src={BRAND_ASSETS.logoPath}
@@ -55,7 +55,7 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
                 referrerPolicy="no-referrer"
                 draggable={false}
                 onError={() => setLogoFailed(true)}
-                className="h-full w-full object-contain"
+                className="h-full w-full object-contain mix-blend-multiply"
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center font-display text-sm font-extrabold text-zinc-900">
@@ -111,7 +111,7 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
         <div className="grid grid-cols-1 divide-y divide-outline-variant rounded-2xl border border-outline-variant bg-surface-container-low md:grid-cols-2 md:divide-x md:divide-y-0">
           <div className="space-y-4 p-4 sm:p-6">
             <div className="flex items-center gap-4">
-              <div className="flex h-24 w-24 shrink-0 items-end justify-center overflow-hidden rounded-2xl border border-outline-variant/80 bg-white shadow-2xs sm:h-28 sm:w-28">
+              <div className="relative flex h-24 w-24 shrink-0 items-end justify-center overflow-hidden rounded-2xl border border-outline-variant/80 bg-[#f6f5f0] p-1 shadow-2xs ring-1 ring-black/5 dark:border-white/15 dark:bg-[#e8e5dd] dark:ring-white/10 sm:h-28 sm:w-28">
                 <img
                   src="/assets/founders/founder-ryan.gif?v=2"
                   alt="Animasi pendiri UtamaGo!, Ryan Alief Utama"
@@ -119,7 +119,7 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
                   height={112}
                   decoding="async"
                   draggable={false}
-                  className="h-full w-full select-none bg-white object-contain object-bottom"
+                  className="h-full w-full select-none object-contain object-bottom mix-blend-multiply"
                 />
               </div>
               <div className="min-w-0">
@@ -146,7 +146,7 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
               className="m3-tactile inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-outline-variant bg-surface px-3.5 py-2 text-xs font-bold text-on-surface transition-colors hover:border-primary/40 hover:text-primary sm:w-auto"
             >
               <Instagram className="h-4 w-4 text-primary" aria-hidden="true" />
-              <span>Tanya Pengajar · {TEACHER_INSTAGRAM_HANDLE}</span>
+              <span>Instagram · {TEACHER_INSTAGRAM_HANDLE}</span>
               <ExternalLink
                 className="h-3.5 w-3.5 text-on-surface-variant"
                 aria-hidden="true"
@@ -156,7 +156,7 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
 
           <div className="space-y-4 p-4 sm:p-6">
             <div className="flex items-center gap-4">
-              <div className="flex h-24 w-24 shrink-0 items-end justify-center overflow-hidden rounded-2xl border border-outline-variant/80 bg-white shadow-2xs sm:h-28 sm:w-28">
+              <div className="relative flex h-24 w-24 shrink-0 items-end justify-center overflow-hidden rounded-2xl border border-outline-variant/80 bg-[#f6f5f0] p-1 shadow-2xs ring-1 ring-black/5 dark:border-white/15 dark:bg-[#e8e5dd] dark:ring-white/10 sm:h-28 sm:w-28">
                 <img
                   src="/assets/founders/founder-annisa.gif?v=2"
                   alt="Animasi partner UtamaGo!, Annisa Maulidiyah Rohmawati"
@@ -164,7 +164,7 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
                   height={112}
                   decoding="async"
                   draggable={false}
-                  className="h-full w-full select-none bg-white object-contain object-bottom"
+                  className="h-full w-full select-none object-contain object-bottom mix-blend-multiply"
                 />
               </div>
               <div className="min-w-0">

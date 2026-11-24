@@ -88,6 +88,18 @@ test('parseBunpouN4Deck parses all 99 entries across 40 lessons and 2 groups', (
     assert.ok(item.id.startsWith('n4-bunpou-'));
     assert.ok(item.pattern.length > 0, `Pattern missing on N4 ${item.code}`);
     assert.ok(item.meaning.length > 0, `Arti missing on N4 ${item.code}`);
+    assert.ok(
+      item.lessonFullTitle.startsWith(`Bab ${item.lessonNumber} · `),
+      `N4 ${item.code} should use uniform Bab N format: ${item.lessonFullTitle}`,
+    );
+    assert.ok(
+      !item.lessonFullTitle.includes('課'),
+      `N4 ${item.code} should not use 課: ${item.lessonFullTitle}`,
+    );
+    assert.ok(
+      /[A-Za-z]{3,}/.test(item.lessonTitleId ?? ''),
+      `N4 Bab ${item.lessonNumber} missing Indonesian title: ${item.lessonTitleId}`,
+    );
     assert.ok(item.examples.length >= 2, `Contoh < 2 on N4 ${item.code}`);
     for (const ex of item.examples) {
       assert.ok(ex.jp.length > 0, `JP example empty on N4 ${item.code}`);
@@ -99,7 +111,7 @@ test('parseBunpouN4Deck parses all 99 entries across 40 lessons and 2 groups', (
   assert.ok(part2First);
   assert.equal(part2First.groupId, 'B2');
   assert.equal(part2First.lessonNumber, 26);
-  assert.ok(part2First.lessonFullTitle.startsWith('Bag.2 · 1課'));
+  assert.ok(part2First.lessonFullTitle.startsWith('Bab 26 · Partikel で dan に'));
 
   const card = bunpouItemToAnkiCard(part2First);
   assert.equal(card.deckId, 'N4_BUNPOU');
@@ -209,6 +221,11 @@ test('parseBunpouN1Deck parses all 97 entries across 20 lessons and 3 groups', (
     assert.ok(item.pattern.length > 0, `Pattern missing on N1 ${item.code}`);
     assert.ok(item.meaning.length > 0, `Arti missing on N1 ${item.code}`);
     assert.ok(item.formula.length > 0, `Rumus missing on N1 ${item.code}`);
+    assert.ok(
+      item.lessonFullTitle.startsWith(`Bab ${item.lessonNumber} · `) &&
+        !item.lessonFullTitle.includes('課'),
+      `N1 ${item.code} should use uniform Bab N format: ${item.lessonFullTitle}`,
+    );
     assert.ok(item.examples.length >= 1, `Contoh missing on N1 ${item.code}`);
   }
 

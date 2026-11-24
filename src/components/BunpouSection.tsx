@@ -30,6 +30,7 @@ import {
 } from '../utils/bunpouComparison';
 import {
   filterBunpouN2Items,
+  formatBunpouLessonLabel,
   getBunpouGroupsForLevel,
   type BunpouN2GroupFilter,
   type BunpouN2Item,
@@ -54,6 +55,7 @@ import {
   type StudyNotesStore,
 } from '../utils/studyNotes';
 import { BunpouExplanation } from './BunpouExplanation';
+import { BunpouFormula } from './BunpouFormula';
 import { ChallengeRunnerModal } from './ChallengeRunnerModal';
 import { HighlightedJapaneseText } from './HighlightedJapaneseText';
 import { SpeechControlBar } from './SpeechControlBar';
@@ -79,25 +81,13 @@ type ComparisonLevelFilter = 'ALL' | JlptLevel;
 interface BunpouChapterSummary {
   lessonNumber: number;
   title: string;
+  titleId: string;
+  titleJp: string;
   shortLabel: string;
   groupId: string;
   items: BunpouN2Item[];
   reviewedCount: number;
   previewPatterns: string[];
-}
-
-function formatBunpouLessonLabel(item: BunpouN2Item): string {
-  if (item.lessonFullTitle.startsWith('Ringkasan ')) {
-    return item.lessonFullTitle.split('·')[0].trim();
-  }
-  if (item.lessonFullTitle.startsWith('Bab ')) {
-    return item.lessonFullTitle.split('·')[0].trim();
-  }
-  if (item.lessonFullTitle.startsWith('Bag.')) {
-    const match = item.lessonFullTitle.match(/^(Bag\.\d+\s*·\s*\d+課)/);
-    if (match) return match[1];
-  }
-  return `${item.lessonNumber}課`;
 }
 
 function getLevelTagClasses(level: JlptLevel): string {
@@ -224,6 +214,8 @@ export function BunpouSection({
         return {
           lessonNumber,
           title: first.lessonFullTitle,
+          titleId: first.lessonTitleId || first.lessonTitle,
+          titleJp: first.lessonTitleJp || '',
           shortLabel: formatBunpouLessonLabel(first),
           groupId: first.groupId,
           items,
@@ -647,11 +639,9 @@ export function BunpouSection({
           {activeItem.formula && (
             <div className="space-y-1.5 border-t border-outline-variant pt-5">
               <p className="text-xs font-medium text-on-surface-variant">
-                Cara Menyambung
+                Rumus Bunpou
               </p>
-              <p className="rounded-xl border border-outline-variant bg-surface px-4 py-3 font-mono text-sm leading-relaxed text-on-surface">
-                {activeItem.formula}
-              </p>
+              <BunpouFormula formula={activeItem.formula} />
             </div>
           )}
 
@@ -789,12 +779,12 @@ export function BunpouSection({
               <h3 className="font-display text-base font-bold text-on-surface sm:text-lg">
                 Komparasi Pola Mirip · Lintas Level (N5–N1)
               </h3>
-              <p className="mt-1 text-[13px] leading-relaxed text-[#4b4b53] sm:text-sm">
+              <p className="mt-1 text-[13px] leading-relaxed text-on-surface-variant sm:text-sm">
                 Bandingkan pola bunpou berdasarkan fungsi gramatikal &amp;
                 sub-nuansa yang benar-benar sepadan.
               </p>
             </div>
-            <span className="font-mono text-xs tabular-nums text-[#4b4b53]">
+            <span className="font-mono text-xs tabular-nums text-on-surface-variant">
               Topik {activeCompareGroupIdx + 1} / {allCrossLevelGroups.length}
             </span>
           </div>
@@ -879,7 +869,7 @@ export function BunpouSection({
               className={`inline-flex min-h-[36px] items-center justify-center gap-1.5 rounded-lg border px-2.5 py-1 font-mono text-xs font-semibold transition-colors ${
                 effectiveCompareLevelFilter === 'ALL'
                   ? 'border-primary bg-primary text-on-primary'
-                  : 'border-outline-variant bg-surface-container-low text-[#4b4b53] hover:border-outline hover:text-on-surface'
+                  : 'border-outline-variant bg-surface-container-low text-on-surface-variant hover:border-outline hover:text-on-surface'
               }`}
             >
               <span>Semua Level</span>
@@ -906,7 +896,7 @@ export function BunpouSection({
                     active
                       ? 'border-primary bg-primary text-on-primary'
                       : canFilterStandalone
-                        ? 'border-outline-variant bg-surface-container-low text-[#4b4b53] hover:border-outline hover:text-on-surface'
+                        ? 'border-outline-variant bg-surface-container-low text-on-surface-variant hover:border-outline hover:text-on-surface'
                         : 'cursor-not-allowed border-outline-variant/60 bg-surface text-on-surface-variant/60'
                   }`}
                 >
@@ -919,7 +909,7 @@ export function BunpouSection({
 
           {/* Pair context banner (Cross-level / Same-level + Sub-cluster nuance) */}
           {leftComparisonEntry && rightComparisonEntry && (
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-medium text-[#4b4b53]">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-medium text-on-surface-variant">
               <span>
                 {isCrossLevelPair ? 'Lintas level:' : 'Sesama level:'}{' '}
                 <span className="font-mono font-bold text-on-surface">
@@ -970,7 +960,7 @@ export function BunpouSection({
                     <div className="flex items-center justify-between gap-2">
                       <label
                         htmlFor={selectId}
-                        className="text-[13px] font-medium text-[#4b4b53]"
+                        className="text-[13px] font-medium text-on-surface-variant"
                       >
                         {slot}
                       </label>
@@ -1097,13 +1087,11 @@ export function BunpouSection({
                   )}
 
                   {entry.formula && (
-                    <div className="space-y-1">
+                    <div className="space-y-1.5">
                       <p className="text-xs font-medium text-on-surface-variant">
-                        Cara Menyambung
+                        Rumus Bunpou
                       </p>
-                      <p className="rounded-lg border border-outline-variant bg-surface px-3 py-2 font-mono text-xs leading-relaxed text-on-surface">
-                        {entry.formula}
-                      </p>
+                      <BunpouFormula formula={entry.formula} compact />
                     </div>
                   )}
 
@@ -1450,7 +1438,7 @@ export function BunpouSection({
                 aria-label={`Daftar Bab Bunpou ${bunpouLevel}`}
                 className="divide-y divide-outline-variant overflow-hidden rounded-2xl border border-outline-variant bg-surface-container-low"
               >
-                {chapters.map((chapter, idx) => {
+                {chapters.map((chapter) => {
                   const allDone =
                     chapter.items.length > 0 &&
                     chapter.reviewedCount === chapter.items.length;
@@ -1462,9 +1450,9 @@ export function BunpouSection({
                         className="group flex min-h-[76px] w-full min-w-0 items-center justify-between gap-3 px-4 py-4 text-left transition-colors hover:bg-surface"
                       >
                         <div className="min-w-0 flex-1 space-y-1">
-                          <div className="flex flex-wrap items-center gap-1.5 text-xs text-[#4b4b53] dark:text-[#b4b4c0]">
+                          <div className="flex flex-wrap items-center gap-1.5 text-xs text-on-surface-variant">
                             <span className="font-mono font-semibold text-primary tabular-nums">
-                              Bab {idx + 1}
+                              {chapter.shortLabel}
                             </span>
                             <span aria-hidden="true" className="opacity-50">
                               ·
@@ -1499,17 +1487,22 @@ export function BunpouSection({
                           </div>
 
                           <p className="font-display text-[15px] font-bold leading-snug text-on-surface sm:text-base">
-                            {chapter.title}
+                            {chapter.titleId}
+                            {chapter.titleJp && chapter.titleJp !== chapter.titleId && (
+                              <span className="ml-1.5 font-sans text-xs font-medium text-on-surface-variant sm:text-[13px]">
+                                ({chapter.titleJp})
+                              </span>
+                            )}
                           </p>
 
-                          <p className="truncate text-[13px] text-[#4b4b53] dark:text-[#b4b4c0]">
+                          <p className="truncate text-[13px] text-on-surface-variant">
                             {chapter.previewPatterns.join(' · ')}
                             {chapter.items.length > 3 ? ' …' : ''}
                           </p>
                         </div>
 
                         <ChevronRight
-                          className="h-4 w-4 shrink-0 text-[#4b4b53] transition-transform duration-150 group-hover:translate-x-0.5 dark:text-[#b4b4c0]"
+                          className="h-4 w-4 shrink-0 text-on-surface-variant transition-transform duration-150 group-hover:translate-x-0.5"
                           aria-hidden="true"
                         />
                       </button>

@@ -146,7 +146,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
         transition={{ duration: 0.2 }}
         className="relative z-10 flex w-full max-w-md flex-col items-center rounded-3xl border border-outline-variant bg-surface-container-low p-6 shadow-xl sm:p-8"
       >
-        <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border border-outline-variant bg-white p-2 shadow-xs">
+        <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border border-outline-variant bg-[#f6f5f0] p-2 shadow-xs dark:border-white/15 dark:bg-[#eae7df]">
           {!logoFailed ? (
             <img
               src={BRAND_ASSETS.logoPath}
@@ -154,7 +154,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
               referrerPolicy="no-referrer"
               draggable={false}
               onError={() => setLogoFailed(true)}
-              className="h-full w-full object-contain"
+              className="h-full w-full object-contain mix-blend-multiply"
             />
           ) : (
             <span className="font-display text-lg font-extrabold text-zinc-900">

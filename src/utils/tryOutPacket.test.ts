@@ -203,7 +203,7 @@ test('ALL_TRYOUT_PACKETS includes JLPT N3 (15 packets), N2 (18 packets), and N1 
   assert.equal(TRYOUT_N2_PACKETS.length, 18);
   assert.equal(TRYOUT_N1_PACKETS.length, 18);
   assert.equal(ALL_TRYOUT_PACKETS.length, 51);
-  assert.equal(CATBOX_ALL_CHOUKAI_URLS.length, 50);
+  assert.equal(CATBOX_ALL_CHOUKAI_URLS.length, 51);
 
   assert.equal(TRYOUT_N3_PACKETS[0].id, 'n3-1');
   assert.equal(TRYOUT_N3_PACKETS[0].examCode, '2010.07');
@@ -294,11 +294,6 @@ test('ALL_TRYOUT_PACKETS includes JLPT N3 (15 packets), N2 (18 packets), and N1 
         packet.audioSrc.startsWith('https://files.catbox.moe/') &&
           packet.audioSrc.endsWith('.mp3'),
         `Expected Catbox direct MP3 URL for ${packet.id}, got ${packet.audioSrc}`,
-      );
-    } else if (packet.id === 'n1-15') {
-      assert.ok(
-        packet.audioSrc.startsWith('/api/audio/drive/'),
-        `Expected Drive fallback URL for n1-15, got ${packet.audioSrc}`,
       );
     } else {
       assert.ok(

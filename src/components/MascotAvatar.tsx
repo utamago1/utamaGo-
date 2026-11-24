@@ -113,7 +113,7 @@ export function MascotAvatar({
           setFallbackFailed(true);
         }
       }}
-      className={`h-full w-full select-none bg-white object-contain transition-transform duration-200 ${opticalScaleClass}`}
+      className={`h-full w-full select-none object-contain mix-blend-multiply transition-transform duration-200 ${opticalScaleClass}`}
     />
   ) : (
     <span
@@ -125,7 +125,7 @@ export function MascotAvatar({
   );
 
   const sharedBoxClasses =
-    'relative flex shrink-0 select-none items-center justify-center overflow-hidden rounded-2xl border border-outline-variant/70 bg-white shadow-2xs';
+    'relative flex shrink-0 select-none items-center justify-center overflow-hidden rounded-2xl border border-outline-variant/70 bg-[#f6f5f0] shadow-2xs dark:border-white/15 dark:bg-[#e8e5dd] dark:ring-1 dark:ring-white/10';
   const boxStyle = sizeClassName ? undefined : { width: size, height: size };
 
   if (onTap) {

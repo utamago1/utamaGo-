@@ -188,6 +188,46 @@ test('CHALLENGE_STAGES covers 12 curated stages across N5–N1 with 60 valid uni
         `${q.id} has invalid correctIndex ${q.correctIndex}`,
       );
       assert.ok(q.explanation.trim().length >= 10);
+
+      // Guard against single-option formatting giveaways (e.g. furigana/romaji or slash only on correct answer)
+      const parenCount = q.options.filter((opt) => /\([^)]+\)/.test(opt)).length;
+      assert.ok(
+        parenCount === 0 || parenCount === 4,
+        `${q.id} has uneven parenthetical hints across options (${parenCount}/4)`,
+      );
+      const slashCount = q.options.filter((opt) => opt.includes('/')).length;
+      assert.ok(
+        slashCount === 0 || slashCount === 4,
+        `${q.id} has uneven slash synonyms across options (${slashCount}/4)`,
+      );
+
+      // N3–N1 challenge questions must be full Japanese (no Indonesian prompts or options)
+      if (
+        stage.jlptLevel === 'N3' ||
+        stage.jlptLevel === 'N2' ||
+        stage.jlptLevel === 'N1'
+      ) {
+        assert.ok(
+          /[\u3040-\u30ff\u4e00-\u9faf]/.test(q.prompt),
+          `${q.id} (${stage.jlptLevel}) prompt must be written in Japanese`,
+        );
+        assert.equal(
+          /[a-z]{3,}/i.test(q.prompt.replace(/JLPT/g, '')),
+          false,
+          `${q.id} (${stage.jlptLevel}) prompt must not contain Indonesian/Latin hints: ${q.prompt}`,
+        );
+        for (const opt of q.options) {
+          assert.ok(
+            /[\u3040-\u30ff\u4e00-\u9faf]/.test(opt),
+            `${q.id} (${stage.jlptLevel}) option must be in Japanese: ${opt}`,
+          );
+          assert.equal(
+            /[a-z]{3,}/i.test(opt),
+            false,
+            `${q.id} (${stage.jlptLevel}) option must not contain Latin/Indonesian words: ${opt}`,
+          );
+        }
+      }
     }
   });
 

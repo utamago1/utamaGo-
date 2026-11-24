@@ -202,8 +202,8 @@ export const ROADMAP_STAGES: RoadmapStage[] = [
     available: true,
     illustrationPath: '/src/assets/images/stage_chick_n3_1795072571171.jpg',
     illustrationAlt: 'Ilustrasi tahap CHICK JLPT N3 — anak ayam keluar penuh semangat',
-    focus: 'Deck Anki Kosakata JLPT N3 (1.641 kartu), Materi & Anki Bunpou N3 (144 pola dalam 28 bab & ringkasan), serta tantangan level N3 tersedia gratis.',
-    milestones: ['1.641 kartu Anki Kosakata N3', '144 pola Bunpou N3 (Materi & Anki)', 'Cara baca, rumus & 2 contoh kalimat'],
+    focus: 'Deck Anki Kosakata JLPT N3 (1.641 kartu), Materi & Anki Bunpou N3 (144 pola), tantangan full Jepang N3, serta 5 paket Try Out JLPT N3 terverifikasi (2010.07–2012.12) lengkap kunci resmi, audio, & transkrip Choukai.',
+    milestones: ['1.641 kartu Anki N3 + 144 pola Bunpou', '5 paket Try Out N3 terverifikasi (2010–2012)', 'Kunci resmi, ilustrasi & transkrip Choukai'],
   },
   {
     stage: 'GROW',
@@ -222,8 +222,8 @@ export const ROADMAP_STAGES: RoadmapStage[] = [
     available: true,
     illustrationPath: '/src/assets/images/stage_fly_n1_1795072570015.jpg',
     illustrationAlt: 'Ilustrasi tahap FLY JLPT N1 — maskot terbang mengepakkan sayap',
-    focus: 'Deck Anki Kosakata N1 (2.866 kartu) serta Materi & Anki Bunpou N1 (97 pola dalam 20 bab). Paket Try Out JLPT N1 sementara terkunci menunggu verifikasi soal & kunci resmi.',
-    milestones: ['2.866 kartu Anki N1 + 97 pola Bunpou', 'Materi per bab & komparasi lintas level', 'Try Out N1 sementara terkunci'],
+    focus: 'Deck Anki Kosakata N1 (2.866 kartu), Materi & Anki Bunpou N1 (97 pola dalam 20 bab), tantangan full Jepang N1, serta 4 paket Try Out JLPT N1 terverifikasi (2010.07–2011.12) lengkap kunci resmi, audio, & transkrip Choukai.',
+    milestones: ['2.866 kartu Anki N1 + 97 pola Bunpou', '4 paket Try Out N1 terverifikasi (2010–2011)', 'Kunci resmi, audio & transkrip Choukai'],
   },
 ];
 
@@ -313,50 +313,44 @@ export const MINI_TRYOUT_QUESTIONS: MiniTryOutQuestion[] = [
 export const FAQS: FaqItem[] = [
   {
     id: 'faq-1',
-    question: 'UtamaGo! cocok untuk siapa?',
+    question: 'Apa saja materi dan fitur gratis di UtamaGo! saat ini?',
     answer:
-      'Untuk pembelajar bahasa Jepang dari tingkat dasar hingga mahir (JLPT N5 sampai N1) yang ingin persiapan terstruktur lewat flashcard kosakata Anki, materi Bunpou, tantangan bertahap, serta evaluasi Try Out secara berkala.',
+      'Semua fitur UtamaGo! 100% gratis: 10 deck Anki independen untuk Kosakata N5–N1 (7.413 kartu) dan Bunpou N5–N1 (553 pola), materi Bunpou per bab lengkap komparasi pola mirip lintas level, Kamus Kosakata N5–N1, Studio Tulis Kanji & Kana dengan urutan coretan, 12 stage Tantangan Level N5–N1 (khusus N3–N1 sudah full bahasa Jepang), Detektor Kelemahan JLPT, serta 15 paket Try Out terverifikasi (5 N3, 6 N2, dan 4 N1) lengkap kunci jawaban resmi, audio, dan transkrip Choukai.',
   },
   {
     id: 'faq-2',
-    question: 'Apakah seluruh materi di aplikasi ini gratis?',
+    question: 'Bagaimana cara memakai Anki & belajar khusus materi Favorit/Bookmark?',
     answer:
-      'Ya, 100% gratis. Kamu bisa langsung memakai 10 deck Anki independen (Kosakata JLPT N5–N1 & Bunpou JLPT N5–N1), materi Bunpou lengkap N5–N1 per bab (553 pola) beserta komparasi pola mirip lintas level, Level Tantangan, serta 6 paket Try Out JLPT N2 terverifikasi (2010–2012) lengkap dengan kunci resmi, audio, dan transkrip Choukai tanpa biaya apapun.',
+      'Buka tab Anki tanpa perlu instal aplikasi lain, pilih Kosakata atau Bunpou N5–N1, lalu mulai sesi belajar (geser kanan jika hafal, geser kiri untuk ulangi, atau tekan tombol Lagi/Sulit/Bagus/Mudah). Kamu juga bisa menandai kartu atau pola penting dengan ikon Bookmark/Favorit di Anki, Bunpou, dan Kamus—bahkan menambahkan catatan pribadi—lalu memfilter tab Favorit kapan saja untuk sesi review khusus.',
   },
   {
     id: 'faq-3',
-    question: 'Materi dan level apa saja yang sudah tersedia?',
+    question: 'Paket Try Out JLPT apa saja yang sudah terbuka & bagaimana cara melihat transkrip Choukai?',
     answer:
-      'Saat ini tersedia Deck Anki Kosakata lengkap JLPT N5 (654 kartu), N4 (567 kartu), N3 (1.641 kartu), N2 (1.685 kartu), dan N1 (2.866 kartu) lengkap arti Indonesia & 2 contoh kalimat; Materi per bab & Deck Anki Bunpou lengkap JLPT N5 (72 pola · 12 bab TRY!), JLPT N4 (99 pola · 40 bab), JLPT N3 (144 pola · 28 bab & ringkasan), JLPT N2 (141 pola · 26 bab), dan JLPT N1 (97 pola · 20 bab) — total 553 pola tata bahasa lengkap komparasi lintas level; Level Tantangan N5–N2; serta 6 paket Try Out JLPT N2 terverifikasi (Juli 2010 – Desember 2012) lengkap soal asli, kunci jawaban resmi, audio, dan transkrip Choukai (paket lainnya sementara terkunci menunggu verifikasi).',
+      'Saat ini 15 paket soal asli terverifikasi sudah terbuka di tab Tryout: 5 paket JLPT N3 (2010.07–2012.12), 6 paket JLPT N2 (2010.07–2012.12), dan 4 paket JLPT N1 (2010.07–2011.12). Paket tahun lainnya masih dalam proses verifikasi soal & kunci resmi. Setiap paket memiliki Moji-Goi & Bunpou, Dokkai, serta Choukai dengan pemutar audio resmi. Transkrip Choukai (聴力原文) otomatis terbuka di halaman evaluasi setelah kamu mengumpulkan jawaban.',
   },
   {
     id: 'faq-4',
-    question: 'Bagaimana cara memakai fitur kartu Anki di UtamaGo!?',
+    question: 'Bagaimana cara mengatur suara Cowok/Cewek, kecepatan baca, dan Mode Malam?',
     answer:
-      'Tidak perlu instal aplikasi tambahan. Buka tab Anki, pilih Kosakata (N5–N1) atau Bunpou (N5–N1), lalu mulai sesi pop-up. Setiap deck punya progres dan pengaturan independen. Kamu bisa langsung menggeser kartu ke kanan jika sudah hafal (Bagus), menggeser ke kiri untuk mengulang (Lagi), atau memilih tombol Lagi, Sulit, Bagus, dan Mudah dengan jadwal pengulangan berkala otomatis.',
+      'Ketuk ikon Pengaturan (gerigi) di pojok kanan atas untuk memilih gaya suara Jepang Cowok atau Cewek, kecepatan pelafalan (0.6x–1.3x), ukuran huruf, dan tema tampilan (Terang, Malam, atau Sistem). Untuk ganti cepat antara Mode Terang dan Mode Malam, kamu juga bisa langsung menekan ikon matahari/bulan di bilah atas aplikasi.',
   },
   {
     id: 'faq-5',
-    question: 'Apa bedanya Bunpou dan Dokkai?',
+    question: 'Apakah UtamaGo! bisa dipakai secara offline?',
     answer:
-      'Bunpou berfokus pada pola tata bahasa, rumus sambungan, makna, dan perbedaan nuansa. Dokkai berfokus pada kemampuan membaca, menemukan ide pokok, dan memahami maksud penulis.',
+      'Ya, sebagian besar fitur—seperti seluruh deck Anki N5–N1, materi Bunpou N5–N1, Kamus, Studio Tulis Kanji & Kana, Tantangan Level, serta soal teks dan transkrip Try Out—tersimpan lokal di perangkatmu. Audio pelafalan kata/kalimat yang sudah pernah diputar otomatis di-cache untuk pemutaran offline, sedangkan audio Choukai Try Out berdurasi penuh memerlukan koneksi internet.',
   },
   {
     id: 'faq-6',
-    question: 'Bagaimana cara mengerjakan Try Out JLPT N2 & membaca transkrip Choukai?',
+    question: 'Kenapa ada label Beta Tester & bagaimana cara menghubungi pengajar?',
     answer:
-      'Masuk ke tab Try Out, lalu pilih JLPT N2 untuk mengakses 6 paket soal asli terverifikasi (2010.07–2012.12). Paket N2 2013–2018, seluruh paket N1, dan Mini Simulasi sementara dikunci menunggu verifikasi soal resmi. Di setiap paket N2 yang terbuka, kamu bisa mengerjakan Moji-Goi & Bunpou, Dokkai, serta Choukai (dilengkapi pemutar audio MP3). Transkrip Choukai (聴力原文) terbuka otomatis pada halaman evaluasi setelah kamu mengumpulkan jawaban.',
+      'UtamaGo! sedang dalam tahap Beta Tester sambil terus menyempurnakan materi serta memverifikasi paket Try Out seri tahun berikutnya dan modul Kosakata/Dokkai/Choukai. Jika kamu menemukan kesalahan soal, bug, atau ingin bertanya seputar belajar JLPT, hubungi pengajar langsung melalui Instagram @ryan_lief di menu Pengaturan atau halaman Tentang.',
   },
   {
     id: 'faq-7',
-    question: 'Apakah bisa dijalankan secara offline?',
+    question: 'Apakah hasil Try Out UtamaGo! adalah skor resmi JLPT?',
     answer:
-      'Sebagian besar fitur—seperti seluruh deck Anki Kosakata N5–N1, Materi & Anki Bunpou N5–N1 (553 pola), level tantangan, serta soal teks dan transkrip Choukai Try Out N2—tersimpan lokal di perangkatmu. Pemutaran audio Choukai membutuhkan koneksi internet agar rekaman dapat diputar dengan lancar.',
-  },
-  {
-    id: 'faq-8',
-    question: 'Apakah Try Out UtamaGo! sama dengan JLPT resmi?',
-    answer:
-      'Tidak. UtamaGo! adalah aplikasi persiapan belajar gratis dan bukan penyelenggara resmi JLPT. Hasil Try Out dan estimasi level adalah evaluasi latihan, bukan skor resmi.',
+      'Tidak. UtamaGo! adalah aplikasi persiapan belajar gratis dan bukan penyelenggara resmi JLPT. Skor Try Out, estimasi level, dan Detektor Kelemahan berfungsi sebagai bahan evaluasi latihan mandiri.',
   },
 ];

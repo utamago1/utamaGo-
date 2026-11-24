@@ -1,5 +1,6 @@
 import type { AnkiCard } from './ankiParser';
 import { formatBunpouExplanation } from './bunpouExplanationFormatter';
+import { normalizeFormulaLines } from './bunpouFormulaFormatter';
 
 export const BUNPOU_N5_TEXT_URL =
   '/assets/aistudio/Bunpou_N5_Try_0fefe20b.txt';
@@ -34,17 +35,17 @@ export const BUNPOU_N2_GROUPS: BunpouN2GroupMeta[] = [
   {
     id: 'I',
     shortLabel: 'I. Menjelaskan Hal',
-    title: 'I. ことがらを説明する (Menjelaskan suatu hal)',
+    title: 'I. Menjelaskan Suatu Hal (ことがらを説明する)',
   },
   {
     id: 'II',
     shortLabel: 'II. Penilaian & Pandangan',
-    title: 'II. 主観を含めて説明する (Menyertakan penilaian pembicara)',
+    title: 'II. Menyertakan Penilaian Pembicara (主観を含めて説明する)',
   },
   {
     id: 'III',
     shortLabel: 'III. Perasaan & Sikap',
-    title: 'III. 主観を述べる (Menyatakan pandangan/perasaan pembicara)',
+    title: 'III. Menyatakan Pandangan & Perasaan (主観を述べる)',
   },
 ];
 
@@ -68,12 +69,12 @@ export function getBunpouGroupsForLevel(
       {
         id: 'BAB5_8',
         shortLabel: 'Bab 5–8: Lanjutan',
-        title: 'Bab 5–8: Manga, Bandara, Ski & Bentuk Biasa',
+        title: 'Bab 5–8: Manga, Bandara, Ski & Makan Siang',
       },
       {
         id: 'BAB9',
-        shortLabel: 'Bab 9: Partikel & Kata Bantu',
-        title: 'Bab 9: Partikel, Adverbia, Konjungsi & Akhiran',
+        shortLabel: 'Bab 9–12: Partikel & Kata Bantu',
+        title: 'Bab 9–12: Partikel, Adverbia, Konjungsi & Akhiran',
       },
     ];
   }
@@ -88,13 +89,13 @@ export function getBunpouGroupsForLevel(
       },
       {
         id: 'B1',
-        shortLabel: 'Bag. 1: Fungsi Makna',
-        title: '第1部 意味機能別の文法形式 (Tata bahasa menurut fungsi makna)',
+        shortLabel: 'Bab 1–25: Fungsi Makna',
+        title: 'Bagian 1: Tata Bahasa Menurut Fungsi Makna',
       },
       {
         id: 'B2',
-        shortLabel: 'Bag. 2: Bentuk & Partikel',
-        title: '第2部 文法形式の整理 (Penyusunan bentuk tata bahasa)',
+        shortLabel: 'Bab 26–40: Bentuk & Partikel',
+        title: 'Bagian 2: Penyusunan Bentuk & Partikel',
       },
     ];
   }
@@ -109,23 +110,23 @@ export function getBunpouGroupsForLevel(
       },
       {
         id: 'B1',
-        shortLabel: 'Bag. 1: Fungsi Makna',
-        title: '第1部 文の文法1 (Bentuk tata bahasa menurut fungsi makna)',
+        shortLabel: 'Bab 1–12: Fungsi Makna',
+        title: 'Bagian 1: Tata Bahasa Menurut Fungsi Makna',
       },
       {
         id: 'RINGKASAN',
-        shortLabel: 'Ringkasan A–J',
-        title: '文法形式の整理 (Ringkasan bentuk tata bahasa A–J)',
+        shortLabel: 'Bab 13–22: Ringkasan A–J',
+        title: 'Ringkasan Bentuk Tata Bahasa A–J',
       },
       {
         id: 'B2',
-        shortLabel: 'Bag. 2: Susunan',
-        title: '第2部 文の文法2 (Susunan kalimat)',
+        shortLabel: 'Bab 23–26: Susunan Kalimat',
+        title: 'Bagian 2: Susunan Kalimat',
       },
       {
         id: 'B3',
-        shortLabel: 'Bag. 3: Wacana',
-        title: '第3部 文章の文法 (Tata bahasa teks / wacana)',
+        shortLabel: 'Bab 27–28: Wacana',
+        title: 'Bagian 3: Tata Bahasa Teks & Wacana',
       },
     ];
   }
@@ -140,17 +141,17 @@ export function getBunpouGroupsForLevel(
     {
       id: 'I',
       shortLabel: 'I. Menjelaskan Hal',
-      title: 'I. ことがらを説明する (Menjelaskan suatu hal)',
+      title: 'I. Menjelaskan Suatu Hal (ことがらを説明する)',
     },
     {
       id: 'II',
       shortLabel: 'II. Penilaian & Pandangan',
-      title: 'II. 主観を含めて説明する (Menyertakan penilaian pembicara)',
+      title: 'II. Menyertakan Penilaian Pembicara (主観を含めて説明する)',
     },
     {
       id: 'III',
       shortLabel: 'III. Perasaan & Sikap',
-      title: 'III. 主観を述べる (Menyatakan pandangan/perasaan pembicara)',
+      title: 'III. Menyatakan Pandangan & Perasaan (主観を述べる)',
     },
   ];
 }
@@ -170,6 +171,10 @@ export interface BunpouN2Item {
   crossReference: string;
   lessonNumber: number;
   lessonTitle: string;
+  /** Standardized Indonesian chapter title (present for 100% of N5–N1 chapters) */
+  lessonTitleId?: string;
+  /** Original Japanese chapter topic / key patterns */
+  lessonTitleJp?: string;
   lessonFullTitle: string;
   groupId: BunpouGroupCode;
   groupTitle: string;
@@ -178,6 +183,162 @@ export interface BunpouN2Item {
   formula: string;
   note: string;
   examples: BunpouN2Example[];
+}
+
+/**
+ * Uniform short chapter badge used across Daftar Bab, breadcrumbs, Anki cards, and Comparison badges.
+ */
+export function formatBunpouLessonLabel(
+  lessonOrItem: number | { lessonNumber: number },
+): string {
+  const num =
+    typeof lessonOrItem === 'number' ? lessonOrItem : lessonOrItem.lessonNumber;
+  return `Bab ${num}`;
+}
+
+/**
+ * Complete Indonesian translations for all 40 JLPT N4 Bunpou chapters (Bagian 1 & 2).
+ */
+const N4_LESSON_TRANSLATIONS_ID: Record<number, { id: string; jp?: string }> = {
+  1: { id: 'Perbandingan & Pilihan', jp: '~より・~ほど…ません・~のほう・~とどちら' },
+  2: { id: 'Sambil, Tepat Saat & Batas Waktu', jp: '~ながら・~ところです・~まで・~までに' },
+  3: { id: 'Ajakan & Tawaran', jp: '~ませんか・~ましょう(か)' },
+  4: { id: 'Kemampuan / Bentuk Potensial', jp: '~(ら)れます・~ができます・見えます・聞こえます' },
+  5: { id: 'Pengalaman & Kebiasaan', jp: '~たことがあります・~ことがあります' },
+  6: { id: 'Izin, Larangan & Kewajiban', jp: '~てもいい・~てはいけない・~なくてもいい・~なければならない' },
+  7: { id: 'Keinginan & Harapan', jp: '~がほしいです・~たいです・~といいです' },
+  8: { id: 'Kesan, Tampilan & Kondisi Tetap', jp: '~そうです・~がっています・~まま' },
+  9: { id: 'Sebab & Alasan', jp: '~から・~ので・~て' },
+  10: { id: 'Tujuan', jp: '~に・~ため(に)・~ように' },
+  11: { id: 'Menyebutkan Alasan & Aktivitas Beragam', jp: '(~も)~し・~たり~たりします' },
+  12: { id: 'Dugaan, Keyakinan & Kemiripan', jp: '~かもしれません・~はずです・~ようです・~みたいです' },
+  13: { id: 'Perintah, Saran & Keharusan', jp: '~なさい・~ほうがいいです・~ないと' },
+  14: { id: 'Pengandaian & Syarat (1)', jp: '~たら・~ば・~なら・~と' },
+  15: { id: 'Pengandaian & Syarat (2)', jp: '~たら・~なら' },
+  16: { id: 'Pertentangan (Meskipun & Padahal)', jp: '~ても・~のに' },
+  17: { id: 'Kutipan & Kalimat Tanya Tak Langsung', jp: '~と・~か・~かどうか' },
+  18: { id: 'Niat & Rencana', jp: '~(よ)うと思います・~つもりです' },
+  19: { id: 'Kabar & Sumber Informasi', jp: '~と言っていました・~そうです・~らしいです' },
+  20: { id: 'Perubahan Keadaan & Kemampuan', jp: '~く/にします・~く/になります・~ようになります' },
+  21: { id: 'Keputusan & Ketetapan', jp: '~にします・~ことにします・~になります・~ことになります' },
+  22: { id: 'Mencoba, Persiapan & Selesai / Terlanjur', jp: '~てみます・~ておきます・~てしまいます' },
+  23: { id: 'Memberi & Menerima', jp: 'あげます・くれます・もらいます' },
+  24: { id: 'Kalimat Pasif', jp: '~(ら)れます (受身)' },
+  25: { id: 'Kalimat Kausatif & Kausatif-Pasif', jp: '~(さ)せます・~さ(せら)れます' },
+  26: { id: 'Partikel で dan に', jp: 'で・に' },
+  27: { id: 'Partikel を dan と', jp: 'を・と' },
+  28: { id: 'Partikel も dan しか', jp: 'も・しか' },
+  29: { id: 'Partikel だけ dan でも', jp: 'だけ・でも' },
+  30: { id: 'Partikel は dan が', jp: 'は・が' },
+  31: { id: 'Nominalisasi の dan こと', jp: 'の・こと' },
+  32: { id: 'Bentuk て dan ないで', jp: '~て・~ないで' },
+  33: { id: 'Kata Kerja Transitif & Intransitif', jp: '他動詞・自動詞' },
+  34: { id: 'Keadaan Berlangsung & Hasil Tindakan', jp: '~ています・~てあります' },
+  35: { id: 'Arah Perubahan & Tindakan', jp: '~てきます・~ていきます' },
+  36: { id: 'Kata Tunjuk こ・そ・あ', jp: 'こ・そ・あ' },
+  37: { id: 'Kata Sambung / Konjungsi', jp: '接続の言葉' },
+  38: { id: 'Kata Keterangan / Adverbia', jp: '副詞' },
+  39: { id: 'Terlalu, Sulit & Mudah Dilakukan', jp: '~すぎます・~にくいです・~やすいです' },
+  40: { id: 'Kelas Kata', jp: '品詞' },
+};
+
+const N5_LESSON_TITLES_ID: Record<number, { id: string; jp: string }> = {
+  1: { id: 'Salam & Perkenalan', jp: 'あいさつ' },
+  2: { id: 'Di Toko Elektronik', jp: '電気屋で' },
+  3: { id: 'Belanja Kemarin', jp: 'きのうの買い物' },
+  4: { id: 'Kota Ueno', jp: '上野の町' },
+  5: { id: 'Manga', jp: 'まんが' },
+  6: { id: 'Di Bandara', jp: '空港で' },
+  7: { id: 'Ski & Pemandian Air Panas', jp: 'スキーとおんせん' },
+  8: { id: 'Makan Siang', jp: '昼ご飯' },
+  9: { id: 'Partikel', jp: '助詞' },
+  10: { id: 'Kata Keterangan / Adverbia', jp: '副詞' },
+  11: { id: 'Kata Sambung / Konjungsi', jp: '接続詞' },
+  12: { id: 'Akhiran / Sufiks', jp: '接尾語' },
+};
+
+function capitalizeIndonesianTitle(raw: string): string {
+  const trimmed = raw.trim();
+  if (!trimmed) return '';
+  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+}
+
+/**
+ * Extracts uniform `{ lessonTitleId, lessonTitleJp, lessonTitle, lessonFullTitle }`
+ * for every chapter across N5, N4, N3, N2, and N1.
+ */
+function buildStandardLessonMeta(params: {
+  level: BunpouDeckLevel;
+  lessonNumber: number;
+  rawTitle: string;
+  ringkasanLetter?: string;
+}): {
+  lessonTitleId: string;
+  lessonTitleJp: string;
+  lessonTitle: string;
+  lessonFullTitle: string;
+} {
+  const { level, lessonNumber, rawTitle, ringkasanLetter } = params;
+  const cleanedRaw = rawTitle.replace(/\s{2,}/g, ' ').trim();
+
+  if (level === 'N5' && N5_LESSON_TITLES_ID[lessonNumber]) {
+    const { id, jp } = N5_LESSON_TITLES_ID[lessonNumber];
+    return {
+      lessonTitleId: id,
+      lessonTitleJp: jp,
+      lessonTitle: `${id} (${jp})`,
+      lessonFullTitle: `Bab ${lessonNumber} · ${id} (${jp})`,
+    };
+  }
+
+  if (level === 'N4' && N4_LESSON_TRANSLATIONS_ID[lessonNumber]) {
+    const mapped = N4_LESSON_TRANSLATIONS_ID[lessonNumber];
+    const jp = mapped.jp ?? cleanedRaw;
+    return {
+      lessonTitleId: mapped.id,
+      lessonTitleJp: jp,
+      lessonTitle: `${mapped.id} (${jp})`,
+      lessonFullTitle: `Bab ${lessonNumber} · ${mapped.id} (${jp})`,
+    };
+  }
+
+  // Standard "Japanese Topic (Indonesian Translation)" format used across N3, N2, N1
+  let titleJp = cleanedRaw;
+  let titleId = '';
+
+  const trailingParenMatch = cleanedRaw.match(/^(.+?)\s*\(([^()]+)\)\s*$/);
+  if (trailingParenMatch) {
+    const candidateJp = trailingParenMatch[1].trim();
+    const candidateId = trailingParenMatch[2].trim();
+    // Make sure trailing paren is actually Indonesian (not purely Japanese like `(進行中)` or `(1)・(2)`)
+    if (/[A-Za-z]{2,}/.test(candidateId)) {
+      titleJp = candidateJp;
+      titleId = capitalizeIndonesianTitle(
+        candidateId
+          .replace(/^BAB\s+\d+\s*:\s*/i, '')
+          .replace(/^受身\s*\/\s*/, ''),
+      );
+    }
+  }
+
+  if (ringkasanLetter && titleId && !/^Ringkasan\s+[A-J]/i.test(titleId)) {
+    titleId = `Ringkasan ${ringkasanLetter}: ${titleId}`;
+  }
+
+  if (!titleId) {
+    titleId = titleJp;
+  }
+
+  const lessonTitle =
+    titleJp && titleJp !== titleId ? `${titleId} (${titleJp})` : titleId;
+  const lessonFullTitle = `Bab ${lessonNumber} · ${lessonTitle}`;
+
+  return {
+    lessonTitleId: titleId,
+    lessonTitleJp: titleJp,
+    lessonTitle,
+    lessonFullTitle,
+  };
 }
 
 function normalizeMultilineField(lines: string[]): string {
@@ -246,13 +407,14 @@ export function parseBunpouDeck(
     level === 'N5'
       ? 'Bab 1–4: Salam, Toko Elektronik, Belanja & Kota Ueno'
       : level === 'N4'
-        ? '第1部 意味機能別の文法形式 (Tata bahasa menurut fungsi makna)'
+        ? 'Bagian 1: Tata Bahasa Menurut Fungsi Makna'
         : level === 'N3'
-          ? '第1部 文の文法1 (Bentuk tata bahasa menurut fungsi makna)'
-          : 'I. ことがらを説明する (Menjelaskan suatu hal)';
+          ? 'Bagian 1: Tata Bahasa Menurut Fungsi Makna'
+          : 'I. Menjelaskan Suatu Hal (ことがらを説明する)';
   let currentLessonNumber = 1;
   let nextSequentialSection = 0;
-  let currentLessonTitle =
+  let currentRingkasanLetter: string | undefined;
+  let currentRawLessonTitle =
     level === 'N5'
       ? 'あいさつ (BAB 1: SALAM / GREETINGS)'
       : level === 'N4'
@@ -262,10 +424,11 @@ export function parseBunpouDeck(
           : level === 'N1'
             ? '時間関係 (Hubungan waktu)'
             : '~とき・~直後に (Saat / segera setelah)';
-  let currentLessonFullTitle =
-    level === 'N5'
-      ? `Bab 1 · ${currentLessonTitle}`
-      : `1課 ${currentLessonTitle}`;
+  let currentLessonMeta = buildStandardLessonMeta({
+    level,
+    lessonNumber: currentLessonNumber,
+    rawTitle: currentRawLessonTitle,
+  });
   let currentSectionDasar = '';
   let inSectionBlockNote = false;
   let pendingSectionHeadingLines = false;
@@ -279,6 +442,8 @@ export function parseBunpouDeck(
     crossReference: string;
     lessonNumber: number;
     lessonTitle: string;
+    lessonTitleId: string;
+    lessonTitleJp: string;
     lessonFullTitle: string;
     groupId: BunpouGroupCode;
     groupTitle: string;
@@ -313,8 +478,8 @@ export function parseBunpouDeck(
     const meaning =
       rawMeaning ||
       (currentEntry.sectionDasar
-        ? `${currentEntry.lessonTitle.replace(/^.+?\((.+)\)$/, '$1')} (${currentEntry.pattern})`
-        : `${currentEntry.lessonTitle} — ${currentEntry.pattern}`);
+        ? `${currentEntry.lessonTitleId} (${currentEntry.pattern})`
+        : `${currentEntry.lessonTitleId} — ${currentEntry.pattern}`);
     const note = formatBunpouExplanation(rawNote || currentEntry.sectionDasar);
 
     items.push({
@@ -327,12 +492,14 @@ export function parseBunpouDeck(
       crossReference: currentEntry.crossReference,
       lessonNumber: currentEntry.lessonNumber,
       lessonTitle: currentEntry.lessonTitle,
+      lessonTitleId: currentEntry.lessonTitleId,
+      lessonTitleJp: currentEntry.lessonTitleJp,
       lessonFullTitle: currentEntry.lessonFullTitle,
       groupId: currentEntry.groupId,
       groupTitle: currentEntry.groupTitle,
       meaning,
       register: normalizeMultilineField(currentEntry.ragamLines),
-      formula: normalizeMultilineField(currentEntry.rumusLines),
+      formula: normalizeFormulaLines(currentEntry.rumusLines),
       note,
       examples: currentEntry.examples,
     });
@@ -366,6 +533,7 @@ export function parseBunpouDeck(
       if (chapMatch) {
         flushEntry();
         currentSectionDasar = '';
+        currentRingkasanLetter = undefined;
         const chapNum = Number(chapMatch[1]);
         const chapTitle = chapMatch[2].replace(/\s{2,}/g, ' ').trim();
         if (chapNum <= 4) {
@@ -374,17 +542,21 @@ export function parseBunpouDeck(
             'Bab 1–4: Salam, Toko Elektronik, Belanja & Kota Ueno';
         } else if (chapNum <= 8) {
           currentGroupId = 'BAB5_8';
-          currentGroupTitle = 'Bab 5–8: Manga, Bandara, Ski & Bentuk Biasa';
+          currentGroupTitle = 'Bab 5–8: Manga, Bandara, Ski & Makan Siang';
         } else {
           currentGroupId = 'BAB9';
-          currentGroupTitle = 'Bab 9: Partikel, Adverbia, Konjungsi & Akhiran';
+          currentGroupTitle = 'Bab 9–12: Partikel, Adverbia, Konjungsi & Akhiran';
         }
 
         if (chapNum <= 8) {
           nextSequentialSection += 1;
           currentLessonNumber = nextSequentialSection;
-          currentLessonTitle = chapTitle;
-          currentLessonFullTitle = `Bab ${chapNum} · ${chapTitle}`;
+          currentRawLessonTitle = chapTitle;
+          currentLessonMeta = buildStandardLessonMeta({
+            level,
+            lessonNumber: currentLessonNumber,
+            rawTitle: currentRawLessonTitle,
+          });
           pendingSectionHeadingLines = true;
         } else {
           pendingSectionHeadingLines = false;
@@ -397,12 +569,15 @@ export function parseBunpouDeck(
         if (subMatch && !trimmed.startsWith('[')) {
           flushEntry();
           currentSectionDasar = '';
+          currentRingkasanLetter = undefined;
           nextSequentialSection += 1;
           currentLessonNumber = nextSequentialSection;
-          const subNum = Number(subMatch[1]);
-          const subTitle = subMatch[2].replace(/\s{2,}/g, ' ').trim();
-          currentLessonTitle = subTitle;
-          currentLessonFullTitle = `Bab 9.${subNum} · ${subTitle}`;
+          currentRawLessonTitle = subMatch[2].replace(/\s{2,}/g, ' ').trim();
+          currentLessonMeta = buildStandardLessonMeta({
+            level,
+            lessonNumber: currentLessonNumber,
+            rawTitle: currentRawLessonTitle,
+          });
           pendingSectionHeadingLines = true;
           continue;
         }
@@ -414,15 +589,13 @@ export function parseBunpouDeck(
       if (/^第1部\s+意味機能別の文法形式/.test(trimmed)) {
         flushEntry();
         currentGroupId = 'B1';
-        currentGroupTitle =
-          '第1部 意味機能別の文法形式 (Tata bahasa menurut fungsi makna)';
+        currentGroupTitle = 'Bagian 1: Tata Bahasa Menurut Fungsi Makna';
         continue;
       }
       if (/^第2部\s+文法形式の整理/.test(trimmed)) {
         flushEntry();
         currentGroupId = 'B2';
-        currentGroupTitle =
-          '第2部 文法形式の整理 (Penyusunan bentuk tata bahasa)';
+        currentGroupTitle = 'Bagian 2: Penyusunan Bentuk & Partikel';
         continue;
       }
     }
@@ -432,26 +605,25 @@ export function parseBunpouDeck(
       if (/^第1部\s+文の文法1/.test(trimmed)) {
         flushEntry();
         currentGroupId = 'B1';
-        currentGroupTitle =
-          '第1部 文の文法1 (Bentuk tata bahasa menurut fungsi makna)';
+        currentGroupTitle = 'Bagian 1: Tata Bahasa Menurut Fungsi Makna';
         continue;
       }
       if (/^文法形式の整理/.test(trimmed)) {
         flushEntry();
         currentGroupId = 'RINGKASAN';
-        currentGroupTitle = '文法形式の整理 (Ringkasan bentuk tata bahasa A–J)';
+        currentGroupTitle = 'Ringkasan Bentuk Tata Bahasa A–J';
         continue;
       }
       if (/^第2部\s+文の文法2/.test(trimmed)) {
         flushEntry();
         currentGroupId = 'B2';
-        currentGroupTitle = '第2部 文の文法2 (Susunan kalimat)';
+        currentGroupTitle = 'Bagian 2: Susunan Kalimat';
         continue;
       }
       if (/^第3部\s+文章の文法/.test(trimmed)) {
         flushEntry();
         currentGroupId = 'B3';
-        currentGroupTitle = '第3部 文章の文法 (Tata bahasa teks / wacana)';
+        currentGroupTitle = 'Bagian 3: Tata Bahasa Teks & Wacana';
         continue;
       }
     }
@@ -461,7 +633,12 @@ export function parseBunpouDeck(
     if (groupMatch && !trimmed.startsWith('[')) {
       flushEntry();
       currentGroupId = groupMatch[1] as BunpouN2GroupCode;
-      currentGroupTitle = `${groupMatch[1]}. ${groupMatch[2].replace(/\s{2,}/g, ' ').trim()}`;
+      currentGroupTitle =
+        currentGroupId === 'I'
+          ? 'I. Menjelaskan Suatu Hal (ことがらを説明する)'
+          : currentGroupId === 'II'
+            ? 'II. Menyertakan Penilaian Pembicara (主観を含めて説明する)'
+            : 'III. Menyatakan Pandangan & Perasaan (主観を述べる)';
       continue;
     }
 
@@ -470,22 +647,20 @@ export function parseBunpouDeck(
     if (lessonMatch) {
       flushEntry();
       currentSectionDasar = '';
+      currentRingkasanLetter = undefined;
       const rawNum = Number(lessonMatch[1]);
-      currentLessonTitle = lessonMatch[2].replace(/\s{2,}/g, ' ').trim();
+      currentRawLessonTitle = lessonMatch[2].replace(/\s{2,}/g, ' ').trim();
       if (level === 'N3' || level === 'N4') {
         nextSequentialSection += 1;
         currentLessonNumber = nextSequentialSection;
-        const partPrefix =
-          currentGroupId === 'B2'
-            ? 'Bag.2 · '
-            : currentGroupId === 'B3'
-              ? 'Bag.3 · '
-              : '';
-        currentLessonFullTitle = `${partPrefix}${rawNum}課 ${currentLessonTitle}`;
       } else {
         currentLessonNumber = rawNum;
-        currentLessonFullTitle = `${rawNum}課 ${currentLessonTitle}`;
       }
+      currentLessonMeta = buildStandardLessonMeta({
+        level,
+        lessonNumber: currentLessonNumber,
+        rawTitle: currentRawLessonTitle,
+      });
       pendingSectionHeadingLines = true;
       continue;
     }
@@ -498,10 +673,16 @@ export function parseBunpouDeck(
         currentSectionDasar = '';
         nextSequentialSection += 1;
         currentLessonNumber = nextSequentialSection;
-        currentLessonTitle = letterSectionMatch[2]
+        currentRingkasanLetter = letterSectionMatch[1];
+        currentRawLessonTitle = letterSectionMatch[2]
           .replace(/\s{2,}/g, ' ')
           .trim();
-        currentLessonFullTitle = `Ringkasan ${letterSectionMatch[1]} · ${currentLessonTitle}`;
+        currentLessonMeta = buildStandardLessonMeta({
+          level,
+          lessonNumber: currentLessonNumber,
+          rawTitle: currentRawLessonTitle,
+          ringkasanLetter: currentRingkasanLetter,
+        });
         pendingSectionHeadingLines = true;
         continue;
       }
@@ -514,8 +695,13 @@ export function parseBunpouDeck(
       !trimmed.startsWith('[') &&
       !/^Dasar\s*:/.test(trimmed)
     ) {
-      currentLessonTitle = `${currentLessonTitle} ${trimmed}`.trim();
-      currentLessonFullTitle = `${currentLessonFullTitle} ${trimmed}`.trim();
+      currentRawLessonTitle = `${currentRawLessonTitle} ${trimmed}`.trim();
+      currentLessonMeta = buildStandardLessonMeta({
+        level,
+        lessonNumber: currentLessonNumber,
+        rawTitle: currentRawLessonTitle,
+        ringkasanLetter: currentRingkasanLetter,
+      });
       continue;
     }
 
@@ -564,8 +750,10 @@ export function parseBunpouDeck(
         romaji,
         crossReference,
         lessonNumber: currentLessonNumber,
-        lessonTitle: currentLessonTitle,
-        lessonFullTitle: currentLessonFullTitle,
+        lessonTitle: currentLessonMeta.lessonTitle,
+        lessonTitleId: currentLessonMeta.lessonTitleId,
+        lessonTitleJp: currentLessonMeta.lessonTitleJp,
+        lessonFullTitle: currentLessonMeta.lessonFullTitle,
         groupId: currentGroupId,
         groupTitle: currentGroupTitle,
         sectionDasar: currentSectionDasar,
@@ -690,19 +878,7 @@ export function filterBunpouN2Items(
 
 export function bunpouItemToAnkiCard(item: BunpouN2Item): AnkiCard {
   const lvl = item.level ?? 'N2';
-  let shortLessonLabel = `${item.lessonNumber}課`;
-  if (lvl === 'N5') {
-    shortLessonLabel =
-      item.lessonFullTitle.split('·')[0]?.trim() || `Bab ${item.lessonNumber}`;
-  } else if (lvl === 'N4' || lvl === 'N3') {
-    if (item.lessonFullTitle.startsWith('Bag.')) {
-      const match = item.lessonFullTitle.match(/^(Bag\.\d+\s*·\s*\d+課)/);
-      shortLessonLabel = match?.[1] ?? `Bab ${item.lessonNumber}`;
-    } else {
-      shortLessonLabel =
-        item.lessonFullTitle.split(' ')[0] || `Bab ${item.lessonNumber}`;
-    }
-  }
+  const shortLessonLabel = formatBunpouLessonLabel(item.lessonNumber);
 
   return {
     id: item.id,
@@ -734,7 +910,6 @@ export function bunpouItemToAnkiCard(item: BunpouN2Item): AnkiCard {
 
 export function ankiCardToBunpouItem(card: AnkiCard): BunpouN2Item {
   const lessonNum = card.lessonNumber ?? 1;
-  const lessonFullTitle = card.lessonTitle ?? `${lessonNum}課`;
   const level: BunpouDeckLevel = card.id.startsWith('n5-bunpou-')
     ? 'N5'
     : card.id.startsWith('n4-bunpou-')
@@ -744,6 +919,38 @@ export function ankiCardToBunpouItem(card: AnkiCard): BunpouN2Item {
         : card.id.startsWith('n1-bunpou-')
           ? 'N1'
           : 'N2';
+
+  const rawFull = card.lessonTitle ?? `Bab ${lessonNum}`;
+  const strippedBody = rawFull
+    .replace(
+      /^(?:Bag\.\d+\s*·\s*)?\d+課\s*|^Ringkasan\s+[A-J]\s*·\s*|^Bab\s+\d+(?:\.\d+)?\s*·\s*/,
+      '',
+    )
+    .trim();
+
+  // Extract Indonesian + Japanese parts cleanly whether already standardized or legacy
+  let lessonTitleId = strippedBody;
+  let lessonTitleJp = '';
+  const stdMatch = strippedBody.match(/^(.+?)\s*\(([^()]+)\)\s*$/);
+  if (stdMatch && !/^[A-Za-z\s/-]+$/.test(stdMatch[2].trim())) {
+    // Standardized format: "Indonesian Title (Japanese Topic)"
+    lessonTitleId = stdMatch[1].trim();
+    lessonTitleJp = stdMatch[2].trim();
+  } else {
+    const meta = buildStandardLessonMeta({
+      level,
+      lessonNumber: lessonNum,
+      rawTitle: strippedBody,
+    });
+    lessonTitleId = meta.lessonTitleId;
+    lessonTitleJp = meta.lessonTitleJp;
+  }
+
+  const lessonTitle =
+    lessonTitleJp && lessonTitleJp !== lessonTitleId
+      ? `${lessonTitleId} (${lessonTitleJp})`
+      : lessonTitleId;
+  const lessonFullTitle = `Bab ${lessonNum} · ${lessonTitle}`;
 
   const fallbackGroupId: BunpouGroupCode =
     level === 'N5'
@@ -761,10 +968,9 @@ export function ankiCardToBunpouItem(card: AnkiCard): BunpouN2Item {
     romaji: card.romaji ?? '',
     crossReference: card.crossReference ?? '',
     lessonNumber: lessonNum,
-    lessonTitle: lessonFullTitle.replace(
-      /^(?:Bag\.\d+ · )?\d+課\s*|^Ringkasan [A-J] ·\s*|^Bab \d+(?:\.\d+)? ·\s*/,
-      '',
-    ),
+    lessonTitle,
+    lessonTitleId,
+    lessonTitleJp,
     lessonFullTitle,
     groupId: (card.groupId as BunpouGroupCode | undefined) ?? fallbackGroupId,
     groupTitle: card.groupTitle ?? '',

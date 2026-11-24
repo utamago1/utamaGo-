@@ -238,7 +238,7 @@ export function HomeScreen({
               <h2 className="font-display text-lg font-extrabold tracking-tight text-on-surface sm:text-xl">
                 Tantangan Level JLPT
               </h2>
-              <p className="text-[13px] text-[#4b4b53]">
+              <p className="text-[13px] text-on-surface-variant">
                 <span className="font-mono tabular-nums">
                   {completedStagesCount}/{CHALLENGE_STAGES.length}
                 </span>{' '}
@@ -280,7 +280,7 @@ export function HomeScreen({
               <h3 className="mt-1 font-display text-base font-extrabold text-on-surface sm:text-lg">
                 Latihan Campuran Hari Ini
               </h3>
-              <p className="mt-0.5 text-[13px] leading-relaxed text-[#4b4b53]">
+              <p className="mt-0.5 text-[13px] leading-relaxed text-on-surface-variant">
                 Otomatis menggabungkan kata sulitmu, kosakata, dan pola bunpou
                 sesuai level. Tanpa batas nyawa.
               </p>
@@ -305,7 +305,7 @@ export function HomeScreen({
                     className={`min-h-[36px] rounded-lg px-3 py-1 font-mono text-xs font-bold transition-colors ${
                       active
                         ? 'bg-primary text-on-primary'
-                        : 'text-[#4b4b53] hover:text-on-surface'
+                        : 'text-on-surface-variant hover:text-on-surface'
                     }`}
                   >
                     {cnt} Soal
@@ -351,7 +351,7 @@ export function HomeScreen({
         <section aria-label="Daftar Level Tantangan" className="space-y-6">
           {chapters.map((group) => (
             <div key={group.chapter} className="space-y-2.5">
-              <h3 className="font-display text-xs font-extrabold tracking-wider text-[#4b4b53]">
+              <h3 className="font-display text-xs font-extrabold tracking-wider text-on-surface-variant">
                 {group.chapter}
               </h3>
 
@@ -502,7 +502,7 @@ export function HomeScreen({
               <h2 className="font-display text-lg font-extrabold tracking-tight text-on-surface">
                 Kata Sulit
               </h2>
-              <p className="text-[13px] text-[#4b4b53]">
+              <p className="text-[13px] text-on-surface-variant">
                 <span className="font-mono tabular-nums">
                   {difficultCards.length}
                 </span>{' '}
@@ -523,7 +523,7 @@ export function HomeScreen({
             <h3 className="mt-3 font-display text-base font-bold text-on-surface">
               Belum ada kata sulit
             </h3>
-            <p className="mt-1.5 text-[13px] leading-relaxed text-[#4b4b53]">
+            <p className="mt-1.5 text-[13px] leading-relaxed text-on-surface-variant">
               Kartu yang kamu tandai &ldquo;Ulangi&rdquo; saat latihan Anki atau
               kamu tandai di Kamus akan otomatis terkumpul di sini untuk sesi
               drill khusus.
@@ -582,15 +582,15 @@ export function HomeScreen({
                         {card.word}
                       </span>
                       {card.furigana && card.furigana !== card.word && (
-                        <span className="text-[13px] text-[#4b4b53]">
+                        <span className="text-[13px] text-on-surface-variant">
                           {card.furigana}
                         </span>
                       )}
                     </div>
-                    <p className="mt-1 text-[13px] leading-snug text-[#4b4b53] break-words">
+                    <p className="mt-1 text-[13px] leading-snug text-on-surface-variant break-words">
                       {card.meaning}
                     </p>
-                    <p className="mt-1 text-xs text-[#4b4b53]">
+                    <p className="mt-1 text-xs text-on-surface-variant">
                       <span className="font-mono font-semibold text-primary">
                         {card.jlptLevel ?? 'JLPT'}
                       </span>{' '}
@@ -830,7 +830,7 @@ export function HomeScreen({
             <p className="mt-0.5 font-display text-[15px] font-bold leading-snug text-on-surface break-words">
               {continueLearning.title}
             </p>
-            <p className="mt-0.5 line-clamp-2 text-[13px] leading-snug text-[#4b4b53] break-words">
+            <p className="mt-0.5 line-clamp-2 text-[13px] leading-snug text-on-surface-variant break-words">
               {continueLearning.subtitle}
             </p>
           </div>
@@ -852,7 +852,7 @@ export function HomeScreen({
               <p className="truncate font-display text-sm font-bold text-on-surface">
                 Kamus Kosakata N5–N1
               </p>
-              <p className="truncate text-xs text-[#4b4b53]">
+              <p className="truncate text-xs text-on-surface-variant">
                 Cari cepat Kanji, Kana, Romaji, atau arti
               </p>
             </div>
@@ -874,8 +874,8 @@ export function HomeScreen({
                 <p className="truncate font-display text-sm font-bold text-on-surface">
                   Studio Tulis Kanji &amp; Kana
                 </p>
-                <p className="truncate text-xs text-[#4b4b53]">
-                  Latih coretan jari/mouse + panduan kotak genkouyoushi
+                <p className="truncate text-xs text-on-surface-variant">
+                  Latih coretan jari/mouse + panduan urutan coretan
                 </p>
               </div>
             </button>
@@ -973,7 +973,7 @@ export function HomeScreen({
                     bagian selesai
                   </>
                 ) : (
-                  'Simulasi N2 & N1'
+                  'Simulasi N3, N2 & N1'
                 )}
               </p>
             </div>

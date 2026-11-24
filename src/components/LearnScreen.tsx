@@ -64,7 +64,7 @@ const COMING_SOON_CATEGORIES: Record<
   dokkai: {
     title: 'Materi Dokkai — Segera Hadir',
     description:
-      'Panduan bedah wacana bacaan (Tanbun, Chuubun, Choubun, & pencarian informasi) sedang disusun. Sementara ini kamu sudah bisa langsung berlatih soal bacaan teks penuh JLPT N2 & N1 di tab Tryout.',
+      'Panduan bedah wacana bacaan (Tanbun, Chuubun, Choubun, & pencarian informasi) sedang disusun. Sementara ini kamu sudah bisa langsung berlatih soal bacaan teks penuh JLPT N3, N2 & N1 di tab Tryout.',
     ctaLabel: 'Latihan Dokkai di Tab Tryout',
     ctaTarget: 'tryout',
     icon: FileText,
@@ -72,7 +72,7 @@ const COMING_SOON_CATEGORIES: Record<
   choukai: {
     title: 'Materi Choukai — Segera Hadir',
     description:
-      'Materi pembahasan strategi menyimak Mondai 1–5 beserta transkrip sedang disiapkan. Untuk latihan menyimak sekarang, buka tab Tryout yang sudah dilengkapi audio resmi JLPT N2 & arsip 18 audio N1.',
+      'Materi pembahasan strategi menyimak Mondai 1–5 beserta transkrip sedang disiapkan. Untuk latihan menyimak sekarang, buka tab Tryout yang sudah dilengkapi audio resmi & transkrip Choukai JLPT N3, N2 & N1.',
     ctaLabel: 'Latihan Audio Choukai di Tab Tryout',
     ctaTarget: 'tryout',
     icon: Headphones,
@@ -121,7 +121,7 @@ export function LearnScreen({
           {info.title}
         </h3>
 
-        <p className="mx-auto mt-2 max-w-md text-[13px] leading-relaxed text-[#4b4b53] sm:text-sm">
+        <p className="mx-auto mt-2 max-w-md text-[13px] leading-relaxed text-on-surface-variant sm:text-sm">
           {info.description}
         </p>
 
@@ -181,7 +181,7 @@ export function LearnScreen({
             <h2 className="font-display text-xl font-bold tracking-tight text-on-surface sm:text-2xl">
               {subTab === 'bunpou' ? 'Materi Bunpou' : 'Materi Belajar JLPT'}
             </h2>
-            <p className="mt-1 text-[13px] leading-relaxed text-[#4b4b53] sm:text-sm">
+            <p className="mt-1 text-[13px] leading-relaxed text-on-surface-variant sm:text-sm">
               {subTab === 'bunpou'
                 ? 'Pelajari pola tata bahasa Jepang, komparasi pola mirip, dan uji pemahaman.'
                 : `Panduan & ringkasan JLPT · Akses Level ${unlockedLevel}`}
@@ -225,7 +225,7 @@ export function LearnScreen({
                 className={`-mb-px inline-flex min-h-[44px] min-w-0 flex-col items-center justify-center whitespace-nowrap border-b-2 px-1 py-2 text-[13px] transition-colors sm:flex-row sm:gap-1.5 sm:px-0.5 sm:text-sm ${
                   active
                     ? 'border-primary font-semibold text-primary'
-                    : 'border-transparent font-medium text-[#4b4b53] hover:text-on-surface'
+                    : 'border-transparent font-medium text-on-surface-variant hover:text-on-surface'
                 }`}
               >
                 <span className="truncate">{tab.label}</span>
