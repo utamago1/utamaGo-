@@ -44,6 +44,12 @@ import {
   CHALLENGE_STAGES,
   type ChallengeStage,
 } from './data/challengeLevels';
+import type { JlptLevel } from './data/utamagoContent';
+import {
+  generateArenaQuestionBatch,
+  generateBlitzStage,
+  generateSurvivalStage,
+} from './utils/challengeArenaGenerator';
 import { useTextScaleEffect } from './hooks/useTextScale';
 import { useThemeMode } from './hooks/useThemeMode';
 import {
@@ -2325,10 +2331,124 @@ export default function App() {
 
   const handleCompleteChallenge = useCallback(
     (stage: ChallengeStage, evaluation: ChallengeEvaluation) => {
+      const mode = stage.mode ?? 'stage';
+
+      if (mode === 'blitz') {
+        setJustCompletedSession(true);
+        setAppState((prev) => {
+          const prevArcade = prev.gameProgress.arcadeRecords ?? {
+            blitzBestByLevel: {},
+            survivalBestByLevel: {},
+            defeatedBosses: {},
+          };
+          const prevBest = prevArcade.blitzBestByLevel[stage.jlptLevel];
+          const nextScore = evaluation.score ?? 0;
+          const nextCombo = evaluation.maxCombo ?? 0;
+          const nextBest = {
+            bestScore: Math.max(prevBest?.bestScore ?? 0, nextScore),
+            bestCombo: Math.max(prevBest?.bestCombo ?? 0, nextCombo),
+            bestCorrect: Math.max(
+              prevBest?.bestCorrect ?? 0,
+              evaluation.correctCount,
+            ),
+          };
+          return {
+            ...prev,
+            gameProgress: {
+              ...prev.gameProgress,
+              totalXp: prev.gameProgress.totalXp + evaluation.xpAwarded,
+              arcadeRecords: {
+                ...prevArcade,
+                blitzBestByLevel: {
+                  ...prevArcade.blitzBestByLevel,
+                  [stage.jlptLevel]: nextBest,
+                },
+              },
+            },
+            activityLog: recordStudyActivity(prev.activityLog, 'challenge'),
+          };
+        });
+        return;
+      }
+
+      if (mode === 'survival') {
+        setJustCompletedSession(true);
+        setAppState((prev) => {
+          const prevArcade = prev.gameProgress.arcadeRecords ?? {
+            blitzBestByLevel: {},
+            survivalBestByLevel: {},
+            defeatedBosses: {},
+          };
+          const prevBest = prevArcade.survivalBestByLevel[stage.jlptLevel];
+          const nextScore = evaluation.score ?? 0;
+          const nextCombo = evaluation.maxCombo ?? 0;
+          const nextBest = {
+            bestCleared: Math.max(
+              prevBest?.bestCleared ?? 0,
+              evaluation.correctCount,
+            ),
+            bestScore: Math.max(prevBest?.bestScore ?? 0, nextScore),
+            bestCombo: Math.max(prevBest?.bestCombo ?? 0, nextCombo),
+          };
+          return {
+            ...prev,
+            gameProgress: {
+              ...prev.gameProgress,
+              totalXp: prev.gameProgress.totalXp + evaluation.xpAwarded,
+              arcadeRecords: {
+                ...prevArcade,
+                survivalBestByLevel: {
+                  ...prevArcade.survivalBestByLevel,
+                  [stage.jlptLevel]: nextBest,
+                },
+              },
+            },
+            activityLog: recordStudyActivity(prev.activityLog, 'challenge'),
+          };
+        });
+        return;
+      }
+
       if (!evaluation.passed || evaluation.stars === 0) return;
 
       const earnedStars = evaluation.stars as 1 | 2 | 3;
       setJustCompletedSession(true);
+
+      if (mode === 'boss') {
+        setAppState((prev) => {
+          const prevArcade = prev.gameProgress.arcadeRecords ?? {
+            blitzBestByLevel: {},
+            survivalBestByLevel: {},
+            defeatedBosses: {},
+          };
+          const existing = prevArcade.defeatedBosses[stage.id];
+          const nextRecord: CompletedLevelRecord = {
+            stars: existing
+              ? (Math.max(existing.stars, earnedStars) as 1 | 2 | 3)
+              : earnedStars,
+            bestAccuracy: existing
+              ? Math.max(existing.bestAccuracy, evaluation.accuracy)
+              : evaluation.accuracy,
+            xpEarned: (existing?.xpEarned ?? 0) + evaluation.xpAwarded,
+          };
+          return {
+            ...prev,
+            gameProgress: {
+              ...prev.gameProgress,
+              totalXp: prev.gameProgress.totalXp + evaluation.xpAwarded,
+              arcadeRecords: {
+                ...prevArcade,
+                defeatedBosses: {
+                  ...prevArcade.defeatedBosses,
+                  [stage.id]: nextRecord,
+                },
+              },
+            },
+            activityLog: recordStudyActivity(prev.activityLog, 'challenge'),
+          };
+        });
+        return;
+      }
 
       setAppState((prev) => {
         const existing = prev.gameProgress.completedLevels[stage.id];
@@ -2345,6 +2465,7 @@ export default function App() {
         return {
           ...prev,
           gameProgress: {
+            ...prev.gameProgress,
             totalXp: prev.gameProgress.totalXp + evaluation.xpAwarded,
             completedLevels: {
               ...prev.gameProgress.completedLevels,
@@ -2486,6 +2607,54 @@ export default function App() {
     ],
   );
 
+  const handleStartBlitz = useCallback(
+    (level: JlptLevel) => {
+      if (!isJlptLevelUnlocked(level, appState.onboarding.selfAssessedLevel)) {
+        return;
+      }
+      const blitzStage = generateBlitzStage({
+        level,
+        ankiCards: unlockedAnkiCards,
+        bunpouItems: unlockedBunpouItems,
+        seedSalt: `${Date.now()}`,
+      });
+      if (blitzStage.questions.length === 0) return;
+      pushNavHistory(`challenge-${blitzStage.id}`);
+      setChallengeHasProgress(false);
+      setActiveChallengeStage(blitzStage);
+    },
+    [
+      appState.onboarding.selfAssessedLevel,
+      pushNavHistory,
+      unlockedAnkiCards,
+      unlockedBunpouItems,
+    ],
+  );
+
+  const handleStartSurvival = useCallback(
+    (level: JlptLevel) => {
+      if (!isJlptLevelUnlocked(level, appState.onboarding.selfAssessedLevel)) {
+        return;
+      }
+      const survivalStage = generateSurvivalStage({
+        level,
+        ankiCards: unlockedAnkiCards,
+        bunpouItems: unlockedBunpouItems,
+        seedSalt: `${Date.now()}`,
+      });
+      if (survivalStage.questions.length === 0) return;
+      pushNavHistory(`challenge-${survivalStage.id}`);
+      setChallengeHasProgress(false);
+      setActiveChallengeStage(survivalStage);
+    },
+    [
+      appState.onboarding.selfAssessedLevel,
+      pushNavHistory,
+      unlockedAnkiCards,
+      unlockedBunpouItems,
+    ],
+  );
+
   const handleCompleteDailyDrill = useCallback(
     (_stage: ChallengeStage, evaluation: ChallengeEvaluation) => {
       const todayKey = getLocalDateKey();
@@ -2610,6 +2779,7 @@ export default function App() {
                 <HomeScreen
                   levelProgress={levelProgress}
                   completedLevels={appState.gameProgress.completedLevels}
+                  arcadeRecords={appState.gameProgress.arcadeRecords}
                   studiedAnkiCount={learnedAnkiCount}
                   dueAnkiCount={dueAnkiCount}
                   totalAnkiDeckCount={totalAnkiDeckCount}
@@ -2673,6 +2843,8 @@ export default function App() {
                   onOpenDictionary={() => setDictionaryOpen(true)}
                   onStartDifficultDrill={() => setDifficultDrillOpen(true)}
                   onStartDailyDrill={handleStartDailyDrill}
+                  onStartBlitz={handleStartBlitz}
+                  onStartSurvival={handleStartSurvival}
                   onStartStage={handleStartChallenge}
                   onNavigate={(tab) => handleSelectTab(tab)}
                 />
@@ -2860,11 +3032,62 @@ export default function App() {
         <ChallengeRunnerModal
           key={activeChallengeStage.id}
           stage={activeChallengeStage}
+          mascotLevel={levelProgress.level}
+          mascotGender={appState.onboarding.gender}
           previousBestStars={
-            appState.gameProgress.completedLevels[activeChallengeStage.id]
-              ?.stars ?? 0
+            activeChallengeStage.mode === 'boss'
+              ? appState.gameProgress.arcadeRecords?.defeatedBosses[
+                  activeChallengeStage.id
+                ]?.stars ?? 0
+              : appState.gameProgress.completedLevels[activeChallengeStage.id]
+                  ?.stars ?? 0
           }
-          hasNextStage={hasNextStage}
+          previousBestScore={
+            activeChallengeStage.mode === 'blitz'
+              ? appState.gameProgress.arcadeRecords?.blitzBestByLevel[
+                  activeChallengeStage.jlptLevel
+                ]?.bestScore ?? 0
+              : activeChallengeStage.mode === 'survival'
+                ? appState.gameProgress.arcadeRecords?.survivalBestByLevel[
+                    activeChallengeStage.jlptLevel
+                  ]?.bestScore ?? 0
+                : 0
+          }
+          previousBestCleared={
+            activeChallengeStage.mode === 'survival'
+              ? appState.gameProgress.arcadeRecords?.survivalBestByLevel[
+                  activeChallengeStage.jlptLevel
+                ]?.bestCleared ?? 0
+              : 0
+          }
+          hasNextStage={
+            activeChallengeStage.mode !== 'boss' &&
+            activeChallengeStage.mode !== 'blitz' &&
+            activeChallengeStage.mode !== 'survival' &&
+            hasNextStage
+          }
+          onRequestMoreQuestions={
+            activeChallengeStage.mode === 'survival' ||
+            activeChallengeStage.mode === 'blitz'
+              ? (wave) =>
+                  generateArenaQuestionBatch({
+                    level: activeChallengeStage.jlptLevel,
+                    ankiCards: unlockedAnkiCards,
+                    bunpouItems: unlockedBunpouItems,
+                    seedSalt: `${activeChallengeStage.id}-${Date.now()}`,
+                    count: 16,
+                    mode: activeChallengeStage.mode as 'blitz' | 'survival',
+                    wave,
+                  })
+              : undefined
+          }
+          onShuffleNewSet={
+            activeChallengeStage.mode === 'blitz'
+              ? () => handleStartBlitz(activeChallengeStage.jlptLevel)
+              : activeChallengeStage.mode === 'survival'
+                ? () => handleStartSurvival(activeChallengeStage.jlptLevel)
+                : undefined
+          }
           onComplete={handleCompleteChallenge}
           onProgressChange={setChallengeHasProgress}
           onNextStage={handleNextChallengeStage}
@@ -2876,11 +3099,13 @@ export default function App() {
         <ChallengeRunnerModal
           key={activeDailyDrill.stage.id}
           stage={activeDailyDrill.stage}
+          mascotLevel={levelProgress.level}
+          mascotGender={appState.onboarding.gender}
           previousBestStars={0}
           hasNextStage={false}
           unlimitedHearts
           headerLabel={`Daily Drill · ${activeDailyDrill.stage.jlptLevel}`}
-          closeButtonLabel="Kembali ke Tantangan"
+          closeButtonLabel="Kembali ke Arena Tantangan"
           onShuffleNewSet={() =>
             handleStartDailyDrill(
               activeDailyDrill.count,

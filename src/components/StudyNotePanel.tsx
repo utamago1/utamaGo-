@@ -67,14 +67,14 @@ export function StudyNotePanel({
           aria-pressed={entry.bookmarked}
           className={`m3-tactile inline-flex min-h-[44px] items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border px-3.5 py-2 text-xs font-bold transition-colors ${
             entry.bookmarked
-              ? 'border-amber-500/45 bg-amber-50 text-amber-900 hover:bg-amber-100/80'
+              ? 'border-warning/45 bg-warning-container text-on-warning-container hover:opacity-90'
               : 'border-outline-variant bg-surface text-on-surface hover:border-outline hover:bg-surface-container'
           }`}
         >
           <Bookmark
             className={`h-4 w-4 shrink-0 ${
               entry.bookmarked
-                ? 'fill-amber-500 text-amber-600'
+                ? 'fill-warning text-warning'
                 : 'text-on-surface-variant'
             }`}
             aria-hidden="true"
@@ -96,13 +96,13 @@ export function StudyNotePanel({
           aria-expanded={editing}
           className={`m3-tactile inline-flex min-h-[44px] items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border px-3.5 py-2 text-xs font-bold transition-colors ${
             editing || hasNote
-              ? 'border-amber-500/40 bg-amber-50/70 text-amber-900 hover:bg-amber-100/70'
+              ? 'border-warning/45 bg-warning-container text-on-warning-container hover:opacity-90'
               : 'border-outline-variant bg-surface text-on-surface hover:border-outline hover:bg-surface-container'
           }`}
         >
           <StickyNote
             className={`h-4 w-4 shrink-0 ${
-              hasNote || editing ? 'text-amber-600' : 'text-on-surface-variant'
+              hasNote || editing ? 'text-warning' : 'text-on-surface-variant'
             }`}
             aria-hidden="true"
           />
@@ -117,10 +117,10 @@ export function StudyNotePanel({
       </div>
 
       {!editing && hasNote && (
-        <div className="rounded-xl border border-amber-500/25 border-l-4 border-l-amber-500 bg-amber-50/60 px-3.5 py-2.5">
+        <div className="rounded-xl border border-warning/35 bg-warning-container px-3.5 py-2.5">
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0 flex-1 space-y-0.5">
-              <p className="text-[11px] font-bold tracking-wide text-amber-900/80">
+              <p className="text-[11px] font-bold tracking-wide text-on-warning-container">
                 Catatan Pribadi
               </p>
               <p
@@ -134,7 +134,7 @@ export function StudyNotePanel({
             <button
               type="button"
               onClick={handleOpenEditor}
-              className="shrink-0 rounded-lg px-2 py-1 text-xs font-semibold text-amber-900 hover:bg-amber-200/50"
+              className="shrink-0 rounded-lg px-2 py-1 text-xs font-semibold text-on-warning-container hover:bg-warning/15"
             >
               Ubah
             </button>

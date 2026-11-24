@@ -926,7 +926,7 @@ export function TryOutFormRunner({
                         </p>
                       )}
                       {matchedChoice?.image && (
-                        <div className="mt-2.5 flex justify-center rounded-xl border border-outline-variant bg-white p-2.5">
+                        <div className="mt-2.5 flex justify-center rounded-xl border border-outline-variant bg-[#f6f5f0] p-2.5 dark:bg-[#eceae2]">
                           <img
                             src={matchedChoice.image.src}
                             alt={`Ilustrasi ${wrong.label} — ${part.title}`}
@@ -937,7 +937,7 @@ export function TryOutFormRunner({
                             referrerPolicy="no-referrer"
                             draggable={false}
                             onContextMenu={(e) => e.preventDefault()}
-                            className="mx-auto h-auto max-h-[260px] w-auto max-w-full select-none rounded-lg bg-white object-contain"
+                            className="mx-auto h-auto max-h-[260px] w-auto max-w-full select-none rounded-lg object-contain mix-blend-multiply"
                           />
                         </div>
                       )}
@@ -1301,10 +1301,10 @@ export function TryOutFormRunner({
                   return (
                     <div
                       key={item.id}
-                      className="rounded-2xl border border-outline-variant bg-white p-2.5 shadow-xs sm:p-4"
+                      className="rounded-2xl border border-outline-variant bg-surface-container-low p-2.5 shadow-xs sm:p-4"
                     >
-                      <div className="mb-2 flex items-center justify-between gap-2 border-b border-slate-200 pb-2 text-xs text-slate-700">
-                        <span className="font-mono font-bold">
+                      <div className="mb-2 flex items-center justify-between gap-2 border-b border-outline-variant pb-2 text-xs text-on-surface-variant">
+                        <span className="font-mono font-bold text-on-surface">
                           Lembar {sheetIdx >= 0 ? sheetIdx + 1 : 1}/
                           {currentPageSheets.length} · {levelLabel} {examCode}
                         </span>
@@ -1313,7 +1313,7 @@ export function TryOutFormRunner({
                           onClick={() =>
                             openSheetModal(sheetIdx >= 0 ? sheetIdx : 0)
                           }
-                          className="m3-tactile inline-flex min-h-[48px] items-center gap-1.5 whitespace-nowrap rounded-xl bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-900 hover:bg-slate-200"
+                          className="m3-tactile inline-flex min-h-[48px] items-center gap-1.5 whitespace-nowrap rounded-xl bg-surface-container px-3 py-1.5 text-xs font-bold text-on-surface hover:bg-surface-container-high"
                         >
                           <Maximize2 className="h-3.5 w-3.5" aria-hidden="true" />
                           <span>Perbesar</span>
@@ -1325,7 +1325,7 @@ export function TryOutFormRunner({
                           openSheetModal(sheetIdx >= 0 ? sheetIdx : 0)
                         }
                         aria-label={`Perbesar lembar soal ${sheetIdx + 1} ${currentPage.title}`}
-                        className="block w-full cursor-zoom-in overflow-hidden rounded-lg bg-white text-left focus:outline-none focus:ring-2 focus:ring-primary"
+                        className="block w-full cursor-zoom-in overflow-hidden rounded-lg bg-[#f6f5f0] p-1 text-left focus:outline-none focus:ring-2 focus:ring-primary dark:bg-[#eceae2]"
                       >
                         <img
                           src={item.image.src}
@@ -1337,7 +1337,7 @@ export function TryOutFormRunner({
                           referrerPolicy="no-referrer"
                           draggable={false}
                           onContextMenu={(e) => e.preventDefault()}
-                          className="h-auto w-full select-none rounded-lg bg-white object-contain"
+                          className="h-auto w-full select-none rounded-lg object-contain mix-blend-multiply"
                         />
                       </button>
                     </div>
@@ -1433,16 +1433,16 @@ export function TryOutFormRunner({
                         (s) => s.id === item.id,
                       );
                       return (
-                        <div className="mt-3 rounded-xl border border-outline-variant bg-white p-2.5 shadow-xs sm:p-3.5">
-                          <div className="mb-2 flex items-center justify-between gap-2 border-b border-slate-200 pb-2 text-xs text-slate-700">
-                            <span className="font-mono font-bold">
+                        <div className="mt-3 rounded-xl border border-outline-variant bg-surface-container-low p-2.5 shadow-xs sm:p-3.5">
+                          <div className="mb-2 flex items-center justify-between gap-2 border-b border-outline-variant pb-2 text-xs text-on-surface-variant">
+                            <span className="font-mono font-bold text-on-surface">
                               Ilustrasi Soal · {item.label}
                             </span>
                             {choiceSheetIdx >= 0 && (
                               <button
                                 type="button"
                                 onClick={() => openSheetModal(choiceSheetIdx)}
-                                className="m3-tactile inline-flex min-h-[40px] items-center gap-1.5 whitespace-nowrap rounded-xl bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-900 hover:bg-slate-200"
+                                className="m3-tactile inline-flex min-h-[40px] items-center gap-1.5 whitespace-nowrap rounded-xl bg-surface-container px-3 py-1.5 text-xs font-bold text-on-surface hover:bg-surface-container-high"
                               >
                                 <Maximize2
                                   className="h-3.5 w-3.5"
@@ -1460,7 +1460,7 @@ export function TryOutFormRunner({
                               }
                             }}
                             aria-label={`Perbesar ilustrasi ${item.label}`}
-                            className="flex w-full cursor-zoom-in justify-center overflow-hidden rounded-lg bg-white p-1 focus:outline-none focus:ring-2 focus:ring-primary"
+                            className="flex w-full cursor-zoom-in justify-center overflow-hidden rounded-lg bg-[#f6f5f0] p-1.5 focus:outline-none focus:ring-2 focus:ring-primary dark:bg-[#eceae2]"
                           >
                             <img
                               src={item.image.src}
@@ -1472,7 +1472,7 @@ export function TryOutFormRunner({
                               referrerPolicy="no-referrer"
                               draggable={false}
                               onContextMenu={(e) => e.preventDefault()}
-                              className="mx-auto h-auto max-h-[340px] w-auto max-w-full select-none rounded-lg bg-white object-contain"
+                              className="mx-auto h-auto max-h-[340px] w-auto max-w-full select-none rounded-lg object-contain mix-blend-multiply"
                             />
                           </button>
                         </div>

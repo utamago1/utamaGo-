@@ -367,8 +367,8 @@ export function VocabDictionaryModal({
                             </span>
                           </p>
                           {!isExpanded && noteEntry.note.length > 0 && (
-                            <p className="mt-1.5 truncate border-l-2 border-amber-500 pl-2 text-xs text-amber-900/90">
-                              {noteEntry.note}
+                            <p className="mt-1.5 truncate text-xs font-medium text-warning">
+                              Catatan: {noteEntry.note}
                             </p>
                           )}
                         </button>
@@ -388,13 +388,13 @@ export function VocabDictionaryModal({
                             }
                             className={`m3-tactile inline-flex h-11 w-11 items-center justify-center rounded-xl transition-colors ${
                               noteEntry.bookmarked
-                                ? 'bg-amber-50 text-amber-600'
+                                ? 'bg-warning-container text-warning'
                                 : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
                             }`}
                           >
                             <Bookmark
                               className={`h-4 w-4 ${
-                                noteEntry.bookmarked ? 'fill-amber-500' : ''
+                                noteEntry.bookmarked ? 'fill-warning' : ''
                               }`}
                               aria-hidden="true"
                             />

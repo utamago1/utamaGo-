@@ -163,7 +163,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
           )}
         </div>
 
-        <span className="mt-4 rounded-md border border-primary/35 bg-primary-container/60 px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase text-primary">
+        <span className="mt-4 rounded-md border border-primary/35 bg-primary-container/60 px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase text-on-primary-container">
           Versi Beta Tester
         </span>
         <h1 className="mt-2.5 text-center font-display text-2xl font-extrabold tracking-tight text-on-surface">

@@ -34,7 +34,7 @@ function renderInlineTokens(segment: string, keyPrefix: string): ReactNode[] {
       if (part.startsWith('**') && part.endsWith('**') && part.length > 4) {
         const inner = part.slice(2, -2);
         return (
-          <strong key={key} className="font-semibold text-neutral-900">
+          <strong key={key} className="font-semibold text-on-surface">
             {renderInlineTokens(inner, `${key}-b`)}
           </strong>
         );
@@ -45,7 +45,7 @@ function renderInlineTokens(segment: string, keyPrefix: string): ReactNode[] {
         return (
           <span
             key={key}
-            className="mx-0.5 inline-block rounded border border-stone-200/80 bg-stone-100 px-1.5 py-0.5 font-medium leading-snug text-neutral-900"
+            className="mx-0.5 inline-block rounded border border-outline-variant bg-surface-container px-1.5 py-0.5 font-medium leading-snug text-on-surface"
           >
             {jpInner}
           </span>
@@ -54,7 +54,7 @@ function renderInlineTokens(segment: string, keyPrefix: string): ReactNode[] {
 
       if (part === '->' || part === '→') {
         return (
-          <span key={key} className="mx-0.5 font-semibold text-red-600">
+          <span key={key} className="mx-0.5 font-semibold text-primary">
             →
           </span>
         );
@@ -98,7 +98,7 @@ export function BunpouExplanation({ text, className }: BunpouExplanationProps) {
 
   return (
     <div
-      className={`space-y-2.5 text-sm leading-relaxed text-neutral-700 ${className ?? ''}`.trim()}
+      className={`space-y-2.5 text-sm leading-relaxed text-on-surface-variant ${className ?? ''}`.trim()}
     >
       {blocks.map((block, bIdx) => {
         if (block.kind === 'paragraph') {
@@ -118,7 +118,7 @@ export function BunpouExplanation({ text, className }: BunpouExplanationProps) {
               >
                 <span
                   aria-hidden="true"
-                  className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-red-600/80"
+                  className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/80"
                 />
                 <span className="min-w-0 flex-1">
                   {renderInlineTokens(item, `li-${bIdx}-${iIdx}`)}

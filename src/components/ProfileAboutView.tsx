@@ -69,7 +69,7 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
               <h3 className="font-display text-lg font-bold text-on-surface">
                 Utama<span className="text-primary">Go!</span>
               </h3>
-              <span className="rounded-md border border-primary/35 bg-primary-container/60 px-2 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase text-primary">
+              <span className="rounded-md border border-primary/35 bg-primary-container/60 px-2 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase text-on-primary-container">
                 Beta Tester
               </span>
             </div>

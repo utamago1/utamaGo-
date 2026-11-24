@@ -93,13 +93,13 @@ interface BunpouChapterSummary {
 function getLevelTagClasses(level: JlptLevel): string {
   switch (level) {
     case 'N5':
-      return 'bg-emerald-500/12 text-emerald-700 border-emerald-500/30';
+      return 'bg-emerald-500/12 text-emerald-700 dark:text-emerald-300 border-emerald-500/30';
     case 'N4':
-      return 'bg-sky-500/12 text-sky-700 border-sky-500/30';
+      return 'bg-sky-500/12 text-sky-700 dark:text-sky-300 border-sky-500/30';
     case 'N3':
-      return 'bg-amber-500/12 text-amber-800 border-amber-500/30';
+      return 'bg-amber-500/12 text-amber-800 dark:text-amber-300 border-amber-500/30';
     case 'N2':
-      return 'bg-orange-500/12 text-orange-800 border-orange-500/30';
+      return 'bg-orange-500/12 text-orange-800 dark:text-orange-300 border-orange-500/30';
     case 'N1':
       return 'bg-primary-container text-on-primary-container border-primary/30';
   }
@@ -1312,13 +1312,13 @@ export function BunpouSection({
                 }}
                 className={`inline-flex min-h-[44px] shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl border px-3 py-2 text-sm font-medium transition-colors ${
                   savedOnly
-                    ? 'border-amber-500/60 bg-amber-50 text-amber-900'
+                    ? 'border-warning/60 bg-warning-container text-on-warning-container'
                     : 'border-outline-variant bg-surface-container-low text-on-surface hover:border-outline'
                 }`}
               >
                 <Bookmark
                   className={`h-4 w-4 shrink-0 ${
-                    savedOnly ? 'fill-amber-500 text-amber-600' : ''
+                    savedOnly ? 'fill-warning text-warning' : ''
                   }`}
                   aria-hidden="true"
                 />
@@ -1627,7 +1627,7 @@ export function BunpouSection({
                                   )}
                                   {noteEntry.note.length > 0 && (
                                     <StickyNote
-                                      className="h-3.5 w-3.5 shrink-0 text-amber-600"
+                                      className="h-3.5 w-3.5 shrink-0 text-warning"
                                       aria-label="Ada catatan pribadi"
                                     />
                                   )}
@@ -1643,13 +1643,13 @@ export function BunpouSection({
                                   {item.pattern}
                                 </p>
 
-                                <p className="line-clamp-2 text-[13px] leading-relaxed text-[#4b4b53] dark:text-[#b4b4c0] sm:text-sm">
+                                <p className="line-clamp-2 text-[13px] leading-relaxed text-on-surface-variant sm:text-sm">
                                   {item.meaning}
                                 </p>
 
                                 {noteEntry.note.length > 0 && (
-                                  <p className="truncate border-l-2 border-amber-500 pl-2 text-xs text-amber-900/90">
-                                    {noteEntry.note}
+                                  <p className="truncate text-xs font-medium text-warning">
+                                    Catatan: {noteEntry.note}
                                   </p>
                                 )}
                               </div>
@@ -1675,13 +1675,13 @@ export function BunpouSection({
                                 }
                                 className={`m3-tactile inline-flex h-11 w-11 items-center justify-center rounded-xl transition-colors ${
                                   noteEntry.bookmarked
-                                    ? 'bg-amber-50 text-amber-600'
+                                    ? 'bg-warning-container text-warning'
                                     : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
                                 }`}
                               >
                                 <Bookmark
                                   className={`h-4 w-4 ${
-                                    noteEntry.bookmarked ? 'fill-amber-500' : ''
+                                    noteEntry.bookmarked ? 'fill-warning' : ''
                                   }`}
                                   aria-hidden="true"
                                 />

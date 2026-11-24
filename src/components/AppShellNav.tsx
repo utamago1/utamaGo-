@@ -73,7 +73,7 @@ export function MobileTopAppBar({
           <h1 className="truncate font-display text-base font-extrabold tracking-tight text-on-surface">
             {activeTab === 'home' ? 'UtamaGo!' : activeMeta.title}
           </h1>
-          <span className="shrink-0 rounded-md border border-primary/35 bg-primary-container/60 px-1.5 py-0.5 font-mono text-[10px] leading-none font-bold tracking-wider uppercase text-primary">
+          <span className="shrink-0 rounded-md border border-primary/35 bg-primary-container/60 px-1.5 py-0.5 font-mono text-[10px] leading-none font-bold tracking-wider uppercase text-on-primary-container">
             Beta
           </span>
           {!isOnline && (
@@ -227,7 +227,7 @@ export function DesktopNavigationRail({
                 <p className="truncate font-display text-base font-extrabold tracking-tight text-on-surface">
                   Utama<span className="text-primary">Go!</span>
                 </p>
-                <span className="shrink-0 rounded-md border border-primary/35 bg-primary-container/60 px-1.5 py-0.5 font-mono text-[9px] leading-none font-bold tracking-wider uppercase text-primary">
+                <span className="shrink-0 rounded-md border border-primary/35 bg-primary-container/60 px-1.5 py-0.5 font-mono text-[9px] leading-none font-bold tracking-wider uppercase text-on-primary-container">
                   Beta
                 </span>
               </div>
@@ -281,14 +281,14 @@ export function DesktopNavigationRail({
                 aria-current={isActive ? 'page' : undefined}
                 className={`m3-tactile flex min-h-[44px] w-full items-center justify-between gap-3 rounded-xl px-3.5 py-2 text-sm whitespace-nowrap transition-colors ${
                   isActive
-                    ? 'bg-primary-container/65 font-bold text-primary'
+                    ? 'bg-primary-container/70 font-bold text-on-primary-container'
                     : 'font-medium text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
                 }`}
               >
                 <span className="flex items-center gap-3">
                   <Icon
                     className={`h-4 w-4 ${
-                      isActive ? 'text-primary' : 'text-on-surface-variant'
+                      isActive ? 'text-on-primary-container' : 'text-on-surface-variant'
                     }`}
                     aria-hidden="true"
                   />

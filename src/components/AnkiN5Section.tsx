@@ -1431,14 +1431,14 @@ export function AnkiN5Section({
                       }}
                       className={`m3-tactile inline-flex min-h-[44px] min-w-0 items-center justify-center gap-1 whitespace-nowrap rounded-xl px-2 py-2 text-xs font-bold sm:text-[13px] ${
                         studyScope === 'favorites'
-                          ? 'bg-surface-container-low text-amber-800 shadow-xs'
-                          : 'text-[#4b4b53] hover:text-on-surface dark:text-[#b4b4c0]'
+                          ? 'bg-surface-container-low text-warning shadow-xs'
+                          : 'text-on-surface-variant hover:text-on-surface'
                       }`}
                     >
                       <Bookmark
                         className={`h-3.5 w-3.5 shrink-0 ${
                           studyScope === 'favorites' || favoriteStudyCards.length > 0
-                            ? 'fill-amber-500 text-amber-600'
+                            ? 'fill-warning text-warning'
                             : ''
                         }`}
                         aria-hidden="true"
@@ -1458,7 +1458,7 @@ export function AnkiN5Section({
                       className={`m3-tactile inline-flex min-h-[44px] min-w-0 items-center justify-center gap-1 whitespace-nowrap rounded-xl px-2 py-2 text-xs font-bold sm:text-[13px] ${
                         studyScope === 'all'
                           ? 'bg-surface-container-low text-on-surface shadow-xs'
-                          : 'text-[#4b4b53] hover:text-on-surface dark:text-[#b4b4c0]'
+                          : 'text-on-surface-variant hover:text-on-surface'
                       }`}
                     >
                       <span className="truncate">
@@ -1471,7 +1471,7 @@ export function AnkiN5Section({
                     <div className="space-y-3 rounded-2xl border border-outline-variant bg-surface-container p-4">
                       <div className="flex items-start gap-2.5 text-sm">
                         <Bookmark
-                          className="mt-0.5 h-4 w-4 shrink-0 text-amber-600"
+                          className="mt-0.5 h-4 w-4 shrink-0 text-warning"
                           aria-hidden="true"
                         />
                         <div>
@@ -1630,13 +1630,13 @@ export function AnkiN5Section({
                     }}
                     className={`m3-tactile inline-flex min-h-[48px] shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl border px-3.5 py-2 text-xs font-bold transition-colors ${
                       browseFavoritesOnly
-                        ? 'border-amber-500/60 bg-amber-50 text-amber-900'
+                        ? 'border-warning/60 bg-warning-container text-on-warning-container'
                         : 'border-outline bg-surface-container-low text-on-surface hover:border-primary/40'
                     }`}
                   >
                     <Bookmark
                       className={`h-4 w-4 shrink-0 ${
-                        browseFavoritesOnly ? 'fill-amber-500 text-amber-600' : ''
+                        browseFavoritesOnly ? 'fill-warning text-warning' : ''
                       }`}
                       aria-hidden="true"
                     />
@@ -1794,8 +1794,8 @@ export function AnkiN5Section({
                                 )}
                               </div>
                               {cardNoteEntry.note.length > 0 && (
-                                <p className="mt-1.5 truncate border-l-2 border-amber-500 pl-2 text-xs text-amber-900/90">
-                                  {cardNoteEntry.note}
+                                <p className="mt-1.5 truncate text-xs font-medium text-warning">
+                                  Catatan: {cardNoteEntry.note}
                                 </p>
                               )}
                             </button>
@@ -1828,14 +1828,14 @@ export function AnkiN5Section({
                                   }
                                   className={`inline-flex items-center gap-1 rounded-lg border px-2 py-1 font-mono text-[10px] font-semibold transition-colors ${
                                     cardNoteEntry.bookmarked
-                                      ? 'border-amber-500/60 bg-amber-50 text-amber-800'
+                                      ? 'border-warning/60 bg-warning-container text-on-warning-container'
                                       : 'border-outline-variant bg-surface text-on-surface-variant hover:border-outline hover:text-on-surface'
                                   }`}
                                 >
                                   <Bookmark
                                     className={`h-3 w-3 ${
                                       cardNoteEntry.bookmarked
-                                        ? 'fill-amber-500 text-amber-600'
+                                        ? 'fill-warning text-warning'
                                         : ''
                                     }`}
                                     aria-hidden="true"
@@ -2513,13 +2513,13 @@ export function AnkiN5Section({
                           }
                           className={`m3-tactile inline-flex h-10 w-10 items-center justify-center rounded-xl border transition-colors ${
                             activeEntry.bookmarked
-                              ? 'border-amber-500/60 bg-amber-50 text-amber-600'
+                              ? 'border-warning/60 bg-warning-container text-warning'
                               : 'border-outline-variant bg-surface text-on-surface-variant hover:text-on-surface'
                           }`}
                         >
                           <Bookmark
                             className={`h-4 w-4 ${
-                              activeEntry.bookmarked ? 'fill-amber-500' : ''
+                              activeEntry.bookmarked ? 'fill-warning' : ''
                             }`}
                             aria-hidden="true"
                           />

@@ -13,7 +13,14 @@ import type { AnkiDeckId } from './ankiParser';
 import type { AnkiSrsMap } from './ankiSrs';
 import { hydrateSrsMapFromLegacy } from './ankiSrs';
 import type { ComputedTryOutReport } from './jlptReport';
-import type { CompletedLevelRecord, LearnerGender } from './levelProgression';
+import {
+  createEmptyArcadeRecords,
+  type ArcadeRecords,
+  type BlitzBestRecord,
+  type CompletedLevelRecord,
+  type LearnerGender,
+  type SurvivalBestRecord,
+} from './levelProgression';
 import type { DailyReminderConfig } from './notifications';
 import {
   EMPTY_ACTIVITY_LOG,
@@ -55,6 +62,7 @@ export interface StoredAnkiProgress {
 export interface StoredGameProgress {
   totalXp: number;
   completedLevels: Record<string, CompletedLevelRecord>;
+  arcadeRecords?: ArcadeRecords;
 }
 
 export interface StoredPacketProgress {
@@ -459,8 +467,75 @@ export function sanitizePacketsProgressMap(
   return result;
 }
 
+function sanitizeArcadeRecords(raw: unknown): ArcadeRecords {
+  const empty = createEmptyArcadeRecords();
+  if (!raw || typeof raw !== 'object') return empty;
+  const parsed = raw as Partial<ArcadeRecords>;
+
+  const validLevels: JlptLevel[] = ['N5', 'N4', 'N3', 'N2', 'N1'];
+  const blitzBestByLevel: Partial<Record<JlptLevel, BlitzBestRecord>> = {};
+  if (parsed.blitzBestByLevel && typeof parsed.blitzBestByLevel === 'object') {
+    for (const lv of validLevels) {
+      const rec = parsed.blitzBestByLevel[lv];
+      if (rec && typeof rec === 'object') {
+        blitzBestByLevel[lv] = {
+          bestScore: Math.max(0, Number(rec.bestScore) || 0),
+          bestCombo: Math.max(0, Number(rec.bestCombo) || 0),
+          bestCorrect: Math.max(0, Number(rec.bestCorrect) || 0),
+        };
+      }
+    }
+  }
+
+  const survivalBestByLevel: Partial<Record<JlptLevel, SurvivalBestRecord>> = {};
+  if (
+    parsed.survivalBestByLevel &&
+    typeof parsed.survivalBestByLevel === 'object'
+  ) {
+    for (const lv of validLevels) {
+      const rec = parsed.survivalBestByLevel[lv];
+      if (rec && typeof rec === 'object') {
+        survivalBestByLevel[lv] = {
+          bestCleared: Math.max(0, Number(rec.bestCleared) || 0),
+          bestScore: Math.max(0, Number(rec.bestScore) || 0),
+          bestCombo: Math.max(0, Number(rec.bestCombo) || 0),
+        };
+      }
+    }
+  }
+
+  const defeatedBosses: Record<string, CompletedLevelRecord> = {};
+  if (parsed.defeatedBosses && typeof parsed.defeatedBosses === 'object') {
+    for (const [bossId, rec] of Object.entries(parsed.defeatedBosses)) {
+      if (rec && typeof rec === 'object' && typeof rec.stars === 'number') {
+        const clampedStars = Math.min(3, Math.max(1, Math.round(rec.stars))) as
+          | 1
+          | 2
+          | 3;
+        defeatedBosses[bossId] = {
+          stars: clampedStars,
+          bestAccuracy: Math.min(100, Math.max(0, Number(rec.bestAccuracy) || 0)),
+          xpEarned: Math.max(0, Number(rec.xpEarned) || 0),
+        };
+      }
+    }
+  }
+
+  return {
+    blitzBestByLevel,
+    survivalBestByLevel,
+    defeatedBosses,
+  };
+}
+
 function sanitizeGameProgress(raw: unknown): StoredGameProgress {
-  if (!raw || typeof raw !== 'object') return { totalXp: 0, completedLevels: {} };
+  if (!raw || typeof raw !== 'object') {
+    return {
+      totalXp: 0,
+      completedLevels: {},
+      arcadeRecords: createEmptyArcadeRecords(),
+    };
+  }
   const parsed = raw as Partial<StoredGameProgress>;
   return {
     totalXp:
@@ -471,6 +546,7 @@ function sanitizeGameProgress(raw: unknown): StoredGameProgress {
       parsed.completedLevels && typeof parsed.completedLevels === 'object'
         ? parsed.completedLevels
         : {},
+    arcadeRecords: sanitizeArcadeRecords(parsed.arcadeRecords),
   };
 }
 

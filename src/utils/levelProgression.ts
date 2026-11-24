@@ -82,6 +82,32 @@ export interface CompletedLevelRecord {
   xpEarned: number;
 }
 
+export interface BlitzBestRecord {
+  bestScore: number;
+  bestCombo: number;
+  bestCorrect: number;
+}
+
+export interface SurvivalBestRecord {
+  bestCleared: number;
+  bestScore: number;
+  bestCombo: number;
+}
+
+export interface ArcadeRecords {
+  blitzBestByLevel: Partial<Record<JlptLevel, BlitzBestRecord>>;
+  survivalBestByLevel: Partial<Record<JlptLevel, SurvivalBestRecord>>;
+  defeatedBosses: Record<string, CompletedLevelRecord>;
+}
+
+export function createEmptyArcadeRecords(): ArcadeRecords {
+  return {
+    blitzBestByLevel: {},
+    survivalBestByLevel: {},
+    defeatedBosses: {},
+  };
+}
+
 export interface ChallengeEvaluation {
   correctCount: number;
   totalQuestions: number;
@@ -89,6 +115,10 @@ export interface ChallengeEvaluation {
   passed: boolean;
   stars: 0 | 1 | 2 | 3;
   xpAwarded: number;
+  score?: number;
+  maxCombo?: number;
+  isNewRecord?: boolean;
+  bossDefeated?: boolean;
 }
 
 export const RANKS: RankInfo[] = [

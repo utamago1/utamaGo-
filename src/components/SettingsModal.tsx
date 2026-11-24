@@ -273,7 +273,7 @@ export function SettingsModal({
           <div>
             <p className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-primary">
               <span>UtamaGo!</span>
-              <span className="rounded-md border border-primary/35 bg-primary-container/60 px-1.5 py-0.5 font-mono text-[9px] leading-none font-bold uppercase text-primary">
+              <span className="rounded-md border border-primary/35 bg-primary-container/60 px-1.5 py-0.5 font-mono text-[9px] leading-none font-bold uppercase text-on-primary-container">
                 Beta Tester
               </span>
             </p>

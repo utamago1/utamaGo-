@@ -1,13 +1,36 @@
 import type { JlptLevel } from '../data/utamagoContent';
 
+export type ChallengeQuestionKind = 'mcq' | 'sentence-order' | 'audio-choice';
+export type ChallengeArenaMode =
+  | 'stage'
+  | 'boss'
+  | 'blitz'
+  | 'survival'
+  | 'daily-drill';
+
 export interface ChallengeQuestion {
   id: string;
   tag: string;
+  kind?: ChallengeQuestionKind;
   prompt: string;
   passage?: string;
   options: string[];
   correctIndex: number;
   explanation: string;
+  /** For kind === 'sentence-order': correct ordered Japanese word/phrase tiles */
+  orderedTokens?: string[];
+  /** Optional prefix shown before the sentence slots */
+  sentenceBefore?: string;
+  /** Optional suffix shown after the sentence slots */
+  sentenceAfter?: string;
+  /** Optional 0-based slot index highlighting the classic JLPT ★ position */
+  starSlotIndex?: number;
+  /** Optional Indonesian meaning hint (used only on N5–N4 sentence-order items) */
+  sentenceHint?: string;
+  /** For kind === 'audio-choice': Japanese phrase spoken via TTS */
+  audioText?: string;
+  /** For kind === 'audio-choice': written Japanese + reading revealed after answering */
+  audioReveal?: string;
 }
 
 export interface ChallengeStage {
@@ -19,6 +42,11 @@ export interface ChallengeStage {
   subtitle: string;
   xpReward: number;
   questions: ChallengeQuestion[];
+  mode?: ChallengeArenaMode;
+  bossName?: string;
+  bossTitle?: string;
+  bossMaxHp?: number;
+  timeLimitSeconds?: number;
 }
 
 export const CHALLENGE_STAGES: ChallengeStage[] = [

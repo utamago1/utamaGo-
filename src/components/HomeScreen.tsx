@@ -10,11 +10,15 @@ import {
   Play,
   RotateCcw,
   Search,
+  ShieldAlert,
   Shuffle,
   Star,
+  Swords,
+  Timer,
   Trophy,
   Volume2,
 } from 'lucide-react';
+import { getBossStageForLevel } from '../data/challengeArenaData';
 import {
   CHALLENGE_STAGES,
   type ChallengeStage,
@@ -37,9 +41,12 @@ import {
 } from '../utils/japaneseSpeech';
 import type { ComputedTryOutReport } from '../utils/jlptReport';
 import {
+  createEmptyArcadeRecords,
   getTotalStarsEarned,
   isJlptLevelUnlocked,
   isStageUnlocked,
+  JLPT_LEVELS_ASC,
+  type ArcadeRecords,
   type CompletedLevelRecord,
   type LearnerGender,
   type LevelProgressInfo,
@@ -61,6 +68,7 @@ import { WeaknessDetectorCard } from './WeaknessDetectorCard';
 interface HomeScreenProps {
   levelProgress: LevelProgressInfo;
   completedLevels: Record<string, CompletedLevelRecord>;
+  arcadeRecords?: ArcadeRecords;
   studiedAnkiCount: number;
   dueAnkiCount: number;
   totalAnkiDeckCount: number;
@@ -95,6 +103,8 @@ interface HomeScreenProps {
   onOpenDictionary: () => void;
   onStartDifficultDrill: () => void;
   onStartDailyDrill: (count: 5 | 10, shuffleIndex: number) => void;
+  onStartBlitz?: (level: JlptLevel) => void;
+  onStartSurvival?: (level: JlptLevel) => void;
   onStartStage: (stage: ChallengeStage) => void;
   onNavigate: (tab: Exclude<AppTab, 'home'>) => void;
 }
@@ -102,6 +112,7 @@ interface HomeScreenProps {
 export function HomeScreen({
   levelProgress,
   completedLevels,
+  arcadeRecords,
   dueAnkiCount,
   completedPacketCount,
   latestReport,
@@ -132,12 +143,20 @@ export function HomeScreen({
   onOpenDictionary,
   onStartDifficultDrill,
   onStartDailyDrill,
+  onStartBlitz,
+  onStartSurvival,
   onStartStage,
   onNavigate,
 }: HomeScreenProps) {
   const [showDifficultView, setShowDifficultView] = useState(false);
   const [dailyDrillCount, setDailyDrillCount] = useState<5 | 10>(5);
   const [dailyShuffleIndex, setDailyShuffleIndex] = useState(0);
+  const [arenaLevel, setArenaLevel] = useState<JlptLevel>(unlockedLevel);
+  const resolvedArcade = arcadeRecords ?? createEmptyArcadeRecords();
+  const effectiveArenaLevel = isJlptLevelUnlocked(arenaLevel, unlockedLevel)
+    ? arenaLevel
+    : unlockedLevel;
+  const defeatedBossCount = Object.keys(resolvedArcade.defeatedBosses).length;
   const speechSupported = useMemo(() => isJapaneseSpeechSupported(), []);
 
   const stageIds = useMemo(() => CHALLENGE_STAGES.map((s) => s.id), []);
@@ -219,6 +238,9 @@ export function HomeScreen({
   }, []);
 
   if (showChallengesView) {
+    const blitzBest = resolvedArcade.blitzBestByLevel[effectiveArenaLevel];
+    const survivalBest = resolvedArcade.survivalBestByLevel[effectiveArenaLevel];
+
     return (
       <div className="mx-auto w-full max-w-[480px] space-y-5 px-4 lg:max-w-3xl">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-outline-variant pb-4">
@@ -236,13 +258,17 @@ export function HomeScreen({
             </button>
             <div className="min-w-0">
               <h2 className="font-display text-lg font-extrabold tracking-tight text-on-surface sm:text-xl">
-                Tantangan Level JLPT
+                Arena Tantangan JLPT
               </h2>
               <p className="text-[13px] text-on-surface-variant">
                 <span className="font-mono tabular-nums">
                   {completedStagesCount}/{CHALLENGE_STAGES.length}
                 </span>{' '}
                 stage ·{' '}
+                <span className="font-mono tabular-nums">
+                  {defeatedBossCount}/5
+                </span>{' '}
+                boss ·{' '}
                 <span className="font-mono tabular-nums">
                   {totalStars}/{maxStars}
                 </span>{' '}
@@ -263,6 +289,155 @@ export function HomeScreen({
             <span>Mulai Level {nextStage.order}</span>
           </button>
         </div>
+
+        {/* Mode Arena Cepat: Blitz 60 Detik & Survival Tanpa Batas */}
+        <section aria-label="Mode Arena Cepat" className="space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h3 className="font-display text-sm font-extrabold text-on-surface sm:text-base">
+                Mode Arena Cepat
+              </h3>
+              <p className="text-xs text-on-surface-variant">
+                Kombo berjenjang · FEVER x4 · Susun Kalimat · Tebak Audio · Reaksi Maskot
+              </p>
+            </div>
+
+            <div
+              role="group"
+              aria-label="Pilih level JLPT untuk Mode Arena"
+              className="inline-flex items-center gap-1 rounded-xl border border-outline-variant bg-surface-container-low p-1"
+            >
+              {JLPT_LEVELS_ASC.map((lv) => {
+                const lvUnlocked = isJlptLevelUnlocked(lv, unlockedLevel);
+                const active = effectiveArenaLevel === lv;
+                return (
+                  <button
+                    key={lv}
+                    type="button"
+                    disabled={!lvUnlocked}
+                    aria-pressed={active}
+                    onClick={() => {
+                      if (!lvUnlocked) return;
+                      vibrateTap();
+                      setArenaLevel(lv);
+                    }}
+                    title={
+                      lvUnlocked
+                        ? `Pilih Arena ${lv}`
+                        : `Butuh level minimal ${lv} (atur di Profil)`
+                    }
+                    className={`inline-flex min-h-[36px] items-center gap-1 whitespace-nowrap rounded-lg px-2.5 py-1 font-mono text-xs font-bold transition-colors ${
+                      !lvUnlocked
+                        ? 'cursor-not-allowed text-on-surface-variant/45'
+                        : active
+                          ? 'bg-primary text-on-primary'
+                          : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
+                    }`}
+                  >
+                    {!lvUnlocked && (
+                      <Lock className="h-3 w-3" aria-hidden="true" />
+                    )}
+                    <span>{lv}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {/* Blitz 60 Detik Card */}
+            <div className="flex flex-col justify-between rounded-2xl border border-outline-variant bg-surface-container-low p-4 sm:p-5">
+              <div>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-warning-container text-warning">
+                    <Timer className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                  <span className="font-mono text-xs font-bold tabular-nums text-on-surface-variant">
+                    60 Detik · {effectiveArenaLevel}
+                  </span>
+                </div>
+                <h4 className="mt-3 font-display text-base font-extrabold text-on-surface">
+                  Blitz Adu Cepat
+                </h4>
+                <p className="mt-1 text-[13px] leading-relaxed text-on-surface-variant">
+                  Kejar skor tertinggi tanpa jeda. Tiap 5 kombo beruntun memberi
+                  bonus +3 detik!
+                </p>
+                <p className="mt-2.5 font-mono text-xs tabular-nums text-on-surface-variant">
+                  {blitzBest ? (
+                    <>
+                      Rekor:{' '}
+                      <strong className="text-on-surface">
+                        {blitzBest.bestScore} poin
+                      </strong>{' '}
+                      · Kombo x{blitzBest.bestCombo}
+                    </>
+                  ) : (
+                    'Belum ada rekor · Tantang dirimu!'
+                  )}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  vibrateTap();
+                  onStartBlitz?.(effectiveArenaLevel);
+                }}
+                className="m3-tactile mt-4 inline-flex min-h-[44px] w-full items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-on-primary hover:bg-primary-hover"
+              >
+                <Play className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
+                <span>Main Blitz {effectiveArenaLevel}</span>
+              </button>
+            </div>
+
+            {/* Survival Tanpa Batas Card */}
+            <div className="flex flex-col justify-between rounded-2xl border border-outline-variant bg-surface-container-low p-4 sm:p-5">
+              <div>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-container text-on-primary-container">
+                    <ShieldAlert className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                  <span className="font-mono text-xs font-bold tabular-nums text-on-surface-variant">
+                    3 Nyawa · {effectiveArenaLevel}
+                  </span>
+                </div>
+                <h4 className="mt-3 font-display text-base font-extrabold text-on-surface">
+                  Survival Tanpa Batas
+                </h4>
+                <p className="mt-1 text-[13px] leading-relaxed text-on-surface-variant">
+                  Soal acak tanpa akhir yang makin menantang tiap gelombang.
+                  Seberapa jauh kamu bertahan?
+                </p>
+                <p className="mt-2.5 font-mono text-xs tabular-nums text-on-surface-variant">
+                  {survivalBest ? (
+                    <>
+                      Rekor:{' '}
+                      <strong className="text-on-surface">
+                        {survivalBest.bestCleared} soal
+                      </strong>{' '}
+                      · {survivalBest.bestScore} poin
+                    </>
+                  ) : (
+                    'Belum ada rekor · Mulai bertahan!'
+                  )}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  vibrateTap();
+                  onStartSurvival?.(effectiveArenaLevel);
+                }}
+                className="m3-tactile mt-4 inline-flex min-h-[44px] w-full items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-outline bg-surface px-4 py-2.5 text-xs font-bold text-on-surface hover:bg-surface-container"
+              >
+                <Play className="h-3.5 w-3.5 fill-current text-primary" aria-hidden="true" />
+                <span>Mulai Survival {effectiveArenaLevel}</span>
+              </button>
+            </div>
+          </div>
+        </section>
 
         {/* Daily Drill Adaptif Card */}
         <section
@@ -474,6 +649,120 @@ export function HomeScreen({
                     </button>
                   );
                 })}
+
+                {/* Chapter Boss Stage Row */}
+                {(() => {
+                  const chapterLevel = group.stages[0]?.stage.jlptLevel;
+                  const bossStage = chapterLevel
+                    ? getBossStageForLevel(chapterLevel)
+                    : undefined;
+                  if (!bossStage) return null;
+
+                  const bossUnlocked = isJlptLevelUnlocked(
+                    bossStage.jlptLevel,
+                    unlockedLevel,
+                  );
+                  const bossRecord =
+                    resolvedArcade.defeatedBosses[bossStage.id];
+
+                  return (
+                    <button
+                      key={bossStage.id}
+                      type="button"
+                      disabled={!bossUnlocked}
+                      onClick={() => {
+                        if (!bossUnlocked) return;
+                        vibrateTap();
+                        onStartStage(bossStage);
+                      }}
+                      aria-label={
+                        bossUnlocked
+                          ? `Tantang ${bossStage.title}`
+                          : `${bossStage.title} terkunci`
+                      }
+                      className={`m3-tactile flex min-h-[82px] w-full items-center justify-between gap-3 px-4 py-3.5 text-left transition-colors ${
+                        !bossUnlocked
+                          ? 'cursor-not-allowed bg-surface-container/40 opacity-65'
+                          : bossRecord
+                            ? 'bg-success-container/25 hover:bg-success-container/40'
+                            : 'bg-warning-container/35 hover:bg-warning-container/55'
+                      }`}
+                    >
+                      <div className="flex min-w-0 flex-1 items-center gap-3">
+                        <span
+                          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
+                            !bossUnlocked
+                              ? 'bg-surface-container-high text-on-surface-variant'
+                              : bossRecord
+                                ? 'bg-success text-white'
+                                : 'bg-primary text-on-primary'
+                          }`}
+                        >
+                          {!bossUnlocked ? (
+                            <Lock className="h-4 w-4" aria-hidden="true" />
+                          ) : (
+                            <Swords className="h-4 w-4" aria-hidden="true" />
+                          )}
+                        </span>
+
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-x-1.5 text-xs font-semibold">
+                            <span
+                              className={
+                                bossUnlocked
+                                  ? bossRecord
+                                    ? 'text-success'
+                                    : 'text-warning'
+                                  : 'text-on-surface-variant'
+                              }
+                            >
+                              Boss Stage · {bossStage.jlptLevel}
+                            </span>
+                            <span aria-hidden="true" className="text-outline">
+                              ·
+                            </span>
+                            <span className="font-mono tabular-nums text-on-surface-variant">
+                              {bossStage.bossMaxHp ?? bossStage.questions.length} HP · +{bossStage.xpReward} XP
+                            </span>
+                          </div>
+                          <p className="mt-0.5 truncate font-display text-[15px] font-extrabold text-on-surface">
+                            {bossStage.title}
+                          </p>
+                          <p className="mt-0.5 truncate text-[13px] text-on-surface-variant">
+                            {bossUnlocked
+                              ? bossStage.subtitle
+                              : `Butuh level minimal ${bossStage.jlptLevel} (atur di Profil)`}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex shrink-0 flex-col items-end gap-1.5">
+                        <div className="flex items-center gap-0.5">
+                          {[1, 2, 3].map((s) => (
+                            <Star
+                              key={s}
+                              className={`h-3.5 w-3.5 ${
+                                bossRecord && s <= bossRecord.stars
+                                  ? 'fill-amber-400 text-amber-500'
+                                  : 'text-outline'
+                              }`}
+                              aria-hidden="true"
+                            />
+                          ))}
+                        </div>
+                        {bossUnlocked && (
+                          <span
+                            className={`whitespace-nowrap text-xs font-bold ${
+                              bossRecord ? 'text-success' : 'text-primary'
+                            }`}
+                          >
+                            {bossRecord ? 'Tanding Ulang' : 'Lawan Boss'}
+                          </span>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })()}
               </div>
             </div>
           ))}
@@ -908,13 +1197,13 @@ export function HomeScreen({
 
             <div className="mt-3 min-w-0">
               <p className="font-display text-[15px] font-bold leading-snug text-on-surface break-words">
-                Tantangan Level
+                Arena Tantangan
               </p>
               <p className="mt-1 text-[13px] leading-snug text-[#4b4b53] dark:text-[#b4b4c0] break-words">
                 <span className="font-mono tabular-nums">
                   {completedStagesCount}/{CHALLENGE_STAGES.length}
                 </span>{' '}
-                stage selesai
+                stage · Blitz, Survival &amp; Boss
               </p>
             </div>
           </button>
