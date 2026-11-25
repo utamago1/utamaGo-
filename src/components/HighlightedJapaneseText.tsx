@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Square, Volume2 } from 'lucide-react';
+import { Loader2, Square, Volume2 } from 'lucide-react';
 import { vibrateTap } from '../utils/haptics';
 import { highlightJapaneseSentence } from '../utils/japaneseHighlight';
 import {
@@ -28,9 +28,11 @@ export function HighlightedJapaneseText({
   prefix,
 }: HighlightedJapaneseTextProps) {
   const [speaking, setSpeaking] = useState(false);
+  const [loadingAudio, setLoadingAudio] = useState(false);
 
   useEffect(() => {
     setSpeaking(false);
+    setLoadingAudio(false);
   }, [sentence]);
 
   const segments = useMemo(
@@ -47,17 +49,23 @@ export function HighlightedJapaneseText({
 
   const handleSpeak = () => {
     vibrateTap();
-    if (speaking) {
+    if (speaking || loadingAudio) {
       stopJapaneseSpeech();
       setSpeaking(false);
+      setLoadingAudio(false);
       return;
     }
     setSpeaking(true);
     const ok = speakJapanese(sentence, {
-      onEnd: () => setSpeaking(false),
+      onLoadingChange: (loading) => setLoadingAudio(loading),
+      onEnd: () => {
+        setSpeaking(false);
+        setLoadingAudio(false);
+      },
     });
     if (!ok) {
       setSpeaking(false);
+      setLoadingAudio(false);
     }
   };
 
@@ -89,18 +97,26 @@ export function HighlightedJapaneseText({
               type="button"
               onClick={handleSpeak}
               aria-label={
-                speaking
+                speaking || loadingAudio
                   ? 'Hentikan pengucapan kalimat'
                   : 'Dengarkan pengucapan kalimat Jepang'
               }
-              title={speaking ? 'Hentikan' : 'Dengarkan pengucapan'}
+              title={
+                loadingAudio
+                  ? 'Memuat audio...'
+                  : speaking
+                    ? 'Hentikan'
+                    : 'Dengarkan pengucapan'
+              }
               className={`m3-tactile inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border transition-colors ${
-                speaking
+                speaking || loadingAudio
                   ? 'border-primary bg-primary text-on-primary'
                   : 'border-outline-variant bg-surface-container-low text-on-surface-variant hover:border-outline hover:text-primary'
               }`}
             >
-              {speaking ? (
+              {loadingAudio ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
+              ) : speaking ? (
                 <Square className="h-3 w-3 fill-current" aria-hidden="true" />
               ) : (
                 <Volume2 className="h-3.5 w-3.5" aria-hidden="true" />

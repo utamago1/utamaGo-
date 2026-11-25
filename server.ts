@@ -17,10 +17,41 @@ const TTS_CACHE_MAX_ENTRIES = 1500;
 const TTS_RATE_LIMIT_WINDOW_MS = 60_000;
 const TTS_RATE_LIMIT_MAX_REQUESTS = 240;
 const TTS_SAMPLE_RATE = 24_000;
+const TTS_QUOTA_COOLDOWN_MS = 60_000;
+const TTS_MODELS = ['gemini-3.8-flash-lite-tts', 'gemini-3.8-flash-tts'] as const;
 
 let geminiTtsClient: GoogleGenAI | null = null;
 const ttsAudioCache = new Map<string, Buffer>();
 const ttsRateLimitBuckets = new Map<string, number[]>();
+const ttsModelCooldownUntil = new Map<string, number>();
+
+function isGeminiQuotaError(err: unknown): boolean {
+  if (!err) return false;
+  const status = (err as { status?: number }).status;
+  if (status === 429) return true;
+  const msg = err instanceof Error ? err.message : String(err);
+  return (
+    msg.includes('"code":429') ||
+    msg.includes('"code": 429') ||
+    msg.includes('RESOURCE_EXHAUSTED') ||
+    msg.toLowerCase().includes('exceeded your current quota')
+  );
+}
+
+function getAvailableTtsModels(): string[] {
+  const now = Date.now();
+  return TTS_MODELS.filter((m) => (ttsModelCooldownUntil.get(m) ?? 0) <= now);
+}
+
+function getMinTtsCooldownRemainingSeconds(): number {
+  const now = Date.now();
+  let minMs = TTS_QUOTA_COOLDOWN_MS;
+  for (const m of TTS_MODELS) {
+    const rem = Math.max(0, (ttsModelCooldownUntil.get(m) ?? 0) - now);
+    if (rem < minMs) minMs = rem;
+  }
+  return Math.max(5, Math.ceil(minMs / 1000));
+}
 
 function getGeminiTtsClient(): GoogleGenAI | null {
   const apiKey = process.env.GEMINI_API_KEY?.trim();
@@ -152,11 +183,23 @@ async function handleJapaneseTts(req: Request, res: Response): Promise<void> {
     return;
   }
 
+  const availableModels = getAvailableTtsModels();
+  if (availableModels.length === 0) {
+    res.status(429).json({
+      error: 'TTS quota temporarily reached.',
+      code: 'QUOTA_EXCEEDED',
+      retryAfterSeconds: getMinTtsCooldownRemainingSeconds(),
+    });
+    return;
+  }
+
   let lastErr: unknown = null;
-  for (let attempt = 0; attempt < 2; attempt += 1) {
+  let sawQuotaError = false;
+
+  for (const modelName of availableModels) {
     try {
       const response = await ai.models.generateContent({
-        model: 'gemini-3.8-flash-lite-tts',
+        model: modelName,
         contents: [
           {
             role: 'user',
@@ -183,9 +226,7 @@ async function handleJapaneseTts(req: Request, res: Response): Promise<void> {
       const base64Audio =
         response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
       if (!base64Audio) {
-        if (attempt === 0) continue;
-        res.status(502).json({ error: 'No audio returned by TTS service.' });
-        return;
+        continue;
       }
 
       // Unary Gemini 3.8 TTS returns a complete RIFF WAV file (24kHz mono 16-bit).
@@ -200,15 +241,26 @@ async function handleJapaneseTts(req: Request, res: Response): Promise<void> {
       return;
     } catch (err) {
       lastErr = err;
-      if (attempt === 0) {
-        await new Promise((resolve) => setTimeout(resolve, 220));
+      if (isGeminiQuotaError(err)) {
+        sawQuotaError = true;
+        ttsModelCooldownUntil.set(modelName, Date.now() + TTS_QUOTA_COOLDOWN_MS);
+        continue;
       }
     }
   }
 
+  if (sawQuotaError && getAvailableTtsModels().length === 0) {
+    res.status(429).json({
+      error: 'TTS quota temporarily reached.',
+      code: 'QUOTA_EXCEEDED',
+      retryAfterSeconds: getMinTtsCooldownRemainingSeconds(),
+    });
+    return;
+  }
+
   console.error(
     '[TTS] Gemini TTS request failed:',
-    lastErr instanceof Error ? lastErr.message : 'unknown error',
+    lastErr instanceof Error ? lastErr.message.slice(0, 200) : 'unknown error',
   );
   res.status(503).json({ error: 'TTS service temporarily unavailable.' });
 }
@@ -260,83 +312,115 @@ async function handleJapaneseTtsStream(req: Request, res: Response): Promise<voi
     return;
   }
 
+  const availableModels = getAvailableTtsModels();
+  if (availableModels.length === 0) {
+    res.status(429).json({
+      error: 'TTS quota temporarily reached.',
+      code: 'QUOTA_EXCEEDED',
+      retryAfterSeconds: getMinTtsCooldownRemainingSeconds(),
+    });
+    return;
+  }
+
   let headersSent = false;
   let aborted = false;
   req.on('close', () => {
     aborted = true;
   });
 
-  try {
-    const responseStream = await ai.models.generateContentStream({
-      model: 'gemini-3.8-flash-lite-tts',
-      contents: [
-        {
-          role: 'user',
-          parts: [
-            {
-              text: normalizedText,
-              speechMetadata: {
-                style: styleInstruction,
+  let lastErr: unknown = null;
+  let sawQuotaError = false;
+
+  for (const modelName of availableModels) {
+    if (aborted) break;
+    try {
+      const responseStream = await ai.models.generateContentStream({
+        model: modelName,
+        contents: [
+          {
+            role: 'user',
+            parts: [
+              {
+                text: normalizedText,
+                speechMetadata: {
+                  style: styleInstruction,
+                },
               },
+            ],
+          },
+        ],
+        config: {
+          responseModalities: ['AUDIO'],
+          speechConfig: {
+            voiceConfig: {
+              prebuiltVoiceConfig: { voiceName },
             },
-          ],
-        },
-      ],
-      config: {
-        responseModalities: ['AUDIO'],
-        speechConfig: {
-          voiceConfig: {
-            prebuiltVoiceConfig: { voiceName },
           },
         },
-      },
-    });
+      });
 
-    const pcmChunks: Buffer[] = [];
-    for await (const chunk of responseStream) {
-      if (aborted) break;
-      const b64 = chunk.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-      if (!b64) continue;
-      const pcmBuf = Buffer.from(b64, 'base64');
-      if (pcmBuf.length === 0) continue;
+      const pcmChunks: Buffer[] = [];
+      for await (const chunk of responseStream) {
+        if (aborted) break;
+        const b64 = chunk.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+        if (!b64) continue;
+        const pcmBuf = Buffer.from(b64, 'base64');
+        if (pcmBuf.length === 0) continue;
 
-      if (!headersSent) {
-        headersSent = true;
-        res.status(200);
-        res.setHeader('Content-Type', 'application/octet-stream');
-        res.setHeader('Cache-Control', 'no-store');
-        res.setHeader('X-TTS-Sample-Rate', String(TTS_SAMPLE_RATE));
-        res.setHeader('X-TTS-Voice', voiceName);
-        res.setHeader('X-TTS-Cache', 'MISS');
-        res.flushHeaders?.();
+        if (!headersSent) {
+          headersSent = true;
+          res.status(200);
+          res.setHeader('Content-Type', 'application/octet-stream');
+          res.setHeader('Cache-Control', 'no-store');
+          res.setHeader('X-TTS-Sample-Rate', String(TTS_SAMPLE_RATE));
+          res.setHeader('X-TTS-Voice', voiceName);
+          res.setHeader('X-TTS-Cache', 'MISS');
+          res.flushHeaders?.();
+        }
+        pcmChunks.push(pcmBuf);
+        res.write(pcmBuf);
       }
-      pcmChunks.push(pcmBuf);
-      res.write(pcmBuf);
-    }
 
-    if (!headersSent) {
-      res.status(502).json({ error: 'No audio stream returned by TTS service.' });
-      return;
-    }
-
-    if (!aborted && pcmChunks.length > 0) {
-      const fullPcm = Buffer.concat(pcmChunks);
-      if (fullPcm.length > 0) {
-        setTtsCacheEntry(cacheKey, wrapPcm24kMonoToWav(fullPcm));
+      if (headersSent) {
+        if (!aborted && pcmChunks.length > 0) {
+          const fullPcm = Buffer.concat(pcmChunks);
+          if (fullPcm.length > 0) {
+            setTtsCacheEntry(cacheKey, wrapPcm24kMonoToWav(fullPcm));
+          }
+        }
+        res.end();
+        return;
       }
-    }
-    res.end();
-  } catch (err) {
-    console.error(
-      '[TTS-Stream] Gemini streaming TTS failed:',
-      err instanceof Error ? err.message : 'unknown error',
-    );
-    if (!headersSent) {
-      res.status(503).json({ error: 'TTS streaming temporarily unavailable.' });
-    } else {
-      res.end();
+    } catch (err) {
+      lastErr = err;
+      if (headersSent) {
+        res.end();
+        return;
+      }
+      if (isGeminiQuotaError(err)) {
+        sawQuotaError = true;
+        ttsModelCooldownUntil.set(modelName, Date.now() + TTS_QUOTA_COOLDOWN_MS);
+        continue;
+      }
     }
   }
+
+  if (aborted) return;
+
+  if (sawQuotaError && getAvailableTtsModels().length === 0) {
+    res.status(429).json({
+      error: 'TTS quota temporarily reached.',
+      code: 'QUOTA_EXCEEDED',
+      retryAfterSeconds: getMinTtsCooldownRemainingSeconds(),
+    });
+    return;
+  }
+
+  console.error(
+    '[TTS-Stream] Gemini streaming TTS failed:',
+    lastErr instanceof Error ? lastErr.message.slice(0, 200) : 'unknown error',
+  );
+  res.status(503).json({ error: 'TTS streaming temporarily unavailable.' });
 }
 
 interface TryOutExplanationResult {

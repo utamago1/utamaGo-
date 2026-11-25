@@ -101,6 +101,19 @@ let activeBufferSource: AudioBufferSourceNode | null = null;
 const activeScheduledSources = new Set<AudioBufferSourceNode>();
 let activeAbortController: AbortController | null = null;
 let serverTtsUnconfigured = false;
+let serverTtsQuotaCooldownUntil = 0;
+
+function isServerTtsInQuotaCooldown(): boolean {
+  return Date.now() < serverTtsQuotaCooldownUntil;
+}
+
+function applyServerTtsQuotaCooldown(retryAfterSeconds?: number): void {
+  const sec =
+    typeof retryAfterSeconds === 'number' && Number.isFinite(retryAfterSeconds)
+      ? Math.max(10, Math.min(180, retryAfterSeconds))
+      : 60;
+  serverTtsQuotaCooldownUntil = Date.now() + sec * 1000;
+}
 
 const memoryAudioCache = new Map<string, CachedAudioAsset>();
 const inflightTtsRequests = new Map<string, Promise<CachedAudioAsset | null>>();
@@ -536,8 +549,11 @@ async function fetchServerTtsAsset(
     return storeMemoryAudioAsset(cacheKey, diskHit.arrayBuffer, diskHit.mimeType);
   }
 
-  // 3. Offline check — fall back immediately if uncached and offline
-  if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+  // 3. Offline or server quota cooldown check — fall back immediately (0ms)
+  if (
+    (typeof navigator !== 'undefined' && navigator.onLine === false) ||
+    isServerTtsInQuotaCooldown()
+  ) {
     return null;
   }
 
@@ -567,7 +583,9 @@ async function fetchServerTtsAsset(
 
     try {
       for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
-        if (localController.signal.aborted) return null;
+        if (localController.signal.aborted || isServerTtsInQuotaCooldown()) {
+          return null;
+        }
 
         const response = await fetch('/api/tts', {
           method: 'POST',
@@ -598,6 +616,23 @@ async function fetchServerTtsAsset(
           return storeMemoryAudioAsset(cacheKey, arrayBuffer, mimeType);
         }
 
+        if (response.status === 429) {
+          try {
+            const errBody = (await response.json()) as {
+              code?: string;
+              retryAfterSeconds?: number;
+            };
+            if (errBody?.code === 'QUOTA_EXCEEDED') {
+              applyServerTtsQuotaCooldown(errBody.retryAfterSeconds);
+            } else {
+              applyServerTtsQuotaCooldown(30);
+            }
+          } catch {
+            applyServerTtsQuotaCooldown(30);
+          }
+          return null;
+        }
+
         if (response.status === 503) {
           try {
             const errBody = (await response.json()) as { error?: string };
@@ -610,7 +645,7 @@ async function fetchServerTtsAsset(
           }
         }
 
-        if (attempt + 1 < maxAttempts && (response.status >= 500 || response.status === 429)) {
+        if (attempt + 1 < maxAttempts && response.status >= 500) {
           await new Promise((resolve) => setTimeout(resolve, 260));
           continue;
         }
@@ -774,6 +809,20 @@ async function streamAndPlayServerTts(
     });
 
     if (!response.ok || !response.body) {
+      if (response.status === 429) {
+        try {
+          const errBody = (await response.json()) as {
+            code?: string;
+            retryAfterSeconds?: number;
+          };
+          applyServerTtsQuotaCooldown(
+            errBody?.code === 'QUOTA_EXCEEDED' ? errBody.retryAfterSeconds : 30,
+          );
+        } catch {
+          applyServerTtsQuotaCooldown(30);
+        }
+        return 'fallback';
+      }
       if (response.status === 503) {
         try {
           const errBody = (await response.json()) as { error?: string };

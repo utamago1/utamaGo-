@@ -85,15 +85,6 @@ export function SpeechControlBar({
     setLoadingAudio(false);
   }, [text]);
 
-  // Proactively warm TTS cache for the visible text + active voice style so tap-to-play is instant
-  useEffect(() => {
-    if (!supported || !text.trim()) return;
-    const timer = window.setTimeout(() => {
-      prefetchJapaneseSpeech(text, prefs.voiceStyle);
-    }, 140);
-    return () => window.clearTimeout(timer);
-  }, [supported, text, prefs.voiceStyle]);
-
   if (!supported || !text.trim()) return null;
 
   const handleToggleSpeak = () => {
