@@ -1,8 +1,10 @@
+import { useCallback, useRef } from 'react';
 import {
   BookOpen,
   ClipboardCheck,
   Home,
   Layers,
+  Mail,
   Moon,
   Settings,
   Star,
@@ -18,7 +20,7 @@ import { vibrateTap } from '../utils/haptics';
 import type { LevelProgressInfo } from '../utils/levelProgression';
 import type { StoredAppTab } from '../utils/storage';
 
-export type AppTab = StoredAppTab;
+export type AppTab = StoredAppTab | 'messages';
 
 interface AppShellNavProps {
   activeTab: AppTab;
@@ -31,49 +33,129 @@ interface AppShellNavProps {
   isDark: boolean;
   onToggleDarkLight: () => void;
   onOpenSettings: () => void;
+  onLogoSecretTrigger?: () => void;
+  adminUnlocked?: boolean;
+  unreadMessagesCount?: number;
 }
 
-const TAB_ITEMS: Array<{
+interface TabItemMeta {
   id: AppTab;
   shortLabelId: string;
   shortLabelEn: string;
   titleId: string;
   titleEn: string;
   icon: typeof Home;
-}> = [
-  { id: 'home', shortLabelId: 'Beranda', shortLabelEn: 'Home', titleId: 'Beranda', titleEn: 'Home', icon: Home },
-  { id: 'anki', shortLabelId: 'Anki', shortLabelEn: 'Anki', titleId: 'Anki', titleEn: 'Anki', icon: Layers },
-  { id: 'learn', shortLabelId: 'Materi', shortLabelEn: 'Study', titleId: 'Materi', titleEn: 'Study', icon: BookOpen },
-  { id: 'tryout', shortLabelId: 'Tryout', shortLabelEn: 'Tryout', titleId: 'Tryout', titleEn: 'Tryout', icon: ClipboardCheck },
-  { id: 'profile', shortLabelId: 'Profil', shortLabelEn: 'Profile', titleId: 'Profil', titleEn: 'Profile', icon: User },
+}
+
+const BASE_TAB_ITEMS: TabItemMeta[] = [
+  {
+    id: 'home',
+    shortLabelId: 'Beranda',
+    shortLabelEn: 'Home',
+    titleId: 'Beranda',
+    titleEn: 'Home',
+    icon: Home,
+  },
+  {
+    id: 'anki',
+    shortLabelId: 'Anki',
+    shortLabelEn: 'Anki',
+    titleId: 'Anki',
+    titleEn: 'Anki',
+    icon: Layers,
+  },
+  {
+    id: 'learn',
+    shortLabelId: 'Materi',
+    shortLabelEn: 'Study',
+    titleId: 'Materi',
+    titleEn: 'Study',
+    icon: BookOpen,
+  },
+  {
+    id: 'tryout',
+    shortLabelId: 'Tryout',
+    shortLabelEn: 'Tryout',
+    titleId: 'Tryout',
+    titleEn: 'Tryout',
+    icon: ClipboardCheck,
+  },
+  {
+    id: 'profile',
+    shortLabelId: 'Profil',
+    shortLabelEn: 'Profile',
+    titleId: 'Profil',
+    titleEn: 'Profile',
+    icon: User,
+  },
 ];
+
+const ADMIN_MESSAGES_TAB: TabItemMeta = {
+  id: 'messages',
+  shortLabelId: 'Pesan',
+  shortLabelEn: 'Inbox',
+  titleId: 'Pesan',
+  titleEn: 'Inbox',
+  icon: Mail,
+};
+
+function useTripleTapTrigger(onTrigger?: () => void) {
+  const tapTimestampsRef = useRef<number[]>([]);
+
+  return useCallback(() => {
+    if (!onTrigger) return;
+    const now = Date.now();
+    const recent = tapTimestampsRef.current.filter((ts) => now - ts <= 1500);
+    recent.push(now);
+    if (recent.length >= 3) {
+      tapTimestampsRef.current = [];
+      onTrigger();
+    } else {
+      tapTimestampsRef.current = recent;
+    }
+  }, [onTrigger]);
+}
 
 export function MobileTopAppBar({
   activeTab,
   isDark,
   onToggleDarkLight,
   onOpenSettings,
+  onLogoSecretTrigger,
 }: Pick<
   AppShellNavProps,
-  'activeTab' | 'levelProgress' | 'isDark' | 'onToggleDarkLight' | 'onOpenSettings'
+  | 'activeTab'
+  | 'levelProgress'
+  | 'isDark'
+  | 'onToggleDarkLight'
+  | 'onOpenSettings'
+  | 'onLogoSecretTrigger'
 >) {
   const isOnline = useOnlineStatus();
   const { t } = useLanguage();
+  const handleLogoTap = useTripleTapTrigger(onLogoSecretTrigger);
+  const allTabs = [...BASE_TAB_ITEMS, ADMIN_MESSAGES_TAB];
   const activeMeta =
-    TAB_ITEMS.find((item) => item.id === activeTab) ?? TAB_ITEMS[0];
+    allTabs.find((item) => item.id === activeTab) ?? BASE_TAB_ITEMS[0];
 
   return (
     <header className="sticky top-0 z-40 border-b border-outline-variant bg-surface/95 pt-safe pl-safe pr-safe backdrop-blur-md lg:hidden">
       <div className="flex h-13 items-center justify-between gap-2 px-4">
         <div className="flex min-w-0 items-center gap-2.5">
-          <div className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-outline-variant bg-[#f6f5f0] p-0.5 dark:border-white/15 dark:bg-[#eae7df]">
+          <button
+            type="button"
+            onClick={handleLogoTap}
+            aria-label="UtamaGo!"
+            className="flex h-8 w-8 shrink-0 select-none items-center justify-center overflow-hidden rounded-lg border border-outline-variant bg-[#f6f5f0] p-0.5 focus:outline-none dark:border-white/15 dark:bg-[#eae7df]"
+          >
             <img
               src={BRAND_ASSETS.logoPath}
               alt="Logo UtamaGo!"
               referrerPolicy="no-referrer"
+              draggable={false}
               className="h-full w-full object-contain mix-blend-multiply"
             />
-          </div>
+          </button>
           <h1 className="truncate font-display text-base font-extrabold tracking-tight text-on-surface">
             {activeTab === 'home'
               ? 'UtamaGo!'
@@ -106,7 +188,9 @@ export function MobileTopAppBar({
                 : t('Aktifkan Mode Malam', 'Switch to Dark Mode')
             }
             title={
-              isDark ? t('Mode Terang', 'Light Mode') : t('Mode Malam', 'Dark Mode')
+              isDark
+                ? t('Mode Terang', 'Light Mode')
+                : t('Mode Malam', 'Dark Mode')
             }
             className="m3-tactile inline-flex h-11 w-11 items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
           >
@@ -138,15 +222,32 @@ export function MobileBottomNav({
   activeTab,
   dueAnkiCount,
   onSelectTab,
-}: Pick<AppShellNavProps, 'activeTab' | 'dueAnkiCount' | 'onSelectTab'>) {
+  adminUnlocked = false,
+  unreadMessagesCount = 0,
+}: Pick<
+  AppShellNavProps,
+  | 'activeTab'
+  | 'dueAnkiCount'
+  | 'onSelectTab'
+  | 'adminUnlocked'
+  | 'unreadMessagesCount'
+>) {
   const { t } = useLanguage();
+  const visibleTabs = adminUnlocked
+    ? [...BASE_TAB_ITEMS, ADMIN_MESSAGES_TAB]
+    : BASE_TAB_ITEMS;
+
   return (
     <nav
       aria-label={t('Navigasi Utama Aplikasi', 'Main App Navigation')}
       className="fixed bottom-0 left-0 right-0 z-40 border-t border-outline-variant bg-surface-container-low/95 pb-safe pl-safe pr-safe backdrop-blur-md lg:hidden"
     >
-      <div className="grid h-14 grid-cols-5 items-stretch px-1.5">
-        {TAB_ITEMS.map((item) => {
+      <div
+        className={`grid h-14 items-stretch px-1 ${
+          adminUnlocked ? 'grid-cols-6' : 'grid-cols-5'
+        }`}
+      >
+        {visibleTabs.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
           const title = t(item.titleId, item.titleEn);
@@ -163,7 +264,9 @@ export function MobileBottomNav({
               aria-label={
                 item.id === 'anki' && dueAnkiCount > 0
                   ? `${title} (${dueAnkiCount} ${t('kartu jatuh tempo', 'due cards')})`
-                  : title
+                  : item.id === 'messages' && unreadMessagesCount > 0
+                    ? `${title} (${unreadMessagesCount} ${t('pesan baru', 'open reports')})`
+                    : title
               }
               className={`m3-tactile relative flex h-full min-h-[48px] flex-col items-center justify-center gap-1 ${
                 isActive
@@ -186,6 +289,14 @@ export function MobileBottomNav({
                     className="absolute -top-1 -right-2 font-mono text-[9px] leading-none font-bold tabular-nums text-primary"
                   >
                     {dueAnkiCount > 99 ? '99+' : dueAnkiCount}
+                  </span>
+                )}
+                {item.id === 'messages' && unreadMessagesCount > 0 && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute -top-1 -right-1.5 inline-flex min-w-[16px] items-center justify-center rounded-full bg-primary px-1 font-mono text-[9px] leading-[15px] font-bold tabular-nums text-on-primary"
+                  >
+                    {unreadMessagesCount > 99 ? '99+' : unreadMessagesCount}
                   </span>
                 )}
               </span>
@@ -217,28 +328,41 @@ export function DesktopNavigationRail({
   isDark,
   onToggleDarkLight,
   onOpenSettings,
+  onLogoSecretTrigger,
+  adminUnlocked = false,
+  unreadMessagesCount = 0,
 }: AppShellNavProps) {
   const isOnline = useOnlineStatus();
   const { t } = useLanguage();
+  const handleLogoTap = useTripleTapTrigger(onLogoSecretTrigger);
+  const visibleTabs = adminUnlocked
+    ? [...BASE_TAB_ITEMS, ADMIN_MESSAGES_TAB]
+    : BASE_TAB_ITEMS;
 
   return (
     <aside className="hidden lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-60 lg:shrink-0 lg:flex-col lg:justify-between lg:border-r lg:border-outline-variant lg:bg-surface-container-low lg:p-5">
       <div>
         <div className="flex items-center justify-between gap-1.5 border-b border-outline-variant pb-4">
-          <button
-            type="button"
-            onClick={() => onSelectTab('home')}
-            className="m3-tactile flex min-h-[44px] min-w-0 flex-1 items-center gap-2.5 rounded-xl px-1 text-left hover:bg-surface-container"
-          >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-outline-variant bg-[#f6f5f0] p-0.5 dark:border-white/15 dark:bg-[#eae7df]">
+          <div className="flex min-w-0 flex-1 items-center gap-2.5">
+            <button
+              type="button"
+              onClick={handleLogoTap}
+              aria-label="UtamaGo!"
+              className="flex h-9 w-9 shrink-0 select-none items-center justify-center overflow-hidden rounded-lg border border-outline-variant bg-[#f6f5f0] p-0.5 focus:outline-none dark:border-white/15 dark:bg-[#eae7df]"
+            >
               <img
                 src={BRAND_ASSETS.logoPath}
                 alt="Logo UtamaGo!"
                 referrerPolicy="no-referrer"
+                draggable={false}
                 className="h-full w-full object-contain mix-blend-multiply"
               />
-            </div>
-            <div className="min-w-0">
+            </button>
+            <button
+              type="button"
+              onClick={() => onSelectTab('home')}
+              className="m3-tactile min-w-0 flex-1 rounded-xl px-1 py-1 text-left hover:bg-surface-container"
+            >
               <div className="flex items-center gap-1.5">
                 <p className="truncate font-display text-base font-extrabold tracking-tight text-on-surface">
                   Utama<span className="text-primary">Go!</span>
@@ -250,8 +374,8 @@ export function DesktopNavigationRail({
               <p className="truncate text-[11px] font-medium text-on-surface-variant">
                 Beta Tester · JLPT
               </p>
-            </div>
-          </button>
+            </button>
+          </div>
 
           <div className="flex shrink-0 items-center gap-0.5">
             <button
@@ -266,7 +390,9 @@ export function DesktopNavigationRail({
                   : t('Aktifkan Mode Malam', 'Switch to Dark Mode')
               }
               title={
-                isDark ? t('Mode Terang', 'Light Mode') : t('Mode Malam', 'Dark Mode')
+                isDark
+                  ? t('Mode Terang', 'Light Mode')
+                  : t('Mode Malam', 'Dark Mode')
               }
               className="m3-tactile inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
             >
@@ -291,8 +417,11 @@ export function DesktopNavigationRail({
           </div>
         </div>
 
-        <nav aria-label={t('Menu Aplikasi', 'App Menu')} className="mt-5 space-y-1">
-          {TAB_ITEMS.map((item) => {
+        <nav
+          aria-label={t('Menu Aplikasi', 'App Menu')}
+          className="mt-5 space-y-1"
+        >
+          {visibleTabs.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
             return (
@@ -310,7 +439,9 @@ export function DesktopNavigationRail({
                 <span className="flex items-center gap-3">
                   <Icon
                     className={`h-4 w-4 ${
-                      isActive ? 'text-on-primary-container' : 'text-on-surface-variant'
+                      isActive
+                        ? 'text-on-primary-container'
+                        : 'text-on-surface-variant'
                     }`}
                     aria-hidden="true"
                   />
@@ -319,6 +450,11 @@ export function DesktopNavigationRail({
                 {item.id === 'anki' && (
                   <span className="font-mono text-xs tabular-nums text-on-surface-variant">
                     {dueAnkiCount > 0 ? dueAnkiCount : totalDeckCards}
+                  </span>
+                )}
+                {item.id === 'messages' && unreadMessagesCount > 0 && (
+                  <span className="rounded-full bg-primary px-2 py-0.5 font-mono text-[11px] font-bold tabular-nums text-on-primary">
+                    {unreadMessagesCount > 99 ? '99+' : unreadMessagesCount}
                   </span>
                 )}
               </button>

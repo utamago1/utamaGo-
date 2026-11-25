@@ -235,10 +235,15 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
               aria-hidden="true"
             />
             <span>
-              Tautan reset password telah dikirim ke{' '}
-              <strong>{resetSentEmail}</strong>. Cek kotak masuk atau folder
-              Spam di emailmu, lalu klik tautan tersebut untuk mengatur password
-              baru.
+              {t(
+                'Tautan reset password telah dikirim ke ',
+                'A password reset link has been sent to ',
+              )}
+              <strong>{resetSentEmail}</strong>
+              {t(
+                '. Cek kotak masuk atau folder Spam di emailmu, lalu klik tautan tersebut untuk mengatur password baru.',
+                '. Check your inbox or Spam folder and click the link to set a new password.',
+              )}
             </span>
           </div>
         )}
@@ -254,7 +259,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                 className="inline-flex items-center gap-1.5 text-xs font-bold text-on-surface"
               >
                 <User className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
-                <span>Username</span>
+                <span>{t('Username', 'Username')}</span>
               </label>
               <input
                 id="login-username"
@@ -268,7 +273,10 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                   setUsernameInput(e.target.value);
                   if (errorMessage) setErrorMessage(null);
                 }}
-                placeholder="Masukkan username atau email"
+                placeholder={t(
+                  'Masukkan username atau email',
+                  'Enter username or email',
+                )}
                 className="min-h-[48px] w-full rounded-2xl border border-outline bg-surface px-4 py-2.5 text-sm font-medium text-on-surface focus:border-primary focus:outline-none"
               />
             </div>
@@ -283,14 +291,14 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                     className="h-3.5 w-3.5 text-primary"
                     aria-hidden="true"
                   />
-                  <span>Password</span>
+                  <span>{t('Password', 'Password')}</span>
                 </label>
                 <button
                   type="button"
                   onClick={() => switchMode('forgot')}
                   className="text-xs font-bold text-primary hover:underline"
                 >
-                  Lupa password?
+                  {t('Lupa password?', 'Forgot password?')}
                 </button>
               </div>
               <div className="relative">
@@ -304,14 +312,16 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                     setPasswordInput(e.target.value);
                     if (errorMessage) setErrorMessage(null);
                   }}
-                  placeholder="Masukkan password"
+                  placeholder={t('Masukkan password', 'Enter password')}
                   className="min-h-[48px] w-full rounded-2xl border border-outline bg-surface py-2.5 pr-12 pl-4 text-sm font-medium text-on-surface focus:border-primary focus:outline-none"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
                   aria-label={
-                    showPassword ? 'Sembunyikan password' : 'Lihat password'
+                    showPassword
+                      ? t('Sembunyikan password', 'Hide password')
+                      : t('Lihat password', 'Show password')
                   }
                   className="absolute inset-y-0 right-1 flex w-11 items-center justify-center rounded-xl text-on-surface-variant hover:text-on-surface"
                 >
@@ -364,7 +374,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                 className="inline-flex items-center gap-1.5 text-xs font-bold text-on-surface"
               >
                 <User className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
-                <span>Username</span>
+                <span>{t('Username', 'Username')}</span>
               </label>
               <input
                 id="register-username"
@@ -378,12 +388,14 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                   setUsernameInput(e.target.value);
                   if (errorMessage) setErrorMessage(null);
                 }}
-                placeholder="contoh: budi_jlpt"
+                placeholder={t('contoh: budi_jlpt', 'e.g. budi_jlpt')}
                 className="min-h-[48px] w-full rounded-2xl border border-outline bg-surface px-4 py-2.5 text-sm font-medium text-on-surface focus:border-primary focus:outline-none"
               />
               <p className="text-[11px] text-on-surface-variant">
-                3–24 karakter: huruf kecil, angka, titik (.), atau garis bawah
-                (_).
+                {t(
+                  '3–24 karakter: huruf kecil, angka, titik (.), atau garis bawah (_).',
+                  '3–24 characters: lowercase letters, numbers, dot (.), or underscore (_).',
+                )}
               </p>
             </div>
 
@@ -406,11 +418,14 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                   setEmailInput(e.target.value);
                   if (errorMessage) setErrorMessage(null);
                 }}
-                placeholder="nama@gmail.com"
+                placeholder={t('nama@gmail.com', 'name@example.com')}
                 className="min-h-[48px] w-full rounded-2xl border border-outline bg-surface px-4 py-2.5 text-sm font-medium text-on-surface focus:border-primary focus:outline-none"
               />
               <p className="text-[11px] text-on-surface-variant">
-                Digunakan untuk mengirim link jika kamu lupa password.
+                {t(
+                  'Digunakan untuk mengirim link jika kamu lupa password.',
+                  'Used to send a recovery link if you forget your password.',
+                )}
               </p>
             </div>
 
@@ -436,14 +451,16 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                     setPasswordInput(e.target.value);
                     if (errorMessage) setErrorMessage(null);
                   }}
-                  placeholder="Minimal 6 karakter"
+                  placeholder={t('Minimal 6 karakter', 'Minimum 6 characters')}
                   className="min-h-[48px] w-full rounded-2xl border border-outline bg-surface py-2.5 pr-12 pl-4 text-sm font-medium text-on-surface focus:border-primary focus:outline-none"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
                   aria-label={
-                    showPassword ? 'Sembunyikan password' : 'Lihat password'
+                    showPassword
+                      ? t('Sembunyikan password', 'Hide password')
+                      : t('Lihat password', 'Show password')
                   }
                   className="absolute inset-y-0 right-1 flex w-11 items-center justify-center rounded-xl text-on-surface-variant hover:text-on-surface"
                 >
@@ -462,7 +479,11 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
               className="m3-tactile inline-flex min-h-[50px] w-full items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-3 text-sm font-extrabold text-on-primary shadow-sm hover:bg-primary-hover disabled:opacity-60"
             >
               <UserPlus className="h-4 w-4" aria-hidden="true" />
-              <span>{submitting ? 'Membuat Akun...' : 'Daftar & Masuk'}</span>
+              <span>
+                {submitting
+                  ? t('Membuat Akun...', 'Creating Account...')
+                  : t('Daftar & Masuk', 'Sign Up & Sign In')}
+              </span>
             </button>
 
             <div className="border-t border-outline-variant pt-4 text-center">
@@ -472,7 +493,9 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                 className="m3-tactile inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-2xl border border-outline bg-surface px-4 py-2 text-xs font-bold text-on-surface hover:bg-surface-container"
               >
                 <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-                <span>Sudah Punya Akun? Masuk</span>
+                <span>
+                  {t('Sudah Punya Akun? Masuk', 'Already Have an Account? Sign In')}
+                </span>
               </button>
             </div>
           </form>
@@ -489,7 +512,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                 className="inline-flex items-center gap-1.5 text-xs font-bold text-on-surface"
               >
                 <Mail className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
-                <span>Email Akun</span>
+                <span>{t('Email Akun', 'Account Email')}</span>
               </label>
               <input
                 id="forgot-email"
@@ -502,7 +525,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                   setEmailInput(e.target.value);
                   if (errorMessage) setErrorMessage(null);
                 }}
-                placeholder="nama@gmail.com"
+                placeholder={t('nama@gmail.com', 'name@example.com')}
                 className="min-h-[48px] w-full rounded-2xl border border-outline bg-surface px-4 py-2.5 text-sm font-medium text-on-surface focus:border-primary focus:outline-none"
               />
             </div>
@@ -514,7 +537,9 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
             >
               <Mail className="h-4 w-4" aria-hidden="true" />
               <span>
-                {submitting ? 'Mengirim Email...' : 'Kirim Link Reset Password'}
+                {submitting
+                  ? t('Mengirim Email...', 'Sending Email...')
+                  : t('Kirim Link Reset Password', 'Send Password Reset Link')}
               </span>
             </button>
 
@@ -525,7 +550,9 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                 className="m3-tactile inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-2xl border border-outline bg-surface px-4 py-2 text-xs font-bold text-on-surface hover:bg-surface-container"
               >
                 <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-                <span>Kembali ke Halaman Masuk</span>
+                <span>
+                  {t('Kembali ke Halaman Masuk', 'Back to Sign In')}
+                </span>
               </button>
             </div>
           </form>
@@ -535,24 +562,59 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
           <div className="mt-5 w-full rounded-2xl border border-outline-variant bg-surface px-4 py-3.5 text-left">
             <p className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-wide text-primary">
               <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-              <span>Materi &amp; Fitur Tersedia</span>
+              <span>
+                {t('Materi & Fitur Tersedia', 'Included Study Features')}
+              </span>
             </p>
             <ul className="mt-2 space-y-1.5 text-[11px] leading-relaxed text-on-surface-variant">
               <li>
-                · <strong className="text-on-surface">Anki Kosakata JLPT N5–N1</strong>{' '}
-                (7.413 kartu berjadwal SRS, contoh kalimat &amp; audio pelafalan)
+                ·{' '}
+                <strong className="text-on-surface">
+                  {t('Anki Kosakata JLPT N5–N1', 'JLPT N5–N1 Anki Vocabulary')}
+                </strong>{' '}
+                {t(
+                  '(7.413 kartu berjadwal SRS, contoh kalimat & audio pelafalan)',
+                  '(7,413 SRS flashcards with example sentences & pronunciation audio)',
+                )}
               </li>
               <li>
-                · <strong className="text-on-surface">Materi &amp; Anki Bunpou JLPT N5–N1</strong>{' '}
-                (553 pola lengkap rumus, nuansa, contoh kalimat &amp; komparasi lintas level)
+                ·{' '}
+                <strong className="text-on-surface">
+                  {t(
+                    'Materi & Anki Bunpou JLPT N5–N1',
+                    'JLPT N5–N1 Grammar & Anki Bunpou',
+                  )}
+                </strong>{' '}
+                {t(
+                  '(553 pola lengkap rumus, nuansa, contoh kalimat & komparasi lintas level)',
+                  '(553 patterns with formulas, nuances, examples & cross-level comparisons)',
+                )}
               </li>
               <li>
-                · <strong className="text-on-surface">Arena Tantangan 30 Stage &amp; Studio Menulis</strong>{' '}
-                (Mode Blitz, Survival, Susun Kalimat, Tebak Audio, Boss Stage N5–N1, serta latihan menulis Kana/Kanji &amp; Kamus N5–N1)
+                ·{' '}
+                <strong className="text-on-surface">
+                  {t(
+                    'Arena Tantangan 30 Stage & Studio Menulis',
+                    '30-Stage Challenge Arena & Writing Studio',
+                  )}
+                </strong>{' '}
+                {t(
+                  '(Mode Blitz, Survival, Susun Kalimat, Tebak Audio, Boss Stage N5–N1, serta latihan menulis Kana/Kanji & Kamus N5–N1)',
+                  '(Blitz, Survival, Sentence Builder, Audio Quiz, Boss Stages N5–N1, plus Kana/Kanji Writing & N5–N1 Dictionary)',
+                )}
               </li>
               <li>
-                · <strong className="text-on-surface">Try Out JLPT N3, N2 &amp; N1 Terverifikasi (15 paket)</strong>{' '}
-                lengkap soal asli, kunci jawaban resmi, audio &amp; transkrip Choukai (5 N3 · 6 N2 · 4 N1)
+                ·{' '}
+                <strong className="text-on-surface">
+                  {t(
+                    'Try Out JLPT N3, N2 & N1 Terverifikasi (15 paket)',
+                    'Verified JLPT N3, N2 & N1 Mock Exams (15 sets)',
+                  )}
+                </strong>{' '}
+                {t(
+                  'lengkap soal asli, kunci jawaban resmi, audio & transkrip Choukai (5 N3 · 6 N2 · 4 N1)',
+                  'with real exam items, official answer keys, Choukai audio & transcripts (5 N3 · 6 N2 · 4 N1)',
+                )}
               </li>
             </ul>
           </div>

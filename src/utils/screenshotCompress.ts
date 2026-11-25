@@ -1,5 +1,5 @@
 export const FEEDBACK_SCREENSHOT_MAX_RAW_BYTES = 10 * 1024 * 1024; // 10 MB raw upload cap
-export const FEEDBACK_SCREENSHOT_MAX_CHARS = 180_000; // ~135 KB binary, super lightweight for email & storage
+export const FEEDBACK_SCREENSHOT_MAX_CHARS = 180_000; // ~135 KB binary, lightweight for server storage while sharp to read
 
 export interface CompressedScreenshot {
   dataUrl: string;
@@ -71,7 +71,7 @@ function renderCompressedDataUrl(
 
 /**
  * Compresses and resizes a user-selected screenshot immediately upon selection
- * so it stays sharp for bug debugging while remaining lightweight (~50-135 KB).
+ * so it stays legible for bug debugging while staying lightweight (< 135 KB).
  */
 export async function compressFeedbackScreenshot(
   file: File,
@@ -87,11 +87,12 @@ export async function compressFeedbackScreenshot(
   const img = await loadImageElement(rawDataUrl);
 
   const attempts: ReadonlyArray<{ maxDim: number; quality: number }> = [
-    { maxDim: 960, quality: 0.72 },
-    { maxDim: 840, quality: 0.62 },
-    { maxDim: 720, quality: 0.54 },
-    { maxDim: 600, quality: 0.46 },
-    { maxDim: 480, quality: 0.38 },
+    { maxDim: 1120, quality: 0.72 },
+    { maxDim: 960, quality: 0.62 },
+    { maxDim: 800, quality: 0.52 },
+    { maxDim: 680, quality: 0.44 },
+    { maxDim: 560, quality: 0.36 },
+    { maxDim: 440, quality: 0.28 },
   ];
 
   let best: { dataUrl: string; width: number; height: number } | null = null;
@@ -111,7 +112,8 @@ export async function compressFeedbackScreenshot(
 
   // Approximate binary size in KB from base64 length
   const commaIdx = best.dataUrl.indexOf(',');
-  const base64Len = commaIdx >= 0 ? best.dataUrl.length - commaIdx - 1 : best.dataUrl.length;
+  const base64Len =
+    commaIdx >= 0 ? best.dataUrl.length - commaIdx - 1 : best.dataUrl.length;
   const approxBytes = Math.round((base64Len * 3) / 4);
 
   return {

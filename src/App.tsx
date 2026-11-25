@@ -15,6 +15,8 @@ import {
 import { App as CapApp } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import { AnimatePresence, motion } from 'motion/react';
+import { AdminLoginModal } from './components/AdminLoginModal';
+import { AdminMessagesScreen } from './components/AdminMessagesScreen';
 import { AnkiN5Section } from './components/AnkiN5Section';
 import {
   DesktopNavigationRail,
@@ -68,6 +70,7 @@ import {
   saveAnkiDeckStateToFirestore,
   saveAnkiReviewToFirestore,
 } from './services/ankiPersistence';
+import { logoutAdminInbox } from './services/feedbackInboxApi';
 import { readCachedAnkiDeck, writeCachedAnkiDeck } from './utils/ankiCache';
 import {
   ALL_ANKI_DECK_IDS,
@@ -155,6 +158,7 @@ import {
   loadUnifiedAppState,
   saveUnifiedAppState,
   type OnboardingSettings,
+  type StoredAppTab,
   type StoredTryOutPacketState,
   type TextScale,
   type UtamagoAppStateV2,
@@ -182,7 +186,7 @@ const DECK_CACHE_VERSION = '2026-11-24-v8';
 const AUDIO_KEEPALIVE_STORAGE_KEY = 'utamago_catbox_keepalive_at';
 const AUDIO_KEEPALIVE_INTERVAL_MS = 25 * 24 * 60 * 60 * 1000;
 
-function resolveInitialTab(storedLastTab: AppTab): AppTab {
+function resolveInitialTab(storedLastTab: StoredAppTab): StoredAppTab {
   if (typeof window === 'undefined') return storedLastTab;
   const param = new URLSearchParams(window.location.search).get('tab');
   if (isValidTab(param)) return param;
@@ -259,6 +263,11 @@ export default function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
   const [betaWelcomeOpen, setBetaWelcomeOpen] = useState(false);
+  // Hidden admin Pesan inbox state — strictly in React memory (never persisted to localStorage)
+  const [adminLoginModalOpen, setAdminLoginModalOpen] = useState(false);
+  const [adminSessionToken, setAdminSessionToken] = useState<string | null>(null);
+  const [adminMessagesTabActive, setAdminMessagesTabActive] = useState(false);
+  const [adminOpenMessagesCount, setAdminOpenMessagesCount] = useState(0);
   const [authReady, setAuthReady] = useState(() => autostartMode);
   const [needsAuth, setNeedsAuth] = useState(() => !autostartMode);
   const [authProfile, setAuthProfile] =
@@ -287,8 +296,9 @@ export default function App() {
 
   useTextScaleEffect(appState.textScale);
 
-  const activeTab = appState.lastTab;
-  const [tabHistory, setTabHistory] = useState<AppTab[]>([appState.lastTab]);
+  const activeTab: AppTab =
+    adminSessionToken && adminMessagesTabActive ? 'messages' : appState.lastTab;
+  const [tabHistory, setTabHistory] = useState<StoredAppTab[]>([appState.lastTab]);
   const [homeFocusView, setHomeFocusView] = useState<'challenges' | null>(null);
   const [activeReportTab, setActiveReportTab] =
     useState<ReportTab>('n2-official');
@@ -350,7 +360,9 @@ export default function App() {
     saveUnifiedAppState(appState, activeUserIdRef.current);
   }, [appState]);
 
-  // Show Beta Tester welcome popup once per login session
+  const betaWelcomeShownForUidRef = useRef<string | null>(null);
+
+  // Show Beta Tester welcome popup every time user logs in OR auto-enters from a saved session
   useEffect(() => {
     if (
       autostartMode ||
@@ -361,13 +373,10 @@ export default function App() {
     ) {
       return;
     }
-    const sessionKey = `utamago_beta_welcome_seen_${authProfile.uid}`;
-    try {
-      if (window.sessionStorage.getItem(sessionKey) === '1') return;
-      window.sessionStorage.setItem(sessionKey, '1');
-    } catch {
-      // ignore storage errors in restricted contexts
+    if (betaWelcomeShownForUidRef.current === authProfile.uid) {
+      return;
     }
+    betaWelcomeShownForUidRef.current = authProfile.uid;
     setBetaWelcomeOpen(true);
   }, [autostartMode, needsAuth, authProfile, appState.onboarding.completed]);
 
@@ -532,6 +541,7 @@ export default function App() {
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (!(event.ctrlKey || event.metaKey)) return;
+      if (typeof event.key !== 'string' || !event.key) return;
       const key = event.key.toLowerCase();
       if (key === 's' || key === 'u') {
         event.preventDefault();
@@ -878,6 +888,8 @@ export default function App() {
     settingsOpen,
     feedbackModalOpen,
     betaWelcomeOpen,
+    adminLoginModalOpen,
+    adminMessagesTabActive,
     tryoutSheetOpen,
     ankiModalOpen,
     activeChallengeStage,
@@ -896,6 +908,8 @@ export default function App() {
     settingsOpen,
     feedbackModalOpen,
     betaWelcomeOpen,
+    adminLoginModalOpen,
+    adminMessagesTabActive,
     tryoutSheetOpen,
     ankiModalOpen,
     activeChallengeStage,
@@ -1029,6 +1043,12 @@ export default function App() {
         return;
       }
 
+      // 1a. Close Admin Login modal if open
+      if (snap.adminLoginModalOpen) {
+        setAdminLoginModalOpen(false);
+        return;
+      }
+
       // 1a. Close Beta Feedback modal if open
       if (snap.feedbackModalOpen) {
         setFeedbackModalOpen(false);
@@ -1118,6 +1138,12 @@ export default function App() {
       // 6. Step back from Home focus view (Tantangan Level) to Beranda
       if (snap.activeTab === 'home' && snap.homeFocusView !== null) {
         setHomeFocusView(null);
+        return;
+      }
+
+      // 6a. Step back from hidden Admin Pesan tab to previous regular tab
+      if (snap.adminMessagesTabActive) {
+        setAdminMessagesTabActive(false);
         return;
       }
 
@@ -1442,9 +1468,30 @@ export default function App() {
       }
       if (tab === activeTab) return;
 
+      if (tab === 'messages') {
+        if (!adminSessionToken) {
+          setAdminLoginModalOpen(true);
+          return;
+        }
+        const openMessagesTab = () => {
+          pushNavHistory('tab-messages');
+          setHomeFocusView(null);
+          setAdminMessagesTabActive(true);
+          if (typeof window !== 'undefined') {
+            window.scrollTo({ top: 0, behavior: 'auto' });
+          }
+        };
+        if (requestTryOutExit(openMessagesTab)) {
+          return;
+        }
+        openMessagesTab();
+        return;
+      }
+
       const navigateToTab = () => {
         pushNavHistory(`tab-${tab}`);
         setHomeFocusView(null);
+        setAdminMessagesTabActive(false);
         setTabHistory((prev) => [...prev.slice(-9), tab]);
         setAppState((prev) => ({ ...prev, lastTab: tab }));
         if (typeof window !== 'undefined') {
@@ -1458,12 +1505,52 @@ export default function App() {
 
       navigateToTab();
     },
-    [activeTab, homeFocusView, pushNavHistory, requestTryOutExit],
+    [
+      activeTab,
+      adminSessionToken,
+      homeFocusView,
+      pushNavHistory,
+      requestTryOutExit,
+    ],
   );
+
+  const handleLogoSecretTrigger = useCallback(() => {
+    if (adminSessionToken) {
+      handleSelectTab('messages');
+      return;
+    }
+    setAdminLoginModalOpen(true);
+  }, [adminSessionToken, handleSelectTab]);
+
+  const handleAdminAuthenticated = useCallback((token: string) => {
+    setAdminSessionToken(token);
+    setAdminLoginModalOpen(false);
+    setHomeFocusView(null);
+    setAdminMessagesTabActive(true);
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+  }, []);
+
+  const handleLockAdmin = useCallback(() => {
+    const tokenToRevoke = adminSessionToken;
+    setAdminSessionToken(null);
+    setAdminMessagesTabActive(false);
+    setAdminOpenMessagesCount(0);
+    void logoutAdminInbox(tokenToRevoke);
+  }, [adminSessionToken]);
+
+  const handleAdminSessionExpired = useCallback(() => {
+    setAdminSessionToken(null);
+    setAdminMessagesTabActive(false);
+    setAdminOpenMessagesCount(0);
+    setAdminLoginModalOpen(true);
+  }, []);
 
   const handleOpenHomeFocus = useCallback(
     (view: 'challenges') => {
       pushNavHistory(`home-${view}`);
+      setAdminMessagesTabActive(false);
       setHomeFocusView(view);
       if (activeTab !== 'home') {
         setTabHistory((prev) => [...prev.slice(-9), 'home']);
@@ -1508,6 +1595,7 @@ export default function App() {
 
   const handleLogout = useCallback(() => {
     void logoutAccount();
+    void logoutAdminInbox(adminSessionToken);
     activeUserIdRef.current = null;
     loadedUserIdRef.current = null;
     setAuthProfile(null);
@@ -1515,9 +1603,14 @@ export default function App() {
     setSettingsOpen(false);
     setFeedbackModalOpen(false);
     setBetaWelcomeOpen(false);
+    setAdminLoginModalOpen(false);
+    setAdminSessionToken(null);
+    setAdminMessagesTabActive(false);
+    setAdminOpenMessagesCount(0);
+    betaWelcomeShownForUidRef.current = null;
     // Clear in-memory state immediately so the next account starts completely isolated
     setAppState(createDefaultAppState());
-  }, []);
+  }, [adminSessionToken]);
 
   const prepareCampaignStage = useCallback(
     (stage: ChallengeStage): ChallengeStage => {
@@ -2885,6 +2978,9 @@ export default function App() {
         isDark={isDark}
         onToggleDarkLight={toggleDarkLight}
         onOpenSettings={handleOpenSettings}
+        onLogoSecretTrigger={handleLogoSecretTrigger}
+        adminUnlocked={Boolean(adminSessionToken)}
+        unreadMessagesCount={adminOpenMessagesCount}
       />
 
       <div className="flex min-h-dvh min-w-0 flex-1 flex-col">
@@ -2894,6 +2990,7 @@ export default function App() {
           isDark={isDark}
           onToggleDarkLight={toggleDarkLight}
           onOpenSettings={handleOpenSettings}
+          onLogoSecretTrigger={handleLogoSecretTrigger}
         />
 
         <main
@@ -3136,6 +3233,17 @@ export default function App() {
                   onLogout={handleLogout}
                 />
               )}
+
+              {activeTab === 'messages' && adminSessionToken && (
+                <AdminMessagesScreen
+                  adminToken={adminSessionToken}
+                  onLockAdmin={handleLockAdmin}
+                  onSessionExpired={handleAdminSessionExpired}
+                  onSummaryChange={(nextSummary) =>
+                    setAdminOpenMessagesCount(nextSummary.open)
+                  }
+                />
+              )}
             </motion.div>
           </AnimatePresence>
         </main>
@@ -3145,6 +3253,8 @@ export default function App() {
         activeTab={activeTab}
         dueAnkiCount={dueAnkiCount}
         onSelectTab={handleSelectTab}
+        adminUnlocked={Boolean(adminSessionToken)}
+        unreadMessagesCount={adminOpenMessagesCount}
       />
 
       <SettingsModal
@@ -3184,8 +3294,21 @@ export default function App() {
         defaultScreen={
           activeTab === 'home' && homeFocusView === 'challenges'
             ? 'challenge'
-            : activeTab
+            : activeTab === 'messages'
+              ? 'other'
+              : activeTab
         }
+        onSubmitted={() => {
+          if (adminSessionToken) {
+            setAdminOpenMessagesCount((c) => c + 1);
+          }
+        }}
+      />
+
+      <AdminLoginModal
+        open={adminLoginModalOpen}
+        onClose={() => setAdminLoginModalOpen(false)}
+        onAuthenticated={handleAdminAuthenticated}
       />
 
       <BetaWelcomeModal

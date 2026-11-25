@@ -7,7 +7,6 @@ import type { ReadableStream as WebReadableStream } from 'node:stream/web';
 import { GoogleGenAI, ThinkingLevel, Type } from '@google/genai';
 import dotenv from 'dotenv';
 import express, { type Request, type Response } from 'express';
-import nodemailer from 'nodemailer';
 
 dotenv.config();
 
@@ -249,269 +248,6 @@ function setExplainCacheEntry(
 function cleanBoundedText(value: unknown, maxLen: number): string {
   if (typeof value !== 'string') return '';
   return value.replace(/\r\n/g, '\n').trim().slice(0, maxLen);
-}
-
-const FEEDBACK_RATE_LIMIT_WINDOW_MS = 60_000;
-const FEEDBACK_RATE_LIMIT_MAX_REQUESTS = 8;
-const FEEDBACK_EMAIL_SUBJECT = '[UtamaGo!] Pelaporan Bug dan Saran';
-const FEEDBACK_RECIPIENT_DEFAULT = 'kantorhp65@gmail.com';
-const FEEDBACK_MAX_SCREENSHOT_CHARS = 220_000;
-const feedbackRateLimitBuckets = new Map<string, number[]>();
-
-const ALLOWED_FEEDBACK_CATEGORIES = new Set([
-  'bug',
-  'typo',
-  'suggestion',
-  'other',
-]);
-const ALLOWED_FEEDBACK_SCREENS = new Set([
-  'home',
-  'anki',
-  'learn',
-  'challenge',
-  'tryout',
-  'profile',
-  'other',
-]);
-const ALLOWED_FEEDBACK_JLPT = new Set(['N5', 'N4', 'N3', 'N2', 'N1']);
-
-const FEEDBACK_CATEGORY_LABELS: Record<string, string> = {
-  bug: 'Bug / Error',
-  typo: 'Typo / Materi Keliru',
-  suggestion: 'Saran Fitur',
-  other: 'Lainnya',
-};
-
-const FEEDBACK_SCREEN_LABELS: Record<string, string> = {
-  home: 'Beranda',
-  anki: 'Anki Kosakata',
-  learn: 'Materi & Bunpou',
-  challenge: 'Arena Tantangan',
-  tryout: 'Try Out JLPT',
-  profile: 'Profil & Pengaturan',
-  other: 'Lainnya',
-};
-
-function checkFeedbackRateLimit(ip: string): boolean {
-  const now = Date.now();
-  const cutoff = now - FEEDBACK_RATE_LIMIT_WINDOW_MS;
-  const recent = (feedbackRateLimitBuckets.get(ip) ?? []).filter((t) => t > cutoff);
-  if (recent.length >= FEEDBACK_RATE_LIMIT_MAX_REQUESTS) {
-    feedbackRateLimitBuckets.set(ip, recent);
-    return false;
-  }
-  recent.push(now);
-  feedbackRateLimitBuckets.set(ip, recent);
-
-  if (feedbackRateLimitBuckets.size > 500) {
-    for (const [key, timestamps] of feedbackRateLimitBuckets.entries()) {
-      const kept = timestamps.filter((t) => t > cutoff);
-      if (kept.length === 0) feedbackRateLimitBuckets.delete(key);
-      else feedbackRateLimitBuckets.set(key, kept);
-    }
-  }
-  return true;
-}
-
-function escapeHtml(raw: string): string {
-  return raw
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-function parseFeedbackScreenshotAttachment(
-  raw: unknown,
-): { buffer: Buffer; mime: string; ext: string } | null | 'invalid' {
-  if (raw === undefined || raw === null || raw === '') return null;
-  if (typeof raw !== 'string' || raw.length > FEEDBACK_MAX_SCREENSHOT_CHARS) {
-    return 'invalid';
-  }
-  const match = /^data:image\/(jpeg|jpg|png|webp);base64,([A-Za-z0-9+/=]+)$/.exec(
-    raw.trim(),
-  );
-  if (!match) return 'invalid';
-  const subtype = match[1] === 'jpg' ? 'jpeg' : match[1];
-  const ext = subtype === 'jpeg' ? 'jpg' : subtype;
-  try {
-    const buffer = Buffer.from(match[2], 'base64');
-    if (buffer.length === 0 || buffer.length > 180_000) return 'invalid';
-    return { buffer, mime: `image/${subtype}`, ext };
-  } catch {
-    return 'invalid';
-  }
-}
-
-async function handleFeedbackEmail(req: Request, res: Response): Promise<void> {
-  const ip = getClientIp(req);
-  if (!checkFeedbackRateLimit(ip)) {
-    res.status(429).json({
-      ok: false,
-      error: 'Terlalu banyak laporan dalam 1 menit. Tunggu sebentar lalu coba lagi.',
-    });
-    return;
-  }
-
-  const body = req.body as Record<string, unknown> | undefined;
-  if (!body || typeof body !== 'object' || Array.isArray(body)) {
-    res.status(400).json({ ok: false, error: 'Payload laporan tidak valid.' });
-    return;
-  }
-
-  const category = cleanBoundedText(body.category, 24);
-  const screen = cleanBoundedText(body.screen, 24);
-  const title = cleanBoundedText(body.title, 120);
-  const description = cleanBoundedText(body.description, 2000);
-  const jlptLevel = cleanBoundedText(body.jlptLevel, 4) || 'N5';
-  const username = cleanBoundedText(body.username, 60) || 'pelajar_beta';
-  const accountEmail = cleanBoundedText(body.accountEmail, 120);
-
-  if (!ALLOWED_FEEDBACK_CATEGORIES.has(category)) {
-    res.status(400).json({ ok: false, error: 'Kategori laporan tidak valid.' });
-    return;
-  }
-  if (!ALLOWED_FEEDBACK_SCREENS.has(screen)) {
-    res.status(400).json({ ok: false, error: 'Halaman laporan tidak valid.' });
-    return;
-  }
-  if (title.length < 5) {
-    res.status(400).json({ ok: false, error: 'Judul laporan minimal 5 karakter.' });
-    return;
-  }
-  if (description.length < 10) {
-    res.status(400).json({ ok: false, error: 'Detail laporan minimal 10 karakter.' });
-    return;
-  }
-
-  const parsedAttachment = parseFeedbackScreenshotAttachment(body.screenshotDataUrl);
-  if (parsedAttachment === 'invalid') {
-    res.status(400).json({
-      ok: false,
-      error: 'Format atau ukuran screenshot tidak valid (maksimal 180 KB setelah kompresi).',
-    });
-    return;
-  }
-
-  const safeJlpt = ALLOWED_FEEDBACK_JLPT.has(jlptLevel) ? jlptLevel : 'N5';
-  const recipient = (
-    process.env.FEEDBACK_RECIPIENT_EMAIL?.trim() || FEEDBACK_RECIPIENT_DEFAULT
-  ).trim();
-  const smtpUser = process.env.SMTP_USER?.trim() || '';
-  const smtpPass = process.env.SMTP_PASS?.trim() || '';
-  const smtpHost =
-    process.env.SMTP_HOST?.trim() ||
-    (smtpUser.toLowerCase().endsWith('@gmail.com') ? 'smtp.gmail.com' : '');
-  const smtpPort = Number.parseInt(process.env.SMTP_PORT?.trim() || '465', 10) || 465;
-  const smtpFrom = process.env.SMTP_FROM?.trim() || smtpUser;
-
-  if (!smtpUser || !smtpPass || !smtpHost) {
-    res.status(200).json({
-      ok: false,
-      emailConfigured: false,
-      fallbackEmail: recipient,
-      subject: FEEDBACK_EMAIL_SUBJECT,
-    });
-    return;
-  }
-
-  const categoryLabel = FEEDBACK_CATEGORY_LABELS[category] ?? category;
-  const screenLabel = FEEDBACK_SCREEN_LABELS[screen] ?? screen;
-  const submittedAtIso = new Date().toISOString();
-
-  const textBody = [
-    'Laporan baru dari pengguna UtamaGo! Beta',
-    '========================================',
-    `Kategori     : ${categoryLabel}`,
-    `Halaman      : ${screenLabel}`,
-    `Target JLPT  : ${safeJlpt}`,
-    `Pengguna     : ${username}`,
-    ...(accountEmail ? [`Email Akun   : ${accountEmail}`] : []),
-    `Waktu (UTC)  : ${submittedAtIso}`,
-    `Lampiran SS  : ${parsedAttachment ? `Ya (${Math.max(1, Math.round(parsedAttachment.buffer.length / 1024))} KB)` : 'Tidak ada'}`,
-    '',
-    `Judul:`,
-    title,
-    '',
-    `Detail Laporan:`,
-    description,
-  ].join('\n');
-
-  const htmlBody = `
-    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #18181b; max-width: 640px; margin: 0 auto; line-height: 1.6;">
-      <div style="background: #b91c1c; color: #ffffff; padding: 16px 20px; border-radius: 12px 12px 0 0;">
-        <h2 style="margin: 0; font-size: 17px;">UtamaGo! — Pelaporan Bug &amp; Saran</h2>
-      </div>
-      <div style="border: 1px solid #e4e4e7; border-top: 0; border-radius: 0 0 12px 12px; padding: 20px; background: #ffffff;">
-        <table style="width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 16px;">
-          <tr><td style="padding: 4px 0; color: #71717a; width: 130px;">Kategori</td><td style="padding: 4px 0; font-weight: 700;">${escapeHtml(categoryLabel)}</td></tr>
-          <tr><td style="padding: 4px 0; color: #71717a;">Halaman</td><td style="padding: 4px 0; font-weight: 600;">${escapeHtml(screenLabel)}</td></tr>
-          <tr><td style="padding: 4px 0; color: #71717a;">Target JLPT</td><td style="padding: 4px 0; font-weight: 600;">${escapeHtml(safeJlpt)}</td></tr>
-          <tr><td style="padding: 4px 0; color: #71717a;">Pengguna</td><td style="padding: 4px 0;">${escapeHtml(username)}</td></tr>
-          ${accountEmail ? `<tr><td style="padding: 4px 0; color: #71717a;">Email Akun</td><td style="padding: 4px 0;">${escapeHtml(accountEmail)}</td></tr>` : ''}
-          <tr><td style="padding: 4px 0; color: #71717a;">Waktu (UTC)</td><td style="padding: 4px 0;">${escapeHtml(submittedAtIso)}</td></tr>
-        </table>
-        <div style="padding: 12px 14px; background: #fafafa; border: 1px solid #e4e4e7; border-radius: 10px; margin-bottom: 12px;">
-          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #71717a; margin-bottom: 4px;">Judul</div>
-          <div style="font-size: 15px; font-weight: 700; color: #18181b;">${escapeHtml(title)}</div>
-        </div>
-        <div style="padding: 12px 14px; background: #fafafa; border: 1px solid #e4e4e7; border-radius: 10px;">
-          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #71717a; margin-bottom: 4px;">Detail</div>
-          <div style="font-size: 14px; white-space: pre-wrap; color: #27272a;">${escapeHtml(description)}</div>
-        </div>
-      </div>
-    </div>
-  `.trim();
-
-  try {
-    const transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port: smtpPort,
-      secure: smtpPort === 465,
-      auth: {
-        user: smtpUser,
-        pass: smtpPass,
-      },
-      connectionTimeout: 10_000,
-      greetingTimeout: 10_000,
-      socketTimeout: 15_000,
-    });
-
-    await transporter.sendMail({
-      from: smtpFrom,
-      to: recipient,
-      replyTo: accountEmail && accountEmail.includes('@') ? accountEmail : undefined,
-      subject: FEEDBACK_EMAIL_SUBJECT,
-      text: textBody,
-      html: htmlBody,
-      attachments: parsedAttachment
-        ? [
-            {
-              filename: `utamago-screenshot.${parsedAttachment.ext}`,
-              content: parsedAttachment.buffer,
-              contentType: parsedAttachment.mime,
-            },
-          ]
-        : undefined,
-    });
-
-    res.status(200).json({
-      ok: true,
-      emailConfigured: true,
-      recipient,
-      subject: FEEDBACK_EMAIL_SUBJECT,
-    });
-  } catch (err) {
-    console.error('[FeedbackEmail] Failed to send SMTP email:', err);
-    res.status(502).json({
-      ok: false,
-      emailConfigured: true,
-      fallbackEmail: recipient,
-      subject: FEEDBACK_EMAIL_SUBJECT,
-      error: 'Gagal mengirim email otomatis. Kamu tetap bisa mengirim lewat aplikasi email.',
-    });
-  }
 }
 
 const TRYOUT_EXPLAIN_SYSTEM_INSTRUCTION = `Kamu adalah pengajar JLPT (Sensei) berbahasa Indonesia yang teliti, hangat, dan to-the-point untuk aplikasi belajar bahasa Jepang UtamaGo!.
@@ -2392,8 +2128,593 @@ async function startServer() {
     void handleTryOutExplain(req, res);
   });
 
-  app.post('/api/feedback/send', express.json({ limit: '360kb' }), (req, res) => {
-    void handleFeedbackEmail(req, res);
+  // =========================================================================
+  // Hidden Admin Pesan Inbox & Bug/Suggestion Reporting API
+  // =========================================================================
+  type ServerFeedbackCategory = 'bug' | 'typo' | 'suggestion' | 'other';
+  type ServerFeedbackScreen =
+    | 'home'
+    | 'anki'
+    | 'learn'
+    | 'challenge'
+    | 'tryout'
+    | 'profile'
+    | 'other';
+  type ServerFeedbackStatus = 'open' | 'reviewed' | 'resolved';
+  type ServerJlptLevel = 'N5' | 'N4' | 'N3' | 'N2' | 'N1';
+
+  interface ServerFeedbackRecord {
+    id: string;
+    username: string;
+    accountEmail: string;
+    category: ServerFeedbackCategory;
+    screen: ServerFeedbackScreen;
+    jlptLevel: ServerJlptLevel;
+    title: string;
+    description: string;
+    status: ServerFeedbackStatus;
+    adminNote: string;
+    screenshotInfo: string;
+    screenshotDataUrl: string;
+    createdAtMs: number;
+    updatedAtMs: number;
+  }
+
+  interface StoredAdminCredential {
+    algorithm: 'scrypt';
+    saltHex: string;
+    hashHex: string;
+    createdAtMs: number;
+  }
+
+  const FEEDBACK_ALLOWED_CATEGORIES = new Set<ServerFeedbackCategory>([
+    'bug',
+    'typo',
+    'suggestion',
+    'other',
+  ]);
+  const FEEDBACK_ALLOWED_SCREENS = new Set<ServerFeedbackScreen>([
+    'home',
+    'anki',
+    'learn',
+    'challenge',
+    'tryout',
+    'profile',
+    'other',
+  ]);
+  const FEEDBACK_ALLOWED_STATUSES = new Set<ServerFeedbackStatus>([
+    'open',
+    'reviewed',
+    'resolved',
+  ]);
+  const FEEDBACK_ALLOWED_JLPT = new Set<ServerJlptLevel>([
+    'N5',
+    'N4',
+    'N3',
+    'N2',
+    'N1',
+  ]);
+  const FEEDBACK_MAX_STORED_ITEMS = 500;
+  const FEEDBACK_MAX_SCREENSHOT_CHARS = 260_000;
+  const FEEDBACK_SUBMIT_WINDOW_MS = 15 * 60 * 1000;
+  const FEEDBACK_SUBMIT_MAX_PER_IP = 15;
+  const ADMIN_LOGIN_WINDOW_MS = 15 * 60 * 1000;
+  const ADMIN_LOGIN_MAX_FAILURES = 10;
+  const ADMIN_SESSION_TTL_MS = 12 * 60 * 60 * 1000;
+  const ADMIN_MAX_SESSIONS = 24;
+
+  function resolveInboxDataDir(): string {
+    const primaryDir = path.resolve(process.cwd(), '.utamago-data');
+    try {
+      fs.mkdirSync(primaryDir, { recursive: true });
+      fs.accessSync(primaryDir, fs.constants.W_OK);
+      return primaryDir;
+    } catch {
+      const fallbackDir = path.join(os.tmpdir(), 'utamago-inbox-data');
+      fs.mkdirSync(fallbackDir, { recursive: true });
+      return fallbackDir;
+    }
+  }
+
+  const inboxDataDir = resolveInboxDataDir();
+  const feedbackStorePath = path.join(inboxDataDir, 'feedback-inbox.json');
+  const adminCredentialPath = path.join(inboxDataDir, 'admin-auth.json');
+
+  function atomicWriteJson(filePath: string, data: unknown): void {
+    const tmpPath = `${filePath}.${process.pid}.${Date.now()}.tmp`;
+    fs.writeFileSync(tmpPath, JSON.stringify(data, null, 2), {
+      encoding: 'utf8',
+      mode: 0o600,
+    });
+    fs.renameSync(tmpPath, filePath);
+  }
+
+  function loadFeedbackStore(): ServerFeedbackRecord[] {
+    try {
+      if (!fs.existsSync(feedbackStorePath)) return [];
+      const raw = JSON.parse(fs.readFileSync(feedbackStorePath, 'utf8'));
+      if (!Array.isArray(raw)) return [];
+      return raw.filter(
+        (item): item is ServerFeedbackRecord =>
+          Boolean(item) &&
+          typeof item === 'object' &&
+          typeof item.id === 'string' &&
+          typeof item.title === 'string',
+      );
+    } catch {
+      return [];
+    }
+  }
+
+  let feedbackRecords: ServerFeedbackRecord[] = loadFeedbackStore();
+
+  function saveFeedbackStore(): void {
+    try {
+      atomicWriteJson(feedbackStorePath, feedbackRecords);
+    } catch (err) {
+      console.error(
+        '[FeedbackInbox] Failed to persist feedback store:',
+        err instanceof Error ? err.message : 'unknown error',
+      );
+    }
+  }
+
+  function loadAdminCredential(): StoredAdminCredential | null {
+    try {
+      if (!fs.existsSync(adminCredentialPath)) return null;
+      const raw = JSON.parse(
+        fs.readFileSync(adminCredentialPath, 'utf8'),
+      ) as Partial<StoredAdminCredential>;
+      if (
+        raw.algorithm === 'scrypt' &&
+        typeof raw.saltHex === 'string' &&
+        typeof raw.hashHex === 'string' &&
+        raw.saltHex.length >= 16 &&
+        raw.hashHex.length >= 64
+      ) {
+        return {
+          algorithm: 'scrypt',
+          saltHex: raw.saltHex,
+          hashHex: raw.hashHex,
+          createdAtMs:
+            typeof raw.createdAtMs === 'number' ? raw.createdAtMs : Date.now(),
+        };
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  }
+
+  let claimedAdminCredential: StoredAdminCredential | null =
+    loadAdminCredential();
+
+  const adminSessions = new Map<
+    string,
+    { createdAtMs: number; expiresAtMs: number }
+  >();
+  const adminLoginFailures = new Map<string, number[]>();
+  const feedbackSubmitBuckets = new Map<string, number[]>();
+
+  function getEnvAdminPasscode(): string {
+    return (process.env.ADMIN_INBOX_PASSCODE ?? '').trim();
+  }
+
+  function getAdminAuthMode(): 'env' | 'claimed' | 'unclaimed' {
+    if (getEnvAdminPasscode().length > 0) return 'env';
+    if (claimedAdminCredential) return 'claimed';
+    return 'unclaimed';
+  }
+
+  function hashPasscodeScrypt(password: string): StoredAdminCredential {
+    const salt = crypto.randomBytes(16);
+    const derived = crypto.scryptSync(password, salt, 64);
+    return {
+      algorithm: 'scrypt',
+      saltHex: salt.toString('hex'),
+      hashHex: derived.toString('hex'),
+      createdAtMs: Date.now(),
+    };
+  }
+
+  function verifyAdminPasscode(candidate: string): boolean {
+    const envPasscode = getEnvAdminPasscode();
+    if (envPasscode.length > 0) {
+      const a = crypto.createHash('sha256').update(candidate, 'utf8').digest();
+      const b = crypto
+        .createHash('sha256')
+        .update(envPasscode, 'utf8')
+        .digest();
+      return crypto.timingSafeEqual(a, b);
+    }
+    if (!claimedAdminCredential) return false;
+    try {
+      const salt = Buffer.from(claimedAdminCredential.saltHex, 'hex');
+      const expected = Buffer.from(claimedAdminCredential.hashHex, 'hex');
+      const actual = crypto.scryptSync(candidate, salt, expected.length);
+      if (actual.length !== expected.length) return false;
+      return crypto.timingSafeEqual(actual, expected);
+    } catch {
+      return false;
+    }
+  }
+
+  function issueAdminSession(): { token: string; expiresAtMs: number } {
+    const now = Date.now();
+    for (const [key, session] of adminSessions.entries()) {
+      if (session.expiresAtMs <= now) adminSessions.delete(key);
+    }
+    while (adminSessions.size >= ADMIN_MAX_SESSIONS) {
+      const oldest = adminSessions.keys().next().value;
+      if (!oldest) break;
+      adminSessions.delete(oldest);
+    }
+    const token = crypto.randomBytes(32).toString('hex');
+    const expiresAtMs = now + ADMIN_SESSION_TTL_MS;
+    adminSessions.set(token, { createdAtMs: now, expiresAtMs });
+    return { token, expiresAtMs };
+  }
+
+  function extractBearerToken(req: Request): string | null {
+    const raw = req.headers.authorization;
+    if (typeof raw !== 'string') return null;
+    const match = /^Bearer\s+([a-f0-9]{64})$/i.exec(raw.trim());
+    return match ? match[1] : null;
+  }
+
+  function hasValidAdminSession(req: Request): boolean {
+    const token = extractBearerToken(req);
+    if (!token) return false;
+    const session = adminSessions.get(token);
+    if (!session) return false;
+    if (session.expiresAtMs <= Date.now()) {
+      adminSessions.delete(token);
+      return false;
+    }
+    return true;
+  }
+
+  function checkRateBucket(
+    map: Map<string, number[]>,
+    key: string,
+    windowMs: number,
+    maxCount: number,
+    recordAttempt: boolean,
+  ): boolean {
+    const now = Date.now();
+    const cutoff = now - windowMs;
+    const recent = (map.get(key) ?? []).filter((ts) => ts > cutoff);
+    if (recent.length >= maxCount) {
+      map.set(key, recent);
+      return false;
+    }
+    if (recordAttempt) {
+      recent.push(now);
+      map.set(key, recent);
+    } else if (recent.length > 0) {
+      map.set(key, recent);
+    } else {
+      map.delete(key);
+    }
+    return true;
+  }
+
+  function isSafeScreenshotDataUrl(val: string): boolean {
+    if (!val) return true;
+    if (val.length > FEEDBACK_MAX_SCREENSHOT_CHARS) return false;
+    return /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(val);
+  }
+
+  app.post('/api/feedback', express.json({ limit: '380kb' }), (req, res) => {
+    res.setHeader('Cache-Control', 'no-store');
+    const clientIp = getClientIp(req);
+    if (
+      !checkRateBucket(
+        feedbackSubmitBuckets,
+        clientIp,
+        FEEDBACK_SUBMIT_WINDOW_MS,
+        FEEDBACK_SUBMIT_MAX_PER_IP,
+        true,
+      )
+    ) {
+      res.status(429).json({
+        error: 'Terlalu banyak laporan dikirim dalam waktu singkat. Coba lagi nanti.',
+      });
+      return;
+    }
+
+    const body = req.body as Record<string, unknown> | undefined;
+    if (!body || typeof body !== 'object' || Array.isArray(body)) {
+      res.status(400).json({ error: 'Format laporan tidak valid.' });
+      return;
+    }
+
+    const rawCategory =
+      typeof body.category === 'string' ? body.category.trim() : '';
+    const rawScreen = typeof body.screen === 'string' ? body.screen.trim() : '';
+    const rawJlpt =
+      typeof body.jlptLevel === 'string' ? body.jlptLevel.trim() : 'N5';
+    const title = cleanBoundedText(body.title, 100).replace(/\s+/g, ' ');
+    const description = cleanBoundedText(body.description, 1000);
+    const username = cleanBoundedText(body.username, 60) || 'pelajar';
+    const accountEmail = cleanBoundedText(body.accountEmail, 120);
+    const screenshotInfo = cleanBoundedText(body.screenshotInfo, 80);
+    const screenshotDataUrl =
+      typeof body.screenshotDataUrl === 'string'
+        ? body.screenshotDataUrl.trim()
+        : '';
+
+    if (!FEEDBACK_ALLOWED_CATEGORIES.has(rawCategory as ServerFeedbackCategory)) {
+      res.status(400).json({ error: 'Kategori laporan tidak valid.' });
+      return;
+    }
+    if (!FEEDBACK_ALLOWED_SCREENS.has(rawScreen as ServerFeedbackScreen)) {
+      res.status(400).json({ error: 'Halaman terkait tidak valid.' });
+      return;
+    }
+    if (title.length < 5) {
+      res.status(400).json({ error: 'Judul laporan minimal 5 karakter.' });
+      return;
+    }
+    if (description.length < 10) {
+      res.status(400).json({ error: 'Detail laporan minimal 10 karakter.' });
+      return;
+    }
+    if (!isSafeScreenshotDataUrl(screenshotDataUrl)) {
+      res.status(400).json({
+        error: 'Lampiran screenshot tidak valid atau melebihi batas ukuran.',
+      });
+      return;
+    }
+
+    const nowMs = Date.now();
+    const record: ServerFeedbackRecord = {
+      id: `fb_${nowMs}_${crypto.randomBytes(4).toString('hex')}`,
+      username,
+      accountEmail,
+      category: rawCategory as ServerFeedbackCategory,
+      screen: rawScreen as ServerFeedbackScreen,
+      jlptLevel: FEEDBACK_ALLOWED_JLPT.has(rawJlpt as ServerJlptLevel)
+        ? (rawJlpt as ServerJlptLevel)
+        : 'N5',
+      title,
+      description,
+      status: 'open',
+      adminNote: '',
+      screenshotInfo,
+      screenshotDataUrl,
+      createdAtMs: nowMs,
+      updatedAtMs: nowMs,
+    };
+
+    feedbackRecords = [record, ...feedbackRecords].slice(
+      0,
+      FEEDBACK_MAX_STORED_ITEMS,
+    );
+    saveFeedbackStore();
+
+    res.status(201).json({ ok: true, id: record.id, createdAtMs: nowMs });
+  });
+
+  app.get('/api/admin/status', (req, res) => {
+    res.setHeader('Cache-Control', 'no-store');
+    const mode = getAdminAuthMode();
+    res.status(200).json({
+      mode,
+      configured: mode !== 'unclaimed',
+      authenticated: hasValidAdminSession(req),
+    });
+  });
+
+  app.post('/api/admin/setup', express.json({ limit: '8kb' }), (req, res) => {
+    res.setHeader('Cache-Control', 'no-store');
+    if (getAdminAuthMode() !== 'unclaimed') {
+      res.status(409).json({
+        error:
+          'Password admin sudah dikonfigurasi. Silakan masuk menggunakan password admin.',
+      });
+      return;
+    }
+
+    const body = req.body as Record<string, unknown> | undefined;
+    const password =
+      typeof body?.password === 'string' ? body.password.trim() : '';
+    const confirmPassword =
+      typeof body?.confirmPassword === 'string'
+        ? body.confirmPassword.trim()
+        : password;
+
+    if (password.length < 4 || password.length > 128) {
+      res.status(400).json({
+        error: 'Password admin harus antara 4 hingga 128 karakter.',
+      });
+      return;
+    }
+    if (password !== confirmPassword) {
+      res.status(400).json({ error: 'Konfirmasi password tidak cocok.' });
+      return;
+    }
+
+    const credential = hashPasscodeScrypt(password);
+    try {
+      atomicWriteJson(adminCredentialPath, credential);
+      claimedAdminCredential = credential;
+    } catch (err) {
+      console.error(
+        '[AdminAuth] Failed to persist claimed admin credential hash:',
+        err instanceof Error ? err.message : 'unknown error',
+      );
+      claimedAdminCredential = credential;
+    }
+
+    const session = issueAdminSession();
+    res.status(201).json({
+      ok: true,
+      token: session.token,
+      expiresAtMs: session.expiresAtMs,
+    });
+  });
+
+  app.post('/api/admin/login', express.json({ limit: '8kb' }), (req, res) => {
+    res.setHeader('Cache-Control', 'no-store');
+    const mode = getAdminAuthMode();
+    if (mode === 'unclaimed') {
+      res.status(409).json({
+        error: 'Password admin belum diatur. Silakan buat password admin terlebih dahulu.',
+        needsSetup: true,
+      });
+      return;
+    }
+
+    const clientIp = getClientIp(req);
+    if (
+      !checkRateBucket(
+        adminLoginFailures,
+        clientIp,
+        ADMIN_LOGIN_WINDOW_MS,
+        ADMIN_LOGIN_MAX_FAILURES,
+        false,
+      )
+    ) {
+      res.status(429).json({
+        error: 'Terlalu banyak percobaan login admin. Tunggu beberapa menit lalu coba lagi.',
+      });
+      return;
+    }
+
+    const body = req.body as Record<string, unknown> | undefined;
+    const password =
+      typeof body?.password === 'string' ? body.password.trim() : '';
+
+    if (!password || !verifyAdminPasscode(password)) {
+      checkRateBucket(
+        adminLoginFailures,
+        clientIp,
+        ADMIN_LOGIN_WINDOW_MS,
+        ADMIN_LOGIN_MAX_FAILURES,
+        true,
+      );
+      res.status(401).json({ error: 'Password admin salah.' });
+      return;
+    }
+
+    adminLoginFailures.delete(clientIp);
+    const session = issueAdminSession();
+    res.status(200).json({
+      ok: true,
+      token: session.token,
+      expiresAtMs: session.expiresAtMs,
+    });
+  });
+
+  app.post('/api/admin/logout', (req, res) => {
+    res.setHeader('Cache-Control', 'no-store');
+    const token = extractBearerToken(req);
+    if (token) {
+      adminSessions.delete(token);
+    }
+    res.status(200).json({ ok: true });
+  });
+
+  app.get('/api/admin/feedback', (req, res) => {
+    res.setHeader('Cache-Control', 'no-store');
+    if (!hasValidAdminSession(req)) {
+      res.status(401).json({ error: 'Sesi admin tidak valid atau telah berakhir.' });
+      return;
+    }
+    const sorted = [...feedbackRecords].sort(
+      (a, b) => b.createdAtMs - a.createdAtMs,
+    );
+    const summary = {
+      total: sorted.length,
+      open: sorted.filter((i) => i.status === 'open').length,
+      reviewed: sorted.filter((i) => i.status === 'reviewed').length,
+      resolved: sorted.filter((i) => i.status === 'resolved').length,
+    };
+    res.status(200).json({ items: sorted, summary });
+  });
+
+  app.patch(
+    '/api/admin/feedback/:id',
+    express.json({ limit: '16kb' }),
+    (req, res) => {
+      res.setHeader('Cache-Control', 'no-store');
+      if (!hasValidAdminSession(req)) {
+        res.status(401).json({ error: 'Sesi admin tidak valid atau telah berakhir.' });
+        return;
+      }
+
+      const id = (req.params.id ?? '').trim();
+      if (!/^[a-zA-Z0-9_-]{1,80}$/.test(id)) {
+        res.status(400).json({ error: 'ID laporan tidak valid.' });
+        return;
+      }
+
+      const idx = feedbackRecords.findIndex((item) => item.id === id);
+      if (idx < 0) {
+        res.status(404).json({ error: 'Laporan tidak ditemukan.' });
+        return;
+      }
+
+      const body = req.body as Record<string, unknown> | undefined;
+      if (!body || typeof body !== 'object' || Array.isArray(body)) {
+        res.status(400).json({ error: 'Data pembaruan tidak valid.' });
+        return;
+      }
+
+      const current = feedbackRecords[idx];
+      let nextStatus = current.status;
+      if (body.status !== undefined) {
+        if (
+          typeof body.status !== 'string' ||
+          !FEEDBACK_ALLOWED_STATUSES.has(body.status as ServerFeedbackStatus)
+        ) {
+          res.status(400).json({ error: 'Status laporan tidak valid.' });
+          return;
+        }
+        nextStatus = body.status as ServerFeedbackStatus;
+      }
+
+      const nextNote =
+        body.adminNote !== undefined
+          ? cleanBoundedText(body.adminNote, 300)
+          : current.adminNote;
+
+      const updated: ServerFeedbackRecord = {
+        ...current,
+        status: nextStatus,
+        adminNote: nextNote,
+        updatedAtMs: Date.now(),
+      };
+      feedbackRecords[idx] = updated;
+      saveFeedbackStore();
+
+      res.status(200).json({ ok: true, item: updated });
+    },
+  );
+
+  app.delete('/api/admin/feedback/:id', (req, res) => {
+    res.setHeader('Cache-Control', 'no-store');
+    if (!hasValidAdminSession(req)) {
+      res.status(401).json({ error: 'Sesi admin tidak valid atau telah berakhir.' });
+      return;
+    }
+
+    const id = (req.params.id ?? '').trim();
+    if (!/^[a-zA-Z0-9_-]{1,80}$/.test(id)) {
+      res.status(400).json({ error: 'ID laporan tidak valid.' });
+      return;
+    }
+
+    const before = feedbackRecords.length;
+    feedbackRecords = feedbackRecords.filter((item) => item.id !== id);
+    if (feedbackRecords.length === before) {
+      res.status(404).json({ error: 'Laporan tidak ditemukan.' });
+      return;
+    }
+
+    saveFeedbackStore();
+    res.status(200).json({ ok: true });
   });
 
   // Monthly Catbox.moe keep-alive endpoint (touches all 18 N2 MP3s at least once every 25 days)

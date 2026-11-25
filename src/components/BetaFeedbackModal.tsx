@@ -9,12 +9,10 @@ import {
   AlertCircle,
   Bug,
   CheckCircle2,
-  ExternalLink,
   FileWarning,
   ImagePlus,
   Lightbulb,
   Loader2,
-  Mail,
   MessageSquarePlus,
   Send,
   Trash2,
@@ -32,14 +30,12 @@ import {
   type BetaFeedbackCategory,
   type BetaFeedbackScreen,
 } from '../services/betaFeedback';
-import { vibrateTap } from '../utils/haptics';
+import { submitFeedbackToInbox } from '../services/feedbackInboxApi';
+import { vibrateSuccess, vibrateTap } from '../utils/haptics';
 import {
   compressFeedbackScreenshot,
   type CompressedScreenshot,
 } from '../utils/screenshotCompress';
-
-const DEFAULT_RECIPIENT_EMAIL = 'kantorhp65@gmail.com';
-const DEFAULT_EMAIL_SUBJECT = '[UtamaGo!] Pelaporan Bug dan Saran';
 
 interface BetaFeedbackModalProps {
   open: boolean;
@@ -49,14 +45,7 @@ interface BetaFeedbackModalProps {
   accountEmail?: string;
   jlptLevel: JlptLevel;
   defaultScreen?: BetaFeedbackScreen;
-}
-
-interface MailtoFallbackState {
-  recipient: string;
-  subject: string;
-  mailtoHref: string;
-  hasScreenshot: boolean;
-  reason?: string;
+  onSubmitted?: () => void;
 }
 
 export function BetaFeedbackModal({
@@ -66,14 +55,17 @@ export function BetaFeedbackModal({
   accountEmail,
   jlptLevel,
   defaultScreen = 'profile',
+  onSubmitted,
 }: BetaFeedbackModalProps) {
-  const { lang, t } = useLanguage();
+  const { t } = useLanguage();
 
   const [category, setCategory] = useState<BetaFeedbackCategory>('bug');
   const [screen, setScreen] = useState<BetaFeedbackScreen>(defaultScreen);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [screenshot, setScreenshot] = useState<CompressedScreenshot | null>(null);
+  const [screenshot, setScreenshot] = useState<CompressedScreenshot | null>(
+    null,
+  );
   const [screenshotError, setScreenshotError] = useState<string | null>(null);
   const [compressingScreenshot, setCompressingScreenshot] = useState(false);
   const [isDraggingFile, setIsDraggingFile] = useState(false);
@@ -81,10 +73,7 @@ export function BetaFeedbackModal({
 
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [sentRecipient, setSentRecipient] = useState<string | null>(null);
-  const [mailtoFallback, setMailtoFallback] = useState<MailtoFallbackState | null>(
-    null,
-  );
+  const [submittedOk, setSubmittedOk] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -94,27 +83,39 @@ export function BetaFeedbackModal({
     icon: typeof Bug;
   }> = [
     { id: 'bug', label: t('Bug / Error', 'Bug / Error'), icon: Bug },
-    { id: 'typo', label: t('Typo / Materi', 'Typo / Material'), icon: FileWarning },
-    { id: 'suggestion', label: t('Saran Fitur', 'Feature Idea'), icon: Lightbulb },
-    { id: 'other', label: t('Lainnya', 'Other'), icon: MessageSquarePlus },
+    {
+      id: 'typo',
+      label: t('Typo / Materi', 'Typo / Material'),
+      icon: FileWarning,
+    },
+    {
+      id: 'suggestion',
+      label: t('Saran Fitur', 'Feature Idea'),
+      icon: Lightbulb,
+    },
+    {
+      id: 'other',
+      label: t('Lainnya', 'Other'),
+      icon: MessageSquarePlus,
+    },
   ];
 
-  const screenOptions: ReadonlyArray<{ id: BetaFeedbackScreen; label: string }> = [
-    { id: 'home', label: t('Beranda', 'Home') },
-    { id: 'anki', label: t('Anki Kosakata', 'Anki Vocab') },
-    { id: 'learn', label: t('Materi & Bunpou', 'Learn & Grammar') },
-    { id: 'challenge', label: t('Arena Tantangan', 'Challenge Arena') },
-    { id: 'tryout', label: t('Try Out JLPT', 'JLPT Try Out') },
-    { id: 'profile', label: t('Profil & Pengaturan', 'Profile & Settings') },
-    { id: 'other', label: t('Lainnya', 'Other') },
-  ];
+  const screenOptions: ReadonlyArray<{ id: BetaFeedbackScreen; label: string }> =
+    [
+      { id: 'home', label: t('Beranda', 'Home') },
+      { id: 'anki', label: t('Anki Kosakata', 'Anki Vocab') },
+      { id: 'learn', label: t('Materi & Bunpou', 'Learn & Grammar') },
+      { id: 'challenge', label: t('Arena Tantangan', 'Challenge Arena') },
+      { id: 'tryout', label: t('Try Out JLPT', 'JLPT Try Out') },
+      { id: 'profile', label: t('Profil & Pengaturan', 'Profile & Settings') },
+      { id: 'other', label: t('Lainnya', 'Other') },
+    ];
 
   useEffect(() => {
     if (!open) return;
     setScreen(defaultScreen);
     setSubmitError(null);
-    setSentRecipient(null);
-    setMailtoFallback(null);
+    setSubmittedOk(false);
     setScreenshotError(null);
     setPreviewImageSrc(null);
   }, [open, defaultScreen]);
@@ -183,54 +184,11 @@ export function BetaFeedbackModal({
     }
   };
 
-  const buildMailtoHref = (
-    recipient: string,
-    subject: string,
-    cleanTitle: string,
-    cleanDesc: string,
-  ): string => {
-    const categoryLabel =
-      categoryOptions.find((c) => c.id === category)?.label ?? category;
-    const screenLabel =
-      screenOptions.find((s) => s.id === screen)?.label ?? screen;
-    const bodyLines = [
-      `Kategori: ${categoryLabel}`,
-      `Halaman: ${screenLabel}`,
-      `Target JLPT: ${jlptLevel}`,
-      `Pengguna: ${username}`,
-      ...(accountEmail ? [`Email Akun: ${accountEmail}`] : []),
-      '',
-      `Judul: ${cleanTitle}`,
-      '',
-      `Detail:`,
-      cleanDesc,
-      ...(screenshot
-        ? [
-            '',
-            '(Catatan: silakan lampirkan screenshot secara manual di email ini jika diperlukan.)',
-          ]
-        : []),
-    ];
-    return `mailto:${encodeURIComponent(recipient)}?subject=${encodeURIComponent(
-      subject,
-    )}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
-  };
-
-  const resetForm = () => {
-    setTitle('');
-    setDescription('');
-    setScreenshot(null);
-    setScreenshotError(null);
-    setSubmitError(null);
-    setSentRecipient(null);
-    setMailtoFallback(null);
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    vibrateTap();
     setSubmitError(null);
-    setSentRecipient(null);
-    setMailtoFallback(null);
+    setSubmittedOk(false);
 
     const validation = validateBetaFeedbackInput({
       category,
@@ -245,92 +203,50 @@ export function BetaFeedbackModal({
       return;
     }
 
-    const cleanTitle = title.trim();
-    const cleanDesc = description.trim();
     setSubmitting(true);
-
     try {
-      const res = await fetch('/api/feedback/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          category,
-          screen,
-          title: cleanTitle,
-          description: cleanDesc,
-          jlptLevel,
-          username,
-          accountEmail: accountEmail ?? '',
-          screenshotDataUrl: screenshot?.dataUrl ?? '',
-        }),
+      await submitFeedbackToInbox({
+        category,
+        screen,
+        jlptLevel,
+        username,
+        accountEmail: accountEmail || '',
+        title: title.trim(),
+        description: description.trim(),
+        screenshotInfo: screenshot
+          ? `${screenshot.width}x${screenshot.height} (~${screenshot.sizeKb} KB)`
+          : '',
+        screenshotDataUrl: screenshot?.dataUrl,
       });
 
-      const payload = (await res.json().catch(() => ({}))) as {
-        ok?: boolean;
-        emailConfigured?: boolean;
-        recipient?: string;
-        fallbackEmail?: string;
-        subject?: string;
-        error?: string;
-      };
-
-      if (res.ok && payload.ok) {
-        setSentRecipient(payload.recipient || DEFAULT_RECIPIENT_EMAIL);
-        setTitle('');
-        setDescription('');
-        setScreenshot(null);
-        setScreenshotError(null);
-        return;
-      }
-
-      if (payload.emailConfigured === false) {
-        const recipient = payload.fallbackEmail || DEFAULT_RECIPIENT_EMAIL;
-        const subject = payload.subject || DEFAULT_EMAIL_SUBJECT;
-        setMailtoFallback({
-          recipient,
-          subject,
-          mailtoHref: buildMailtoHref(recipient, subject, cleanTitle, cleanDesc),
-          hasScreenshot: Boolean(screenshot),
-        });
-        return;
-      }
-
-      if (payload.fallbackEmail) {
-        const recipient = payload.fallbackEmail;
-        const subject = payload.subject || DEFAULT_EMAIL_SUBJECT;
-        setMailtoFallback({
-          recipient,
-          subject,
-          mailtoHref: buildMailtoHref(recipient, subject, cleanTitle, cleanDesc),
-          hasScreenshot: Boolean(screenshot),
-          reason: payload.error,
-        });
-        return;
-      }
-
+      vibrateSuccess();
+      setSubmittedOk(true);
+      setTitle('');
+      setDescription('');
+      setScreenshot(null);
+      setScreenshotError(null);
+      onSubmitted?.();
+    } catch (err) {
       setSubmitError(
-        payload.error ||
-          t(
-            'Gagal mengirim laporan. Periksa koneksi internetmu lalu coba lagi.',
-            'Failed to send report. Check your internet connection and try again.',
-          ),
+        err instanceof Error
+          ? err.message
+          : t(
+              'Gagal mengirim laporan. Coba lagi beberapa saat.',
+              'Failed to send report. Please try again.',
+            ),
       );
-    } catch {
-      const recipient = DEFAULT_RECIPIENT_EMAIL;
-      const subject = DEFAULT_EMAIL_SUBJECT;
-      setMailtoFallback({
-        recipient,
-        subject,
-        mailtoHref: buildMailtoHref(recipient, subject, cleanTitle, cleanDesc),
-        hasScreenshot: Boolean(screenshot),
-        reason: t(
-          'Server email sedang tidak terjangkau. Kamu tetap bisa mengirim lewat aplikasi email.',
-          'Email server is currently unreachable. You can still send via your email app.',
-        ),
-      });
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const resetForm = () => {
+    setTitle('');
+    setDescription('');
+    setScreenshot(null);
+    setScreenshotError(null);
+    setSubmitError(null);
+    setSubmittedOk(false);
   };
 
   return (
@@ -349,9 +265,9 @@ export function BetaFeedbackModal({
         {/* Header */}
         <div className="flex items-start justify-between gap-3 border-b border-outline-variant bg-surface-container-low px-5 py-4">
           <div className="min-w-0">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary-container text-primary">
-                <Mail className="h-4.5 w-4.5" aria-hidden="true" />
+                <MessageSquarePlus className="h-5 w-5" aria-hidden="true" />
               </span>
               <div className="min-w-0">
                 <h2
@@ -362,8 +278,8 @@ export function BetaFeedbackModal({
                 </h2>
                 <p className="truncate text-[11px] font-medium text-[#52525b] dark:text-[#a1a1aa]">
                   {t(
-                    `Terkirim langsung ke ${DEFAULT_RECIPIENT_EMAIL}`,
-                    `Sent directly to ${DEFAULT_RECIPIENT_EMAIL}`,
+                    'Bantu sempurnakan UtamaGo! versi Beta Tester',
+                    'Help improve UtamaGo! during Beta Testing',
                   )}
                 </p>
               </div>
@@ -385,19 +301,19 @@ export function BetaFeedbackModal({
 
         {/* Body */}
         <div className="flex-1 overflow-y-auto px-5 py-4">
-          {sentRecipient ? (
-            <div className="space-y-4 py-4 text-center">
+          {submittedOk ? (
+            <div className="space-y-4 py-5 text-center">
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300">
                 <CheckCircle2 className="h-7 w-7" aria-hidden="true" />
               </div>
               <div className="space-y-1.5">
                 <h3 className="font-display text-lg font-extrabold text-on-surface">
-                  {t('Laporan Berhasil Dikirim!', 'Report Sent Successfully!')}
+                  {t('Laporan Terkirim!', 'Report Sent!')}
                 </h3>
                 <p className="mx-auto max-w-sm text-xs leading-relaxed text-[#52525b] dark:text-[#a1a1aa]">
                   {t(
-                    `Terima kasih sudah membantu menyempurnakan UtamaGo!. Laporanmu telah diteruskan ke ${sentRecipient} dengan subjek "${DEFAULT_EMAIL_SUBJECT}".`,
-                    `Thank you for helping improve UtamaGo!. Your report has been emailed to ${sentRecipient} with subject "${DEFAULT_EMAIL_SUBJECT}".`,
+                    'Terima kasih! Laporan bug atau saranmu sudah diterima oleh pengelola UtamaGo! untuk segera ditinjau.',
+                    'Thank you! Your bug report or suggestion has been received by the UtamaGo! team for review.',
                   )}
                 </p>
               </div>
@@ -421,61 +337,6 @@ export function BetaFeedbackModal({
                   className="m3-tactile inline-flex min-h-[44px] items-center justify-center rounded-2xl bg-primary px-5 py-2.5 text-xs font-bold text-on-primary shadow-xs hover:bg-primary-hover"
                 >
                   {t('Selesai', 'Done')}
-                </button>
-              </div>
-            </div>
-          ) : mailtoFallback ? (
-            <div className="space-y-4 py-2">
-              <div className="rounded-2xl border border-amber-300/70 bg-amber-50/90 p-4 dark:border-amber-700/60 dark:bg-amber-950/35">
-                <div className="flex items-start gap-2.5">
-                  <Mail
-                    className="mt-0.5 h-5 w-5 shrink-0 text-amber-700 dark:text-amber-300"
-                    aria-hidden="true"
-                  />
-                  <div className="space-y-1 text-xs leading-relaxed text-amber-950 dark:text-amber-100">
-                    <p className="font-bold">
-                      {t(
-                        'Kirim langsung lewat aplikasi emailmu',
-                        'Send directly via your email app',
-                      )}
-                    </p>
-                    <p>
-                      {mailtoFallback.reason ||
-                        t(
-                          `Pengiriman email otomatis belum diaktifkan di server. Klik tombol di bawah untuk membuka email siap kirim ke ${mailtoFallback.recipient} dengan subjek "${mailtoFallback.subject}".`,
-                          `Automatic server email delivery is not configured yet. Tap below to open a pre-filled email to ${mailtoFallback.recipient} with subject "${mailtoFallback.subject}".`,
-                        )}
-                    </p>
-                    {mailtoFallback.hasScreenshot && (
-                      <p className="font-medium text-amber-900 dark:text-amber-200">
-                        {t(
-                          'Jangan lupa lampirkan screenshot yang sudah kamu siapkan di aplikasi email.',
-                          'Remember to attach your screenshot inside your email app.',
-                        )}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-2 sm:flex-row-reverse">
-                <a
-                  href={mailtoFallback.mailtoHref}
-                  onClick={() => vibrateTap()}
-                  className="m3-tactile inline-flex min-h-[46px] flex-1 items-center justify-center gap-2 rounded-2xl bg-primary px-4 py-2.5 text-sm font-bold text-on-primary shadow-xs hover:bg-primary-hover"
-                >
-                  <ExternalLink className="h-4 w-4" aria-hidden="true" />
-                  <span>{t('Buka Aplikasi Email', 'Open Email App')}</span>
-                </a>
-                <button
-                  type="button"
-                  onClick={() => {
-                    vibrateTap();
-                    setMailtoFallback(null);
-                  }}
-                  className="m3-tactile inline-flex min-h-[46px] items-center justify-center rounded-2xl border border-outline-variant bg-surface-container-low px-4 py-2.5 text-xs font-bold text-on-surface hover:bg-surface-container"
-                >
-                  {t('Kembali ke Form', 'Back to Form')}
                 </button>
               </div>
             </div>
@@ -642,7 +503,10 @@ export function BetaFeedbackModal({
                     <div className="relative flex max-h-48 items-center justify-center bg-zinc-950/5 p-2 dark:bg-zinc-950/40">
                       <img
                         src={screenshot.dataUrl}
-                        alt={t('Pratinjau screenshot laporan', 'Report screenshot preview')}
+                        alt={t(
+                          'Pratinjau screenshot laporan',
+                          'Report screenshot preview',
+                        )}
                         className="max-h-44 rounded-xl object-contain"
                       />
                       <button
@@ -657,7 +521,8 @@ export function BetaFeedbackModal({
                     <div className="flex flex-wrap items-center justify-between gap-2 border-t border-outline-variant px-3 py-2">
                       <div className="min-w-0 text-[11px] font-medium text-[#52525b] dark:text-[#a1a1aa]">
                         <span className="font-bold text-emerald-700 dark:text-emerald-300">
-                          {t('Terkompresi', 'Compressed')} · {screenshot.sizeKb} KB
+                          {t('Terkompresi', 'Compressed')} · {screenshot.sizeKb}{' '}
+                          KB
                         </span>{' '}
                         ({screenshot.width}×{screenshot.height})
                       </div>
@@ -670,7 +535,10 @@ export function BetaFeedbackModal({
                           }}
                           className="m3-tactile inline-flex min-h-[36px] items-center gap-1 rounded-xl border border-outline-variant bg-surface px-2.5 py-1 text-[11px] font-bold text-on-surface hover:bg-surface-container"
                         >
-                          <ImagePlus className="h-3.5 w-3.5" aria-hidden="true" />
+                          <ImagePlus
+                            className="h-3.5 w-3.5"
+                            aria-hidden="true"
+                          />
                           <span>{t('Ganti', 'Replace')}</span>
                         </button>
                         <button
@@ -727,8 +595,8 @@ export function BetaFeedbackModal({
                         />
                         <p className="text-xs font-bold text-on-surface">
                           {t(
-                            'Mengompres screenshot agar super ringan...',
-                            'Compressing screenshot for fast upload...',
+                            'Mengompres screenshot agar ringan...',
+                            'Compressing screenshot...',
                           )}
                         </p>
                       </>
@@ -757,7 +625,10 @@ export function BetaFeedbackModal({
 
                 {screenshotError && (
                   <p className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-rose-700 dark:text-rose-300">
-                    <AlertCircle className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                    <AlertCircle
+                      className="h-3.5 w-3.5 shrink-0"
+                      aria-hidden="true"
+                    />
                     <span>{screenshotError}</span>
                   </p>
                 )}
@@ -765,18 +636,22 @@ export function BetaFeedbackModal({
 
               {submitError && (
                 <div className="flex items-start gap-2 rounded-2xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs font-medium text-rose-800 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-200">
-                  <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                  <AlertCircle
+                    className="mt-0.5 h-4 w-4 shrink-0"
+                    aria-hidden="true"
+                  />
                   <span>{submitError}</span>
                 </div>
               )}
 
               {/* Submit Footer */}
               <div className="flex flex-col gap-2 pt-1 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-[11px] leading-snug text-[#52525b] dark:text-[#a1a1aa]">
-                  {lang === 'en'
-                    ? `Subject: ${DEFAULT_EMAIL_SUBJECT}`
-                    : `Subjek email: ${DEFAULT_EMAIL_SUBJECT}`}
-                </p>
+                <span className="text-[11px] leading-snug text-[#52525b] dark:text-[#a1a1aa]">
+                  {t(
+                    'Langsung dikirim ke tim pengelola UtamaGo!',
+                    'Sent directly to the UtamaGo! team',
+                  )}
+                </span>
                 <button
                   type="submit"
                   disabled={submitting || compressingScreenshot}
@@ -784,13 +659,16 @@ export function BetaFeedbackModal({
                 >
                   {submitting ? (
                     <>
-                      <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                      <Loader2
+                        className="h-4 w-4 animate-spin"
+                        aria-hidden="true"
+                      />
                       <span>{t('Mengirim...', 'Sending...')}</span>
                     </>
                   ) : (
                     <>
                       <Send className="h-4 w-4" aria-hidden="true" />
-                      <span>{t('Kirim ke Email Tim', 'Send to Team Email')}</span>
+                      <span>{t('Kirim Laporan', 'Send Report')}</span>
                     </>
                   )}
                 </button>

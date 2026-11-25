@@ -25,6 +25,7 @@ export function installContentProtection(): () => void {
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
+    if (typeof e.key !== 'string' || !e.key) return;
     const key = e.key.toUpperCase();
     const ctrlOrMeta = e.ctrlKey || e.metaKey;
     const isInspectShortcut =

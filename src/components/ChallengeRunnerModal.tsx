@@ -894,6 +894,7 @@ export function ChallengeRunnerModal({
   useEffect(() => {
     if (evaluation || !currentQuestion) return;
     const onKeyDown = (e: KeyboardEvent) => {
+      if (typeof e.key !== 'string' || !e.key) return;
       if (checked) {
         if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
           e.preventDefault();
