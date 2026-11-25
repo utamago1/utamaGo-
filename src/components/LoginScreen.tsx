@@ -5,6 +5,7 @@ import {
   CheckCircle2,
   Eye,
   EyeOff,
+  Globe,
   KeyRound,
   LogIn,
   Mail,
@@ -14,6 +15,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { BRAND_ASSETS } from '../data/utamagoContent';
+import { useLanguage, type AppLanguage } from '../i18n/LanguageContext';
 import {
   formatAccountAuthError,
   loginWithUsernameOrEmail,
@@ -35,6 +37,7 @@ interface LoginScreenProps {
 }
 
 export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
+  const { lang, setLang, t } = useLanguage();
   const [mode, setMode] = useState<AuthMode>('login');
   const [logoFailed, setLogoFailed] = useState(false);
 
@@ -120,17 +123,26 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
 
   const headingTitle =
     mode === 'register'
-      ? 'Buat Akun UtamaGo!'
+      ? t('Buat Akun UtamaGo!', 'Create UtamaGo! Account')
       : mode === 'forgot'
-        ? 'Lupa Password'
-        : 'Masuk ke UtamaGo!';
+        ? t('Lupa Password', 'Reset Password')
+        : t('Masuk ke UtamaGo!', 'Sign in to UtamaGo!');
 
   const headingSubtitle =
     mode === 'register'
-      ? 'Daftar gratis untuk belajar JLPT N5–N1: Anki Kosakata & Bunpou, Arena Tantangan 30 Stage, Studio Menulis, hingga 15 Paket Try Out.'
+      ? t(
+          'Daftar gratis untuk belajar JLPT N5–N1: Anki Kosakata & Bunpou, Arena Tantangan 30 Stage, Studio Menulis, hingga 15 Paket Try Out.',
+          'Sign up free for JLPT N5–N1 prep: Anki Vocab & Grammar, 30-Stage Challenge Arena, Writing Studio, and 15 Mock Exams.',
+        )
       : mode === 'forgot'
-        ? 'Masukkan email yang kamu daftarkan. Kami akan mengirimkan tautan untuk membuat password baru.'
-        : 'Masuk menggunakan username dan password untuk melanjutkan belajar JLPT N5–N1.';
+        ? t(
+            'Masukkan email yang kamu daftarkan. Kami akan mengirimkan tautan untuk membuat password baru.',
+            'Enter your registered email and we will send a link to reset your password.',
+          )
+        : t(
+            'Masuk menggunakan username dan password untuk melanjutkan belajar JLPT N5–N1.',
+            'Sign in with your username and password to continue your JLPT N5–N1 study.',
+          );
 
   return (
     <div className="relative flex min-h-dvh w-full flex-col items-center justify-center overflow-y-auto bg-surface px-5 py-8 text-on-surface pt-safe pb-safe pl-safe pr-safe">
@@ -146,6 +158,33 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
         transition={{ duration: 0.2 }}
         className="relative z-10 flex w-full max-w-md flex-col items-center rounded-3xl border border-outline-variant bg-surface-container-low p-6 shadow-xl sm:p-8"
       >
+        <div
+          role="radiogroup"
+          aria-label={t('Pilih bahasa aplikasi', 'Switch app language')}
+          className="absolute top-4 right-4 inline-flex items-center gap-1 rounded-xl border border-outline-variant bg-surface p-0.5"
+        >
+          <Globe className="ml-1.5 h-3.5 w-3.5 text-on-surface-variant" aria-hidden="true" />
+          {(['id', 'en'] as readonly AppLanguage[]).map((code) => (
+            <button
+              key={code}
+              type="button"
+              role="radio"
+              aria-checked={lang === code}
+              onClick={() => {
+                vibrateTap();
+                setLang(code);
+              }}
+              className={`min-h-[30px] rounded-lg px-2 py-0.5 font-mono text-[11px] font-bold uppercase transition-colors ${
+                lang === code
+                  ? 'bg-primary text-on-primary'
+                  : 'text-on-surface-variant hover:text-on-surface'
+              }`}
+            >
+              {code}
+            </button>
+          ))}
+        </div>
+
         <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border border-outline-variant bg-[#f6f5f0] p-2 shadow-xs dark:border-white/15 dark:bg-[#eae7df]">
           {!logoFailed ? (
             <img
@@ -164,7 +203,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
         </div>
 
         <span className="mt-4 rounded-md border border-primary/35 bg-primary-container/60 px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase text-on-primary-container">
-          Versi Beta Tester
+          {t('Versi Beta Tester', 'Beta Tester Build')}
         </span>
         <h1 className="mt-2.5 text-center font-display text-2xl font-extrabold tracking-tight text-on-surface">
           {headingTitle}
@@ -291,12 +330,16 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
               className="m3-tactile inline-flex min-h-[50px] w-full items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-3 text-sm font-extrabold text-on-primary shadow-sm hover:bg-primary-hover disabled:opacity-60"
             >
               <LogIn className="h-4 w-4" aria-hidden="true" />
-              <span>{submitting ? 'Memproses...' : 'Masuk'}</span>
+              <span>
+                {submitting
+                  ? t('Memproses...', 'Signing in...')
+                  : t('Masuk', 'Sign In')}
+              </span>
             </button>
 
             <div className="border-t border-outline-variant pt-4 text-center">
               <p className="text-xs text-on-surface-variant">
-                Belum punya akun?
+                {t('Belum punya akun?', "Don't have an account?")}
               </p>
               <button
                 type="button"
@@ -304,7 +347,7 @@ export function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                 className="m3-tactile mt-2 inline-flex min-h-[46px] w-full items-center justify-center gap-2 rounded-2xl border border-outline bg-surface px-4 py-2.5 text-xs font-bold text-on-surface hover:bg-surface-container"
               >
                 <UserPlus className="h-4 w-4 text-primary" aria-hidden="true" />
-                <span>Buat Akun Baru</span>
+                <span>{t('Buat Akun Baru', 'Create New Account')}</span>
               </button>
             </div>
           </form>

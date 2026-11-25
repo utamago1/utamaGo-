@@ -5,16 +5,10 @@ import {
   Check,
   ClipboardCheck,
   Flame,
-  Lock,
   PenTool,
   Play,
   RotateCcw,
   Search,
-  ShieldAlert,
-  Shuffle,
-  Star,
-  Swords,
-  Timer,
   Trophy,
   Volume2,
 } from 'lucide-react';
@@ -23,6 +17,7 @@ import {
   type ChallengeStage,
 } from '../data/challengeLevels';
 import type { JlptLevel } from '../data/utamagoContent';
+import { useLanguage } from '../i18n/LanguageContext';
 import type { AnkiCard } from '../utils/ankiParser';
 import type { AnkiSrsMap } from '../utils/ankiSrs';
 import type { BunpouN2Item } from '../utils/bunpouN2Parser';
@@ -39,16 +34,11 @@ import {
   speakJapanese,
 } from '../utils/japaneseSpeech';
 import type { ComputedTryOutReport } from '../utils/jlptReport';
-import {
-  createEmptyArcadeRecords,
-  getTotalStarsEarned,
-  isJlptLevelUnlocked,
-  isStageUnlocked,
-  JLPT_LEVELS_ASC,
-  type ArcadeRecords,
-  type CompletedLevelRecord,
-  type LearnerGender,
-  type LevelProgressInfo,
+import type {
+  ArcadeRecords,
+  CompletedLevelRecord,
+  LearnerGender,
+  LevelProgressInfo,
 } from '../utils/levelProgression';
 import {
   getDailyStreak,
@@ -62,6 +52,7 @@ import type {
 } from '../utils/weaknessDetector';
 import type { JlptExamSessionPreference } from '../utils/jlptCountdown';
 import type { AppTab } from './AppShellNav';
+import { ChallengeArenaView } from './ChallengeArenaView';
 import { HomeGreetingCard } from './HomeGreetingCard';
 import { JlptCountdownCard } from './JlptCountdownCard';
 import { WeaknessDetectorCard } from './WeaknessDetectorCard';
@@ -156,48 +147,14 @@ export function HomeScreen({
   onStartStage,
   onNavigate,
 }: HomeScreenProps) {
+  const { t } = useLanguage();
   const [showDifficultView, setShowDifficultView] = useState(false);
-  const [dailyDrillCount, setDailyDrillCount] = useState<5 | 10>(5);
-  const [dailyShuffleIndex, setDailyShuffleIndex] = useState(0);
-  const freePlayMaxLevel = arenaUnlockedLevel ?? unlockedLevel;
-  const [arenaLevel, setArenaLevel] = useState<JlptLevel>(freePlayMaxLevel);
-  const resolvedArcade = arcadeRecords ?? createEmptyArcadeRecords();
-  const effectiveArenaLevel = isJlptLevelUnlocked(arenaLevel, freePlayMaxLevel)
-    ? arenaLevel
-    : freePlayMaxLevel;
   const speechSupported = useMemo(() => isJapaneseSpeechSupported(), []);
 
-  const stageIds = useMemo(() => CHALLENGE_STAGES.map((s) => s.id), []);
-  const totalStars = getTotalStarsEarned(completedLevels);
-  const maxStars = CHALLENGE_STAGES.length * 3;
   const completedStagesCount = useMemo(
     () => CHALLENGE_STAGES.filter((s) => Boolean(completedLevels[s.id])).length,
     [completedLevels],
   );
-  const defeatedBossCount = useMemo(
-    () =>
-      CHALLENGE_STAGES.filter(
-        (s) =>
-          s.stageKind === 'boss' &&
-          Boolean(completedLevels[s.id] || resolvedArcade.defeatedBosses[s.id]),
-      ).length,
-    [completedLevels, resolvedArcade.defeatedBosses],
-  );
-
-  // Pure sequential campaign unlock: defeating Stage 6 (Boss) unlocks Stage 1 of the next JLPT chapter
-  const isChallengeStageOpen = (_stage: ChallengeStage, idx: number) =>
-    isStageUnlocked(idx, stageIds, completedLevels);
-
-  const nextStage =
-    CHALLENGE_STAGES.find((s, idx) => {
-      return isChallengeStageOpen(s, idx) && !completedLevels[s.id];
-    }) ??
-    [...CHALLENGE_STAGES]
-      .reverse()
-      .find((s, revIdx) =>
-        isChallengeStageOpen(s, CHALLENGE_STAGES.length - 1 - revIdx),
-      ) ??
-    CHALLENGE_STAGES[0];
 
   const todayKey = getLocalDateKey();
   const dailyGoal = useMemo(
@@ -241,528 +198,20 @@ export function HomeScreen({
     [unlockedAnkiCards, ankiSrs, againIds],
   );
 
-  const chapters = useMemo(() => {
-    const groups: Array<{
-      chapter: string;
-      stages: Array<{ stage: ChallengeStage; index: number }>;
-    }> = [];
-    CHALLENGE_STAGES.forEach((stage, index) => {
-      const existing = groups.find((c) => c.chapter === stage.chapter);
-      if (existing) {
-        existing.stages.push({ stage, index });
-      } else {
-        groups.push({ chapter: stage.chapter, stages: [{ stage, index }] });
-      }
-    });
-    return groups;
-  }, []);
-
   if (showChallengesView) {
-    const blitzBest = resolvedArcade.blitzBestByLevel[effectiveArenaLevel];
-    const survivalBest = resolvedArcade.survivalBestByLevel[effectiveArenaLevel];
-
     return (
-      <div className="mx-auto w-full max-w-[480px] space-y-5 px-4 lg:max-w-3xl">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-outline-variant pb-4">
-          <div className="flex min-w-0 items-center gap-3">
-            <button
-              type="button"
-              onClick={() => {
-                vibrateTap();
-                onCloseChallenges();
-              }}
-              className="m3-tactile inline-flex min-h-[44px] shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl border border-outline bg-surface-container-low px-3.5 py-2 text-xs font-bold text-on-surface hover:bg-surface-container"
-            >
-              <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-              <span>Kembali</span>
-            </button>
-            <div className="min-w-0">
-              <h2 className="font-display text-lg font-extrabold tracking-tight text-on-surface sm:text-xl">
-                Arena Tantangan JLPT
-              </h2>
-              <p className="text-[13px] text-on-surface-variant">
-                <span className="font-mono tabular-nums">
-                  {completedStagesCount}/{CHALLENGE_STAGES.length}
-                </span>{' '}
-                stage ·{' '}
-                <span className="font-mono tabular-nums">
-                  {defeatedBossCount}/5
-                </span>{' '}
-                boss ·{' '}
-                <span className="font-mono tabular-nums">
-                  {totalStars}/{maxStars}
-                </span>{' '}
-                bintang
-              </p>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => {
-              vibrateTap();
-              onStartStage(nextStage);
-            }}
-            className="m3-tactile inline-flex min-h-[44px] shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-primary px-4 py-2 text-xs font-bold text-on-primary hover:bg-primary-hover"
-          >
-            <Play className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
-            <span>Mulai Level {nextStage.order}</span>
-          </button>
-        </div>
-
-        {/* Mode Bebas (Kejar Rekor): Blitz 60 Detik & Survival Tanpa Batas */}
-        <section aria-label="Mode Bebas Kejar Rekor" className="space-y-3">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <h3 className="font-display text-sm font-extrabold text-on-surface sm:text-base">
-                Mode Bebas (Kejar Rekor)
-              </h3>
-              <p className="text-xs text-on-surface-variant">
-                Latihan bebas kapan saja · Kombo berjenjang · FEVER x4 · Audio · Susun Kalimat
-              </p>
-            </div>
-
-            <div
-              role="group"
-              aria-label="Pilih level JLPT untuk Mode Bebas"
-              className="inline-flex items-center gap-1 rounded-xl border border-outline-variant bg-surface-container-low p-1"
-            >
-              {JLPT_LEVELS_ASC.map((lv) => {
-                const lvUnlocked = isJlptLevelUnlocked(lv, freePlayMaxLevel);
-                const active = effectiveArenaLevel === lv;
-                return (
-                  <button
-                    key={lv}
-                    type="button"
-                    disabled={!lvUnlocked}
-                    aria-pressed={active}
-                    onClick={() => {
-                      if (!lvUnlocked) return;
-                      vibrateTap();
-                      setArenaLevel(lv);
-                    }}
-                    title={
-                      lvUnlocked
-                        ? `Pilih Mode Bebas ${lv}`
-                        : `Kalahkan Boss sebelumnya atau atur level ${lv} di Profil`
-                    }
-                    className={`inline-flex min-h-[36px] items-center gap-1 whitespace-nowrap rounded-lg px-2.5 py-1 font-mono text-xs font-bold transition-colors ${
-                      !lvUnlocked
-                        ? 'cursor-not-allowed text-on-surface-variant/45'
-                        : active
-                          ? 'bg-primary text-on-primary'
-                          : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
-                    }`}
-                  >
-                    {!lvUnlocked && (
-                      <Lock className="h-3 w-3" aria-hidden="true" />
-                    )}
-                    <span>{lv}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {/* Blitz 60 Detik Card */}
-            <div className="flex flex-col justify-between rounded-2xl border border-outline-variant bg-surface-container-low p-4 sm:p-5">
-              <div>
-                <div className="flex items-center justify-between gap-2">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-warning-container text-warning">
-                    <Timer className="h-5 w-5" aria-hidden="true" />
-                  </span>
-                  <span className="font-mono text-xs font-bold tabular-nums text-on-surface-variant">
-                    60 Detik · {effectiveArenaLevel}
-                  </span>
-                </div>
-                <h4 className="mt-3 font-display text-base font-extrabold text-on-surface">
-                  Blitz Adu Cepat
-                </h4>
-                <p className="mt-1 text-[13px] leading-relaxed text-on-surface-variant">
-                  Kejar skor tertinggi tanpa jeda. Tiap 5 kombo beruntun memberi
-                  bonus +3 detik!
-                </p>
-                <p className="mt-2.5 font-mono text-xs tabular-nums text-on-surface-variant">
-                  {blitzBest ? (
-                    <>
-                      Rekor:{' '}
-                      <strong className="text-on-surface">
-                        {blitzBest.bestScore} poin
-                      </strong>{' '}
-                      · Kombo x{blitzBest.bestCombo}
-                    </>
-                  ) : (
-                    'Belum ada rekor · Tantang dirimu!'
-                  )}
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => {
-                  vibrateTap();
-                  onStartBlitz?.(effectiveArenaLevel);
-                }}
-                className="m3-tactile mt-4 inline-flex min-h-[44px] w-full items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-on-primary hover:bg-primary-hover"
-              >
-                <Play className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
-                <span>Main Blitz {effectiveArenaLevel}</span>
-              </button>
-            </div>
-
-            {/* Survival Tanpa Batas Card */}
-            <div className="flex flex-col justify-between rounded-2xl border border-outline-variant bg-surface-container-low p-4 sm:p-5">
-              <div>
-                <div className="flex items-center justify-between gap-2">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-container text-on-primary-container">
-                    <ShieldAlert className="h-5 w-5" aria-hidden="true" />
-                  </span>
-                  <span className="font-mono text-xs font-bold tabular-nums text-on-surface-variant">
-                    3 Nyawa · {effectiveArenaLevel}
-                  </span>
-                </div>
-                <h4 className="mt-3 font-display text-base font-extrabold text-on-surface">
-                  Survival Tanpa Batas
-                </h4>
-                <p className="mt-1 text-[13px] leading-relaxed text-on-surface-variant">
-                  Soal acak tanpa akhir yang makin menantang tiap gelombang.
-                  Seberapa jauh kamu bertahan?
-                </p>
-                <p className="mt-2.5 font-mono text-xs tabular-nums text-on-surface-variant">
-                  {survivalBest ? (
-                    <>
-                      Rekor:{' '}
-                      <strong className="text-on-surface">
-                        {survivalBest.bestCleared} soal
-                      </strong>{' '}
-                      · {survivalBest.bestScore} poin
-                    </>
-                  ) : (
-                    'Belum ada rekor · Mulai bertahan!'
-                  )}
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => {
-                  vibrateTap();
-                  onStartSurvival?.(effectiveArenaLevel);
-                }}
-                className="m3-tactile mt-4 inline-flex min-h-[44px] w-full items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-outline bg-surface px-4 py-2.5 text-xs font-bold text-on-surface hover:bg-surface-container"
-              >
-                <Play className="h-3.5 w-3.5 fill-current text-primary" aria-hidden="true" />
-                <span>Mulai Survival {effectiveArenaLevel}</span>
-              </button>
-            </div>
-          </div>
-        </section>
-
-        {/* Daily Drill Adaptif Card */}
-        <section
-          aria-label="Daily Drill Hari Ini"
-          className="rounded-2xl border border-outline-variant bg-surface-container-low p-4 sm:p-5"
-        >
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <div className="min-w-0 flex-1">
-              <p className="text-xs font-semibold text-primary">
-                Daily Drill Adaptif · Level {unlockedLevel}
-                {dailyDrillDoneToday ? (
-                  <span className="text-success"> · Selesai hari ini</span>
-                ) : null}
-              </p>
-              <h3 className="mt-1 font-display text-base font-extrabold text-on-surface sm:text-lg">
-                Latihan Campuran Hari Ini
-              </h3>
-              <p className="mt-0.5 text-[13px] leading-relaxed text-on-surface-variant">
-                Otomatis menggabungkan kata sulitmu, kosakata, dan pola bunpou
-                sesuai level. Tanpa batas nyawa.
-              </p>
-            </div>
-
-            <div
-              role="group"
-              aria-label="Pilih jumlah soal Daily Drill"
-              className="inline-flex shrink-0 items-center rounded-xl border border-outline-variant bg-surface p-1"
-            >
-              {([5, 10] as const).map((cnt) => {
-                const active = dailyDrillCount === cnt;
-                return (
-                  <button
-                    key={cnt}
-                    type="button"
-                    aria-pressed={active}
-                    onClick={() => {
-                      vibrateTap();
-                      setDailyDrillCount(cnt);
-                    }}
-                    className={`min-h-[36px] rounded-lg px-3 py-1 font-mono text-xs font-bold transition-colors ${
-                      active
-                        ? 'bg-primary text-on-primary'
-                        : 'text-on-surface-variant hover:text-on-surface'
-                    }`}
-                  >
-                    {cnt} Soal
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-            <button
-              type="button"
-              onClick={() => {
-                vibrateTap();
-                onStartDailyDrill(dailyDrillCount, dailyShuffleIndex);
-              }}
-              className="m3-tactile inline-flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-on-primary hover:bg-primary-hover"
-            >
-              <Play className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
-              <span>
-                {dailyDrillDoneToday
-                  ? `Latihan Lagi (${dailyDrillCount} Soal)`
-                  : `Mulai Daily Drill (${dailyDrillCount} Soal)`}
-              </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                vibrateTap();
-                const nextShuffle = dailyShuffleIndex + 1;
-                setDailyShuffleIndex(nextShuffle);
-                onStartDailyDrill(dailyDrillCount, nextShuffle);
-              }}
-              className="m3-tactile inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-xl border border-outline bg-surface px-4 py-2.5 text-xs font-bold text-on-surface hover:bg-surface-container"
-            >
-              <Shuffle className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
-              <span>Acak Ulang</span>
-            </button>
-          </div>
-        </section>
-
-        <section
-          aria-label="Jalur Naik Level JLPT (30 Stage)"
-          className="space-y-6"
-        >
-          <div className="space-y-0.5">
-            <h3 className="font-display text-sm font-extrabold text-on-surface sm:text-base">
-              Jalur Naik Level JLPT (6 Stage per Bab)
-            </h3>
-            <p className="text-xs text-on-surface-variant">
-              Selesaikan tiap mode secara berurutan dan kalahkan Boss akhir bab untuk membuka bab JLPT berikutnya.
-            </p>
-          </div>
-
-          {chapters.map((group, chapterIdx) => {
-            const chapterClearedCount = group.stages.filter(({ stage }) =>
-              Boolean(completedLevels[stage.id]),
-            ).length;
-            const firstStageInChapter = group.stages[0];
-            const chapterUnlocked = firstStageInChapter
-              ? isStageUnlocked(
-                  firstStageInChapter.index,
-                  stageIds,
-                  completedLevels,
-                )
-              : true;
-            const prevChapterLevel =
-              chapterIdx > 0
-                ? chapters[chapterIdx - 1]?.stages[0]?.stage.jlptLevel
-                : null;
-
-            return (
-              <div key={group.chapter} className="space-y-2.5">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <h4 className="font-display text-xs font-extrabold tracking-wider text-on-surface-variant">
-                    {group.chapter}
-                  </h4>
-                  <span className="font-mono text-xs font-semibold tabular-nums text-on-surface-variant">
-                    {chapterUnlocked
-                      ? `${chapterClearedCount}/${group.stages.length} selesai`
-                      : `Kalahkan Boss ${prevChapterLevel ?? 'sebelumnya'} untuk membuka`}
-                  </span>
-                </div>
-
-                <div className="divide-y divide-outline-variant overflow-hidden rounded-2xl border border-outline-variant bg-surface-container-low">
-                  {group.stages.map(({ stage, index }) => {
-                    const unlocked = isStageUnlocked(
-                      index,
-                      stageIds,
-                      completedLevels,
-                    );
-                    const record = completedLevels[stage.id];
-                    const isNextFrontier = unlocked && !record;
-                    const isBossStage = stage.stageKind === 'boss';
-                    const prevStage =
-                      index > 0 ? CHALLENGE_STAGES[index - 1] : null;
-                    const lockReason =
-                      prevStage?.stageKind === 'boss'
-                        ? `Kalahkan Boss ${prevStage.jlptLevel} (Level ${prevStage.order}) untuk membuka bab ini`
-                        : `Selesaikan Level ${stage.order - 1} dahulu`;
-
-                    const modeLabel =
-                      stage.stageKind === 'audio'
-                        ? 'Misi Audio'
-                        : stage.stageKind === 'sentence'
-                          ? 'Susun Kalimat ★'
-                          : stage.stageKind === 'blitz-mission'
-                            ? `Misi Blitz 60s · Target ${stage.targetCorrect ?? 6}`
-                            : stage.stageKind === 'survival-mission'
-                              ? 'Misi Survival · 8 Soal'
-                              : isBossStage
-                                ? `Boss Stage · ${stage.bossMaxHp ?? stage.questions.length} HP`
-                                : 'Pilihan Ganda';
-
-                    const renderStageBadgeIcon = () => {
-                      if (!unlocked) {
-                        return <Lock className="h-4 w-4" aria-hidden="true" />;
-                      }
-                      if (isBossStage) {
-                        return <Swords className="h-4 w-4" aria-hidden="true" />;
-                      }
-                      if (record) {
-                        return <Check className="h-4 w-4" aria-hidden="true" />;
-                      }
-                      if (stage.stageKind === 'audio') {
-                        return <Volume2 className="h-4 w-4" aria-hidden="true" />;
-                      }
-                      if (stage.stageKind === 'sentence') {
-                        return <PenTool className="h-4 w-4" aria-hidden="true" />;
-                      }
-                      if (stage.stageKind === 'blitz-mission') {
-                        return <Timer className="h-4 w-4" aria-hidden="true" />;
-                      }
-                      if (stage.stageKind === 'survival-mission') {
-                        return (
-                          <ShieldAlert className="h-4 w-4" aria-hidden="true" />
-                        );
-                      }
-                      return stage.order;
-                    };
-
-                    const rowHighlight = !unlocked
-                      ? 'cursor-not-allowed bg-surface-container/40 opacity-65'
-                      : isBossStage
-                        ? record
-                          ? 'bg-success-container/20 hover:bg-success-container/35'
-                          : 'bg-warning-container/35 hover:bg-warning-container/55'
-                        : isNextFrontier
-                          ? 'bg-primary-container/20 hover:bg-primary-container/30'
-                          : 'hover:bg-surface-container/60';
-
-                    const badgeStyle = !unlocked
-                      ? 'bg-surface-container-high text-on-surface-variant'
-                      : record
-                        ? 'bg-success text-white'
-                        : isBossStage
-                          ? 'bg-primary text-on-primary'
-                          : isNextFrontier
-                            ? 'bg-primary text-on-primary'
-                            : 'bg-surface-container text-on-surface';
-
-                    return (
-                      <button
-                        key={stage.id}
-                        type="button"
-                        disabled={!unlocked}
-                        onClick={() => {
-                          if (!unlocked) return;
-                          vibrateTap();
-                          onStartStage(stage);
-                        }}
-                        aria-label={
-                          unlocked
-                            ? `Main Level ${stage.order}: ${stage.title}`
-                            : `Level ${stage.order} terkunci: ${stage.title}`
-                        }
-                        className={`m3-tactile flex min-h-[78px] w-full items-center justify-between gap-3 px-4 py-3.5 text-left transition-colors ${rowHighlight}`}
-                      >
-                        <div className="flex min-w-0 flex-1 items-center gap-3">
-                          <span
-                            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-display text-sm font-extrabold ${badgeStyle}`}
-                          >
-                            {renderStageBadgeIcon()}
-                          </span>
-
-                          <div className="min-w-0 flex-1">
-                            <div className="flex flex-wrap items-center gap-x-1.5 text-xs font-semibold">
-                              <span
-                                className={
-                                  unlocked
-                                    ? isBossStage && !record
-                                      ? 'text-warning'
-                                      : isBossStage && record
-                                        ? 'text-success'
-                                        : 'text-primary'
-                                    : 'text-on-surface-variant'
-                                }
-                              >
-                                Level {stage.order} · {modeLabel}
-                              </span>
-                              <span aria-hidden="true" className="text-outline">
-                                ·
-                              </span>
-                              <span className="font-mono tabular-nums text-[#4b4b53] dark:text-[#b4b4c0]">
-                                +{stage.xpReward} XP
-                              </span>
-                            </div>
-                            <p className="mt-0.5 truncate font-display text-[15px] font-bold text-on-surface">
-                              {stage.title}
-                            </p>
-                            <p className="mt-0.5 truncate text-[13px] text-[#4b4b53] dark:text-[#b4b4c0]">
-                              {unlocked ? stage.subtitle : lockReason}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="flex shrink-0 flex-col items-end gap-1.5">
-                          <div className="flex items-center gap-0.5">
-                            {[1, 2, 3].map((s) => (
-                              <Star
-                                key={s}
-                                className={`h-3.5 w-3.5 ${
-                                  record && s <= record.stars
-                                    ? 'fill-amber-400 text-amber-500'
-                                    : 'text-outline'
-                                }`}
-                                aria-hidden="true"
-                              />
-                            ))}
-                          </div>
-                          {unlocked && (
-                            <span
-                              className={`whitespace-nowrap text-xs font-bold ${
-                                isBossStage
-                                  ? record
-                                    ? 'text-success'
-                                    : 'text-primary'
-                                  : isNextFrontier
-                                    ? 'text-primary'
-                                    : 'text-[#4b4b53] dark:text-[#b4b4c0]'
-                              }`}
-                            >
-                              {isBossStage
-                                ? record
-                                  ? 'Tanding Ulang'
-                                  : 'Lawan Boss'
-                                : record
-                                  ? 'Ulangi'
-                                  : 'Mulai'}
-                            </span>
-                          )}
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
-        </section>
-      </div>
+      <ChallengeArenaView
+        completedLevels={completedLevels}
+        arcadeRecords={arcadeRecords}
+        unlockedLevel={unlockedLevel}
+        arenaUnlockedLevel={arenaUnlockedLevel}
+        dailyDrillDoneToday={dailyDrillDoneToday}
+        onClose={onCloseChallenges}
+        onStartStage={onStartStage}
+        onStartDailyDrill={onStartDailyDrill}
+        onStartBlitz={onStartBlitz}
+        onStartSurvival={onStartSurvival}
+      />
     );
   }
 
@@ -936,18 +385,18 @@ export function HomeScreen({
       />
 
       {/* 3. CTA Utama (satu-satunya tombol besar / kartu perayaan / 0 kartu) */}
-      <section aria-label="Aksi Utama Hari Ini" className="w-full min-w-0">
+      <section aria-label={t('Aksi Utama Hari Ini', "Today's Main Action")} className="w-full min-w-0">
         {dailyGoal.isTargetReached ? (
           <div className="rounded-2xl border border-outline-variant bg-surface-container-low p-4">
             <h3 className="font-display text-base font-extrabold text-on-surface">
-              Target hari ini tercapai 🎉
+              {t('Target hari ini tercapai 🎉', 'Daily goal reached 🎉')}
             </h3>
             <p className="mt-1 text-[13px] leading-snug text-[#4b4b53] dark:text-[#b4b4c0]">
-              Kamu sudah menyelesaikan{' '}
+              {t('Kamu sudah menyelesaikan', 'You completed')}{' '}
               <span className="font-mono font-semibold tabular-nums text-on-surface">
                 {dailyGoal.doneCards}
               </span>{' '}
-              kartu hari ini. Mau tambah latihan?
+              {t('kartu hari ini. Mau tambah latihan?', 'cards today. Want bonus review?')}
             </p>
             <button
               type="button"
@@ -957,17 +406,19 @@ export function HomeScreen({
               }}
               className="m3-tactile mt-3 inline-flex min-h-[44px] w-full items-center justify-center rounded-xl border border-outline bg-surface-container px-4 py-2.5 text-sm font-bold text-on-surface hover:bg-surface-container-high"
             >
-              Lanjut bonus
+              {t('Lanjut bonus', 'Continue bonus')}
             </button>
           </div>
         ) : dueAnkiCount === 0 ? (
           <div className="rounded-2xl border border-outline-variant bg-surface-container-low p-4">
             <h3 className="font-display text-base font-extrabold text-on-surface">
-              Tidak ada kartu hari ini
+              {t('Tidak ada kartu hari ini', 'No due cards today')}
             </h3>
             <p className="mt-1 text-[13px] leading-snug text-[#4b4b53] dark:text-[#b4b4c0]">
-              Jadwal ulang Anki sudah kosong. Lanjut baca materi agar hafalan
-              makin kuat.
+              {t(
+                'Jadwal ulang Anki sudah kosong. Lanjut baca materi agar hafalan makin kuat.',
+                'Your Anki review queue is clear. Keep studying grammar notes to reinforce memory.',
+              )}
             </p>
             <button
               type="button"
@@ -977,7 +428,7 @@ export function HomeScreen({
               }}
               className="m3-tactile mt-3 inline-flex min-h-[44px] w-full items-center justify-center rounded-xl border border-outline bg-surface-container px-4 py-2.5 text-sm font-bold text-on-surface hover:bg-surface-container-high"
             >
-              Buka Materi Belajar
+              {t('Buka Materi Belajar', 'Open Study Notes')}
             </button>
           </div>
         ) : (
@@ -991,9 +442,9 @@ export function HomeScreen({
           >
             <Play className="h-4 w-4 shrink-0 fill-current" aria-hidden="true" />
             <span className="truncate">
-              Mulai Anki ·{' '}
+              {t('Mulai Anki', 'Start Anki')} ·{' '}
               <span className="font-mono tabular-nums">{dueAnkiCount}</span>{' '}
-              kartu
+              {t('kartu', 'cards')}
             </span>
           </button>
         )}
@@ -1001,19 +452,19 @@ export function HomeScreen({
 
       {/* 4. Baris Target Harian (satuan kartu) + Streak 7 Hari (Sen-Min) */}
       <section
-        aria-label="Target Harian dan Streak Minggu Ini"
+        aria-label={t('Target Harian dan Streak Minggu Ini', 'Daily Goal and Weekly Streak')}
         className="w-full min-w-0 space-y-3.5 rounded-2xl border border-outline-variant bg-surface-container-low p-4"
       >
         <div className="space-y-2">
           <div className="flex items-baseline justify-between gap-2">
             <span className="text-sm font-bold text-on-surface">
-              Target harian
+              {t('Target harian', 'Daily goal')}
             </span>
             <span className="shrink-0 text-[13px] text-[#4b4b53] dark:text-[#b4b4c0]">
               <span className="font-mono font-bold tabular-nums text-primary">
                 {dailyGoal.doneCards}/{dailyGoal.goalCards}
               </span>{' '}
-              kartu
+              {t('kartu', 'cards')}
             </span>
           </div>
 
@@ -1023,7 +474,7 @@ export function HomeScreen({
             aria-valuenow={dailyGoal.percent}
             aria-valuemin={0}
             aria-valuemax={100}
-            aria-label="Progres target kartu harian"
+            aria-label={t('Progres target kartu harian', 'Daily card goal progress')}
           >
             <div
               className="h-full rounded-full bg-primary transition-all duration-300"
@@ -1039,26 +490,26 @@ export function HomeScreen({
                 className="h-4 w-4 shrink-0 text-primary"
                 aria-hidden="true"
               />
-              <span>Streak minggu ini</span>
+              <span>{t('Streak minggu ini', 'Weekly streak')}</span>
             </span>
             <span className="shrink-0 text-[13px] text-[#4b4b53] dark:text-[#b4b4c0]">
               <span className="font-mono font-bold tabular-nums text-on-surface">
                 {streakDays}
               </span>{' '}
-              hari
+              {t('hari', 'days')}
             </span>
           </div>
 
           <div
             className="mt-3 grid grid-cols-7 gap-1"
             role="list"
-            aria-label="Aktivitas belajar Senin sampai Minggu"
+            aria-label={t('Aktivitas belajar Senin sampai Minggu', 'Study activity Monday to Sunday')}
           >
             {weekDots.map((dot) => (
               <div
                 key={dot.dateKey}
                 role="listitem"
-                aria-label={`${dot.label}: ${dot.active ? 'Aktif belajar' : 'Belum belajar'}`}
+                aria-label={`${dot.label}: ${dot.active ? t('Aktif belajar', 'Active') : t('Belum belajar', 'Not yet')}`}
                 className="flex flex-col items-center gap-1.5"
               >
                 <span
@@ -1102,7 +553,7 @@ export function HomeScreen({
       />
 
       {/* 5. Kartu "Lanjutkan belajar" + Akses Cepat Kamus Kosakata */}
-      <section aria-label="Lanjutkan Belajar dan Kamus" className="w-full min-w-0 space-y-3">
+      <section aria-label={t('Lanjutkan Belajar dan Kamus', 'Continue Learning and Dictionary')} className="w-full min-w-0 space-y-3">
         <button
           type="button"
           onClick={() => {
@@ -1142,10 +593,13 @@ export function HomeScreen({
             </span>
             <div className="min-w-0 flex-1">
               <p className="truncate font-display text-sm font-bold text-on-surface">
-                Kamus Kosakata N5–N1
+                {t('Kamus Kosakata N5–N1', 'Vocabulary Dictionary N5–N1')}
               </p>
               <p className="truncate text-xs text-on-surface-variant">
-                Cari cepat Kanji, Kana, Romaji, atau arti
+                {t(
+                  'Cari cepat Kanji, Kana, Romaji, atau arti',
+                  'Search Kanji, Kana, Romaji, or meaning',
+                )}
               </p>
             </div>
           </button>
@@ -1164,10 +618,13 @@ export function HomeScreen({
               </span>
               <div className="min-w-0 flex-1">
                 <p className="truncate font-display text-sm font-bold text-on-surface">
-                  Studio Tulis Kanji &amp; Kana
+                  {t('Studio Tulis Kanji & Kana', 'Kanji & Kana Writing Studio')}
                 </p>
                 <p className="truncate text-xs text-on-surface-variant">
-                  Latih coretan jari/mouse + panduan urutan coretan
+                  {t(
+                    'Latih goresan + baca On/Kun & urutan coretan',
+                    "Practice strokes + On/Kun readings & stroke order",
+                  )}
                 </p>
               </div>
             </button>
@@ -1184,7 +641,7 @@ export function HomeScreen({
       )}
 
       {/* 6. Grid 2x2: Tantangan Level, Materi Belajar, Try Out JLPT, Kata Sulit */}
-      <section aria-label="Menu Belajar" className="w-full min-w-0">
+      <section aria-label={t('Menu Belajar', 'Study Menu')} className="w-full min-w-0">
         <div className="grid grid-cols-[repeat(2,minmax(0,1fr))] gap-3">
           <button
             type="button"
@@ -1200,13 +657,13 @@ export function HomeScreen({
 
             <div className="mt-3 min-w-0">
               <p className="font-display text-[15px] font-bold leading-snug text-on-surface break-words">
-                Arena Tantangan
+                {t('Arena Tantangan', 'Challenge Arena')}
               </p>
               <p className="mt-1 text-[13px] leading-snug text-[#4b4b53] dark:text-[#b4b4c0] break-words">
                 <span className="font-mono tabular-nums">
                   {completedStagesCount}/{CHALLENGE_STAGES.length}
                 </span>{' '}
-                stage · Blitz, Survival &amp; Boss
+                {t('stage · Blitz, Survival & Boss', 'stages · Blitz, Survival & Boss')}
               </p>
             </div>
           </button>
@@ -1225,10 +682,10 @@ export function HomeScreen({
 
             <div className="mt-3 min-w-0">
               <p className="font-display text-[15px] font-bold leading-snug text-on-surface break-words">
-                Materi Belajar
+                {t('Materi Belajar', 'Study Notes')}
               </p>
               <p className="mt-1 text-[13px] leading-snug text-[#4b4b53] dark:text-[#b4b4c0] break-words">
-                Bunpou &amp; panduan JLPT
+                {t('Bunpou & panduan JLPT', 'Grammar & JLPT guide')}
               </p>
             </div>
           </button>
@@ -1252,7 +709,7 @@ export function HomeScreen({
               <p className="mt-1 text-[13px] leading-snug text-[#4b4b53] dark:text-[#b4b4c0] break-words">
                 {latestReport ? (
                   <>
-                    Skor terakhir{' '}
+                    {t('Skor terakhir', 'Latest score')}{' '}
                     <span className="font-mono tabular-nums">
                       {latestReport.average}%
                     </span>
@@ -1262,10 +719,10 @@ export function HomeScreen({
                     <span className="font-mono tabular-nums">
                       {completedPacketCount}/3
                     </span>{' '}
-                    bagian selesai
+                    {t('bagian selesai', 'parts done')}
                   </>
                 ) : (
-                  'Simulasi N3, N2 & N1'
+                  t('Simulasi N3, N2 & N1', 'N3, N2 & N1 mock exams')
                 )}
               </p>
             </div>
@@ -1285,7 +742,7 @@ export function HomeScreen({
 
             <div className="mt-3 min-w-0">
               <p className="font-display text-[15px] font-bold leading-snug text-on-surface break-words">
-                Kata Sulit
+                {t('Kata Sulit', 'Difficult Words')}
               </p>
               <p className="mt-1 text-[13px] leading-snug text-[#4b4b53] dark:text-[#b4b4c0] break-words">
                 {difficultCards.length > 0 ? (
@@ -1293,10 +750,10 @@ export function HomeScreen({
                     <span className="font-mono tabular-nums">
                       {difficultCards.length}
                     </span>{' '}
-                    perlu diulang
+                    {t('perlu diulang', 'to review')}
                   </>
                 ) : (
-                  'Belum ada kata sulit'
+                  t('Belum ada kata sulit', 'No difficult words yet')
                 )}
               </p>
             </div>

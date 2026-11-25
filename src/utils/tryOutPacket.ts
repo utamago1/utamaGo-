@@ -276,7 +276,9 @@ export const TRYOUT_N3_PACKETS: TryOutPacketCatalogItem[] = [...N3_SESSIONS]
     const choukaiMinutes = spec.choukaiMinutes ?? 40;
     const verified = isVerifiedTryOutPacket(spec.id);
     const choukaiCount = spec.choukaiCount ?? 28;
-    const questionCount = 58 + 16 + choukaiCount;
+    const mojiGoiCount = 35;
+    const bunpouDokkaiCount = 39; // 23 Bunpou + 16 Dokkai
+    const questionCount = mojiGoiCount + bunpouDokkaiCount + choukaiCount;
     return {
       id: spec.id,
       level: 'N3',
@@ -286,13 +288,13 @@ export const TRYOUT_N3_PACKETS: TryOutPacketCatalogItem[] = [...N3_SESSIONS]
       examCode: spec.examCode,
       yearLabel: spec.yearLabel,
       description: verified
-        ? `Soal asli terverifikasi seri ${spec.examCode} (${spec.yearLabel}) · Moji-Bunpou 58 soal, Dokkai 16 soal, Choukai ${choukaiCount} soal + audio resmi, ilustrasi, & transkrip Choukai.`
+        ? `Soal asli terverifikasi seri ${spec.examCode} (${spec.yearLabel}) · Moji-Goi 35 soal (30 mnt), Bunpou & Dokkai 39 soal (70 mnt), Choukai ${choukaiCount} soal (${choukaiMinutes} mnt) + audio resmi, ilustrasi, & transkrip.`
         : `Paket JLPT N3 seri ${spec.examCode} (${spec.yearLabel}) sementara terkunci sambil menunggu verifikasi soal & kunci jawaban resmi.`,
       questionCount,
-      mojiBunpouCount: 58,
-      dokkaiCount: 16,
+      mojiBunpouCount: mojiGoiCount,
+      dokkaiCount: bunpouDokkaiCount,
       choukaiCount,
-      recommendedMinutes: 100 + choukaiMinutes,
+      recommendedMinutes: 30 + 70 + choukaiMinutes,
       xpReward: 150,
       hasQuestions: verified,
       isFullText: verified,
@@ -687,34 +689,34 @@ export function getTryOutPacketById(packetId: string): TryOutPacketCatalogItem {
 export function getTryOutPacketParts(packetId: string): TryOutPacketPart[] {
   const packet = getTryOutPacketById(packetId);
   if (packet.level === 'N3') {
-    const mbCount = packet.mojiBunpouCount ?? 58;
-    const dkCount = packet.dokkaiCount ?? 16;
+    const mojiCount = packet.mojiBunpouCount ?? 35;
+    const bunpouDokkaiCount = packet.dokkaiCount ?? 39;
     return [
       {
         id: 'moji-bunpou',
         order: '01',
-        title: 'Moji-Goi & Bunpou',
-        subtitle: `Soal asli kanji, kosakata (35), & tata bahasa (23) JLPT N3 ${packet.examCode} (${mbCount} soal · 9 halaman)`,
-        questionCount: mbCount,
-        pageCount: 9,
-        recommendedMinutes: 55,
+        title: 'Moji-Goi (Kosakata & Kanji)',
+        subtitle: `Soal asli kanji & kosakata (語彙 問題1–5) JLPT N3 ${packet.examCode} (${mojiCount} soal · 6 halaman · 30 mnt)`,
+        questionCount: mojiCount,
+        pageCount: 6,
+        recommendedMinutes: 30,
         xpReward: 50,
       },
       {
         id: 'dokkai',
         order: '02',
-        title: 'Dokkai (Pemahaman Bacaan)',
-        subtitle: `Wacana teks pendek, menengah, panjang, & pencarian info JLPT N3 ${packet.examCode} (${dkCount} soal · 4 halaman)`,
-        questionCount: dkCount,
-        pageCount: 4,
-        recommendedMinutes: 45,
+        title: 'Bunpou & Dokkai (Tata Bahasa & Bacaan)',
+        subtitle: `Tata bahasa (文法 問題1–3 · 23 soal) & pemahaman bacaan (読解 問題4–7 · 16 soal) JLPT N3 ${packet.examCode} (${bunpouDokkaiCount} soal · 7 halaman · 70 mnt)`,
+        questionCount: bunpouDokkaiCount,
+        pageCount: 7,
+        recommendedMinutes: 70,
         xpReward: 50,
       },
       {
         id: 'choukai',
         order: '03',
         title: 'Choukai (Menyimak + Audio & Transkrip)',
-        subtitle: `Audio resmi JLPT N3 ${packet.examCode} (${packet.yearLabel}) + ilustrasi & transkrip Choukai (${packet.choukaiCount} soal · 5 halaman)`,
+        subtitle: `Audio resmi JLPT N3 ${packet.examCode} (${packet.yearLabel}) + ilustrasi & transkrip Choukai (${packet.choukaiCount} soal · 5 halaman · ${packet.choukaiMinutes} mnt)`,
         questionCount: packet.choukaiCount,
         pageCount: 5,
         recommendedMinutes: packet.choukaiMinutes,

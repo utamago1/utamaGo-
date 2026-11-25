@@ -23,6 +23,7 @@ import {
   type AppTab,
 } from './components/AppShellNav';
 import { BetaFeedbackModal } from './components/BetaFeedbackModal';
+import { BetaWelcomeModal } from './components/BetaWelcomeModal';
 import { ChallengeRunnerModal } from './components/ChallengeRunnerModal';
 import { ConfirmDialog } from './components/ConfirmDialog';
 import { DifficultDrillModal } from './components/DifficultDrillModal';
@@ -257,6 +258,7 @@ export default function App() {
 
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
+  const [betaWelcomeOpen, setBetaWelcomeOpen] = useState(false);
   const [authReady, setAuthReady] = useState(() => autostartMode);
   const [needsAuth, setNeedsAuth] = useState(() => !autostartMode);
   const [authProfile, setAuthProfile] =
@@ -347,6 +349,27 @@ export default function App() {
   useEffect(() => {
     saveUnifiedAppState(appState, activeUserIdRef.current);
   }, [appState]);
+
+  // Show Beta Tester welcome popup once per login session
+  useEffect(() => {
+    if (
+      autostartMode ||
+      needsAuth ||
+      !authProfile ||
+      authProfile.uid === PREVIEW_PROFILE.uid ||
+      !appState.onboarding.completed
+    ) {
+      return;
+    }
+    const sessionKey = `utamago_beta_welcome_seen_${authProfile.uid}`;
+    try {
+      if (window.sessionStorage.getItem(sessionKey) === '1') return;
+      window.sessionStorage.setItem(sessionKey, '1');
+    } catch {
+      // ignore storage errors in restricted contexts
+    }
+    setBetaWelcomeOpen(true);
+  }, [autostartMode, needsAuth, authProfile, appState.onboarding.completed]);
 
   // Global tactile haptic feedback on all interactive buttons, tabs, and controls
   useEffect(() => {
@@ -854,6 +877,7 @@ export default function App() {
     exitConfirm,
     settingsOpen,
     feedbackModalOpen,
+    betaWelcomeOpen,
     tryoutSheetOpen,
     ankiModalOpen,
     activeChallengeStage,
@@ -871,6 +895,7 @@ export default function App() {
     exitConfirm,
     settingsOpen,
     feedbackModalOpen,
+    betaWelcomeOpen,
     tryoutSheetOpen,
     ankiModalOpen,
     activeChallengeStage,
@@ -1007,6 +1032,12 @@ export default function App() {
       // 1a. Close Beta Feedback modal if open
       if (snap.feedbackModalOpen) {
         setFeedbackModalOpen(false);
+        return;
+      }
+
+      // 1a-2. Close Beta Welcome popup if open
+      if (snap.betaWelcomeOpen) {
+        setBetaWelcomeOpen(false);
         return;
       }
 
@@ -1482,6 +1513,8 @@ export default function App() {
     setAuthProfile(null);
     setNeedsAuth(true);
     setSettingsOpen(false);
+    setFeedbackModalOpen(false);
+    setBetaWelcomeOpen(false);
     // Clear in-memory state immediately so the next account starts completely isolated
     setAppState(createDefaultAppState());
   }, []);
@@ -3146,12 +3179,23 @@ export default function App() {
         onClose={() => setFeedbackModalOpen(false)}
         userId={authProfile.uid}
         username={authProfile.username}
+        accountEmail={authProfile.email}
         jlptLevel={appState.onboarding.targetLevel}
         defaultScreen={
           activeTab === 'home' && homeFocusView === 'challenges'
             ? 'challenge'
             : activeTab
         }
+      />
+
+      <BetaWelcomeModal
+        open={betaWelcomeOpen}
+        displayName={appState.onboarding.name || authProfile.name}
+        onDismiss={() => setBetaWelcomeOpen(false)}
+        onOpenFeedback={() => {
+          setBetaWelcomeOpen(false);
+          setFeedbackModalOpen(true);
+        }}
       />
 
       {activeChallengeStage && (

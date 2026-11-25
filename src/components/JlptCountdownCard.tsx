@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { CalendarDays } from 'lucide-react';
 import type { JlptLevel } from '../data/utamagoContent';
+import { useLanguage } from '../i18n/LanguageContext';
 import { vibrateTap } from '../utils/haptics';
 import {
   resolveNextJlptExam,
@@ -29,6 +30,7 @@ export function JlptCountdownCard({
   sessionPreference,
   onChangeSessionPreference,
 }: JlptCountdownCardProps) {
+  const { t } = useLanguage();
   const countdown = useMemo(
     () => resolveNextJlptExam(sessionPreference, dailyMinutes),
     [sessionPreference, dailyMinutes],
@@ -36,7 +38,7 @@ export function JlptCountdownCard({
 
   return (
     <section
-      aria-label="Hitung Mundur Ujian JLPT"
+      aria-label={t('Hitung Mundur Ujian JLPT', 'JLPT Exam Countdown')}
       className="w-full min-w-0 space-y-3.5 rounded-2xl border border-outline-variant bg-surface-container-low p-4"
     >
       {/* Row 1: Single-line title & target level */}
@@ -46,7 +48,7 @@ export function JlptCountdownCard({
             className="h-4 w-4 shrink-0 text-primary"
             aria-hidden="true"
           />
-          <span className="truncate">Hitung mundur JLPT</span>
+          <span className="truncate">{t('Hitung mundur JLPT', 'JLPT countdown')}</span>
         </span>
         <span className="shrink-0 whitespace-nowrap font-mono text-xs font-bold text-primary">
           Target {targetLevel}
@@ -57,14 +59,22 @@ export function JlptCountdownCard({
       <div className="flex items-center gap-3.5">
         <div className="shrink-0">
           <p className="font-mono text-[28px] font-extrabold leading-none tracking-tight tabular-nums text-on-surface sm:text-3xl">
-            {countdown.isExamDay ? 'Hari H' : `H-${countdown.daysRemaining}`}
+            {countdown.isExamDay
+              ? t('Hari H', 'Exam Day')
+              : `${t('H', 'D')}-${countdown.daysRemaining}`}
           </p>
           <p className="mt-1 text-xs font-medium text-[#4b4b53] dark:text-[#b4b4c0]">
             {countdown.isExamDay
-              ? 'Hari ujian'
+              ? t('Hari ujian', 'Exam day')
               : countdown.weeksRemaining >= 2
-                ? `${countdown.weeksRemaining} minggu lagi`
-                : `${countdown.daysRemaining} hari lagi`}
+                ? t(
+                    `${countdown.weeksRemaining} minggu lagi`,
+                    `${countdown.weeksRemaining} weeks left`,
+                  )
+                : t(
+                    `${countdown.daysRemaining} hari lagi`,
+                    `${countdown.daysRemaining} days left`,
+                  )}
           </p>
         </div>
 
@@ -79,17 +89,23 @@ export function JlptCountdownCard({
           </p>
           <p className="text-xs leading-snug text-[#4b4b53] dark:text-[#b4b4c0]">
             {countdown.isExamDay ? (
-              'Semoga lancar mengerjakan ujian hari ini!'
+              t(
+                'Semoga lancar mengerjakan ujian hari ini!',
+                'Best of luck on your exam today!',
+              )
             ) : countdown.estimatedTotalHours > 0 ? (
               <>
                 Est.{' '}
                 <span className="font-mono font-semibold tabular-nums text-on-surface">
-                  ~{countdown.estimatedTotalHours} jam
+                  ~{countdown.estimatedTotalHours} {t('jam', 'hrs')}
                 </span>{' '}
-                latihan ({dailyMinutes} mnt/hari)
+                {t('latihan', 'study')} ({dailyMinutes} {t('mnt/hari', 'min/day')})
               </>
             ) : (
-              <>Target rutin {dailyMinutes} menit/hari</>
+              <>
+                {t('Target rutin', 'Daily goal')} {dailyMinutes}{' '}
+                {t('menit/hari', 'min/day')}
+              </>
             )}
           </p>
         </div>
@@ -98,11 +114,17 @@ export function JlptCountdownCard({
       {/* Row 3: Full-width segmented session selector */}
       <div
         role="radiogroup"
-        aria-label="Pilih periode ujian JLPT"
+        aria-label={t('Pilih periode ujian JLPT', 'Select JLPT exam session')}
         className="grid w-full grid-cols-3 gap-1 rounded-xl bg-surface-container p-1"
       >
         {SESSION_OPTIONS.map((opt) => {
           const active = sessionPreference === opt.id;
+          const label =
+            opt.id === 'auto'
+              ? t('Terdekat', 'Next')
+              : opt.id === 'july'
+                ? t('Juli', 'July')
+                : t('Desember', 'December');
           return (
             <button
               key={opt.id}
@@ -119,7 +141,7 @@ export function JlptCountdownCard({
                   : 'text-[#4b4b53] hover:text-on-surface dark:text-[#b4b4c0]'
               }`}
             >
-              {opt.label}
+              {label}
             </button>
           );
         })}

@@ -3,6 +3,7 @@ import {
   ArrowRight,
   Check,
   ChevronRight,
+  Globe,
   HelpCircle,
   Info,
   Lock,
@@ -13,6 +14,7 @@ import {
 } from 'lucide-react';
 import { CHALLENGE_STAGES } from '../data/challengeLevels';
 import { FAQS } from '../data/utamagoContent';
+import { useLanguage, type AppLanguage } from '../i18n/LanguageContext';
 import { vibrateTap } from '../utils/haptics';
 import {
   getRankIllustrationPath,
@@ -71,6 +73,7 @@ export function ProfileScreen({
   onOpenFeedback,
   onLogout,
 }: ProfileScreenProps) {
+  const { lang, setLang, t } = useLanguage();
   const [subView, setSubView] = useState<ProfileSubView>('overview');
   const [mascotExpression, setMascotExpression] =
     useState<MascotExpression>('idle');
@@ -202,27 +205,27 @@ export function ProfileScreen({
               className="inline-flex min-h-[44px] w-full shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-outline-variant bg-surface px-4 py-2 text-sm font-medium text-on-surface-variant transition-colors hover:border-outline hover:text-primary sm:w-auto"
             >
               <LogOut className="h-4 w-4 shrink-0" aria-hidden="true" />
-              <span>Keluar</span>
+              <span>{t('Keluar', 'Sign Out')}</span>
             </button>
           )}
         </div>
       </section>
 
       {/* 2. Statistik Belajar — Ringkas, angka utama menonjol, pemisah tipis */}
-      <section aria-label="Statistik Belajar" className="w-full min-w-0 space-y-3">
+      <section aria-label={t('Statistik Belajar', 'Study Statistics')} className="w-full min-w-0 space-y-3">
         <h3 className="font-display text-base font-bold text-on-surface">
-          Statistik Belajar
+          {t('Statistik Belajar', 'Study Statistics')}
         </h3>
 
         <div className="grid w-full grid-cols-[repeat(2,minmax(0,1fr))] overflow-hidden rounded-2xl border border-outline-variant bg-surface-container-low sm:grid-cols-[repeat(4,minmax(0,1fr))]">
           <div className="min-w-0 border-r border-b border-outline-variant p-4 sm:border-b-0">
             <p className="text-[13px] font-medium text-on-surface-variant">
-              Streak Harian
+              {t('Streak Harian', 'Daily Streak')}
             </p>
             <p className="mt-2 font-display text-2xl font-bold leading-none text-on-surface">
               <span className="font-mono tabular-nums">{streakDays}</span>{' '}
               <span className="text-sm font-medium text-on-surface-variant">
-                Hari
+                {t('Hari', 'Days')}
               </span>
             </p>
             <p className="mt-2 text-[13px] text-on-surface-variant">
@@ -306,17 +309,55 @@ export function ProfileScreen({
 
       {/* 3. Data Diri & Level Belajar */}
       <section
-        aria-label="Data Diri dan Level Belajar"
+        aria-label={t('Data Diri dan Level Belajar', 'Profile and Study Level')}
         className="w-full min-w-0 space-y-4 rounded-2xl border border-outline-variant bg-surface-container-low p-4 sm:p-6"
       >
-        <div>
-          <h3 className="font-display text-base font-bold text-on-surface">
-            Data Diri &amp; Level Belajar
-          </h3>
-          <p className="mt-1 text-[13px] leading-snug text-on-surface-variant">
-            Atur nama tampilan, maskot, dan batas level JLPT yang ingin kamu
-            pelajari.
-          </p>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h3 className="font-display text-base font-bold text-on-surface">
+              {t('Data Diri & Level Belajar', 'Profile & Study Level')}
+            </h3>
+            <p className="mt-1 text-[13px] leading-snug text-on-surface-variant">
+              {t(
+                'Atur nama tampilan, maskot, bahasa aplikasi, dan batas level JLPT.',
+                'Customize your display name, mascot, app language, and JLPT level access.',
+              )}
+            </p>
+          </div>
+
+          {/* Quick Language Toggle (ID | EN) */}
+          <div
+            role="radiogroup"
+            aria-label={t('Pilih bahasa aplikasi', 'Switch app language')}
+            className="inline-flex shrink-0 items-center gap-1 rounded-xl border border-outline-variant bg-surface p-1"
+          >
+            <Globe
+              className="ml-1.5 h-3.5 w-3.5 text-on-surface-variant"
+              aria-hidden="true"
+            />
+            {(['id', 'en'] as readonly AppLanguage[]).map((code) => {
+              const active = lang === code;
+              return (
+                <button
+                  key={code}
+                  type="button"
+                  role="radio"
+                  aria-checked={active}
+                  onClick={() => {
+                    vibrateTap();
+                    setLang(code);
+                  }}
+                  className={`min-h-[34px] rounded-lg px-2.5 py-1 font-mono text-xs font-bold uppercase transition-colors ${
+                    active
+                      ? 'bg-primary text-on-primary'
+                      : 'text-on-surface-variant hover:text-on-surface'
+                  }`}
+                >
+                  {code}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-[repeat(2,minmax(0,1fr))]">
@@ -455,9 +496,9 @@ export function ProfileScreen({
       </section>
 
       {/* 4 & 5. Menu Ringkas: Tentang UtamaGo! + FAQ & Bantuan */}
-      <section aria-label="Informasi dan Bantuan" className="w-full min-w-0 space-y-3">
+      <section aria-label={t('Informasi dan Bantuan', 'Information & Help')} className="w-full min-w-0 space-y-3">
         <h3 className="font-display text-base font-bold text-on-surface">
-          Informasi &amp; Bantuan
+          {t('Informasi & Bantuan', 'Information & Help')}
         </h3>
 
         <div className="divide-y divide-outline-variant overflow-hidden rounded-2xl border border-outline-variant bg-surface-container-low">
@@ -476,10 +517,13 @@ export function ProfileScreen({
               />
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-on-surface">
-                  Tentang UtamaGo!
+                  {t('Tentang UtamaGo!', 'About UtamaGo!')}
                 </p>
                 <p className="mt-0.5 text-[13px] leading-snug text-on-surface-variant break-words">
-                  Profil aplikasi, misi belajar, dan pendiri
+                  {t(
+                    'Profil aplikasi, misi belajar, dan pendiri',
+                    'App overview, study mission, and founder',
+                  )}
                 </p>
               </div>
             </div>
@@ -504,12 +548,12 @@ export function ProfileScreen({
               />
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-on-surface">
-                  FAQ &amp; Bantuan
+                  {t('FAQ & Bantuan', 'FAQ & Help')}
                 </p>
                 <p className="mt-0.5 text-[13px] leading-snug text-on-surface-variant break-words">
-                  Pertanyaan umum seputar UtamaGo! (
+                  {t('Pertanyaan umum seputar UtamaGo!', 'Common questions about UtamaGo!')} (
                   <span className="font-mono tabular-nums">{FAQS.length}</span>{' '}
-                  topik)
+                  {t('topik', 'topics')})
                 </p>
               </div>
             </div>
@@ -535,10 +579,13 @@ export function ProfileScreen({
                 />
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-on-surface">
-                    Lapor Bug &amp; Masukan Beta
+                    {t('Laporkan Bug & Saran', 'Report Bug & Feedback')}
                   </p>
                   <p className="mt-0.5 text-[13px] leading-snug text-on-surface-variant break-words">
-                    Laporkan error, typo materi, atau kirim saran fitur langsung
+                    {t(
+                      'Laporkan error, typo materi, atau kirim saran langsung via email',
+                      'Report bugs, content typos, or send feature suggestions directly via email',
+                    )}
                   </p>
                 </div>
               </div>

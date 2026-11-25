@@ -3,6 +3,7 @@ import {
   Bell,
   BellOff,
   ExternalLink,
+  Globe,
   GraduationCap,
   Instagram,
   Loader2,
@@ -20,6 +21,7 @@ import {
 import { motion } from 'motion/react';
 import type { JlptLevel } from '../data/utamagoContent';
 import type { ThemeMode } from '../hooks/useThemeMode';
+import { useLanguage, type AppLanguage } from '../i18n/LanguageContext';
 import {
   getHapticsEnabled,
   setHapticsEnabled,
@@ -110,6 +112,7 @@ export function SettingsModal({
   onOpenFeedback,
   onLogout,
 }: SettingsModalProps) {
+  const { lang, setLang, t } = useLanguage();
   const [confirmResetOpen, setConfirmResetOpen] = useState(false);
   const [resetDone, setResetDone] = useState(false);
   const [permissionState, setPermissionState] =
@@ -284,7 +287,7 @@ export function SettingsModal({
               id="settings-modal-title"
               className="font-display text-lg font-extrabold text-on-surface"
             >
-              Pengaturan Aplikasi
+              {t('Pengaturan Aplikasi', 'App Settings')}
             </h2>
           </div>
 
@@ -294,7 +297,7 @@ export function SettingsModal({
               vibrateTap();
               onClose();
             }}
-            aria-label="Tutup Pengaturan"
+            aria-label={t('Tutup Pengaturan', 'Close Settings')}
             className="m3-tactile inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-container text-on-surface hover:bg-surface-container-high"
           >
             <X className="h-5 w-5" aria-hidden="true" />
@@ -307,27 +310,76 @@ export function SettingsModal({
             <section className="space-y-4 rounded-3xl border border-outline-variant bg-surface-container-low p-5 shadow-xs">
               <div>
                 <h3 className="font-display text-base font-bold text-on-surface">
-                  Tampilan, Aksesibilitas &amp; Target
+                  {t('Tampilan, Bahasa & Target', 'Display, Language & Goal')}
                 </h3>
                 <p className="mt-1 text-xs leading-relaxed text-on-surface-variant">
-                  Sesuaikan tema malam/terang, ukuran huruf, serta target level
-                  JLPT harianmu.
+                  {t(
+                    'Sesuaikan bahasa aplikasi, tema malam/terang, ukuran huruf, serta target level JLPT.',
+                    'Customize app language, light/dark theme, text size, and your JLPT target level.',
+                  )}
                 </p>
               </div>
 
+              {/* Bahasa Aplikasi (ID / EN) */}
               <div>
                 <p className="mb-2 inline-flex items-center gap-1.5 text-xs font-semibold text-on-surface-variant">
-                  <Moon className="h-3.5 w-3.5" aria-hidden="true" />
-                  <span>Tema Tampilan</span>
+                  <Globe className="h-3.5 w-3.5" aria-hidden="true" />
+                  <span>{t('Bahasa Aplikasi', 'App Language')}</span>
                 </p>
                 <div
                   role="radiogroup"
-                  aria-label="Pilih tema tampilan"
+                  aria-label={t('Pilih bahasa aplikasi', 'Select app language')}
+                  className="grid grid-cols-2 gap-1.5 rounded-2xl bg-surface-container p-1"
+                >
+                  {(
+                    [
+                      { id: 'id', label: 'Indonesia (ID)' },
+                      { id: 'en', label: 'English (EN)' },
+                    ] as ReadonlyArray<{ id: AppLanguage; label: string }>
+                  ).map((opt) => {
+                    const active = lang === opt.id;
+                    return (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        role="radio"
+                        aria-checked={active}
+                        onClick={() => {
+                          vibrateTap();
+                          setLang(opt.id);
+                        }}
+                        className={`m3-tactile inline-flex min-h-[48px] items-center justify-center whitespace-nowrap rounded-xl px-2.5 py-2 text-xs font-bold ${
+                          active
+                            ? 'bg-surface-container-low text-on-surface shadow-xs'
+                            : 'text-on-surface-variant hover:text-on-surface'
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="border-t border-outline-variant pt-4">
+                <p className="mb-2 inline-flex items-center gap-1.5 text-xs font-semibold text-on-surface-variant">
+                  <Moon className="h-3.5 w-3.5" aria-hidden="true" />
+                  <span>{t('Tema Tampilan', 'Appearance Theme')}</span>
+                </p>
+                <div
+                  role="radiogroup"
+                  aria-label={t('Pilih tema tampilan', 'Choose appearance theme')}
                   className="grid grid-cols-3 gap-1.5 rounded-2xl bg-surface-container p-1"
                 >
                   {THEME_MODE_OPTIONS.map((opt) => {
                     const Icon = opt.icon;
                     const active = themeMode === opt.id;
+                    const label =
+                      opt.id === 'light'
+                        ? t('Terang', 'Light')
+                        : opt.id === 'dark'
+                          ? t('Malam', 'Dark')
+                          : t('Sistem', 'System');
                     return (
                       <button
                         key={opt.id}
@@ -345,7 +397,7 @@ export function SettingsModal({
                         }`}
                       >
                         <Icon className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-                        <span>{opt.label}</span>
+                        <span>{label}</span>
                       </button>
                     );
                   })}
@@ -355,7 +407,7 @@ export function SettingsModal({
               <div className="border-t border-outline-variant pt-4">
                 <p className="mb-2 inline-flex items-center gap-1.5 text-xs font-semibold text-on-surface-variant">
                   <Type className="h-3.5 w-3.5" aria-hidden="true" />
-                  <span>Ukuran Huruf Aplikasi</span>
+                  <span>{t('Ukuran Huruf Aplikasi', 'App Text Size')}</span>
                 </p>
                 <div
                   role="radiogroup"
@@ -613,7 +665,7 @@ export function SettingsModal({
                       className="h-4 w-4 text-primary"
                       aria-hidden="true"
                     />
-                    <span>Lapor Bug &amp; Masukan Beta</span>
+                    <span>{t('Lapor Bug & Saran', 'Report Bug & Feedback')}</span>
                   </button>
                 )}
 

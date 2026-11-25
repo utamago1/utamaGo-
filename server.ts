@@ -7,6 +7,7 @@ import type { ReadableStream as WebReadableStream } from 'node:stream/web';
 import { GoogleGenAI, ThinkingLevel, Type } from '@google/genai';
 import dotenv from 'dotenv';
 import express, { type Request, type Response } from 'express';
+import nodemailer from 'nodemailer';
 
 dotenv.config();
 
@@ -248,6 +249,269 @@ function setExplainCacheEntry(
 function cleanBoundedText(value: unknown, maxLen: number): string {
   if (typeof value !== 'string') return '';
   return value.replace(/\r\n/g, '\n').trim().slice(0, maxLen);
+}
+
+const FEEDBACK_RATE_LIMIT_WINDOW_MS = 60_000;
+const FEEDBACK_RATE_LIMIT_MAX_REQUESTS = 8;
+const FEEDBACK_EMAIL_SUBJECT = '[UtamaGo!] Pelaporan Bug dan Saran';
+const FEEDBACK_RECIPIENT_DEFAULT = 'kantorhp65@gmail.com';
+const FEEDBACK_MAX_SCREENSHOT_CHARS = 220_000;
+const feedbackRateLimitBuckets = new Map<string, number[]>();
+
+const ALLOWED_FEEDBACK_CATEGORIES = new Set([
+  'bug',
+  'typo',
+  'suggestion',
+  'other',
+]);
+const ALLOWED_FEEDBACK_SCREENS = new Set([
+  'home',
+  'anki',
+  'learn',
+  'challenge',
+  'tryout',
+  'profile',
+  'other',
+]);
+const ALLOWED_FEEDBACK_JLPT = new Set(['N5', 'N4', 'N3', 'N2', 'N1']);
+
+const FEEDBACK_CATEGORY_LABELS: Record<string, string> = {
+  bug: 'Bug / Error',
+  typo: 'Typo / Materi Keliru',
+  suggestion: 'Saran Fitur',
+  other: 'Lainnya',
+};
+
+const FEEDBACK_SCREEN_LABELS: Record<string, string> = {
+  home: 'Beranda',
+  anki: 'Anki Kosakata',
+  learn: 'Materi & Bunpou',
+  challenge: 'Arena Tantangan',
+  tryout: 'Try Out JLPT',
+  profile: 'Profil & Pengaturan',
+  other: 'Lainnya',
+};
+
+function checkFeedbackRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const cutoff = now - FEEDBACK_RATE_LIMIT_WINDOW_MS;
+  const recent = (feedbackRateLimitBuckets.get(ip) ?? []).filter((t) => t > cutoff);
+  if (recent.length >= FEEDBACK_RATE_LIMIT_MAX_REQUESTS) {
+    feedbackRateLimitBuckets.set(ip, recent);
+    return false;
+  }
+  recent.push(now);
+  feedbackRateLimitBuckets.set(ip, recent);
+
+  if (feedbackRateLimitBuckets.size > 500) {
+    for (const [key, timestamps] of feedbackRateLimitBuckets.entries()) {
+      const kept = timestamps.filter((t) => t > cutoff);
+      if (kept.length === 0) feedbackRateLimitBuckets.delete(key);
+      else feedbackRateLimitBuckets.set(key, kept);
+    }
+  }
+  return true;
+}
+
+function escapeHtml(raw: string): string {
+  return raw
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function parseFeedbackScreenshotAttachment(
+  raw: unknown,
+): { buffer: Buffer; mime: string; ext: string } | null | 'invalid' {
+  if (raw === undefined || raw === null || raw === '') return null;
+  if (typeof raw !== 'string' || raw.length > FEEDBACK_MAX_SCREENSHOT_CHARS) {
+    return 'invalid';
+  }
+  const match = /^data:image\/(jpeg|jpg|png|webp);base64,([A-Za-z0-9+/=]+)$/.exec(
+    raw.trim(),
+  );
+  if (!match) return 'invalid';
+  const subtype = match[1] === 'jpg' ? 'jpeg' : match[1];
+  const ext = subtype === 'jpeg' ? 'jpg' : subtype;
+  try {
+    const buffer = Buffer.from(match[2], 'base64');
+    if (buffer.length === 0 || buffer.length > 180_000) return 'invalid';
+    return { buffer, mime: `image/${subtype}`, ext };
+  } catch {
+    return 'invalid';
+  }
+}
+
+async function handleFeedbackEmail(req: Request, res: Response): Promise<void> {
+  const ip = getClientIp(req);
+  if (!checkFeedbackRateLimit(ip)) {
+    res.status(429).json({
+      ok: false,
+      error: 'Terlalu banyak laporan dalam 1 menit. Tunggu sebentar lalu coba lagi.',
+    });
+    return;
+  }
+
+  const body = req.body as Record<string, unknown> | undefined;
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
+    res.status(400).json({ ok: false, error: 'Payload laporan tidak valid.' });
+    return;
+  }
+
+  const category = cleanBoundedText(body.category, 24);
+  const screen = cleanBoundedText(body.screen, 24);
+  const title = cleanBoundedText(body.title, 120);
+  const description = cleanBoundedText(body.description, 2000);
+  const jlptLevel = cleanBoundedText(body.jlptLevel, 4) || 'N5';
+  const username = cleanBoundedText(body.username, 60) || 'pelajar_beta';
+  const accountEmail = cleanBoundedText(body.accountEmail, 120);
+
+  if (!ALLOWED_FEEDBACK_CATEGORIES.has(category)) {
+    res.status(400).json({ ok: false, error: 'Kategori laporan tidak valid.' });
+    return;
+  }
+  if (!ALLOWED_FEEDBACK_SCREENS.has(screen)) {
+    res.status(400).json({ ok: false, error: 'Halaman laporan tidak valid.' });
+    return;
+  }
+  if (title.length < 5) {
+    res.status(400).json({ ok: false, error: 'Judul laporan minimal 5 karakter.' });
+    return;
+  }
+  if (description.length < 10) {
+    res.status(400).json({ ok: false, error: 'Detail laporan minimal 10 karakter.' });
+    return;
+  }
+
+  const parsedAttachment = parseFeedbackScreenshotAttachment(body.screenshotDataUrl);
+  if (parsedAttachment === 'invalid') {
+    res.status(400).json({
+      ok: false,
+      error: 'Format atau ukuran screenshot tidak valid (maksimal 180 KB setelah kompresi).',
+    });
+    return;
+  }
+
+  const safeJlpt = ALLOWED_FEEDBACK_JLPT.has(jlptLevel) ? jlptLevel : 'N5';
+  const recipient = (
+    process.env.FEEDBACK_RECIPIENT_EMAIL?.trim() || FEEDBACK_RECIPIENT_DEFAULT
+  ).trim();
+  const smtpUser = process.env.SMTP_USER?.trim() || '';
+  const smtpPass = process.env.SMTP_PASS?.trim() || '';
+  const smtpHost =
+    process.env.SMTP_HOST?.trim() ||
+    (smtpUser.toLowerCase().endsWith('@gmail.com') ? 'smtp.gmail.com' : '');
+  const smtpPort = Number.parseInt(process.env.SMTP_PORT?.trim() || '465', 10) || 465;
+  const smtpFrom = process.env.SMTP_FROM?.trim() || smtpUser;
+
+  if (!smtpUser || !smtpPass || !smtpHost) {
+    res.status(200).json({
+      ok: false,
+      emailConfigured: false,
+      fallbackEmail: recipient,
+      subject: FEEDBACK_EMAIL_SUBJECT,
+    });
+    return;
+  }
+
+  const categoryLabel = FEEDBACK_CATEGORY_LABELS[category] ?? category;
+  const screenLabel = FEEDBACK_SCREEN_LABELS[screen] ?? screen;
+  const submittedAtIso = new Date().toISOString();
+
+  const textBody = [
+    'Laporan baru dari pengguna UtamaGo! Beta',
+    '========================================',
+    `Kategori     : ${categoryLabel}`,
+    `Halaman      : ${screenLabel}`,
+    `Target JLPT  : ${safeJlpt}`,
+    `Pengguna     : ${username}`,
+    ...(accountEmail ? [`Email Akun   : ${accountEmail}`] : []),
+    `Waktu (UTC)  : ${submittedAtIso}`,
+    `Lampiran SS  : ${parsedAttachment ? `Ya (${Math.max(1, Math.round(parsedAttachment.buffer.length / 1024))} KB)` : 'Tidak ada'}`,
+    '',
+    `Judul:`,
+    title,
+    '',
+    `Detail Laporan:`,
+    description,
+  ].join('\n');
+
+  const htmlBody = `
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #18181b; max-width: 640px; margin: 0 auto; line-height: 1.6;">
+      <div style="background: #b91c1c; color: #ffffff; padding: 16px 20px; border-radius: 12px 12px 0 0;">
+        <h2 style="margin: 0; font-size: 17px;">UtamaGo! — Pelaporan Bug &amp; Saran</h2>
+      </div>
+      <div style="border: 1px solid #e4e4e7; border-top: 0; border-radius: 0 0 12px 12px; padding: 20px; background: #ffffff;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 16px;">
+          <tr><td style="padding: 4px 0; color: #71717a; width: 130px;">Kategori</td><td style="padding: 4px 0; font-weight: 700;">${escapeHtml(categoryLabel)}</td></tr>
+          <tr><td style="padding: 4px 0; color: #71717a;">Halaman</td><td style="padding: 4px 0; font-weight: 600;">${escapeHtml(screenLabel)}</td></tr>
+          <tr><td style="padding: 4px 0; color: #71717a;">Target JLPT</td><td style="padding: 4px 0; font-weight: 600;">${escapeHtml(safeJlpt)}</td></tr>
+          <tr><td style="padding: 4px 0; color: #71717a;">Pengguna</td><td style="padding: 4px 0;">${escapeHtml(username)}</td></tr>
+          ${accountEmail ? `<tr><td style="padding: 4px 0; color: #71717a;">Email Akun</td><td style="padding: 4px 0;">${escapeHtml(accountEmail)}</td></tr>` : ''}
+          <tr><td style="padding: 4px 0; color: #71717a;">Waktu (UTC)</td><td style="padding: 4px 0;">${escapeHtml(submittedAtIso)}</td></tr>
+        </table>
+        <div style="padding: 12px 14px; background: #fafafa; border: 1px solid #e4e4e7; border-radius: 10px; margin-bottom: 12px;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #71717a; margin-bottom: 4px;">Judul</div>
+          <div style="font-size: 15px; font-weight: 700; color: #18181b;">${escapeHtml(title)}</div>
+        </div>
+        <div style="padding: 12px 14px; background: #fafafa; border: 1px solid #e4e4e7; border-radius: 10px;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #71717a; margin-bottom: 4px;">Detail</div>
+          <div style="font-size: 14px; white-space: pre-wrap; color: #27272a;">${escapeHtml(description)}</div>
+        </div>
+      </div>
+    </div>
+  `.trim();
+
+  try {
+    const transporter = nodemailer.createTransport({
+      host: smtpHost,
+      port: smtpPort,
+      secure: smtpPort === 465,
+      auth: {
+        user: smtpUser,
+        pass: smtpPass,
+      },
+      connectionTimeout: 10_000,
+      greetingTimeout: 10_000,
+      socketTimeout: 15_000,
+    });
+
+    await transporter.sendMail({
+      from: smtpFrom,
+      to: recipient,
+      replyTo: accountEmail && accountEmail.includes('@') ? accountEmail : undefined,
+      subject: FEEDBACK_EMAIL_SUBJECT,
+      text: textBody,
+      html: htmlBody,
+      attachments: parsedAttachment
+        ? [
+            {
+              filename: `utamago-screenshot.${parsedAttachment.ext}`,
+              content: parsedAttachment.buffer,
+              contentType: parsedAttachment.mime,
+            },
+          ]
+        : undefined,
+    });
+
+    res.status(200).json({
+      ok: true,
+      emailConfigured: true,
+      recipient,
+      subject: FEEDBACK_EMAIL_SUBJECT,
+    });
+  } catch (err) {
+    console.error('[FeedbackEmail] Failed to send SMTP email:', err);
+    res.status(502).json({
+      ok: false,
+      emailConfigured: true,
+      fallbackEmail: recipient,
+      subject: FEEDBACK_EMAIL_SUBJECT,
+      error: 'Gagal mengirim email otomatis. Kamu tetap bisa mengirim lewat aplikasi email.',
+    });
+  }
 }
 
 const TRYOUT_EXPLAIN_SYSTEM_INSTRUCTION = `Kamu adalah pengajar JLPT (Sensei) berbahasa Indonesia yang teliti, hangat, dan to-the-point untuk aplikasi belajar bahasa Jepang UtamaGo!.
@@ -2126,6 +2390,10 @@ async function startServer() {
 
   app.post('/api/tryout/explain', express.json({ limit: '24kb' }), (req, res) => {
     void handleTryOutExplain(req, res);
+  });
+
+  app.post('/api/feedback/send', express.json({ limit: '360kb' }), (req, res) => {
+    void handleFeedbackEmail(req, res);
   });
 
   // Monthly Catbox.moe keep-alive endpoint (touches all 18 N2 MP3s at least once every 25 days)

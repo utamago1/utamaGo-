@@ -34,6 +34,7 @@ import {
   buildWritingPracticeDeck,
   type WritingPracticeMode,
 } from '../utils/writingPractice';
+import { useLanguage } from '../i18n/LanguageContext';
 import { SpeechControlBar } from './SpeechControlBar';
 
 interface StrokePoint {
@@ -86,6 +87,7 @@ export function WritingStudioModal({
   onCompletePractice,
   onClose,
 }: WritingStudioModalProps) {
+  const { t } = useLanguage();
   const [mode, setMode] = useState<WritingPracticeMode>(initialMode);
   const [level, setLevel] = useState<JlptLevel | 'ALL'>(unlockedLevel);
   const [seedText, setSeedText] = useState<string | undefined>(initialSeedText);
@@ -1016,15 +1018,56 @@ export function WritingStudioModal({
                   )}
                 </div>
 
+                {activeItem.kind === 'kanji' && (
+                  <div
+                    aria-label={t(
+                      "Cara baca On'yomi dan Kun'yomi",
+                      "On'yomi and Kun'yomi readings",
+                    )}
+                    className="grid grid-cols-1 gap-2.5 border-t border-outline-variant pt-3 sm:grid-cols-2"
+                  >
+                    <div className="rounded-xl border border-outline-variant bg-surface px-3 py-2.5">
+                      <p className="text-[11px] font-bold tracking-wide text-primary">
+                        On&apos;yomi{' '}
+                        <span className="font-normal text-on-surface-variant">
+                          音読み
+                        </span>
+                      </p>
+                      <p className="mt-1 font-display text-sm font-bold leading-snug text-on-surface">
+                        {activeItem.onyomi && activeItem.onyomi.length > 0
+                          ? activeItem.onyomi.join('・')
+                          : '—'}
+                      </p>
+                    </div>
+                    <div className="rounded-xl border border-outline-variant bg-surface px-3 py-2.5">
+                      <p className="text-[11px] font-bold tracking-wide text-secondary">
+                        Kun&apos;yomi{' '}
+                        <span className="font-normal text-on-surface-variant">
+                          訓読み
+                        </span>
+                      </p>
+                      <p className="mt-1 font-display text-sm font-bold leading-snug text-on-surface">
+                        {activeItem.kunyomi && activeItem.kunyomi.length > 0
+                          ? activeItem.kunyomi.join('・')
+                          : '—'}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 {/* Interactive Step-by-Step Stroke Picker */}
                 {strokeData && (
                   <div className="space-y-2 border-t border-outline-variant pt-3">
                     <div className="flex items-center justify-between gap-2 text-xs">
                       <span className="font-semibold text-on-surface">
-                        Urutan Goresan (ketuk nomor untuk lihat arah)
+                        {t(
+                          'Urutan Goresan (ketuk nomor untuk lihat arah)',
+                          'Stroke Order (tap a number to preview)',
+                        )}
                       </span>
                       <span className="font-mono text-[11px] tabular-nums text-on-surface-variant">
-                        {strokeData.strokeCount} langkah
+                        {strokeData.strokeCount}{' '}
+                        {t('langkah', 'strokes')}
                       </span>
                     </div>
 

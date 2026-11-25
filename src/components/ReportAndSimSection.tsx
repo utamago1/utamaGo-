@@ -24,6 +24,11 @@ import {
   JLPT_N2_TOTAL_MAX,
   JLPT_N2_TOTAL_PASS_MIN,
 } from '../utils/jlptN2Scoring';
+import {
+  evaluateJlptN3PacketScore,
+  JLPT_N3_OFFICIAL_TIMING,
+  JLPT_N3_TOTAL_PASS_MIN,
+} from '../utils/jlptN3Scoring';
 import type { ComputedTryOutReport } from '../utils/jlptReport';
 import type { StoredTryOutPacketState } from '../utils/storage';
 import {
@@ -317,13 +322,31 @@ export function ReportAndSimSection({
     [fallbackFirstPacket, packetsProgress],
   );
 
-  const activeN2PacketScore = useMemo(() => {
-    if (activePacket.level !== 'N2' || !activePacket.isFullText) return null;
-    return evaluateJlptN2PacketScore({
-      forms: activePacketForms,
-      answersByPart: formAnswersByPart,
-      submittedIds: submittedParts,
-    });
+  const activeJlptPacketScore = useMemo(() => {
+    if (!activePacket.isFullText) return null;
+    if (activePacket.level === 'N2') {
+      return {
+        level: 'N2' as const,
+        passMin: JLPT_N2_TOTAL_PASS_MIN,
+        summary: evaluateJlptN2PacketScore({
+          forms: activePacketForms,
+          answersByPart: formAnswersByPart,
+          submittedIds: submittedParts,
+        }),
+      };
+    }
+    if (activePacket.level === 'N3') {
+      return {
+        level: 'N3' as const,
+        passMin: JLPT_N3_TOTAL_PASS_MIN,
+        summary: evaluateJlptN3PacketScore({
+          forms: activePacketForms,
+          answersByPart: formAnswersByPart,
+          submittedIds: submittedParts,
+        }),
+      };
+    }
+    return null;
   }, [
     activePacket.isFullText,
     activePacket.level,
@@ -584,39 +607,39 @@ export function ReportAndSimSection({
               </div>
             </section>
 
-            {activeN2PacketScore && (
+            {activeJlptPacketScore && (
               <section
-                aria-label="Estimasi Skor JLPT N2 Paket Ini"
+                aria-label={`Estimasi Skor JLPT ${activeJlptPacketScore.level} Paket Ini`}
                 className="space-y-4 rounded-2xl border border-outline-variant bg-surface-container-low p-4 sm:p-6"
               >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                   <div>
                     <p className="text-xs font-bold tracking-wide text-primary">
-                      Estimasi Skor JLPT N2 · Bobot Resmi per Mondai
+                      Estimasi Skor JLPT {activeJlptPacketScore.level} · Bobot Resmi per Mondai
                     </p>
                     <h4 className="mt-1 font-display text-lg font-extrabold text-on-surface">
-                      {activeN2PacketScore.statusLabel}
+                      {activeJlptPacketScore.summary.statusLabel}
                     </h4>
                     <p className="mt-1 text-xs leading-relaxed text-on-surface-variant">
-                      {activeN2PacketScore.statusDetail}
+                      {activeJlptPacketScore.summary.statusDetail}
                     </p>
                   </div>
 
                   <div className="shrink-0 text-left sm:text-right">
                     <p className="text-[11px] font-semibold text-on-surface-variant">
-                      Total Estimasi (Lulus ≥ {JLPT_N2_TOTAL_PASS_MIN})
+                      Total Estimasi (Lulus ≥ {activeJlptPacketScore.passMin})
                     </p>
                     <p
                       className={`font-mono text-2xl font-extrabold tabular-nums sm:text-3xl ${
-                        activeN2PacketScore.status === 'passed'
+                        activeJlptPacketScore.summary.status === 'passed'
                           ? 'text-success'
-                          : activeN2PacketScore.status === 'in-progress'
+                          : activeJlptPacketScore.summary.status === 'in-progress'
                             ? 'text-on-surface'
                             : 'text-primary'
                       }`}
                     >
-                      {activeN2PacketScore.submittedPartCount > 0
-                        ? activeN2PacketScore.totalScaledScore
+                      {activeJlptPacketScore.summary.submittedPartCount > 0
+                        ? activeJlptPacketScore.summary.totalScaledScore
                         : '—'}
                       <span className="text-sm font-bold text-on-surface-variant">
                         /{JLPT_N2_TOTAL_MAX}
@@ -628,7 +651,7 @@ export function ReportAndSimSection({
                 <div className="grid grid-cols-1 gap-3 border-t border-outline-variant pt-4 sm:grid-cols-3 sm:gap-0 sm:divide-x sm:divide-outline-variant">
                   {(['moji-bunpou', 'dokkai', 'choukai'] as const).map(
                     (partKey, idx) => {
-                      const sec = activeN2PacketScore.parts[partKey];
+                      const sec = activeJlptPacketScore.summary.parts[partKey];
                       return (
                         <div
                           key={partKey}
@@ -677,14 +700,23 @@ export function ReportAndSimSection({
                               </span>
                             ) : (
                               <span className="text-xs text-on-surface-variant">
-                                Belum dikumpulkan
+                                {activeJlptPacketScore.level === 'N3' &&
+                                partKey === 'moji-bunpou'
+                                  ? submittedParts.includes('moji-bunpou') &&
+                                    !submittedParts.includes('dokkai')
+                                    ? 'Tunggu Bunpou & Dokkai'
+                                    : !submittedParts.includes('moji-bunpou') &&
+                                        submittedParts.includes('dokkai')
+                                      ? 'Tunggu Moji-Goi'
+                                      : 'Belum dikumpulkan'
+                                  : 'Belum dikumpulkan'}
                               </span>
                             )}
                           </div>
                           <p className="mt-1 font-mono text-[11px] tabular-nums text-on-surface-variant">
                             {sec.isSubmitted
-                              ? `Poin ${sec.earnedRawPoints}/${sec.maxRawPoints} · Benar ${sec.correctCount}/${sec.totalQuestions}`
-                              : `Maks poin berbobot ${sec.maxRawPoints} → skala 60`}
+                              ? `Poin ${sec.earnedRawPoints}/${sec.maxRawPoints} · ÷ ${sec.maxRawPoints} × 60`
+                              : `Maks ${sec.maxRawPoints} poin → ÷ ${sec.maxRawPoints} × 60`}
                           </p>
                         </div>
                       );
@@ -692,12 +724,54 @@ export function ReportAndSimSection({
                   )}
                 </div>
 
+                {activeJlptPacketScore.level === 'N3' && (
+                  <div className="space-y-1 rounded-xl border border-outline-variant/80 bg-surface px-3.5 py-2.5 text-[11px] leading-relaxed text-on-surface-variant">
+                    <p className="font-bold text-on-surface">
+                      Pembagian 3 Sesi &amp; Waktu Resmi JLPT N3 (Total{' '}
+                      <span className="font-mono">
+                        {JLPT_N3_OFFICIAL_TIMING.totalMinutes} menit
+                      </span>
+                      )
+                    </p>
+                    <p>
+                      1. Moji-Goi (文字・語彙){' '}
+                      <strong className="font-mono text-on-surface">
+                        {JLPT_N3_OFFICIAL_TIMING.mojiGoiMinutes} mnt
+                      </strong>{' '}
+                      (35 soal ×1) · 2. Bunpou &amp; Dokkai (文法・読解){' '}
+                      <strong className="font-mono text-on-surface">
+                        {JLPT_N3_OFFICIAL_TIMING.bunpouDokkaiMinutes} mnt
+                      </strong>{' '}
+                      (Bunpou 23 soal ×1 + Dokkai 16 soal) · 3. Choukai (聴解){' '}
+                      <strong className="font-mono text-on-surface">
+                        {JLPT_N3_OFFICIAL_TIMING.choukaiMinutes} mnt
+                      </strong>{' '}
+                      (×2 poin).
+                    </p>
+                    <p>
+                      <strong className="text-on-surface">Rumus skor:</strong>{' '}
+                      <span className="font-mono">
+                        言語知識 (Moji-Goi+Bunpou) ÷ 58 × 60
+                      </span>{' '}
+                      ·{' '}
+                      <span className="font-mono">
+                        読解 (M4×3, M5–7×4) ÷ 60 × 60
+                      </span>{' '}
+                      ·{' '}
+                      <span className="font-mono">
+                        聴解 (M1–5×2) ÷ {activeJlptPacketScore.summary.parts.choukai.maxRawPoints} × 60
+                      </span>
+                      .
+                    </p>
+                  </div>
+                )}
+
                 <p className="border-t border-outline-variant/70 pt-3 text-[11px] leading-relaxed text-on-surface-variant">
-                  Syarat lulus JLPT N2: total minimal{' '}
+                  Syarat lulus JLPT {activeJlptPacketScore.level}: total minimal{' '}
                   <strong className="font-mono font-bold text-on-surface">
-                    90/180
+                    {activeJlptPacketScore.passMin}/180
                   </strong>{' '}
-                  dan setiap bagian minimal{' '}
+                  dan setiap bagian penilaian minimal{' '}
                   <strong className="font-mono font-bold text-on-surface">
                     19/60
                   </strong>
@@ -719,9 +793,9 @@ export function ReportAndSimSection({
                 const partScore = isSubmittedPart
                   ? evaluatePartScore(activePacketForms[part.id], partValues)
                   : null;
-                const n2PartSummary =
-                  isSubmittedPart && activeN2PacketScore
-                    ? activeN2PacketScore.parts[part.id]
+                const jlptPartSummary =
+                  isSubmittedPart && activeJlptPacketScore
+                    ? activeJlptPacketScore.summary.parts[part.id]
                     : null;
 
                 return (
@@ -775,16 +849,25 @@ export function ReportAndSimSection({
                                 <span aria-hidden="true" className="text-outline">
                                   ·
                                 </span>
-                                {n2PartSummary ? (
+                                {activeJlptPacketScore?.level === 'N3' &&
+                                part.id === 'moji-bunpou' ? (
+                                  <span className="font-mono font-extrabold tabular-nums text-success">
+                                    Poin Moji-Goi {partScore.correctCount}/
+                                    {partScore.totalGradable} (
+                                    {partScore.accuracyPercent}%)
+                                  </span>
+                                ) : jlptPartSummary ? (
                                   <span
                                     className={`font-mono font-extrabold tabular-nums ${
-                                      n2PartSummary.passedCutoff
+                                      jlptPartSummary.passedCutoff
                                         ? 'text-success'
                                         : 'text-warning'
                                     }`}
                                   >
-                                    Skor N2 {n2PartSummary.scaledScore}/60 (
-                                    {partScore.accuracyPercent}%)
+                                    {activeJlptPacketScore?.level === 'N3' &&
+                                    part.id === 'dokkai'
+                                      ? `Dokkai ${jlptPartSummary.scaledScore}/60 · Sesi ${partScore.accuracyPercent}%`
+                                      : `Skor ${activeJlptPacketScore?.level ?? 'JLPT'} ${jlptPartSummary.scaledScore}/60 (${partScore.accuracyPercent}%)`}
                                   </span>
                                 ) : (
                                   <span className="font-mono font-extrabold tabular-nums text-success">

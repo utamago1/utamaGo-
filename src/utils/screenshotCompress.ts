@@ -1,5 +1,5 @@
 export const FEEDBACK_SCREENSHOT_MAX_RAW_BYTES = 10 * 1024 * 1024; // 10 MB raw upload cap
-export const FEEDBACK_SCREENSHOT_MAX_CHARS = 260_000; // ~190 KB binary, safely under 1 MB Firestore limit
+export const FEEDBACK_SCREENSHOT_MAX_CHARS = 180_000; // ~135 KB binary, super lightweight for email & storage
 
 export interface CompressedScreenshot {
   dataUrl: string;
@@ -60,7 +60,7 @@ function renderCompressedDataUrl(
     throw new Error('Browser tidak mendukung pemrosesan gambar.');
   }
 
-  // Fill neutral dark-safe backdrop in case source PNG has transparency
+  // Fill neutral white backdrop in case source PNG has transparency
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, width, height);
   ctx.drawImage(img, 0, 0, width, height);
@@ -70,8 +70,8 @@ function renderCompressedDataUrl(
 }
 
 /**
- * Compresses and resizes a user-selected screenshot so it stays crisp and legible
- * for bug debugging while remaining strictly below FEEDBACK_SCREENSHOT_MAX_CHARS.
+ * Compresses and resizes a user-selected screenshot immediately upon selection
+ * so it stays sharp for bug debugging while remaining lightweight (~50-135 KB).
  */
 export async function compressFeedbackScreenshot(
   file: File,
@@ -87,11 +87,11 @@ export async function compressFeedbackScreenshot(
   const img = await loadImageElement(rawDataUrl);
 
   const attempts: ReadonlyArray<{ maxDim: number; quality: number }> = [
-    { maxDim: 1080, quality: 0.78 },
-    { maxDim: 960, quality: 0.7 },
-    { maxDim: 820, quality: 0.6 },
-    { maxDim: 680, quality: 0.5 },
-    { maxDim: 540, quality: 0.42 },
+    { maxDim: 960, quality: 0.72 },
+    { maxDim: 840, quality: 0.62 },
+    { maxDim: 720, quality: 0.54 },
+    { maxDim: 600, quality: 0.46 },
+    { maxDim: 480, quality: 0.38 },
   ];
 
   let best: { dataUrl: string; width: number; height: number } | null = null;

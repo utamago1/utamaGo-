@@ -13,6 +13,7 @@ import {
 import { motion } from 'motion/react';
 import { BRAND_ASSETS } from '../data/utamagoContent';
 import { useOnlineStatus } from '../hooks/useOnlineStatus';
+import { useLanguage } from '../i18n/LanguageContext';
 import { vibrateTap } from '../utils/haptics';
 import type { LevelProgressInfo } from '../utils/levelProgression';
 import type { StoredAppTab } from '../utils/storage';
@@ -34,15 +35,17 @@ interface AppShellNavProps {
 
 const TAB_ITEMS: Array<{
   id: AppTab;
-  shortLabel: string;
-  title: string;
+  shortLabelId: string;
+  shortLabelEn: string;
+  titleId: string;
+  titleEn: string;
   icon: typeof Home;
 }> = [
-  { id: 'home', shortLabel: 'Beranda', title: 'Beranda', icon: Home },
-  { id: 'anki', shortLabel: 'Anki', title: 'Anki', icon: Layers },
-  { id: 'learn', shortLabel: 'Materi', title: 'Materi', icon: BookOpen },
-  { id: 'tryout', shortLabel: 'Tryout', title: 'Tryout', icon: ClipboardCheck },
-  { id: 'profile', shortLabel: 'Profil', title: 'Profil', icon: User },
+  { id: 'home', shortLabelId: 'Beranda', shortLabelEn: 'Home', titleId: 'Beranda', titleEn: 'Home', icon: Home },
+  { id: 'anki', shortLabelId: 'Anki', shortLabelEn: 'Anki', titleId: 'Anki', titleEn: 'Anki', icon: Layers },
+  { id: 'learn', shortLabelId: 'Materi', shortLabelEn: 'Study', titleId: 'Materi', titleEn: 'Study', icon: BookOpen },
+  { id: 'tryout', shortLabelId: 'Tryout', shortLabelEn: 'Tryout', titleId: 'Tryout', titleEn: 'Tryout', icon: ClipboardCheck },
+  { id: 'profile', shortLabelId: 'Profil', shortLabelEn: 'Profile', titleId: 'Profil', titleEn: 'Profile', icon: User },
 ];
 
 export function MobileTopAppBar({
@@ -55,6 +58,7 @@ export function MobileTopAppBar({
   'activeTab' | 'levelProgress' | 'isDark' | 'onToggleDarkLight' | 'onOpenSettings'
 >) {
   const isOnline = useOnlineStatus();
+  const { t } = useLanguage();
   const activeMeta =
     TAB_ITEMS.find((item) => item.id === activeTab) ?? TAB_ITEMS[0];
 
@@ -71,7 +75,9 @@ export function MobileTopAppBar({
             />
           </div>
           <h1 className="truncate font-display text-base font-extrabold tracking-tight text-on-surface">
-            {activeTab === 'home' ? 'UtamaGo!' : activeMeta.title}
+            {activeTab === 'home'
+              ? 'UtamaGo!'
+              : t(activeMeta.titleId, activeMeta.titleEn)}
           </h1>
           <span className="shrink-0 rounded-md border border-primary/35 bg-primary-container/60 px-1.5 py-0.5 font-mono text-[10px] leading-none font-bold tracking-wider uppercase text-on-primary-container">
             Beta
@@ -79,7 +85,7 @@ export function MobileTopAppBar({
           {!isOnline && (
             <span
               className="inline-flex shrink-0 items-center gap-1 text-[11px] font-semibold text-warning"
-              title="Mode offline"
+              title={t('Mode offline', 'Offline mode')}
             >
               <WifiOff className="h-3.5 w-3.5" aria-hidden="true" />
               <span className="hidden min-[390px]:inline">Offline</span>
@@ -94,8 +100,14 @@ export function MobileTopAppBar({
               vibrateTap();
               onToggleDarkLight();
             }}
-            aria-label={isDark ? 'Aktifkan Mode Terang' : 'Aktifkan Mode Malam'}
-            title={isDark ? 'Mode Terang' : 'Mode Malam'}
+            aria-label={
+              isDark
+                ? t('Aktifkan Mode Terang', 'Switch to Light Mode')
+                : t('Aktifkan Mode Malam', 'Switch to Dark Mode')
+            }
+            title={
+              isDark ? t('Mode Terang', 'Light Mode') : t('Mode Malam', 'Dark Mode')
+            }
             className="m3-tactile inline-flex h-11 w-11 items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
           >
             {isDark ? (
@@ -110,8 +122,8 @@ export function MobileTopAppBar({
               vibrateTap();
               onOpenSettings();
             }}
-            aria-label="Buka Pengaturan"
-            title="Pengaturan"
+            aria-label={t('Buka Pengaturan', 'Open Settings')}
+            title={t('Pengaturan', 'Settings')}
             className="m3-tactile inline-flex h-11 w-11 items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
           >
             <Settings className="h-5 w-5" aria-hidden="true" />
@@ -127,15 +139,18 @@ export function MobileBottomNav({
   dueAnkiCount,
   onSelectTab,
 }: Pick<AppShellNavProps, 'activeTab' | 'dueAnkiCount' | 'onSelectTab'>) {
+  const { t } = useLanguage();
   return (
     <nav
-      aria-label="Navigasi Utama Aplikasi"
+      aria-label={t('Navigasi Utama Aplikasi', 'Main App Navigation')}
       className="fixed bottom-0 left-0 right-0 z-40 border-t border-outline-variant bg-surface-container-low/95 pb-safe pl-safe pr-safe backdrop-blur-md lg:hidden"
     >
       <div className="grid h-14 grid-cols-5 items-stretch px-1.5">
         {TAB_ITEMS.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
+          const title = t(item.titleId, item.titleEn);
+          const shortLabel = t(item.shortLabelId, item.shortLabelEn);
           return (
             <button
               key={item.id}
@@ -147,8 +162,8 @@ export function MobileBottomNav({
               aria-current={isActive ? 'page' : undefined}
               aria-label={
                 item.id === 'anki' && dueAnkiCount > 0
-                  ? `${item.title} (${dueAnkiCount} kartu jatuh tempo)`
-                  : item.title
+                  ? `${title} (${dueAnkiCount} ${t('kartu jatuh tempo', 'due cards')})`
+                  : title
               }
               className={`m3-tactile relative flex h-full min-h-[48px] flex-col items-center justify-center gap-1 ${
                 isActive
@@ -181,7 +196,7 @@ export function MobileBottomNav({
                     : 'font-medium text-on-surface-variant'
                 }`}
               >
-                {item.shortLabel}
+                {shortLabel}
               </span>
             </button>
           );
@@ -204,6 +219,7 @@ export function DesktopNavigationRail({
   onOpenSettings,
 }: AppShellNavProps) {
   const isOnline = useOnlineStatus();
+  const { t } = useLanguage();
 
   return (
     <aside className="hidden lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-60 lg:shrink-0 lg:flex-col lg:justify-between lg:border-r lg:border-outline-variant lg:bg-surface-container-low lg:p-5">
@@ -244,8 +260,14 @@ export function DesktopNavigationRail({
                 vibrateTap();
                 onToggleDarkLight();
               }}
-              aria-label={isDark ? 'Aktifkan Mode Terang' : 'Aktifkan Mode Malam'}
-              title={isDark ? 'Mode Terang' : 'Mode Malam'}
+              aria-label={
+                isDark
+                  ? t('Aktifkan Mode Terang', 'Switch to Light Mode')
+                  : t('Aktifkan Mode Malam', 'Switch to Dark Mode')
+              }
+              title={
+                isDark ? t('Mode Terang', 'Light Mode') : t('Mode Malam', 'Dark Mode')
+              }
               className="m3-tactile inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
             >
               {isDark ? (
@@ -260,8 +282,8 @@ export function DesktopNavigationRail({
                 vibrateTap();
                 onOpenSettings();
               }}
-              aria-label="Buka Pengaturan"
-              title="Pengaturan"
+              aria-label={t('Buka Pengaturan', 'Open Settings')}
+              title={t('Pengaturan', 'Settings')}
               className="m3-tactile inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
             >
               <Settings className="h-4.5 w-4.5" aria-hidden="true" />
@@ -269,7 +291,7 @@ export function DesktopNavigationRail({
           </div>
         </div>
 
-        <nav aria-label="Menu Aplikasi" className="mt-5 space-y-1">
+        <nav aria-label={t('Menu Aplikasi', 'App Menu')} className="mt-5 space-y-1">
           {TAB_ITEMS.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -292,7 +314,7 @@ export function DesktopNavigationRail({
                     }`}
                     aria-hidden="true"
                   />
-                  <span>{item.title}</span>
+                  <span>{t(item.titleId, item.titleEn)}</span>
                 </span>
                 {item.id === 'anki' && (
                   <span className="font-mono text-xs tabular-nums text-on-surface-variant">
@@ -336,7 +358,7 @@ export function DesktopNavigationRail({
         {!isOnline && (
           <div className="flex items-center gap-2 px-1 text-xs font-medium text-warning">
             <WifiOff className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-            <span>Mode offline aktif</span>
+            <span>{t('Mode offline aktif', 'Offline mode active')}</span>
           </div>
         )}
       </div>

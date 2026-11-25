@@ -1,3 +1,4 @@
+import { lookupKanjiReadings } from '../data/kanjiReadings';
 import type { JlptLevel } from '../data/utamagoContent';
 import type { AnkiCard } from './ankiParser';
 
@@ -14,6 +15,8 @@ export interface WritingPracticeItem {
   reading: string;
   romaji: string;
   meaning: string;
+  onyomi?: string[];
+  kunyomi?: string[];
   jlptLevel?: JlptLevel;
   exampleWord?: string;
   exampleReading?: string;
@@ -194,6 +197,7 @@ export function extractKanjiPracticeItems(
         }
         continue;
       }
+      const readings = lookupKanjiReadings(ch, cards);
       seenKanji.set(ch, {
         id: `kanji-${ch}`,
         character: ch,
@@ -201,6 +205,8 @@ export function extractKanjiPracticeItems(
         reading: card.furigana || card.word,
         romaji: card.romaji || '',
         meaning: card.meaning || '',
+        onyomi: readings.onyomi,
+        kunyomi: readings.kunyomi,
         jlptLevel: card.jlptLevel,
         exampleWord: card.word,
         exampleReading: card.furigana || card.word,
@@ -245,6 +251,7 @@ export function buildWritingPracticeDeck(params: {
       return seedKanjis.map((ch) => {
         const directCard = cardIndex.get(ch);
         if (directCard) {
+          const readings = lookupKanjiReadings(ch, cards);
           return {
             id: `kanji-${ch}`,
             character: ch,
@@ -252,6 +259,8 @@ export function buildWritingPracticeDeck(params: {
             reading: directCard.furigana || directCard.word,
             romaji: directCard.romaji || '',
             meaning: directCard.meaning || '',
+            onyomi: readings.onyomi,
+            kunyomi: readings.kunyomi,
             jlptLevel: directCard.jlptLevel,
             exampleWord: directCard.word,
             exampleReading: directCard.furigana || directCard.word,
@@ -259,17 +268,20 @@ export function buildWritingPracticeDeck(params: {
             isDifficult: difficultCardIds?.has(directCard.id) ?? false,
           };
         }
-        return (
-          fallbackMap.get(ch) ?? {
-            id: `kanji-${ch}`,
-            character: ch,
-            kind: 'kanji',
-            reading: seedText,
-            romaji: '',
-            meaning: `Kanji dari "${seedText}"`,
-            exampleWord: seedText,
-          }
-        );
+        const fallbackHit = fallbackMap.get(ch);
+        if (fallbackHit) return fallbackHit;
+        const readings = lookupKanjiReadings(ch, cards);
+        return {
+          id: `kanji-${ch}`,
+          character: ch,
+          kind: 'kanji',
+          reading: seedText,
+          romaji: '',
+          meaning: `Kanji dari "${seedText}"`,
+          onyomi: readings.onyomi,
+          kunyomi: readings.kunyomi,
+          exampleWord: seedText,
+        };
       });
     }
   }

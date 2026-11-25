@@ -29,6 +29,11 @@ import {
   JLPT_N2_SECTION_PASS_MIN,
 } from '../utils/jlptN2Scoring';
 import {
+  evaluateJlptN3PartScore,
+  evaluateJlptN3SessionBunpouSupplement,
+  JLPT_N3_OFFICIAL_TIMING,
+} from '../utils/jlptN3Scoring';
+import {
   evaluatePartFormProgress,
   evaluatePartScore,
   formatAudioTime,
@@ -206,10 +211,16 @@ export function TryOutFormRunner({
     [pages, values],
   );
   const isN2Level = levelLabel.toUpperCase().includes('N2');
-  const n2PartScore = useMemo(
-    () => (isN2Level ? evaluateJlptN2PartScore(part.id, pages, values) : null),
-    [isN2Level, pages, part.id, values],
-  );
+  const isN3Level = levelLabel.toUpperCase().includes('N3');
+  const jlptPartScore = useMemo(() => {
+    if (isN2Level) return evaluateJlptN2PartScore(part.id, pages, values);
+    if (isN3Level) return evaluateJlptN3PartScore(part.id, pages, values);
+    return null;
+  }, [isN2Level, isN3Level, pages, part.id, values]);
+  const n3BunpouSupplement = useMemo(() => {
+    if (!isN3Level || part.id !== 'dokkai') return null;
+    return evaluateJlptN3SessionBunpouSupplement(pages, values);
+  }, [isN3Level, pages, part.id, values]);
   const wrongItemIds = useMemo(
     () => new Set(scoreSummary.wrongItems.map((w) => w.itemId)),
     [scoreSummary.wrongItems],
@@ -452,6 +463,14 @@ export function TryOutFormRunner({
               sebelum dikumpulkan, kamu bisa memilih simpan progres atau keluar
               tanpa simpan.
             </p>
+            {isN3Level && (
+              <p className="mt-1 text-[11px] font-medium text-on-surface-variant">
+                Jadwal resmi JLPT N3 ({JLPT_N3_OFFICIAL_TIMING.totalMinutes} mnt):
+                Moji-Goi {JLPT_N3_OFFICIAL_TIMING.mojiGoiMinutes} mnt · Bunpou
+                &amp; Dokkai {JLPT_N3_OFFICIAL_TIMING.bunpouDokkaiMinutes} mnt ·
+                Choukai {JLPT_N3_OFFICIAL_TIMING.choukaiMinutes} mnt.
+              </p>
+            )}
           </div>
 
           <div className="shrink-0 rounded-2xl bg-surface-container px-4 py-2.5 sm:min-w-[190px]">
@@ -552,25 +571,25 @@ export function TryOutFormRunner({
           </div>
 
           <div className="space-y-4 rounded-2xl bg-surface-container p-4 sm:p-5">
-            {n2PartScore ? (
+            {jlptPartScore ? (
               <>
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <p className="text-xs font-semibold text-on-surface-variant">
-                      Estimasi Skor JLPT N2 · {n2PartScore.japaneseLabel} ({examCode})
+                      Estimasi Skor {levelLabel} · {jlptPartScore.japaneseLabel} ({examCode})
                     </p>
                     <p className="mt-0.5 font-display text-lg font-extrabold text-on-surface">
-                      Benar {n2PartScore.correctCount} dari{' '}
-                      {n2PartScore.totalQuestions} Soal
+                      Benar {jlptPartScore.correctCount} dari{' '}
+                      {jlptPartScore.totalQuestions} Soal
                     </p>
                     <div className="mt-1 flex flex-wrap items-center gap-x-2 text-xs text-on-surface-variant">
                       <span className="font-mono tabular-nums">
-                        Akurasi {n2PartScore.accuracyPercent}%
+                        Akurasi {jlptPartScore.accuracyPercent}%
                       </span>
                       <span aria-hidden="true">·</span>
                       <span className="font-mono tabular-nums">
-                        Poin berbobot {n2PartScore.earnedRawPoints}/
-                        {n2PartScore.maxRawPoints}
+                        Poin berbobot {jlptPartScore.earnedRawPoints}/
+                        {jlptPartScore.maxRawPoints}
                       </span>
                       <span aria-hidden="true">·</span>
                       <span className="font-mono tabular-nums">
@@ -582,24 +601,24 @@ export function TryOutFormRunner({
                   <div className="text-left sm:text-right">
                     <p
                       className={`font-mono text-2xl font-extrabold tabular-nums ${
-                        n2PartScore.passedCutoff
+                        jlptPartScore.passedCutoff
                           ? 'text-success'
                           : 'text-primary'
                       }`}
                     >
-                      {n2PartScore.scaledScore}
+                      {jlptPartScore.scaledScore}
                       <span className="text-sm font-bold text-on-surface-variant">
                         /{JLPT_N2_SECTION_MAX}
                       </span>
                     </p>
                     <p
                       className={`mt-0.5 inline-flex items-center gap-1 text-xs font-bold ${
-                        n2PartScore.passedCutoff
+                        jlptPartScore.passedCutoff
                           ? 'text-success'
                           : 'text-warning'
                       }`}
                     >
-                      {n2PartScore.passedCutoff ? (
+                      {jlptPartScore.passedCutoff ? (
                         <>
                           <CheckCircle2
                             className="h-3.5 w-3.5 shrink-0"
@@ -625,22 +644,22 @@ export function TryOutFormRunner({
                     <div
                       className="h-2.5 w-full overflow-hidden rounded-full bg-surface-container-high"
                       role="progressbar"
-                      aria-valuenow={n2PartScore.scaledScore}
+                      aria-valuenow={jlptPartScore.scaledScore}
                       aria-valuemin={0}
                       aria-valuemax={JLPT_N2_SECTION_MAX}
-                      aria-label={`Skor estimasi JLPT N2 ${part.title}: ${n2PartScore.scaledScore} dari ${JLPT_N2_SECTION_MAX}`}
+                      aria-label={`Skor estimasi ${levelLabel} ${part.title}: ${jlptPartScore.scaledScore} dari ${JLPT_N2_SECTION_MAX}`}
                     >
                       <div
                         className={`h-full rounded-full transition-all duration-300 ${
-                          n2PartScore.scaledScore >= 30
+                          jlptPartScore.scaledScore >= 32
                             ? 'bg-success'
-                            : n2PartScore.passedCutoff
+                            : jlptPartScore.passedCutoff
                               ? 'bg-warning'
                               : 'bg-primary'
                         }`}
                         style={{
                           width: `${Math.round(
-                            (n2PartScore.scaledScore / JLPT_N2_SECTION_MAX) * 100,
+                            (jlptPartScore.scaledScore / JLPT_N2_SECTION_MAX) * 100,
                           )}%`,
                         }}
                       />
@@ -656,12 +675,12 @@ export function TryOutFormRunner({
                   <div className="mt-1.5 flex items-center justify-between font-mono text-[11px] tabular-nums text-on-surface-variant">
                     <span>0</span>
                     <span>Ambang 19</span>
-                    <span>Target 30+</span>
+                    <span>{isN3Level ? 'Target 32+' : 'Target 30+'}</span>
                     <span>60</span>
                   </div>
                 </div>
 
-                {n2PartScore.mondaiBreakdown.length > 0 && (
+                {jlptPartScore.mondaiBreakdown.length > 0 && (
                   <div className="border-t border-outline-variant pt-3">
                     <button
                       type="button"
@@ -674,8 +693,8 @@ export function TryOutFormRunner({
                     >
                       <span>
                         Rincian Bobot per Mondai (
-                        {n2PartScore.mondaiBreakdown.length} Mondai · Menyesuaikan{' '}
-                        {n2PartScore.totalQuestions} Soal)
+                        {jlptPartScore.mondaiBreakdown.length} Mondai · Menyesuaikan{' '}
+                        {jlptPartScore.totalQuestions} Soal)
                       </span>
                       {showMondaiBreakdown ? (
                         <ChevronUp
@@ -710,7 +729,7 @@ export function TryOutFormRunner({
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-outline-variant/60">
-                            {n2PartScore.mondaiBreakdown.map((row) => (
+                            {jlptPartScore.mondaiBreakdown.map((row) => (
                               <tr key={row.pageId}>
                                 <td className="py-2 pr-1.5 font-medium text-on-surface sm:pr-2">
                                   {row.title}
@@ -730,24 +749,75 @@ export function TryOutFormRunner({
                           <tfoot>
                             <tr className="border-t border-outline-variant font-bold text-on-surface">
                               <td className="pt-2.5 pr-1.5 sm:pr-2">
-                                Total (× 60 ÷ {n2PartScore.maxRawPoints})
+                                {isN3Level && part.id === 'moji-bunpou'
+                                  ? `Subtotal Moji-Goi (digabung Bunpou 23 → ÷ 58 × 60)`
+                                  : `Total (× 60 ÷ ${jlptPartScore.maxRawPoints})`}
                               </td>
                               <td className="px-1.5 pt-2.5 text-right font-mono text-on-surface-variant sm:px-2">
                                 —
                               </td>
                               <td className="whitespace-nowrap px-1.5 pt-2.5 text-right font-mono tabular-nums sm:px-2">
-                                {n2PartScore.correctCount}/
-                                {n2PartScore.totalQuestions}
+                                {jlptPartScore.correctCount}/
+                                {jlptPartScore.totalQuestions}
                               </td>
                               <td className="whitespace-nowrap pt-2.5 pl-1.5 text-right font-mono tabular-nums text-primary sm:pl-2">
-                                {n2PartScore.earnedRawPoints}/
-                                {n2PartScore.maxRawPoints}
+                                {jlptPartScore.earnedRawPoints}/
+                                {jlptPartScore.maxRawPoints}
                               </td>
                             </tr>
                           </tfoot>
                         </table>
                       </div>
                     )}
+                  </div>
+                )}
+
+                {isN3Level && part.id === 'moji-bunpou' && (
+                  <p className="rounded-xl border border-outline-variant/80 bg-surface px-3.5 py-2.5 text-[11px] leading-relaxed text-on-surface-variant">
+                    <strong className="font-bold text-on-surface">
+                      Catatan Penilaian JLPT N3:
+                    </strong>{' '}
+                    Poin Moji-Goi ({jlptPartScore.earnedRawPoints}/{jlptPartScore.maxRawPoints} poin) akan otomatis digabung dengan Bunpou (23 poin pada Bagian 02 · Bunpou &amp; Dokkai) menjadi total 58 poin untuk menghitung skor resmi{' '}
+                    <strong className="font-mono text-on-surface">
+                      言語知識 (Poin ÷ 58 × 60)
+                    </strong>{' '}
+                    di ringkasan paket.
+                  </p>
+                )}
+
+                {n3BunpouSupplement && (
+                  <div className="space-y-2.5 rounded-xl border border-outline-variant/80 bg-surface p-3.5">
+                    <div className="flex flex-wrap items-baseline justify-between gap-2">
+                      <div>
+                        <p className="text-xs font-bold text-on-surface">
+                          文法 · Bunpou di Sesi Ini (Digabung ke Skor 言語知識)
+                        </p>
+                        <p className="text-[11px] text-on-surface-variant">
+                          Setiap soal Bunpou bernilai ×1 poin (23 poin) + Moji-Goi (35 poin) = 58 poin → ÷ 58 × 60
+                        </p>
+                      </div>
+                      <span className="font-mono text-sm font-extrabold tabular-nums text-primary">
+                        {n3BunpouSupplement.earnedRawPoints}/{n3BunpouSupplement.maxRawPoints} poin
+                      </span>
+                    </div>
+                    <div className="divide-y divide-outline-variant/60 border-t border-outline-variant/70 pt-1 text-xs">
+                      {n3BunpouSupplement.mondaiBreakdown.map((row) => (
+                        <div
+                          key={row.pageId}
+                          className="flex items-center justify-between gap-2 py-1.5"
+                        >
+                          <span className="font-medium text-on-surface">
+                            {row.title}
+                          </span>
+                          <span className="shrink-0 font-mono tabular-nums text-on-surface-variant">
+                            {row.weightLabel} ·{' '}
+                            <strong className="text-on-surface">
+                              {row.earnedRawPoints}/{row.maxRawPoints}
+                            </strong>
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
               </>

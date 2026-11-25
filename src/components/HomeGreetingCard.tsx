@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useLanguage } from '../i18n/LanguageContext';
 import { vibrateTap } from '../utils/haptics';
 import type { LearnerGender, LevelProgressInfo } from '../utils/levelProgression';
 import {
@@ -90,6 +91,7 @@ export function HomeGreetingCard({
   src,
   hourOverride,
 }: HomeGreetingCardProps) {
+  const { t } = useLanguage();
   const [tapReaction, setTapReaction] = useState<'tap_kaget' | 'happy' | null>(
     null,
   );
@@ -374,7 +376,9 @@ export function HomeGreetingCard({
 
         <div className="min-w-0 flex-1">
           <h2 className="truncate font-display text-base font-bold leading-snug tracking-tight text-on-surface sm:text-[17px]">
-            {learnerName ? `Halo, ${learnerName}!` : 'Halo, Pelajar!'}
+            {learnerName
+              ? `${t('Halo', 'Hello')}, ${learnerName}!`
+              : t('Halo, Pelajar!', 'Hello, Learner!')}
           </h2>
 
           <div className="mt-1 flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1">
@@ -421,7 +425,7 @@ export function HomeGreetingCard({
       <div className="mt-3 space-y-1.5">
         <div className="flex items-center justify-between gap-2 text-[13px]">
           <span className="text-on-surface-variant">
-            Menuju Level{' '}
+            {t('Menuju Level', 'To Level')}{' '}
             <span className="font-mono tabular-nums">
               {levelProgress.level + 1}
             </span>

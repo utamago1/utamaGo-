@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ArrowLeft, ExternalLink, Instagram, Lock } from 'lucide-react';
 import { BRAND_ASSETS } from '../data/utamagoContent';
+import { useLanguage } from '../i18n/LanguageContext';
 import { vibrateTap } from '../utils/haptics';
 import {
   TEACHER_INSTAGRAM_HANDLE,
@@ -15,6 +16,7 @@ interface ProfileAboutViewProps {
 }
 
 export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
+  const { t } = useLanguage();
   const [logoFailed, setLogoFailed] = useState(false);
 
   return (
@@ -30,15 +32,18 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
           className="inline-flex min-h-[44px] items-center gap-1.5 rounded-xl border border-outline-variant bg-surface-container-low px-3 py-2 text-sm font-medium text-on-surface-variant transition-colors hover:text-on-surface"
         >
           <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden="true" />
-          <span>Kembali ke Profil</span>
+          <span>{t('Kembali ke Profil', 'Back to Profile')}</span>
         </button>
 
         <div>
           <h2 className="font-display text-xl font-bold tracking-tight text-on-surface sm:text-2xl">
-            Tentang UtamaGo!
+            {t('Tentang UtamaGo!', 'About UtamaGo!')}
           </h2>
           <p className="mt-1 text-[13px] text-on-surface-variant">
-            Informasi aplikasi dan tim pengajar di balik UtamaGo!.
+            {t(
+              'Informasi aplikasi dan tim pengajar di balik UtamaGo!.',
+              'App overview and the teaching team behind UtamaGo!.',
+            )}
           </p>
         </div>
       </div>
@@ -65,7 +70,7 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
             )}
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             <div className="flex flex-wrap items-center gap-2">
               <h3 className="font-display text-lg font-bold text-on-surface">
                 Utama<span className="text-primary">Go!</span>
@@ -75,39 +80,34 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
               </span>
             </div>
             <p className="text-sm leading-relaxed text-on-surface-variant">
-              Lahir dari pengalaman pribadi pendiri yang sempat kebingungan
-              mencari strategi belajar JLPT, khususnya tingkat N2 dan N1, serta
-              sulitnya menemukan akses simulasi ujian (Try Out) yang terpercaya.
-            </p>
-            <p className="text-sm leading-relaxed text-on-surface-variant">
-              Untuk menjawab kebutuhan tersebut, UtamaGo! hadir agar persiapan
-              JLPT lebih terstruktur dan mudah diikuti dari tingkat pemula
-              hingga mahir. Aplikasi ini menggabungkan flashcard Anki Kosakata
-              N5–N1 (7.413 kartu), materi &amp; kartu Bunpou N5–N1 (553 pola),
-              Arena Tantangan 30 Stage N5–N1 (Mode Blitz, Survival, Susun
-              Kalimat, Tebak Audio &amp; Boss Stage), Studio Latihan Menulis
-              Kana/Kanji &amp; Kamus N5–N1, hingga 15 paket Try Out JLPT N3, N2
-              &amp; N1 terverifikasi lengkap dengan kunci resmi, audio, dan
-              transkrip Choukai secara gratis.
+              {t(
+                'UtamaGo! adalah ruang belajar JLPT N5–N1 gratis yang menyatukan flashcard Anki, materi Bunpou, latihan menulis Kanji, Arena Tantangan, hingga paket Try Out lengkap dengan audio dan pembahasan.',
+                'UtamaGo! is a free JLPT N5–N1 study companion uniting Anki flashcards, Bunpou grammar, Kanji writing practice, Challenge Arena, and verified Try Out exams with audio and explanations.',
+              )}
             </p>
             <p className="rounded-xl border border-outline-variant bg-surface px-3.5 py-2.5 text-xs leading-relaxed text-on-surface-variant">
-              (Filosofi nama: UtamaGo! diambil dari nama pendiri, Utama, yang
-              dipadukan hingga menyerupai kata bahasa Jepang &ldquo;Tamago&rdquo;
-              (telur). Layaknya telur yang menjadi awal kehidupan, aplikasi ini
-              diharapkan menjadi titik awal perjalanan belajarmu. Itulah alasan
-              logo kami berbentuk telur!)
+              {t(
+                'Filosofi nama: UtamaGo! memadukan nama pendiri (Utama) dengan kata Jepang "Tamago" (telur) — simbol titik awal perjalanan belajarmu.',
+                'Name philosophy: UtamaGo! blends the founder\'s name (Utama) with the Japanese word "Tamago" (egg) — symbolizing the starting point of your study journey.',
+              )}
             </p>
             <p className="font-display text-sm font-semibold text-primary">
-              Belajar Cerdas. Latih Rutin. Lulus JLPT.
+              {t(
+                'Belajar Cerdas. Latih Rutin. Lulus JLPT.',
+                'Study Smart. Practice Daily. Pass JLPT.',
+              )}
             </p>
           </div>
         </div>
       </section>
 
       {/* Founder & Partner Profiles */}
-      <section aria-label="Profil Pendiri & Pengajar" className="space-y-3">
+      <section
+        aria-label={t('Profil Pendiri & Pengajar', 'Founder & Teacher Profiles')}
+        className="space-y-3"
+      >
         <h3 className="font-display text-base font-bold text-on-surface">
-          Pendiri &amp; Pengajar
+          {t('Pendiri & Pengajar', 'Founder & Teachers')}
         </h3>
 
         <div className="grid grid-cols-1 divide-y divide-outline-variant rounded-2xl border border-outline-variant bg-surface-container-low md:grid-cols-2 md:divide-x md:divide-y-0">
@@ -129,7 +129,10 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
                   Ryan Alief Utama
                 </h4>
                 <p className="mt-0.5 text-xs font-semibold text-primary">
-                  Pendiri UtamaGo! &amp; Pengajar Bahasa Jepang
+                  {t(
+                    'Pendiri UtamaGo! & Pengajar Bahasa Jepang',
+                    'Founder of UtamaGo! & Japanese Teacher',
+                  )}
                 </p>
                 {FOUNDER_MOTTO && (
                   <p className="mt-1.5 text-xs italic leading-relaxed text-[#4b4b53] dark:text-[#b4b4c0]">
@@ -140,10 +143,22 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
             </div>
             <ul className="space-y-1.5 text-sm leading-relaxed text-on-surface-variant">
               <li>
-                · Lulusan Pendidikan Bahasa Jepang, Universitas Negeri Surabaya
+                ·{' '}
+                {t(
+                  'Lulusan Pendidikan Bahasa Jepang, Universitas Negeri Surabaya',
+                  'B.Ed. in Japanese Language Education, State University of Surabaya',
+                )}
               </li>
-              <li>· Pemegang sertifikasi JLPT N1</li>
-              <li>· Bekerja sebagai penerjemah di perusahaan Jepang</li>
+              <li>
+                · {t('Pemegang sertifikasi JLPT N1', 'JLPT N1 certified')}
+              </li>
+              <li>
+                ·{' '}
+                {t(
+                  'Bekerja sebagai penerjemah di perusahaan Jepang',
+                  'Works as a translator at a Japanese company',
+                )}
+              </li>
             </ul>
             <a
               href={TEACHER_INSTAGRAM_URL}
@@ -163,7 +178,10 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
 
           {/* Partner profile locked during Beta Tester */}
           <div
-            aria-label="Profil Partner Terkunci selama Beta Tester"
+            aria-label={t(
+              'Profil Partner Terkunci selama Beta Tester',
+              'Partner Profile Locked during Beta Testing',
+            )}
             className="flex flex-col justify-between space-y-4 bg-surface-container/35 p-4 sm:p-6"
           >
             <div className="space-y-4">
@@ -173,10 +191,10 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
                 </div>
                 <div className="min-w-0">
                   <h4 className="font-display text-base font-bold text-on-surface">
-                    Partner Utama
+                    {t('Partner Utama', 'Lead Partner')}
                   </h4>
                   <p className="mt-0.5 text-xs font-semibold text-on-surface-variant">
-                    Terkunci · Beta Tester
+                    {t('Terkunci · Beta Tester', 'Locked · Beta Tester')}
                   </p>
                   {PARTNER_MOTTO && (
                     <p className="mt-1.5 text-xs italic leading-relaxed text-[#4b4b53] dark:text-[#b4b4c0]">
@@ -186,21 +204,28 @@ export function ProfileAboutView({ onBack }: ProfileAboutViewProps) {
                 </div>
               </div>
               <p className="text-sm leading-relaxed text-on-surface-variant">
-                Profil partner dan pengajar ini dikunci sementara selama masa
-                Beta Tester dan akan dibuka saat rilis resmi UtamaGo!.
+                {t(
+                  'Profil partner dan pengajar ini dikunci sementara selama masa Beta Tester dan akan dibuka saat rilis resmi UtamaGo!.',
+                  'This partner and teacher profile is temporarily locked during Beta Testing and will open on the official UtamaGo! release.',
+                )}
               </p>
             </div>
 
             <div className="inline-flex min-h-[44px] w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-outline-variant bg-surface-container px-3.5 py-2 text-xs font-bold text-on-surface-variant sm:w-auto">
               <Lock className="h-4 w-4 shrink-0" aria-hidden="true" />
-              <span>Terkunci Selama Masa Beta</span>
+              <span>
+                {t('Terkunci Selama Masa Beta', 'Locked During Beta')}
+              </span>
             </div>
           </div>
         </div>
       </section>
 
       <p className="text-xs text-on-surface-variant">
-        *UtamaGo! bukan penyelenggara resmi JLPT. © 2026 UtamaGo!
+        {t(
+          '*UtamaGo! bukan penyelenggara resmi JLPT. © 2026 UtamaGo!',
+          '*UtamaGo! is not an official JLPT organizer. © 2026 UtamaGo!',
+        )}
       </p>
     </div>
   );
