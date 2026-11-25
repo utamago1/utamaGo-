@@ -36,6 +36,7 @@ import {
   type BunpouN2Item,
 } from '../utils/bunpouN2Parser';
 import { vibrateSuccess, vibrateTap } from '../utils/haptics';
+import { prefetchJapaneseSpeechBatch } from '../utils/japaneseSpeech';
 import {
   isJlptLevelUnlocked,
   JLPT_LEVELS_ASC,
@@ -302,6 +303,22 @@ export function BunpouSection({
   const activePos = activeItem
     ? displayedItems.findIndex((item) => item.id === activeItem.id)
     : -1;
+
+  // Pre-warm audio for active Bunpou example sentences so tapping Dengar is instant
+  useEffect(() => {
+    if (!activeItem) return;
+    const targets = activeItem.examples
+      .slice(0, 2)
+      .map((ex) => ex.jp)
+      .filter(Boolean);
+    if (targets.length === 0) {
+      targets.push(activeItem.pattern);
+    }
+    const timer = window.setTimeout(() => {
+      prefetchJapaneseSpeechBatch(targets);
+    }, 220);
+    return () => window.clearTimeout(timer);
+  }, [activeItem]);
 
   const activeGroupLabel = useMemo(
     () => activeBunpouGroups.find((g) => g.id === groupFilter)?.shortLabel ?? '',
@@ -609,24 +626,26 @@ export function BunpouSection({
                 )}
               </div>
             )}
-            <SpeechControlBar
-              text={activeItem.examples[0]?.jp || activeItem.pattern}
-              compact
-              showQuickSettings
-              className="mt-3"
-            />
-            <StudyNotePanel
-              itemId={activeItem.id}
-              entry={getStudyNoteEntry(studyNotes, 'bunpou', activeItem.id)}
-              onToggleBookmark={() =>
-                toggleStudyBookmark('bunpou', activeItem.id)
-              }
-              onSaveNote={(noteText) =>
-                saveStudyNoteText('bunpou', activeItem.id, noteText)
-              }
-              placeholder="Contoh: bedanya dengan pola mirip, konteks formal/kasual, atau trik ingat..."
-              className="mt-3"
-            />
+            <div className="mt-4 space-y-2.5">
+              <SpeechControlBar
+                text={activeItem.examples[0]?.jp || activeItem.pattern}
+                compact
+                align="left"
+                showQuickSettings
+              />
+              <StudyNotePanel
+                itemId={activeItem.id}
+                entry={getStudyNoteEntry(studyNotes, 'bunpou', activeItem.id)}
+                onToggleBookmark={() =>
+                  toggleStudyBookmark('bunpou', activeItem.id)
+                }
+                onSaveNote={(noteText) =>
+                  saveStudyNoteText('bunpou', activeItem.id, noteText)
+                }
+                compact
+                placeholder="Contoh: bedanya dengan pola mirip, konteks formal/kasual, atau trik ingat..."
+              />
+            </div>
           </div>
 
           <div className="space-y-1">

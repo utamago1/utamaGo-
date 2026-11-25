@@ -54,6 +54,9 @@ export function StudyNotePanel({
   };
 
   const hasNote = entry.note.length > 0;
+  const actionBtnSize = compact
+    ? 'min-h-[40px] px-3 py-1.5'
+    : 'min-h-[44px] px-3.5 py-2';
 
   return (
     <div className={`space-y-2.5 ${className}`}>
@@ -65,14 +68,14 @@ export function StudyNotePanel({
             onToggleBookmark();
           }}
           aria-pressed={entry.bookmarked}
-          className={`m3-tactile inline-flex min-h-[44px] items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border px-3.5 py-2 text-xs font-bold transition-colors ${
+          className={`m3-tactile inline-flex ${actionBtnSize} items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border text-xs font-bold transition-colors ${
             entry.bookmarked
               ? 'border-warning/45 bg-warning-container text-on-warning-container hover:opacity-90'
               : 'border-outline-variant bg-surface text-on-surface hover:border-outline hover:bg-surface-container'
           }`}
         >
           <Bookmark
-            className={`h-4 w-4 shrink-0 ${
+            className={`h-3.5 w-3.5 shrink-0 ${
               entry.bookmarked
                 ? 'fill-warning text-warning'
                 : 'text-on-surface-variant'
@@ -94,14 +97,14 @@ export function StudyNotePanel({
             }
           }}
           aria-expanded={editing}
-          className={`m3-tactile inline-flex min-h-[44px] items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border px-3.5 py-2 text-xs font-bold transition-colors ${
+          className={`m3-tactile inline-flex ${actionBtnSize} items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border text-xs font-bold transition-colors ${
             editing || hasNote
               ? 'border-warning/45 bg-warning-container text-on-warning-container hover:opacity-90'
               : 'border-outline-variant bg-surface text-on-surface hover:border-outline hover:bg-surface-container'
           }`}
         >
           <StickyNote
-            className={`h-4 w-4 shrink-0 ${
+            className={`h-3.5 w-3.5 shrink-0 ${
               hasNote || editing ? 'text-warning' : 'text-on-surface-variant'
             }`}
             aria-hidden="true"

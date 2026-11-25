@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import type { TryOutFormPage } from '../data/tryOutN2Data';
 import { vibrateError, vibrateSuccess, vibrateTap } from '../utils/haptics';
+import { evaluateJlptN1PartScore } from '../utils/jlptN1Scoring';
 import {
   evaluateJlptN2PartScore,
   JLPT_N2_SECTION_MAX,
@@ -210,13 +211,15 @@ export function TryOutFormRunner({
     () => evaluatePartScore(pages, values),
     [pages, values],
   );
+  const isN1Level = levelLabel.toUpperCase().includes('N1');
   const isN2Level = levelLabel.toUpperCase().includes('N2');
   const isN3Level = levelLabel.toUpperCase().includes('N3');
   const jlptPartScore = useMemo(() => {
+    if (isN1Level) return evaluateJlptN1PartScore(part.id, pages, values);
     if (isN2Level) return evaluateJlptN2PartScore(part.id, pages, values);
     if (isN3Level) return evaluateJlptN3PartScore(part.id, pages, values);
     return null;
-  }, [isN2Level, isN3Level, pages, part.id, values]);
+  }, [isN1Level, isN2Level, isN3Level, pages, part.id, values]);
   const n3BunpouSupplement = useMemo(() => {
     if (!isN3Level || part.id !== 'dokkai') return null;
     return evaluateJlptN3SessionBunpouSupplement(pages, values);
@@ -274,12 +277,16 @@ export function TryOutFormRunner({
     onSheetViewerOpenChangeRef.current?.(false);
   };
 
+  const handledCloseSheetSignalRef = useRef(closeSheetSignal);
+
   useEffect(() => {
-    if (closeSheetSignal > 0 && sheetModalIndex !== null) {
+    if (closeSheetSignal === handledCloseSheetSignalRef.current) return;
+    handledCloseSheetSignalRef.current = closeSheetSignal;
+    if (sheetOpenRef.current) {
       setSheetModalIndex(null);
       setSheetZoom(1);
     }
-  }, [closeSheetSignal, sheetModalIndex]);
+  }, [closeSheetSignal]);
 
   useEffect(() => {
     if (sheetModalIndex === null) return;
@@ -675,7 +682,13 @@ export function TryOutFormRunner({
                   <div className="mt-1.5 flex items-center justify-between font-mono text-[11px] tabular-nums text-on-surface-variant">
                     <span>0</span>
                     <span>Ambang 19</span>
-                    <span>{isN3Level ? 'Target 32+' : 'Target 30+'}</span>
+                    <span>
+                      {isN1Level
+                        ? 'Target 34+'
+                        : isN3Level
+                          ? 'Target 32+'
+                          : 'Target 30+'}
+                    </span>
                     <span>60</span>
                   </div>
                 </div>

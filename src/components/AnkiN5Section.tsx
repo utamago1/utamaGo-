@@ -73,6 +73,7 @@ import {
 import {
   isJapaneseSpeechSupported,
   loadSpeechPreferences,
+  prefetchJapaneseSpeechBatch,
   speakJapanese,
   stopJapaneseSpeech,
 } from '../utils/japaneseSpeech';
@@ -294,12 +295,17 @@ export function AnkiN5Section({
     onStudyModalOpenChangeRef.current?.(open);
   }, []);
 
+  const handledCloseSignalRef = useRef(closeModalSignal);
+
   useEffect(() => {
-    if (closeModalSignal > 0 && studyModalOpen) {
+    if (closeModalSignal === handledCloseSignalRef.current) return;
+    handledCloseSignalRef.current = closeModalSignal;
+    if (studyModalOpenRef.current) {
+      stopJapaneseSpeech();
       setStudyModalOpen(false);
       setBrowsePreviewSession(null);
     }
-  }, [closeModalSignal, studyModalOpen]);
+  }, [closeModalSignal]);
 
   useEffect(() => {
     return () => {
@@ -687,6 +693,37 @@ export function AnkiN5Section({
       setPopupOpen(false);
     }
   }, [activeModalSession, setPopupOpen, studyModalOpen]);
+
+  // Proactively pre-warm TTS cache for the active Anki card (word + first example)
+  // and the next card in queue so tapping Dengar is instantaneous
+  useEffect(() => {
+    if (!studyModalOpen || !activeCard || !canSpeakJapanese) return;
+    const nextIdx = activeModalSession
+      ? activeModalSession.currentIndex + 1
+      : -1;
+    const nextCardId =
+      activeModalSession &&
+      nextIdx >= 0 &&
+      nextIdx < activeModalSession.queueCardIds.length
+        ? activeModalSession.queueCardIds[nextIdx]
+        : null;
+    const nextCard = nextCardId ? cardById.get(nextCardId) : undefined;
+
+    const timer = window.setTimeout(() => {
+      prefetchJapaneseSpeechBatch([
+        activeCard.word,
+        activeCard.examples[0]?.jp,
+        nextCard?.word,
+      ]);
+    }, 120);
+    return () => window.clearTimeout(timer);
+  }, [
+    activeCard,
+    activeModalSession,
+    canSpeakJapanese,
+    cardById,
+    studyModalOpen,
+  ]);
 
   // Auto-play pronunciation when user enables autoPlayAnki preference
   useEffect(() => {
@@ -2663,6 +2700,7 @@ export function AnkiN5Section({
                       <div className="mt-3.5 flex justify-center">
                         <SpeechControlBar
                           text={activeCard.word}
+                          align="center"
                           showQuickSettings={false}
                           showAutoPlayToggle={false}
                           onWriteKanji={

@@ -1,3 +1,4 @@
+import { readStoredLanguage, type AppLanguage } from '../i18n/LanguageContext';
 import type { TryOutPacketPartId } from '../utils/tryOutPacket';
 
 export interface TryOutQuestionExplanation {
@@ -25,6 +26,7 @@ export interface TryOutExplanationRequest {
   correctText?: string;
   passageContext?: string;
   transcript?: string;
+  lang?: AppLanguage;
 }
 
 const STORAGE_KEY = 'utamago_tryout_explanations_v1';
@@ -40,10 +42,12 @@ const inFlightRequests = new Map<string, Promise<TryOutQuestionExplanation>>();
 export function buildTryOutExplanationCacheKey(
   req: Pick<
     TryOutExplanationRequest,
-    'levelLabel' | 'examCode' | 'partId' | 'itemId' | 'chosen' | 'correct'
+    'levelLabel' | 'examCode' | 'partId' | 'itemId' | 'chosen' | 'correct' | 'lang'
   >,
 ): string {
+  const effectiveLang = req.lang ?? readStoredLanguage();
   return [
+    effectiveLang,
     req.levelLabel.trim().toUpperCase(),
     req.examCode.trim(),
     req.partId,
@@ -142,7 +146,11 @@ function parseExplanationPayload(raw: unknown): TryOutQuestionExplanation | null
 export async function fetchTryOutWrongExplanation(
   request: TryOutExplanationRequest,
 ): Promise<TryOutQuestionExplanation> {
-  const cacheKey = buildTryOutExplanationCacheKey(request);
+  const effectiveLang = request.lang ?? readStoredLanguage();
+  const cacheKey = buildTryOutExplanationCacheKey({
+    ...request,
+    lang: effectiveLang,
+  });
   const cached = getCachedTryOutExplanation(cacheKey);
   if (cached) {
     return cached;
@@ -160,6 +168,7 @@ export async function fetchTryOutWrongExplanation(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        lang: effectiveLang,
         levelLabel: request.levelLabel,
         examCode: request.examCode,
         partId: request.partId,
@@ -190,12 +199,16 @@ export async function fetchTryOutWrongExplanation(
       if (response.status === 429) {
         throw new Error(
           serverMsg ||
-            'Permintaan pembahasan terlalu cepat. Tunggu sebentar lalu coba lagi.',
+            (effectiveLang === 'en'
+              ? 'Too many explanation requests. Please wait a moment and try again.'
+              : 'Permintaan pembahasan terlalu cepat. Tunggu sebentar lalu coba lagi.'),
         );
       }
       throw new Error(
         serverMsg ||
-          'Gagal memuat pembahasan soal saat ini. Periksa koneksi lalu coba lagi.',
+          (effectiveLang === 'en'
+            ? 'Failed to load question explanation. Check your connection and try again.'
+            : 'Gagal memuat pembahasan soal saat ini. Periksa koneksi lalu coba lagi.'),
       );
     }
 
@@ -203,7 +216,9 @@ export async function fetchTryOutWrongExplanation(
     const parsed = parseExplanationPayload(data.explanation);
     if (!parsed) {
       throw new Error(
-        'Format pembahasan tidak lengkap. Silakan coba muat ulang.',
+        effectiveLang === 'en'
+          ? 'Incomplete explanation response. Please try reloading.'
+          : 'Format pembahasan tidak lengkap. Silakan coba muat ulang.',
       );
     }
 

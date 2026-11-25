@@ -14,6 +14,7 @@ import {
   isJapaneseSpeechSupported,
   listJapaneseVoices,
   loadSpeechPreferences,
+  prefetchJapaneseSpeech,
   saveSpeechPreferences,
   speakJapanese,
   SPEECH_RATE_PRESETS,
@@ -27,6 +28,7 @@ import {
 interface SpeechControlBarProps {
   text: string;
   compact?: boolean;
+  align?: 'left' | 'center';
   showQuickSettings?: boolean;
   showAutoPlayToggle?: boolean;
   className?: string;
@@ -43,6 +45,7 @@ const STYLE_OPTIONS: ReadonlyArray<{ id: SpeechVoiceStyle; label: string }> = [
 export function SpeechControlBar({
   text,
   compact = false,
+  align = 'left',
   showQuickSettings = true,
   showAutoPlayToggle = false,
   className = '',
@@ -82,6 +85,15 @@ export function SpeechControlBar({
     setLoadingAudio(false);
   }, [text]);
 
+  // Proactively warm TTS cache for the visible text + active voice style so tap-to-play is instant
+  useEffect(() => {
+    if (!supported || !text.trim()) return;
+    const timer = window.setTimeout(() => {
+      prefetchJapaneseSpeech(text, prefs.voiceStyle);
+    }, 140);
+    return () => window.clearTimeout(timer);
+  }, [supported, text, prefs.voiceStyle]);
+
   if (!supported || !text.trim()) return null;
 
   const handleToggleSpeak = () => {
@@ -106,11 +118,12 @@ export function SpeechControlBar({
     }
   };
 
-  const btnHeight = compact ? 'min-h-[38px] px-2.5 py-1.5' : 'min-h-[44px] px-3 py-2';
+  const btnHeight = compact ? 'min-h-[40px] px-3 py-1.5' : 'min-h-[44px] px-3.5 py-2';
+  const rowAlignment = align === 'center' ? 'justify-center' : 'justify-start';
 
   return (
     <div className={`relative space-y-2 ${className}`}>
-      <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
+      <div className={`flex flex-wrap items-center gap-2 ${rowAlignment}`}>
         <button
           type="button"
           onClick={handleToggleSpeak}

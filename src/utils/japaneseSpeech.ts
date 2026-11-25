@@ -78,8 +78,10 @@ const MALE_VOICE_PATTERNS = [
   'jae',
 ];
 
-const MEMORY_AUDIO_CACHE_MAX = 120;
+const MEMORY_AUDIO_CACHE_MAX = 300;
 const SERVER_TTS_TIMEOUT_MS = 15000;
+const MAX_PREFETCH_CONCURRENCY = 2;
+const DEFAULT_PCM_SAMPLE_RATE = 24000;
 const SILENT_WAV_DATA_URI =
   'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA';
 
@@ -96,10 +98,15 @@ let sharedAudioEl: HTMLAudioElement | null = null;
 let sharedAudioUnlocked = false;
 let sharedAudioCtx: AudioContext | null = null;
 let activeBufferSource: AudioBufferSourceNode | null = null;
+const activeScheduledSources = new Set<AudioBufferSourceNode>();
 let activeAbortController: AbortController | null = null;
+let serverTtsUnconfigured = false;
 
 const memoryAudioCache = new Map<string, CachedAudioAsset>();
 const inflightTtsRequests = new Map<string, Promise<CachedAudioAsset | null>>();
+const prefetchQueue: Array<{ text: string; style: SpeechVoiceStyle; cacheKey: string }> = [];
+const prefetchQueuedKeys = new Set<string>();
+let activePrefetchCount = 0;
 
 export function clampSpeechRate(rate: number): number {
   if (!Number.isFinite(rate)) return DEFAULT_SPEECH_PREFERENCES.rate;
@@ -460,10 +467,58 @@ async function writePersistentTtsCache(
   }
 }
 
+function buildWavArrayBufferFromPcm(
+  pcmBytes: Uint8Array,
+  sampleRate = DEFAULT_PCM_SAMPLE_RATE,
+): ArrayBuffer {
+  const numChannels = 1;
+  const bitsPerSample = 16;
+  const byteRate = (sampleRate * numChannels * bitsPerSample) / 8;
+  const blockAlign = (numChannels * bitsPerSample) / 8;
+  const buffer = new ArrayBuffer(44 + pcmBytes.byteLength);
+  const view = new DataView(buffer);
+
+  const writeStr = (offset: number, str: string) => {
+    for (let i = 0; i < str.length; i += 1) {
+      view.setUint8(offset + i, str.charCodeAt(i));
+    }
+  };
+
+  writeStr(0, 'RIFF');
+  view.setUint32(4, 36 + pcmBytes.byteLength, true);
+  writeStr(8, 'WAVE');
+  writeStr(12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, numChannels, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, byteRate, true);
+  view.setUint16(32, blockAlign, true);
+  view.setUint16(34, bitsPerSample, true);
+  writeStr(36, 'data');
+  view.setUint32(40, pcmBytes.byteLength, true);
+
+  new Uint8Array(buffer, 44).set(pcmBytes);
+  return buffer;
+}
+
+function concatUint8Arrays(chunks: readonly Uint8Array[]): Uint8Array {
+  let totalLen = 0;
+  for (const c of chunks) totalLen += c.byteLength;
+  const out = new Uint8Array(totalLen);
+  let offset = 0;
+  for (const c of chunks) {
+    out.set(c, offset);
+    offset += c.byteLength;
+  }
+  return out;
+}
+
 async function fetchServerTtsAsset(
   cleanedText: string,
   voiceStyle: SpeechVoiceStyle,
   externalSignal?: AbortSignal,
+  maxAttempts = 2,
 ): Promise<CachedAudioAsset | null> {
   const cacheKey = buildTtsCacheKey(cleanedText, voiceStyle);
 
@@ -511,26 +566,57 @@ async function fetchServerTtsAsset(
         : null;
 
     try {
-      const response = await fetch('/api/tts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text: cleanedText,
-          voiceStyle,
-        }),
-        signal: localController.signal,
-      });
+      for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+        if (localController.signal.aborted) return null;
 
-      if (!response.ok) return null;
-      const contentType = response.headers.get('content-type') ?? '';
-      if (!contentType.includes('audio/')) return null;
+        const response = await fetch('/api/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: cleanedText,
+            voiceStyle,
+          }),
+          signal: localController.signal,
+        });
 
-      const arrayBuffer = await response.arrayBuffer();
-      if (arrayBuffer.byteLength <= 44) return null;
+        if (response.ok) {
+          serverTtsUnconfigured = false;
+          const contentType = response.headers.get('content-type') ?? '';
+          if (!contentType.includes('audio/')) {
+            if (attempt + 1 < maxAttempts) continue;
+            return null;
+          }
 
-      const mimeType = contentType.split(';')[0].trim() || 'audio/wav';
-      void writePersistentTtsCache(cacheKey, arrayBuffer, mimeType);
-      return storeMemoryAudioAsset(cacheKey, arrayBuffer, mimeType);
+          const arrayBuffer = await response.arrayBuffer();
+          if (arrayBuffer.byteLength <= 44) {
+            if (attempt + 1 < maxAttempts) continue;
+            return null;
+          }
+
+          const mimeType = contentType.split(';')[0].trim() || 'audio/wav';
+          void writePersistentTtsCache(cacheKey, arrayBuffer, mimeType);
+          return storeMemoryAudioAsset(cacheKey, arrayBuffer, mimeType);
+        }
+
+        if (response.status === 503) {
+          try {
+            const errBody = (await response.json()) as { error?: string };
+            if (errBody?.error?.toLowerCase().includes('not configured')) {
+              serverTtsUnconfigured = true;
+              return null;
+            }
+          } catch {
+            // Ignore non-JSON body
+          }
+        }
+
+        if (attempt + 1 < maxAttempts && (response.status >= 500 || response.status === 429)) {
+          await new Promise((resolve) => setTimeout(resolve, 260));
+          continue;
+        }
+        return null;
+      }
+      return null;
     } catch {
       return null;
     } finally {
@@ -546,19 +632,309 @@ async function fetchServerTtsAsset(
   return requestPromise;
 }
 
+function drainPrefetchQueue(): void {
+  if (typeof window === 'undefined' || typeof fetch !== 'function') return;
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) return;
+  if (serverTtsUnconfigured) return;
+
+  while (activePrefetchCount < MAX_PREFETCH_CONCURRENCY && prefetchQueue.length > 0) {
+    const job = prefetchQueue.shift();
+    if (!job) break;
+    prefetchQueuedKeys.delete(job.cacheKey);
+
+    if (memoryAudioCache.has(job.cacheKey) || inflightTtsRequests.has(job.cacheKey)) {
+      continue;
+    }
+
+    activePrefetchCount += 1;
+    void fetchServerTtsAsset(job.text, job.style, undefined, 1).finally(() => {
+      activePrefetchCount = Math.max(0, activePrefetchCount - 1);
+      drainPrefetchQueue();
+    });
+  }
+}
+
 /**
- * Quietly pre-warms the server TTS cache for a phrase (e.g. test sentence when
- * switching Cowok/Cewek in Settings) so clicking play hits memory in 0ms.
+ * Quietly pre-warms the server TTS cache for a phrase (e.g. visible Anki card,
+ * Bunpou pattern/example, or voice toggle) so clicking play hits memory in 0ms.
  */
 export function prefetchJapaneseSpeech(
   rawText: string,
   voiceStyle?: SpeechVoiceStyle,
 ): void {
   if (typeof window === 'undefined' || typeof fetch !== 'function') return;
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) return;
   const cleaned = cleanJapaneseSpeechText(rawText);
   if (!cleaned) return;
   const style = voiceStyle ?? loadSpeechPreferences().voiceStyle;
-  void fetchServerTtsAsset(cleaned, style);
+  const cacheKey = buildTtsCacheKey(cleaned, style);
+
+  if (
+    memoryAudioCache.has(cacheKey) ||
+    inflightTtsRequests.has(cacheKey) ||
+    prefetchQueuedKeys.has(cacheKey)
+  ) {
+    return;
+  }
+
+  // Cap queue length so rapid navigation prioritizes the newest visible cards
+  if (prefetchQueue.length >= 16) {
+    const dropped = prefetchQueue.shift();
+    if (dropped) prefetchQueuedKeys.delete(dropped.cacheKey);
+  }
+
+  prefetchQueuedKeys.add(cacheKey);
+  prefetchQueue.push({ text: cleaned, style, cacheKey });
+  drainPrefetchQueue();
+}
+
+/**
+ * Pre-warms multiple Japanese words/sentences in priority order with bounded
+ * concurrency so tapping "Dengar" on cards & examples feels instantaneous.
+ */
+export function prefetchJapaneseSpeechBatch(
+  rawTexts: readonly (string | null | undefined)[],
+  voiceStyle?: SpeechVoiceStyle,
+): void {
+  if (typeof window === 'undefined' || typeof fetch !== 'function') return;
+  const style = voiceStyle ?? loadSpeechPreferences().voiceStyle;
+  const seen = new Set<string>();
+  for (const raw of rawTexts) {
+    if (!raw) continue;
+    const cleaned = cleanJapaneseSpeechText(raw);
+    if (!cleaned || seen.has(cleaned)) continue;
+    seen.add(cleaned);
+    prefetchJapaneseSpeech(cleaned, style);
+  }
+}
+
+/**
+ * Streams raw 24kHz mono 16-bit LE PCM from `/api/tts/stream` and plays each
+ * chunk gaplessly via Web Audio API as soon as byte 1 arrives (~250-450ms),
+ * while simultaneously caching the assembled WAV into memory + Cache Storage.
+ */
+async function streamAndPlayServerTts(
+  cleanedText: string,
+  voiceStyle: SpeechVoiceStyle,
+  rate: number,
+  token: number,
+  externalSignal: AbortSignal,
+  callbacks: {
+    onStart?: () => void;
+    onEnd?: () => void;
+    onLoadingChange?: (loading: boolean) => void;
+  },
+): Promise<'played' | 'aborted' | 'fallback'> {
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+    return 'fallback';
+  }
+  const ctx = getOrCreateAudioContext();
+  if (!ctx) return 'fallback';
+
+  const localController = new AbortController();
+  const onExternalAbort = () => localController.abort();
+  if (externalSignal.aborted) {
+    return 'aborted';
+  }
+  externalSignal.addEventListener('abort', onExternalAbort, { once: true });
+
+  const timeoutId =
+    typeof window !== 'undefined'
+      ? window.setTimeout(() => localController.abort(), SERVER_TTS_TIMEOUT_MS)
+      : null;
+
+  let startedPlayback = false;
+  let endedFired = false;
+
+  const fireEndOnce = () => {
+    if (endedFired) return;
+    endedFired = true;
+    if (activePlaybackToken === token) {
+      callbacks.onLoadingChange?.(false);
+      callbacks.onEnd?.();
+    }
+  };
+
+  try {
+    if (ctx.state === 'suspended') {
+      await ctx.resume();
+    }
+    if (activePlaybackToken !== token || localController.signal.aborted) {
+      return 'aborted';
+    }
+
+    const response = await fetch('/api/tts/stream', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        text: cleanedText,
+        voiceStyle,
+      }),
+      signal: localController.signal,
+    });
+
+    if (!response.ok || !response.body) {
+      if (response.status === 503) {
+        try {
+          const errBody = (await response.json()) as { error?: string };
+          if (errBody?.error?.toLowerCase().includes('not configured')) {
+            serverTtsUnconfigured = true;
+          }
+        } catch {
+          // Ignore non-JSON error
+        }
+      }
+      return 'fallback';
+    }
+
+    serverTtsUnconfigured = false;
+    const sampleRateHeader = Number(response.headers.get('x-tts-sample-rate'));
+    const sampleRate =
+      Number.isFinite(sampleRateHeader) && sampleRateHeader >= 8000
+        ? sampleRateHeader
+        : DEFAULT_PCM_SAMPLE_RATE;
+
+    const reader = response.body.getReader();
+    const collectedPcmChunks: Uint8Array[] = [];
+    let isFirstChunk = true;
+    let carryByte: number | null = null;
+    let nextPlayTime = ctx.currentTime + 0.02;
+    let streamDone = false;
+    let pendingSources = 0;
+
+    const schedulePcmBytes = (pcmSlice: Uint8Array) => {
+      if (pcmSlice.byteLength < 2 || activePlaybackToken !== token) return;
+
+      const sampleCount = Math.floor(pcmSlice.byteLength / 2);
+      const audioBuffer = ctx.createBuffer(1, sampleCount, sampleRate);
+      const channelData = audioBuffer.getChannelData(0);
+      const dataView = new DataView(
+        pcmSlice.buffer,
+        pcmSlice.byteOffset,
+        sampleCount * 2,
+      );
+      for (let i = 0; i < sampleCount; i += 1) {
+        channelData[i] = dataView.getInt16(i * 2, true) / 32768;
+      }
+
+      const source = ctx.createBufferSource();
+      source.buffer = audioBuffer;
+      source.playbackRate.value = rate;
+      source.connect(ctx.destination);
+
+      const startAt = Math.max(ctx.currentTime + 0.012, nextPlayTime);
+      nextPlayTime = startAt + audioBuffer.duration / rate;
+
+      activeScheduledSources.add(source);
+      pendingSources += 1;
+
+      source.onended = () => {
+        activeScheduledSources.delete(source);
+        pendingSources = Math.max(0, pendingSources - 1);
+        if (streamDone && pendingSources === 0) {
+          fireEndOnce();
+        }
+      };
+
+      source.start(startAt);
+
+      if (!startedPlayback) {
+        startedPlayback = true;
+        if (activePlaybackToken === token) {
+          callbacks.onLoadingChange?.(false);
+          callbacks.onStart?.();
+        }
+      }
+    };
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      if (activePlaybackToken !== token || localController.signal.aborted) {
+        try {
+          await reader.cancel();
+        } catch {
+          // Ignore reader cancel errors
+        }
+        return 'aborted';
+      }
+      if (!value || value.byteLength === 0) continue;
+
+      let chunk = value;
+      // Defensive check: strip 44-byte RIFF header if present on the very first chunk
+      if (
+        isFirstChunk &&
+        chunk.byteLength >= 44 &&
+        chunk[0] === 0x52 &&
+        chunk[1] === 0x49 &&
+        chunk[2] === 0x46 &&
+        chunk[3] === 0x46
+      ) {
+        chunk = chunk.subarray(44);
+      }
+      isFirstChunk = false;
+
+      if (chunk.byteLength === 0) continue;
+
+      // Align 16-bit LE samples cleanly across arbitrary TCP chunk boundaries
+      let aligned: Uint8Array;
+      if (carryByte !== null) {
+        aligned = new Uint8Array(1 + chunk.byteLength);
+        aligned[0] = carryByte;
+        aligned.set(chunk, 1);
+        carryByte = null;
+      } else {
+        aligned = chunk;
+      }
+
+      if (aligned.byteLength % 2 === 1) {
+        carryByte = aligned[aligned.byteLength - 1];
+        aligned = aligned.subarray(0, aligned.byteLength - 1);
+      }
+
+      if (aligned.byteLength >= 2) {
+        collectedPcmChunks.push(aligned.slice());
+        schedulePcmBytes(aligned);
+      }
+    }
+
+    streamDone = true;
+
+    if (!startedPlayback) {
+      return 'fallback';
+    }
+
+    // Cache full WAV into memory + persistent Cache Storage so replays are 0ms
+    if (collectedPcmChunks.length > 0 && activePlaybackToken === token) {
+      const fullPcm = concatUint8Arrays(collectedPcmChunks);
+      if (fullPcm.byteLength >= 2) {
+        const wavBuffer = buildWavArrayBufferFromPcm(fullPcm, sampleRate);
+        const cacheKey = buildTtsCacheKey(cleanedText, voiceStyle);
+        storeMemoryAudioAsset(cacheKey, wavBuffer, 'audio/wav');
+        void writePersistentTtsCache(cacheKey, wavBuffer, 'audio/wav');
+      }
+    }
+
+    if (pendingSources === 0) {
+      fireEndOnce();
+    }
+
+    return 'played';
+  } catch {
+    if (activePlaybackToken !== token || localController.signal.aborted) {
+      return 'aborted';
+    }
+    if (startedPlayback) {
+      fireEndOnce();
+      return 'played';
+    }
+    return 'fallback';
+  } finally {
+    if (timeoutId !== null && typeof window !== 'undefined') {
+      window.clearTimeout(timeoutId);
+    }
+    externalSignal.removeEventListener('abort', onExternalAbort);
+  }
 }
 
 async function playAssetViaWebAudio(
@@ -796,6 +1172,19 @@ export function stopJapaneseSpeech(): void {
     activeBufferSource = null;
   }
 
+  if (activeScheduledSources.size > 0) {
+    activeScheduledSources.forEach((src) => {
+      try {
+        src.onended = null;
+        src.stop();
+        src.disconnect();
+      } catch {
+        // Ignore scheduled source stop errors
+      }
+    });
+    activeScheduledSources.clear();
+  }
+
   if (isDeviceSpeechSynthesisSupported()) {
     try {
       window.speechSynthesis.cancel();
@@ -861,6 +1250,57 @@ export function speakJapanese(
 
   void (async () => {
     let asset: CachedAudioAsset | null = immediateAsset ?? null;
+
+    // Check fast persistent browser Cache Storage (~2ms) before showing any loading state
+    if (!asset) {
+      const diskHit = await readPersistentTtsCache(cacheKey);
+      if (activePlaybackToken !== token) return;
+      if (diskHit) {
+        asset = storeMemoryAudioAsset(cacheKey, diskHit.arrayBuffer, diskHit.mimeType);
+      }
+    }
+
+    // If uncached and already being prefetched in flight, await that instead of duplicating
+    if (!asset && inflightTtsRequests.has(cacheKey)) {
+      options?.onLoadingChange?.(true);
+      try {
+        asset = await inflightTtsRequests.get(cacheKey)!;
+      } finally {
+        if (activePlaybackToken === token) {
+          options?.onLoadingChange?.(false);
+        }
+      }
+      if (activePlaybackToken !== token) return;
+    }
+
+    // Low-latency progressive PCM streaming for uncached phrases at normal speeds (0.85x–1.2x)
+    const canStreamDirectly =
+      !asset &&
+      !serverTtsUnconfigured &&
+      effectiveRate >= 0.85 &&
+      effectiveRate <= 1.2 &&
+      (typeof navigator === 'undefined' || navigator.onLine !== false);
+
+    if (canStreamDirectly) {
+      options?.onLoadingChange?.(true);
+      const streamOutcome = await streamAndPlayServerTts(
+        cleaned,
+        effectiveStyle,
+        effectiveRate,
+        token,
+        controller.signal,
+        {
+          onStart: options?.onStart,
+          onEnd: options?.onEnd,
+          onLoadingChange: options?.onLoadingChange,
+        },
+      );
+      if (streamOutcome === 'played' || streamOutcome === 'aborted' || activePlaybackToken !== token) {
+        return;
+      }
+    }
+
+    // Unary /api/tts fetch (used for slow/fast pitch-preserved speeds or if stream failed)
     if (!asset) {
       options?.onLoadingChange?.(true);
       try {
@@ -868,6 +1308,7 @@ export function speakJapanese(
           cleaned,
           effectiveStyle,
           controller.signal,
+          2,
         );
       } finally {
         if (activePlaybackToken === token) {
@@ -894,8 +1335,26 @@ export function speakJapanese(
       if (webAudioOk || activePlaybackToken !== token) return;
     }
 
-    // Last-resort fallback only when offline/server error/audio unavailable
+    // Strict voice-gender lock: never silently flip Cowok -> Cewek on a transient error while online
     if (activePlaybackToken !== token) return;
+    const isOffline =
+      typeof navigator !== 'undefined' && navigator.onLine === false;
+    const hasMatchingGenderDeviceVoice =
+      effectiveStyle === 'auto' ||
+      deviceVoices.some(
+        (v) => detectJapaneseVoiceGender(v.name) === effectiveStyle,
+      );
+
+    if (
+      !isOffline &&
+      !serverTtsUnconfigured &&
+      !hasMatchingGenderDeviceVoice &&
+      (effectiveStyle === 'male' || effectiveStyle === 'female')
+    ) {
+      options?.onEnd?.();
+      return;
+    }
+
     speakViaDeviceWebSpeech(cleaned, {
       rate: effectiveRate,
       voiceStyle: effectiveStyle,

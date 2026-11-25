@@ -8,9 +8,14 @@ import {
   type ReactNode,
 } from 'react';
 
+import {
+  startDomAutoTranslator,
+  stopDomAutoTranslatorAndRestore,
+} from './domAutoTranslator';
+
 export type AppLanguage = 'id' | 'en';
 
-const LANGUAGE_STORAGE_KEY = 'utamago_lang_v1';
+export const LANGUAGE_STORAGE_KEY = 'utamago_lang_v1';
 
 interface LanguageContextValue {
   lang: AppLanguage;
@@ -26,7 +31,7 @@ const LanguageContext = createContext<LanguageContextValue>({
   t: (idText) => idText,
 });
 
-function readStoredLanguage(): AppLanguage {
+export function readStoredLanguage(): AppLanguage {
   if (typeof window === 'undefined') return 'id';
   try {
     const saved = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
@@ -43,11 +48,21 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (typeof document !== 'undefined') {
       document.documentElement.lang = lang;
+      document.title =
+        lang === 'en'
+          ? 'UtamaGo! — JLPT N5–N1 Japanese Study Platform'
+          : 'UtamaGo! — Platform Belajar Bahasa Jepang JLPT N5–N1';
     }
     try {
       window.localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
     } catch {
       // Ignore storage write errors
+    }
+
+    if (lang === 'en') {
+      startDomAutoTranslator();
+    } else {
+      stopDomAutoTranslatorAndRestore();
     }
   }, [lang]);
 

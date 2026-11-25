@@ -13,9 +13,10 @@ dotenv.config();
 type TtsVoiceStyle = 'auto' | 'female' | 'male';
 
 const TTS_MAX_TEXT_LENGTH = 260;
-const TTS_CACHE_MAX_ENTRIES = 250;
+const TTS_CACHE_MAX_ENTRIES = 1500;
 const TTS_RATE_LIMIT_WINDOW_MS = 60_000;
-const TTS_RATE_LIMIT_MAX_REQUESTS = 60;
+const TTS_RATE_LIMIT_MAX_REQUESTS = 240;
+const TTS_SAMPLE_RATE = 24_000;
 
 let geminiTtsClient: GoogleGenAI | null = null;
 const ttsAudioCache = new Map<string, Buffer>();
@@ -74,10 +75,45 @@ function setTtsCacheEntry(cacheKey: string, wavBuffer: Buffer): void {
   }
 }
 
+function wrapPcm24kMonoToWav(pcmBuffer: Buffer): Buffer {
+  const header = Buffer.alloc(44);
+  const dataSize = pcmBuffer.length;
+  header.write('RIFF', 0);
+  header.writeUInt32LE(36 + dataSize, 4);
+  header.write('WAVE', 8);
+  header.write('fmt ', 12);
+  header.writeUInt32LE(16, 16); // PCM chunk size
+  header.writeUInt16LE(1, 20); // PCM format
+  header.writeUInt16LE(1, 22); // Mono
+  header.writeUInt32LE(TTS_SAMPLE_RATE, 24);
+  header.writeUInt32LE(TTS_SAMPLE_RATE * 2, 28); // Byte rate
+  header.writeUInt16LE(2, 32); // Block align
+  header.writeUInt16LE(16, 34); // Bits per sample
+  header.write('data', 36);
+  header.writeUInt32LE(dataSize, 40);
+  return Buffer.concat([header, pcmBuffer]);
+}
+
+function resolveTtsVoiceConfig(rawStyle: unknown): {
+  voiceStyle: TtsVoiceStyle;
+  voiceName: 'Charon' | 'Kore';
+  styleInstruction: string;
+} {
+  const voiceStyle: TtsVoiceStyle =
+    rawStyle === 'male' || rawStyle === 'female' || rawStyle === 'auto'
+      ? rawStyle
+      : 'auto';
+  const voiceName: 'Charon' | 'Kore' = voiceStyle === 'male' ? 'Charon' : 'Kore';
+  const styleInstruction =
+    voiceStyle === 'male'
+      ? 'Deep, clear, natural adult male standard Tokyo Japanese native speaker for JLPT pronunciation'
+      : 'Clear, natural adult female standard Tokyo Japanese native speaker for JLPT pronunciation';
+  return { voiceStyle, voiceName, styleInstruction };
+}
+
 async function handleJapaneseTts(req: Request, res: Response): Promise<void> {
   const body = req.body as { text?: unknown; voiceStyle?: unknown } | undefined;
   const rawText = typeof body?.text === 'string' ? body.text.trim() : '';
-  const rawStyle = body?.voiceStyle;
 
   if (!rawText) {
     res.status(400).json({ error: 'Text is required.' });
@@ -88,18 +124,12 @@ async function handleJapaneseTts(req: Request, res: Response): Promise<void> {
     return;
   }
 
-  const voiceStyle: TtsVoiceStyle =
-    rawStyle === 'male' || rawStyle === 'female' || rawStyle === 'auto'
-      ? rawStyle
-      : 'auto';
-
-  const voiceName = voiceStyle === 'male' ? 'Charon' : 'Kore';
+  const { voiceName, styleInstruction } = resolveTtsVoiceConfig(body?.voiceStyle);
   const normalizedText = rawText.replace(/\s+/g, ' ').trim();
   const cacheKey = `${voiceName}:${normalizedText}`;
 
   const cached = ttsAudioCache.get(cacheKey);
   if (cached) {
-    // Refresh LRU position
     ttsAudioCache.delete(cacheKey);
     ttsAudioCache.set(cacheKey, cached);
     res.setHeader('Content-Type', 'audio/wav');
@@ -122,13 +152,122 @@ async function handleJapaneseTts(req: Request, res: Response): Promise<void> {
     return;
   }
 
-  try {
-    const styleInstruction =
-      voiceStyle === 'male'
-        ? 'Clear, natural male standard Tokyo Japanese native pronunciation for JLPT study'
-        : 'Clear, natural female standard Tokyo Japanese native pronunciation for JLPT study';
+  let lastErr: unknown = null;
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      const response = await ai.models.generateContent({
+        model: 'gemini-3.8-flash-lite-tts',
+        contents: [
+          {
+            role: 'user',
+            parts: [
+              {
+                text: normalizedText,
+                speechMetadata: {
+                  style: styleInstruction,
+                },
+              },
+            ],
+          },
+        ],
+        config: {
+          responseModalities: ['AUDIO'],
+          speechConfig: {
+            voiceConfig: {
+              prebuiltVoiceConfig: { voiceName },
+            },
+          },
+        },
+      });
 
-    const response = await ai.models.generateContent({
+      const base64Audio =
+        response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+      if (!base64Audio) {
+        if (attempt === 0) continue;
+        res.status(502).json({ error: 'No audio returned by TTS service.' });
+        return;
+      }
+
+      // Unary Gemini 3.8 TTS returns a complete RIFF WAV file (24kHz mono 16-bit).
+      const wavBuffer = Buffer.from(base64Audio, 'base64');
+      setTtsCacheEntry(cacheKey, wavBuffer);
+
+      res.setHeader('Content-Type', 'audio/wav');
+      res.setHeader('Cache-Control', 'public, max-age=604800');
+      res.setHeader('X-TTS-Voice', voiceName);
+      res.setHeader('X-TTS-Cache', 'MISS');
+      res.status(200).send(wavBuffer);
+      return;
+    } catch (err) {
+      lastErr = err;
+      if (attempt === 0) {
+        await new Promise((resolve) => setTimeout(resolve, 220));
+      }
+    }
+  }
+
+  console.error(
+    '[TTS] Gemini TTS request failed:',
+    lastErr instanceof Error ? lastErr.message : 'unknown error',
+  );
+  res.status(503).json({ error: 'TTS service temporarily unavailable.' });
+}
+
+/**
+ * Low-latency streaming TTS endpoint using Gemini 3.8 Flash Lite TTS `generateContentStream`.
+ * Streams raw headerless 24kHz mono 16-bit LE PCM chunks as soon as Gemini yields them so the
+ * browser can start playback in ~250-450ms instead of waiting for the entire WAV clip, while
+ * simultaneously populating the shared WAV cache for 0ms replays.
+ */
+async function handleJapaneseTtsStream(req: Request, res: Response): Promise<void> {
+  const body = req.body as { text?: unknown; voiceStyle?: unknown } | undefined;
+  const rawText = typeof body?.text === 'string' ? body.text.trim() : '';
+
+  if (!rawText) {
+    res.status(400).json({ error: 'Text is required.' });
+    return;
+  }
+  if (rawText.length > TTS_MAX_TEXT_LENGTH) {
+    res.status(400).json({ error: 'Text exceeds maximum length.' });
+    return;
+  }
+
+  const { voiceName, styleInstruction } = resolveTtsVoiceConfig(body?.voiceStyle);
+  const normalizedText = rawText.replace(/\s+/g, ' ').trim();
+  const cacheKey = `${voiceName}:${normalizedText}`;
+
+  const cached = ttsAudioCache.get(cacheKey);
+  if (cached && cached.length > 44) {
+    ttsAudioCache.delete(cacheKey);
+    ttsAudioCache.set(cacheKey, cached);
+    res.setHeader('Content-Type', 'application/octet-stream');
+    res.setHeader('X-TTS-Sample-Rate', String(TTS_SAMPLE_RATE));
+    res.setHeader('X-TTS-Voice', voiceName);
+    res.setHeader('X-TTS-Cache', 'HIT');
+    res.status(200).send(cached.subarray(44));
+    return;
+  }
+
+  const clientIp = getClientIp(req);
+  if (!checkTtsRateLimit(clientIp)) {
+    res.status(429).json({ error: 'Too many TTS requests. Please wait a moment.' });
+    return;
+  }
+
+  const ai = getGeminiTtsClient();
+  if (!ai) {
+    res.status(503).json({ error: 'TTS service is not configured.' });
+    return;
+  }
+
+  let headersSent = false;
+  let aborted = false;
+  req.on('close', () => {
+    aborted = true;
+  });
+
+  try {
+    const responseStream = await ai.models.generateContentStream({
       model: 'gemini-3.8-flash-lite-tts',
       contents: [
         {
@@ -153,28 +292,50 @@ async function handleJapaneseTts(req: Request, res: Response): Promise<void> {
       },
     });
 
-    const base64Audio =
-      response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-    if (!base64Audio) {
-      res.status(502).json({ error: 'No audio returned by TTS service.' });
+    const pcmChunks: Buffer[] = [];
+    for await (const chunk of responseStream) {
+      if (aborted) break;
+      const b64 = chunk.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+      if (!b64) continue;
+      const pcmBuf = Buffer.from(b64, 'base64');
+      if (pcmBuf.length === 0) continue;
+
+      if (!headersSent) {
+        headersSent = true;
+        res.status(200);
+        res.setHeader('Content-Type', 'application/octet-stream');
+        res.setHeader('Cache-Control', 'no-store');
+        res.setHeader('X-TTS-Sample-Rate', String(TTS_SAMPLE_RATE));
+        res.setHeader('X-TTS-Voice', voiceName);
+        res.setHeader('X-TTS-Cache', 'MISS');
+        res.flushHeaders?.();
+      }
+      pcmChunks.push(pcmBuf);
+      res.write(pcmBuf);
+    }
+
+    if (!headersSent) {
+      res.status(502).json({ error: 'No audio stream returned by TTS service.' });
       return;
     }
 
-    // Unary Gemini 3.8 TTS returns a complete RIFF WAV file (24kHz mono 16-bit).
-    const wavBuffer = Buffer.from(base64Audio, 'base64');
-    setTtsCacheEntry(cacheKey, wavBuffer);
-
-    res.setHeader('Content-Type', 'audio/wav');
-    res.setHeader('Cache-Control', 'public, max-age=604800');
-    res.setHeader('X-TTS-Voice', voiceName);
-    res.setHeader('X-TTS-Cache', 'MISS');
-    res.status(200).send(wavBuffer);
+    if (!aborted && pcmChunks.length > 0) {
+      const fullPcm = Buffer.concat(pcmChunks);
+      if (fullPcm.length > 0) {
+        setTtsCacheEntry(cacheKey, wrapPcm24kMonoToWav(fullPcm));
+      }
+    }
+    res.end();
   } catch (err) {
     console.error(
-      '[TTS] Gemini TTS request failed:',
+      '[TTS-Stream] Gemini streaming TTS failed:',
       err instanceof Error ? err.message : 'unknown error',
     );
-    res.status(503).json({ error: 'TTS service temporarily unavailable.' });
+    if (!headersSent) {
+      res.status(503).json({ error: 'TTS streaming temporarily unavailable.' });
+    } else {
+      res.end();
+    }
   }
 }
 
@@ -266,12 +427,30 @@ Aturan wajib:
 4. Jangan pernah mengarang fakta di luar soal/wacana/transkrip. Jika soal Choukai hanya punya nomor opsi tanpa teks tercetak, rujuk langsung bunyi pilihan 1/2/3/4 di dalam transkrip.
 5. Balas HANYA dalam JSON valid sesuai skema yang ditetapkan.`;
 
+const TRYOUT_EXPLAIN_SYSTEM_INSTRUCTION_EN = `You are a thorough, friendly, and concise JLPT teacher (Sensei) for the Japanese learning app UtamaGo!.
+Your task is to explain a JLPT Mock Exam question that the learner answered INCORRECTLY in clear, accurate, natural English.
+
+Mandatory rules:
+1. Explain specifically why the learner's choice (chosen) is WRONG and why the official answer key (correct) is RIGHT based on the Japanese question context.
+2. Match the explanation to the Mondai type:
+   - Kanji / Reading (問題1–2): give the hiragana reading & English meaning of the target word (marked [[...]]), then explain the reading/kanji mistake in the learner's choice (e.g., dakuon/sokuon/long vowel error or similar-looking kanji with a different meaning).
+   - Word formation / Context / Synonyms / Usage (問題3–6): explain the target word meaning, collocation, and nuance difference between the learner's choice and the official answer.
+   - Sentence Grammar (問題7): explain the correct bunpou pattern, connection rules (接続), and why the learner's choice fails grammatically or semantically.
+   - Star Sentence Ordering ★ (問題8): MUST write out the complete correct sentence formed by the 4 pieces and clearly mark the ★ position so the learner sees why ★ lands on the official key.
+   - Discourse Grammar & Reading / Dokkai (問題9–14): cite the exact supporting sentence/idea from passageContext proving the official key and refuting the learner's choice.
+   - Listening / Choukai (聴解): cite the speaker's exact line/decision flow in transcript and explain the distractor trap that made the learner's choice wrong.
+3. Keep each field concise (2–4 sentences), direct, no filler greetings, no messy markdown bullets, and keep key Japanese terms with English glosses.
+4. Never invent facts outside the question/passage/transcript.
+5. Reply ONLY with valid JSON matching the schema.`;
+
 async function handleTryOutExplain(req: Request, res: Response): Promise<void> {
   const body = req.body as Record<string, unknown> | undefined;
   if (!body || typeof body !== 'object' || Array.isArray(body)) {
     res.status(400).json({ error: 'Data soal tidak valid.' });
     return;
   }
+
+  const lang = body.lang === 'en' ? 'en' : 'id';
 
   const levelLabel = cleanBoundedText(body.levelLabel, 24) || 'JLPT';
   const examCode = cleanBoundedText(body.examCode, 24);
@@ -310,7 +489,8 @@ async function handleTryOutExplain(req: Request, res: Response): Promise<void> {
     .createHash('sha256')
     .update(
       JSON.stringify({
-        v: 1,
+        v: 2,
+        lang,
         levelLabel,
         partId,
         mondaiTitle,
@@ -373,9 +553,15 @@ async function handleTryOutExplain(req: Request, res: Response): Promise<void> {
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-4-hydrogen',
-      contents: `Analisislah soal JLPT berikut dan jelaskan dalam bahasa Indonesia mengapa jawaban peserta salah serta mengapa kunci jawaban resmi benar.\n\n<question_data>\n${JSON.stringify(structuredPayload, null, 2)}\n</question_data>`,
+      contents:
+        lang === 'en'
+          ? `Analyze this JLPT question and explain in clear English why the learner's chosen option is wrong and why the official key is correct.\n\n<question_data>\n${JSON.stringify(structuredPayload, null, 2)}\n</question_data>`
+          : `Analisislah soal JLPT berikut dan jelaskan dalam bahasa Indonesia mengapa jawaban peserta salah serta mengapa kunci jawaban resmi benar.\n\n<question_data>\n${JSON.stringify(structuredPayload, null, 2)}\n</question_data>`,
       config: {
-        systemInstruction: TRYOUT_EXPLAIN_SYSTEM_INSTRUCTION,
+        systemInstruction:
+          lang === 'en'
+            ? TRYOUT_EXPLAIN_SYSTEM_INSTRUCTION_EN
+            : TRYOUT_EXPLAIN_SYSTEM_INSTRUCTION,
         thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
         responseMimeType: 'application/json',
         responseSchema: {
@@ -434,7 +620,9 @@ async function handleTryOutExplain(req: Request, res: Response): Promise<void> {
 
     const parsed = JSON.parse(rawText) as Partial<TryOutExplanationResult>;
     const explanation: TryOutExplanationResult = {
-      focusTag: cleanBoundedText(parsed.focusTag, 80) || 'Pembahasan JLPT',
+      focusTag:
+        cleanBoundedText(parsed.focusTag, 80) ||
+        (lang === 'en' ? 'JLPT Explanation' : 'Pembahasan JLPT'),
       questionMeaning: cleanBoundedText(parsed.questionMeaning, 600),
       whyChosenWrong: cleanBoundedText(parsed.whyChosenWrong, 1000),
       whyCorrectRight: cleanBoundedText(parsed.whyCorrectRight, 1200),
@@ -444,7 +632,10 @@ async function handleTryOutExplain(req: Request, res: Response): Promise<void> {
 
     if (!explanation.whyChosenWrong || !explanation.whyCorrectRight) {
       res.status(502).json({
-        error: 'Hasil pembahasan tidak lengkap. Silakan coba lagi.',
+        error:
+          lang === 'en'
+            ? 'Incomplete explanation result. Please try again.'
+            : 'Hasil pembahasan tidak lengkap. Silakan coba lagi.',
       });
       return;
     }
@@ -459,8 +650,217 @@ async function handleTryOutExplain(req: Request, res: Response): Promise<void> {
     );
     res.status(503).json({
       error:
-        'Pembahasan otomatis sedang sibuk atau belum dapat dijangkau. Coba beberapa saat lagi.',
+        lang === 'en'
+          ? 'Automatic explanation service is busy or unavailable. Please try again shortly.'
+          : 'Pembahasan otomatis sedang sibuk atau belum dapat dijangkau. Coba beberapa saat lagi.',
     });
+  }
+}
+
+// =========================================================================
+// Full-App Indonesian -> English Batch Translation API (with LRU Cache)
+// =========================================================================
+const TRANSLATE_CACHE_MAX_ENTRIES = 10_000;
+const TRANSLATE_RATE_LIMIT_WINDOW_MS = 60_000;
+const TRANSLATE_RATE_LIMIT_MAX_REQUESTS = 120;
+const TRANSLATE_MAX_ITEMS = 50;
+const TRANSLATE_MAX_ITEM_CHARS = 2_000;
+const TRANSLATE_MAX_TOTAL_CHARS = 24_000;
+
+const translateEnCache = new Map<string, string>();
+const translateRateBuckets = new Map<string, number[]>();
+
+function checkTranslateRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const cutoff = now - TRANSLATE_RATE_LIMIT_WINDOW_MS;
+  const recent = (translateRateBuckets.get(ip) ?? []).filter((t) => t > cutoff);
+  if (recent.length >= TRANSLATE_RATE_LIMIT_MAX_REQUESTS) {
+    translateRateBuckets.set(ip, recent);
+    return false;
+  }
+  recent.push(now);
+  translateRateBuckets.set(ip, recent);
+  if (translateRateBuckets.size > 500) {
+    for (const [k, ts] of translateRateBuckets.entries()) {
+      const kept = ts.filter((t) => t > cutoff);
+      if (kept.length === 0) translateRateBuckets.delete(k);
+      else translateRateBuckets.set(k, kept);
+    }
+  }
+  return true;
+}
+
+function setTranslateCacheEntry(src: string, en: string): void {
+  if (translateEnCache.has(src)) {
+    translateEnCache.delete(src);
+  }
+  translateEnCache.set(src, en);
+  if (translateEnCache.size > TRANSLATE_CACHE_MAX_ENTRIES) {
+    const oldest = translateEnCache.keys().next().value;
+    if (oldest !== undefined) translateEnCache.delete(oldest);
+  }
+}
+
+const TRANSLATE_BATCH_SYSTEM_INSTRUCTION = `You are a fast, precise Indonesian-to-English translator for the JLPT Japanese learning web app UtamaGo!.
+You receive a JSON array of strings from UI labels, Anki vocabulary definitions, example sentence translations, Bunpou grammar notes, FAQ answers, or Challenge Arena prompts.
+
+Strict rules:
+1. Return a JSON object {"translations": [...]} with the EXACT SAME number of elements and in the EXACT SAME order as the input array.
+2. Translate ALL Indonesian words and sentences into crisp, natural, concise English appropriate for a modern language-learning app.
+3. NEVER translate Japanese text (Kanji, Hiragana, Katakana, Furigana, Japanese example sentences). Keep every Japanese character 100% verbatim!
+4. Keep JLPT & app terms intact: UtamaGo!, JLPT, N5, N4, N3, N2, N1, Anki, Bunpou, Choukai, Dokkai, Moji, Goi, Mondai, Kanji, Hiragana, Katakana, Romaji, On'yomi, Kun'yomi, SRS, XP.
+5. Keep proper names (Ryan, Annisa), @usernames, emails, URLs, numbers, emojis, and formatting intact.
+6. If an entry contains BOTH Japanese and Indonesian (e.g. "かばん　Tas (tas jinjing)"), keep the Japanese part verbatim and translate only the Indonesian part ("かばん　Bag (handbag)").
+7. If an entry is already clean English or contains no Indonesian words, return it unchanged.`;
+
+async function handleTranslateBatch(req: Request, res: Response): Promise<void> {
+  const body = req.body as Record<string, unknown> | undefined;
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
+    res.status(400).json({ error: 'Invalid translation payload.' });
+    return;
+  }
+
+  const rawTexts = body.texts;
+  if (!Array.isArray(rawTexts) || rawTexts.length === 0) {
+    res.status(400).json({ error: 'texts must be a non-empty array.' });
+    return;
+  }
+  if (rawTexts.length > TRANSLATE_MAX_ITEMS) {
+    res.status(400).json({ error: `Maximum ${TRANSLATE_MAX_ITEMS} items per batch.` });
+    return;
+  }
+
+  const normalizedTexts: string[] = [];
+  let totalChars = 0;
+  for (const item of rawTexts) {
+    if (typeof item !== 'string') {
+      res.status(400).json({ error: 'Every item in texts must be a string.' });
+      return;
+    }
+    const cleaned = item.trim().slice(0, TRANSLATE_MAX_ITEM_CHARS);
+    totalChars += cleaned.length;
+    if (totalChars > TRANSLATE_MAX_TOTAL_CHARS) {
+      res.status(400).json({ error: 'Batch text size limit exceeded.' });
+      return;
+    }
+    normalizedTexts.push(cleaned);
+  }
+
+  const results: Array<string | null> = normalizedTexts.map((src) => {
+    if (!src) return '';
+    const hit = translateEnCache.get(src);
+    if (hit !== undefined) {
+      translateEnCache.delete(src);
+      translateEnCache.set(src, hit);
+      return hit;
+    }
+    return null;
+  });
+
+  const missingIndices: number[] = [];
+  const missingTexts: string[] = [];
+  for (let i = 0; i < normalizedTexts.length; i += 1) {
+    if (results[i] === null) {
+      missingIndices.push(i);
+      missingTexts.push(normalizedTexts[i]);
+    }
+  }
+
+  if (missingTexts.length === 0) {
+    res.setHeader('X-Translate-Cache', 'HIT');
+    res.status(200).json({ translations: results });
+    return;
+  }
+
+  const clientIp = getClientIp(req);
+  if (!checkTranslateRateLimit(clientIp)) {
+    res.status(429).json({ error: 'Translation rate limit exceeded. Please retry shortly.' });
+    return;
+  }
+
+  const ai = getGeminiExplainClient();
+  if (!ai) {
+    res.status(503).json({ error: 'Translation service is not configured on the server.' });
+    return;
+  }
+
+  const promptContent = `Translate each Indonesian string in this JSON array to English following all rules:\n${JSON.stringify(missingTexts)}`;
+  const schemaConfig = {
+    systemInstruction: TRANSLATE_BATCH_SYSTEM_INSTRUCTION,
+    responseMimeType: 'application/json',
+    responseSchema: {
+      type: Type.OBJECT,
+      properties: {
+        translations: {
+          type: Type.ARRAY,
+          items: { type: Type.STRING },
+        },
+      },
+      required: ['translations'],
+    },
+  };
+
+  let rawResponseText = '';
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-4-hydrogen',
+      contents: promptContent,
+      config: {
+        ...schemaConfig,
+        thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
+      },
+    });
+    rawResponseText = (response.text ?? '').trim();
+  } catch (err) {
+    const errMsg = err instanceof Error ? err.message : 'unknown error';
+    const rawStatus =
+      typeof err === 'object' && err !== null && 'status' in err
+        ? Number((err as { status?: unknown }).status)
+        : 0;
+    console.error('[TranslateBatch] Gemini translation failed:', rawStatus, errMsg);
+
+    const status =
+      rawStatus === 400 || rawStatus === 403 || rawStatus === 404 || rawStatus === 429
+        ? rawStatus
+        : 503;
+    const safeReason =
+      status === 403 || errMsg.includes('API_KEY_INVALID') || errMsg.includes('PERMISSION_DENIED')
+        ? 'API key permission denied or invalid. Check Settings > Secrets.'
+        : status === 429 || errMsg.includes('RESOURCE_EXHAUSTED')
+          ? 'Translation quota temporarily exhausted. Please try again shortly.'
+          : status === 404 || errMsg.includes('NOT_FOUND')
+            ? 'Requested translation model was not found.'
+            : 'Translation service temporarily unavailable.';
+    res.status(status).json({ error: safeReason });
+    return;
+  }
+
+  try {
+    const parsed = JSON.parse(rawResponseText) as { translations?: unknown };
+    const translatedList = Array.isArray(parsed.translations)
+      ? parsed.translations
+      : null;
+    if (!translatedList || translatedList.length !== missingTexts.length) {
+      res.status(502).json({ error: 'Incomplete batch translation response.' });
+      return;
+    }
+
+    for (let j = 0; j < missingIndices.length; j += 1) {
+      const idx = missingIndices[j];
+      const src = missingTexts[j];
+      const candidate = translatedList[j];
+      const en =
+        typeof candidate === 'string' && candidate.trim().length > 0
+          ? candidate.trim().slice(0, TRANSLATE_MAX_ITEM_CHARS + 400)
+          : src;
+      results[idx] = en;
+      setTranslateCacheEntry(src, en);
+    }
+
+    res.setHeader('X-Translate-Cache', 'MISS');
+    res.status(200).json({ translations: results });
+  } catch {
+    res.status(502).json({ error: 'Invalid translation response format.' });
   }
 }
 
@@ -2123,9 +2523,16 @@ async function startServer() {
   app.post('/api/tts', express.json({ limit: '8kb' }), (req, res) => {
     void handleJapaneseTts(req, res);
   });
+  app.post('/api/tts/stream', express.json({ limit: '8kb' }), (req, res) => {
+    void handleJapaneseTtsStream(req, res);
+  });
 
   app.post('/api/tryout/explain', express.json({ limit: '24kb' }), (req, res) => {
     void handleTryOutExplain(req, res);
+  });
+
+  app.post('/api/translate-batch', express.json({ limit: '96kb' }), (req, res) => {
+    void handleTranslateBatch(req, res);
   });
 
   // =========================================================================
@@ -2802,6 +3209,28 @@ async function startServer() {
     }
     handleLocalOrPracticeChoukaiAudio(req, res, 'n2-1');
   });
+
+  // Serve 30-second vertical beta launch promo MP4 with byte-range streaming & optional 1-click download
+  const servePromoVideo = (req: Request, res: Response) => {
+    const prodPath = path.resolve(process.cwd(), 'dist/promo/utamago-beta-30s.mp4');
+    const pubPath = path.resolve(process.cwd(), 'public/promo/utamago-beta-30s.mp4');
+    const filePath = fs.existsSync(pubPath) ? pubPath : prodPath;
+    if (!fs.existsSync(filePath)) {
+      res.status(404).type('text/plain').send('Promo video not found.');
+      return;
+    }
+    res.setHeader('Content-Type', 'video/mp4');
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    if (String(req.query.download ?? '') === '1') {
+      res.setHeader(
+        'Content-Disposition',
+        'attachment; filename="UtamaGo-Promo-Beta-30s.mp4"',
+      );
+    }
+    res.sendFile(filePath);
+  };
+  app.get('/promo/utamago-beta-30s.mp4', servePromoVideo);
+  app.head('/promo/utamago-beta-30s.mp4', servePromoVideo);
 
   if (!isProd) {
     const { createServer: createViteServer } = await import('vite');

@@ -4,6 +4,7 @@ import type { AnkiCard } from './ankiParser';
 import type { AnkiSrsMap } from './ankiSrs';
 import type { BunpouN2Item } from './bunpouN2Parser';
 import { getDifficultAnkiCards } from './homeSummary';
+import { evaluateJlptN1PartScore } from './jlptN1Scoring';
 import {
   evaluateJlptN2PartScore,
   JLPT_N2_SECTION_PASS_MIN,
@@ -123,14 +124,15 @@ export function analyzeJlptWeaknesses(params: {
     });
   }
 
-  // 3. Analyze Try Out N2 Submitted Parts & Per-Mondai Weakest Spot
-  const n2Packets = ALL_TRYOUT_PACKETS.filter(
-    (p) => p.level === 'N2' && p.isFullText,
+  // 3. Analyze Try Out N2 & N1 Submitted Parts & Per-Mondai Weakest Spot
+  const scoredTryOutPackets = ALL_TRYOUT_PACKETS.filter(
+    (p) => (p.level === 'N2' || p.level === 'N1') && p.isFullText,
   );
 
   interface MondaiAgg {
     key: string;
     label: string;
+    level: 'N1' | 'N2';
     partId: TryOutPacketPartId;
     partLabel: string;
     packetId: string;
@@ -142,15 +144,17 @@ export function analyzeJlptWeaknesses(params: {
 
   const mondaiMap = new Map<string, MondaiAgg>();
   let lowestCutoffPart: {
+    level: 'N1' | 'N2';
     packetId: string;
     packetTitle: string;
     partId: TryOutPacketPartId;
     partLabel: string;
     scaledScore: number;
   } | null = null;
-  let submittedN2PartsCount = 0;
+  let submittedScoredPartsCount = 0;
 
-  for (const packet of n2Packets) {
+  for (const packet of scoredTryOutPackets) {
+    const packetLevel: 'N1' | 'N2' = packet.level === 'N1' ? 'N1' : 'N2';
     const state =
       packetsProgress[packet.id] ??
       (packet.id === 'n2-2' ? fallbackFirstPacket : undefined);
@@ -159,18 +163,26 @@ export function analyzeJlptWeaknesses(params: {
 
     const forms = getTryOutPacketForms(packet.id);
     for (const partId of submittedIds) {
-      submittedN2PartsCount += 1;
-      const evalPart = evaluateJlptN2PartScore(
-        partId,
-        forms[partId],
-        state?.packetProgress.answersByPart[partId] ?? {},
-      );
+      submittedScoredPartsCount += 1;
+      const evalPart =
+        packetLevel === 'N1'
+          ? evaluateJlptN1PartScore(
+              partId,
+              forms[partId],
+              state?.packetProgress.answersByPart[partId] ?? {},
+            )
+          : evaluateJlptN2PartScore(
+              partId,
+              forms[partId],
+              state?.packetProgress.answersByPart[partId] ?? {},
+            );
 
       if (
         !evalPart.passedCutoff &&
         (!lowestCutoffPart || evalPart.scaledScore < lowestCutoffPart.scaledScore)
       ) {
         lowestCutoffPart = {
+          level: packetLevel,
           packetId: packet.id,
           packetTitle: packet.title,
           partId,
@@ -180,7 +192,7 @@ export function analyzeJlptWeaknesses(params: {
       }
 
       for (const m of evalPart.mondaiBreakdown) {
-        const key = `${partId}-m${m.mondaiNumber}`;
+        const key = `${packetLevel}-${partId}-m${m.mondaiNumber}`;
         const existing = mondaiMap.get(key);
         if (existing) {
           existing.earnedRaw += m.earnedRawPoints;
@@ -192,6 +204,7 @@ export function analyzeJlptWeaknesses(params: {
           mondaiMap.set(key, {
             key,
             label: m.title,
+            level: packetLevel,
             partId,
             partLabel: evalPart.partLabel,
             packetId: packet.id,
@@ -213,7 +226,7 @@ export function analyzeJlptWeaknesses(params: {
       category: 'tryout',
       severity: 'high',
       severityScore: 98,
-      title: `Ambang Bagian N2 Belum Aman (${lowestCutoffPart.partLabel})`,
+      title: `Ambang Bagian ${lowestCutoffPart.level} Belum Aman (${lowestCutoffPart.partLabel})`,
       metricLabel: `Skor ${lowestCutoffPart.scaledScore}/60`,
       reason: `Masih di bawah batas lulus bagian ${JLPT_N2_SECTION_PASS_MIN}/60 pada ${lowestCutoffPart.packetTitle}. Fokus tinjau kesalahan bagian ini dulu.`,
       actionLabel: 'Tinjau Bagian Try Out',
@@ -245,8 +258,8 @@ export function analyzeJlptWeaknesses(params: {
         severityScore: pct < 50 ? 90 : 74,
         title: `Mondai Terlemah: ${weakest.label}`,
         metricLabel: `${weakest.correct}/${weakest.total} benar (${pct}%)`,
-        reason: `Akurasi poin berbobot terendah di bagian ${weakest.partLabel}. Ulangi tipe soal ini untuk dongkrak skor skala N2.`,
-        actionLabel: 'Buka Try Out N2',
+        reason: `Akurasi poin berbobot terendah di bagian ${weakest.partLabel}. Ulangi tipe soal ini untuk dongkrak skor skala ${weakest.level}.`,
+        actionLabel: `Buka Try Out ${weakest.level}`,
         action: {
           type: 'tryout-packet',
           packetId: weakest.packetId,
@@ -288,7 +301,7 @@ export function analyzeJlptWeaknesses(params: {
   const studiedAnkiCount = Object.keys(ankiSrs).length;
   const hasEnoughData =
     difficultCards.length > 0 ||
-    submittedN2PartsCount > 0 ||
+    submittedScoredPartsCount > 0 ||
     studiedAnkiCount >= 5 ||
     reviewedLessonIds.length >= 3;
 

@@ -18,6 +18,11 @@ import {
 import { SAMPLE_N3_REPORT } from '../data/utamagoContent';
 import { vibrateError, vibrateSuccess, vibrateTap } from '../utils/haptics';
 import {
+  evaluateJlptN1PacketScore,
+  JLPT_N1_OFFICIAL_TIMING,
+  JLPT_N1_TOTAL_PASS_MIN,
+} from '../utils/jlptN1Scoring';
+import {
   evaluateJlptN2PacketScore,
   JLPT_N2_SECTION_MAX,
   JLPT_N2_SECTION_PASS_MIN,
@@ -324,6 +329,17 @@ export function ReportAndSimSection({
 
   const activeJlptPacketScore = useMemo(() => {
     if (!activePacket.isFullText) return null;
+    if (activePacket.level === 'N1') {
+      return {
+        level: 'N1' as const,
+        passMin: JLPT_N1_TOTAL_PASS_MIN,
+        summary: evaluateJlptN1PacketScore({
+          forms: activePacketForms,
+          answersByPart: formAnswersByPart,
+          submittedIds: submittedParts,
+        }),
+      };
+    }
     if (activePacket.level === 'N2') {
       return {
         level: 'N2' as const,
@@ -723,6 +739,47 @@ export function ReportAndSimSection({
                     },
                   )}
                 </div>
+
+                {activeJlptPacketScore.level === 'N1' && (
+                  <div className="space-y-1 rounded-xl border border-outline-variant/80 bg-surface px-3.5 py-2.5 text-[11px] leading-relaxed text-on-surface-variant">
+                    <p className="font-bold text-on-surface">
+                      Rumus Bobot &amp; Waktu Resmi JLPT N1 (Total{' '}
+                      <span className="font-mono">
+                        {JLPT_N1_OFFICIAL_TIMING.totalMinutes} menit
+                      </span>
+                      : Bahasa &amp; Dokkai{' '}
+                      <span className="font-mono">
+                        {JLPT_N1_OFFICIAL_TIMING.langAndReadingMinutes} mnt
+                      </span>{' '}
+                      · Choukai{' '}
+                      <span className="font-mono">
+                        {JLPT_N1_OFFICIAL_TIMING.choukaiMinutes} mnt
+                      </span>
+                      )
+                    </p>
+                    <p>
+                      <strong className="text-on-surface">Rumus skor:</strong>{' '}
+                      <span className="font-mono">
+                        言語知識 (M1–3,5–6×1; M4,7×2) ÷{' '}
+                        {activeJlptPacketScore.summary.parts['moji-bunpou'].maxRawPoints}{' '}
+                        × 60
+                      </span>{' '}
+                      ·{' '}
+                      <span className="font-mono">
+                        読解 (M8,9,11,13×2; M10,12×3) ÷{' '}
+                        {activeJlptPacketScore.summary.parts.dokkai.maxRawPoints}{' '}
+                        × 60
+                      </span>{' '}
+                      ·{' '}
+                      <span className="font-mono">
+                        聴解 (M1–3×2; M4×1; M5×3) ÷{' '}
+                        {activeJlptPacketScore.summary.parts.choukai.maxRawPoints}{' '}
+                        × 60
+                      </span>
+                      .
+                    </p>
+                  </div>
+                )}
 
                 {activeJlptPacketScore.level === 'N3' && (
                   <div className="space-y-1 rounded-xl border border-outline-variant/80 bg-surface px-3.5 py-2.5 text-[11px] leading-relaxed text-on-surface-variant">

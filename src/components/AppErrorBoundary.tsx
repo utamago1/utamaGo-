@@ -31,6 +31,14 @@ export class AppErrorBoundary extends Component<
 
   render() {
     if (this.state.hasError) {
+      let isEn = false;
+      try {
+        isEn =
+          typeof window !== 'undefined' &&
+          window.localStorage.getItem('utamago_lang_v1') === 'en';
+      } catch {
+        isEn = false;
+      }
       return (
         <div className="flex min-h-dvh items-center justify-center bg-surface p-6 text-on-surface pt-safe pb-safe pl-safe pr-safe">
           <div className="w-full max-w-md rounded-3xl border border-outline-variant bg-surface-container-low p-6 text-center shadow-sm">
@@ -38,11 +46,12 @@ export class AppErrorBoundary extends Component<
               <AlertTriangle className="h-7 w-7" aria-hidden="true" />
             </div>
             <h1 className="mt-4 font-display text-xl font-extrabold text-on-surface">
-              Terjadi Gangguan Tampilan
+              {isEn ? 'Display Error Occurred' : 'Terjadi Gangguan Tampilan'}
             </h1>
             <p className="mt-2 text-xs leading-relaxed text-on-surface-variant sm:text-sm">
-              Data belajarmu tetap tersimpan aman di perangkat. Muat ulang
-              aplikasi untuk melanjutkan belajar.
+              {isEn
+                ? 'Your study data remains safely saved on this device. Reload the app to continue studying.'
+                : 'Data belajarmu tetap tersimpan aman di perangkat. Muat ulang aplikasi untuk melanjutkan belajar.'}
             </p>
             <button
               type="button"
@@ -50,7 +59,7 @@ export class AppErrorBoundary extends Component<
               className="m3-tactile mt-5 inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-2.5 text-sm font-bold text-on-primary hover:bg-primary-hover"
             >
               <RotateCcw className="h-4 w-4" aria-hidden="true" />
-              <span>Muat Ulang UtamaGo!</span>
+              <span>{isEn ? 'Reload UtamaGo!' : 'Muat Ulang UtamaGo!'}</span>
             </button>
           </div>
         </div>

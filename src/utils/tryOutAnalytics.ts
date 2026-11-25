@@ -1,6 +1,10 @@
 import { getTryOutPacketForms } from '../data/tryOutN2AllPackets';
 import type { JlptLevel } from '../data/utamagoContent';
 import {
+  evaluateJlptN1PacketScore,
+  evaluateJlptN1PartScore,
+} from './jlptN1Scoring';
+import {
   evaluateJlptN2PacketScore,
   evaluateJlptN2PartScore,
   type JlptN2PassStatus,
@@ -105,7 +109,13 @@ export function buildTryOutPacketChartSeries(
         totalCorrectAttempted += score.correctCount;
         totalGradableAttempted += score.totalGradable;
 
-        if (packet.level === 'N2') {
+        if (packet.level === 'N1') {
+          n2ScaledParts[part.id] = evaluateJlptN1PartScore(
+            part.id,
+            pages,
+            values,
+          ).scaledScore;
+        } else if (packet.level === 'N2') {
           n2ScaledParts[part.id] = evaluateJlptN2PartScore(
             part.id,
             pages,
@@ -122,7 +132,7 @@ export function buildTryOutPacketChartSeries(
 
     let n2TotalScaled: number | null = null;
     let n2PassStatus: JlptN2PassStatus | null = null;
-    if (packet.level === 'N2') {
+    if (packet.level === 'N1' || packet.level === 'N2') {
       const attemptedScaledValues = (
         ['moji-bunpou', 'dokkai', 'choukai'] as TryOutPacketPartId[]
       )
@@ -131,12 +141,20 @@ export function buildTryOutPacketChartSeries(
 
       if (attemptedScaledValues.length > 0) {
         n2TotalScaled = attemptedScaledValues.reduce((sum, v) => sum + v, 0);
-        const packetEval = evaluateJlptN2PacketScore({
-          forms,
-          answersByPart: answersByPart ?? {},
-          submittedIds:
-            submittedIds.length > 0 ? submittedIds : completedIds,
-        });
+        const packetEval =
+          packet.level === 'N1'
+            ? evaluateJlptN1PacketScore({
+                forms,
+                answersByPart: answersByPart ?? {},
+                submittedIds:
+                  submittedIds.length > 0 ? submittedIds : completedIds,
+              })
+            : evaluateJlptN2PacketScore({
+                forms,
+                answersByPart: answersByPart ?? {},
+                submittedIds:
+                  submittedIds.length > 0 ? submittedIds : completedIds,
+              });
         n2PassStatus = packetEval.status;
       }
     }

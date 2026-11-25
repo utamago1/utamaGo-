@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   ArrowLeft,
   CheckCircle2,
@@ -12,6 +12,7 @@ import { vibrateSuccess, vibrateTap } from '../utils/haptics';
 import type { DifficultCardEntry } from '../utils/homeSummary';
 import {
   isJapaneseSpeechSupported,
+  prefetchJapaneseSpeechBatch,
   speakJapanese,
 } from '../utils/japaneseSpeech';
 import { HighlightedJapaneseText } from './HighlightedJapaneseText';
@@ -103,6 +104,19 @@ export function DifficultDrillModal({
 
   const currentCard = currentEntry?.card ?? null;
   const firstExample = currentCard?.examples[0] ?? null;
+  const nextCard = queue[1]?.card ?? null;
+
+  useEffect(() => {
+    if (!speechSupported || !currentCard) return;
+    const timer = window.setTimeout(() => {
+      prefetchJapaneseSpeechBatch([
+        currentCard.word,
+        firstExample?.jp,
+        nextCard?.word,
+      ]);
+    }, 120);
+    return () => window.clearTimeout(timer);
+  }, [speechSupported, currentCard, firstExample?.jp, nextCard?.word]);
 
   return (
     <div
