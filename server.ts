@@ -797,6 +797,82 @@ Strict rules:
 6. If an entry contains BOTH Japanese and Indonesian (e.g. "かばん　Tas (tas jinjing)"), keep the Japanese part verbatim and translate only the Indonesian part ("かばん　Bag (handbag)").
 7. If an entry is already clean English or contains no Indonesian words, return it unchanged.`;
 
+async function translateSingleViaGtxServer(text: string): Promise<string | null> {
+  try {
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=id&tl=en&dt=t&q=${encodeURIComponent(text)}`;
+    const response = await fetch(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0' },
+      signal: AbortSignal.timeout(7000),
+    });
+    if (!response.ok) return null;
+    const payload = (await response.json()) as unknown;
+    if (!Array.isArray(payload) || !Array.isArray(payload[0])) return null;
+    let combined = '';
+    for (const seg of payload[0] as unknown[]) {
+      if (Array.isArray(seg) && typeof seg[0] === 'string') {
+        combined += seg[0];
+      }
+    }
+    return combined.trim() || null;
+  } catch {
+    return null;
+  }
+}
+
+async function translateTextsViaGtxServer(texts: string[]): Promise<string[] | null> {
+  if (texts.length === 0) return [];
+  const out = new Array<string>(texts.length);
+
+  // Batch single-line strings in groups separated by newline for speed
+  const singleIndices: number[] = [];
+  const singleTexts: string[] = [];
+  const multiIndices: number[] = [];
+  for (let i = 0; i < texts.length; i += 1) {
+    if (texts[i].includes('\n') || texts[i].length > 300) {
+      multiIndices.push(i);
+    } else {
+      singleIndices.push(i);
+      singleTexts.push(texts[i]);
+    }
+  }
+
+  let succeeded = 0;
+  if (singleTexts.length > 0) {
+    const joined = singleTexts.join('\n');
+    const joinedEn = await translateSingleViaGtxServer(joined);
+    const lines = joinedEn ? joinedEn.split(/\r?\n/).map((l) => l.trim()) : null;
+    if (lines && lines.length === singleTexts.length && lines.every((l) => l.length > 0)) {
+      for (let k = 0; k < singleIndices.length; k += 1) {
+        out[singleIndices[k]] = lines[k];
+        succeeded += 1;
+      }
+    } else {
+      for (const idx of singleIndices) {
+        multiIndices.push(idx);
+      }
+    }
+  }
+
+  // Translate remaining items with bounded concurrency (4)
+  let ptr = 0;
+  const worker = async () => {
+    while (ptr < multiIndices.length) {
+      const idx = multiIndices[ptr];
+      ptr += 1;
+      const en = await translateSingleViaGtxServer(texts[idx]);
+      if (en) {
+        out[idx] = en;
+        succeeded += 1;
+      } else {
+        out[idx] = texts[idx];
+      }
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(4, multiIndices.length) }, () => worker()));
+
+  return succeeded > 0 ? out : null;
+}
+
 async function handleTranslateBatch(req: Request, res: Response): Promise<void> {
   const body = req.body as Record<string, unknown> | undefined;
   if (!body || typeof body !== 'object' || Array.isArray(body)) {
@@ -862,90 +938,74 @@ async function handleTranslateBatch(req: Request, res: Response): Promise<void> 
     return;
   }
 
+  let translatedList: string[] | null = null;
+
   const ai = getGeminiExplainClient();
-  if (!ai) {
-    res.status(503).json({ error: 'Translation service is not configured on the server.' });
-    return;
-  }
-
-  const promptContent = `Translate each Indonesian string in this JSON array to English following all rules:\n${JSON.stringify(missingTexts)}`;
-  const schemaConfig = {
-    systemInstruction: TRANSLATE_BATCH_SYSTEM_INSTRUCTION,
-    responseMimeType: 'application/json',
-    responseSchema: {
-      type: Type.OBJECT,
-      properties: {
-        translations: {
-          type: Type.ARRAY,
-          items: { type: Type.STRING },
+  if (ai) {
+    const promptContent = `Translate each Indonesian string in this JSON array to English following all rules:\n${JSON.stringify(missingTexts)}`;
+    const schemaConfig = {
+      systemInstruction: TRANSLATE_BATCH_SYSTEM_INSTRUCTION,
+      responseMimeType: 'application/json',
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          translations: {
+            type: Type.ARRAY,
+            items: { type: Type.STRING },
+          },
         },
+        required: ['translations'],
       },
-      required: ['translations'],
-    },
-  };
+    };
+    try {
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: promptContent,
+        config: {
+          ...schemaConfig,
+          thinkingConfig: { thinkingBudget: 0 },
+        },
+      });
+      const parsed = JSON.parse((response.text ?? '').trim()) as { translations?: unknown };
+      if (Array.isArray(parsed.translations) && parsed.translations.length === missingTexts.length) {
+        translatedList = parsed.translations.map((c, j) =>
+          typeof c === 'string' && c.trim().length > 0 ? c.trim() : missingTexts[j],
+        );
+      }
+    } catch (err) {
+      console.warn(
+        '[TranslateBatch] Gemini unavailable, falling back to server GTX:',
+        err instanceof Error ? err.message : 'unknown error',
+      );
+    }
+  }
 
-  let rawResponseText = '';
-  try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-4-hydrogen',
-      contents: promptContent,
-      config: {
-        ...schemaConfig,
-        thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
-      },
-    });
-    rawResponseText = (response.text ?? '').trim();
-  } catch (err) {
-    const errMsg = err instanceof Error ? err.message : 'unknown error';
-    const rawStatus =
-      typeof err === 'object' && err !== null && 'status' in err
-        ? Number((err as { status?: unknown }).status)
-        : 0;
-    console.error('[TranslateBatch] Gemini translation failed:', rawStatus, errMsg);
+  if (!translatedList) {
+    translatedList = await translateTextsViaGtxServer(missingTexts);
+  }
 
-    const status =
-      rawStatus === 400 || rawStatus === 403 || rawStatus === 404 || rawStatus === 429
-        ? rawStatus
-        : 503;
-    const safeReason =
-      status === 403 || errMsg.includes('API_KEY_INVALID') || errMsg.includes('PERMISSION_DENIED')
-        ? 'API key permission denied or invalid. Check Settings > Secrets.'
-        : status === 429 || errMsg.includes('RESOURCE_EXHAUSTED')
-          ? 'Translation quota temporarily exhausted. Please try again shortly.'
-          : status === 404 || errMsg.includes('NOT_FOUND')
-            ? 'Requested translation model was not found.'
-            : 'Translation service temporarily unavailable.';
-    res.status(status).json({ error: safeReason });
+  if (!translatedList) {
+    // Graceful degradation: never emit noisy 503 console errors when external translators are unreachable
+    const fallbackOut = normalizedTexts.map((src, i) => results[i] ?? src);
+    res.setHeader('X-Translate-Cache', 'BYPASS');
+    res.status(200).json({ translations: fallbackOut, fallback: true });
     return;
   }
 
-  try {
-    const parsed = JSON.parse(rawResponseText) as { translations?: unknown };
-    const translatedList = Array.isArray(parsed.translations)
-      ? parsed.translations
-      : null;
-    if (!translatedList || translatedList.length !== missingTexts.length) {
-      res.status(502).json({ error: 'Incomplete batch translation response.' });
-      return;
-    }
-
-    for (let j = 0; j < missingIndices.length; j += 1) {
-      const idx = missingIndices[j];
-      const src = missingTexts[j];
-      const candidate = translatedList[j];
-      const en =
-        typeof candidate === 'string' && candidate.trim().length > 0
-          ? candidate.trim().slice(0, TRANSLATE_MAX_ITEM_CHARS + 400)
-          : src;
-      results[idx] = en;
-      setTranslateCacheEntry(src, en);
-    }
-
-    res.setHeader('X-Translate-Cache', 'MISS');
-    res.status(200).json({ translations: results });
-  } catch {
-    res.status(502).json({ error: 'Invalid translation response format.' });
+  for (let j = 0; j < missingIndices.length; j += 1) {
+    const idx = missingIndices[j];
+    const src = missingTexts[j];
+    const candidate = translatedList[j];
+    const en =
+      typeof candidate === 'string' && candidate.trim().length > 0
+        ? candidate.trim().slice(0, TRANSLATE_MAX_ITEM_CHARS + 400)
+        : src;
+    results[idx] = en;
+    setTranslateCacheEntry(src, en);
   }
+
+  res.setHeader('X-Translate-Cache', 'MISS');
+  res.status(200).json({ translations: results });
 }
 
 interface DriveAudioAssetMeta {
@@ -3294,10 +3354,10 @@ async function startServer() {
     handleLocalOrPracticeChoukaiAudio(req, res, 'n2-1');
   });
 
-  // Serve 30-second vertical beta launch promo MP4 with byte-range streaming & optional 1-click download
-  const servePromoVideo = (req: Request, res: Response) => {
-    const prodPath = path.resolve(process.cwd(), 'dist/promo/utamago-beta-30s.mp4');
-    const pubPath = path.resolve(process.cwd(), 'public/promo/utamago-beta-30s.mp4');
+  // Serve vertical promo MP4s with byte-range streaming & optional 1-click download
+  const makePromoVideoHandler = (fileName: string, downloadName: string) => (req: Request, res: Response) => {
+    const prodPath = path.resolve(process.cwd(), 'dist/promo', fileName);
+    const pubPath = path.resolve(process.cwd(), 'public/promo', fileName);
     const filePath = fs.existsSync(pubPath) ? pubPath : prodPath;
     if (!fs.existsSync(filePath)) {
       res.status(404).type('text/plain').send('Promo video not found.');
@@ -3308,13 +3368,23 @@ async function startServer() {
     if (String(req.query.download ?? '') === '1') {
       res.setHeader(
         'Content-Disposition',
-        'attachment; filename="UtamaGo-Promo-Beta-30s.mp4"',
+        `attachment; filename="${downloadName}"`,
       );
     }
     res.sendFile(filePath);
   };
-  app.get('/promo/utamago-beta-30s.mp4', servePromoVideo);
-  app.head('/promo/utamago-beta-30s.mp4', servePromoVideo);
+  const servePromoVideo30s = makePromoVideoHandler(
+    'utamago-beta-30s.mp4',
+    'UtamaGo-Promo-Beta-30s.mp4',
+  );
+  const servePromoVideo45s = makePromoVideoHandler(
+    'utamago-promo-45s.mp4',
+    'UtamaGo-Promo-Interaktif-45s.mp4',
+  );
+  app.get('/promo/utamago-beta-30s.mp4', servePromoVideo30s);
+  app.head('/promo/utamago-beta-30s.mp4', servePromoVideo30s);
+  app.get('/promo/utamago-promo-45s.mp4', servePromoVideo45s);
+  app.head('/promo/utamago-promo-45s.mp4', servePromoVideo45s);
 
   if (!isProd) {
     const { createServer: createViteServer } = await import('vite');

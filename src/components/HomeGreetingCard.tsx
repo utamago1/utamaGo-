@@ -351,11 +351,23 @@ export function HomeGreetingCard({
     }
   };
 
-  const expressionLabel = MASCOT_EXPRESSION_LABELS[activeExpression];
+  const expressionLabelId = MASCOT_EXPRESSION_LABELS[activeExpression];
+  const expressionLabelEn: Record<MascotExpression, string> = {
+    idle: 'Chill',
+    happy: 'Happy',
+    tap_kaget: 'Surprised',
+    mikir_loading: 'Thinking',
+    bingung_sedih: 'Sad',
+    ngantuk_tidur: 'Sleepy',
+  };
+  const expressionLabel = t(
+    expressionLabelId,
+    expressionLabelEn[activeExpression],
+  );
 
   return (
     <section
-      aria-label="Sapaan dan Level Belajar"
+      aria-label={t('Sapaan dan Level Belajar', 'Greeting and Study Level')}
       className="w-full min-w-0 rounded-2xl border border-outline-variant bg-surface-container-low p-4"
     >
       {/* Top row: prominent interactive animated GIF mascot on left + greeting, badge & speech bubble on right */}
@@ -368,7 +380,10 @@ export function HomeGreetingCard({
           sizeClassName="h-[96px] w-[96px] shrink-0 sm:h-[136px] sm:w-[136px]"
           fallbackSrc={src ?? levelProgress.rank.illustrationPath}
           fallbackLabel={shortRankName}
-          ariaLabel="Maskot UtamaGo, ketuk untuk berinteraksi"
+          ariaLabel={t(
+            'Maskot UtamaGo, ketuk untuk berinteraksi',
+            'UtamaGo mascot, tap to interact',
+          )}
           onTap={handleMascotTap}
           dataMood={activeExpression}
           dataCondition={autoDialogState.condition}
@@ -393,8 +408,14 @@ export function HomeGreetingCard({
             <button
               type="button"
               onClick={handleCycleExpressionPreview}
-              aria-label={`Ekspresi maskot: ${expressionLabel}. Ketuk untuk ganti ekspresi`}
-              title="Ketuk untuk ganti ekspresi maskot"
+              aria-label={t(
+                `Ekspresi maskot: ${expressionLabel}. Ketuk untuk ganti ekspresi`,
+                `Mascot mood: ${expressionLabel}. Tap to switch expression`,
+              )}
+              title={t(
+                'Ketuk untuk ganti ekspresi maskot',
+                'Tap to switch mascot expression',
+              )}
               className={`inline-flex shrink-0 items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-semibold transition-colors hover:bg-surface-container ${getExpressionBadgeTone(activeExpression)}`}
             >
               <span aria-hidden="true">·</span>
@@ -440,7 +461,10 @@ export function HomeGreetingCard({
           aria-valuenow={levelProgress.progressPercent}
           aria-valuemin={0}
           aria-valuemax={100}
-          aria-label="Progres XP menuju level berikutnya"
+          aria-label={t(
+            'Progres XP menuju level berikutnya',
+            'XP progress to next level',
+          )}
         >
           <div
             className="h-full rounded-full bg-primary transition-all duration-300"

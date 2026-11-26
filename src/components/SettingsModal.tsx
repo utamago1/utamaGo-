@@ -30,7 +30,6 @@ import {
 } from '../utils/haptics';
 import {
   formatSpeechRateLabel,
-  formatSpeechStyleLabel,
   isDeviceSpeechSynthesisSupported,
   isJapaneseSpeechSupported,
   listJapaneseVoices,
@@ -42,7 +41,6 @@ import {
   subscribeSpeechPreferences,
   type JapaneseVoiceOption,
   type SpeechPreferences,
-  type SpeechVoiceStyle,
 } from '../utils/japaneseSpeech';
 import {
   TEACHER_INSTAGRAM_HANDLE,
@@ -205,18 +203,26 @@ export function SettingsModal({
         onUpdateReminder(nextConfig);
         await adapter.scheduleDailyReminder(nextConfig);
         setReminderNotice(
-          `Pengingat aktif setiap pukul ${formatReminderTime(reminder.hour, reminder.minute)}.`,
+          t(
+            `Pengingat aktif setiap pukul ${formatReminderTime(reminder.hour, reminder.minute)}.`,
+            `Reminder active daily at ${formatReminderTime(reminder.hour, reminder.minute)}.`,
+          ),
         );
       } else {
         setReminderNotice(
-          'Izin notifikasi belum diaktifkan di browser.',
+          t(
+            'Izin notifikasi belum diaktifkan di browser.',
+            'Notification permission is not enabled in this browser.',
+          ),
         );
       }
     } else {
       const nextConfig = { ...reminder, enabled: false };
       onUpdateReminder(nextConfig);
       await adapter.cancelDailyReminder();
-      setReminderNotice('Pengingat harian dimatikan.');
+      setReminderNotice(
+        t('Pengingat harian dimatikan.', 'Daily reminder turned off.'),
+      );
     }
   };
 
@@ -244,17 +250,31 @@ export function SettingsModal({
         : await adapter.requestPermission();
     setPermissionState(perm);
     if (perm !== 'granted') {
-      setReminderNotice('Izin notifikasi belum diberikan.');
+      setReminderNotice(
+        t(
+          'Izin notifikasi belum diberikan.',
+          'Notification permission has not been granted.',
+        ),
+      );
       return;
     }
     const sent = await adapter.sendImmediateNotification(
-      'UtamaGo! — Pengingat Belajar JLPT',
-      'Saatnya latihan kosakata Anki, Bunpou N5–N1, dan tantangan JLPT hari ini.',
+      t('UtamaGo! — Pengingat Belajar JLPT', 'UtamaGo! — JLPT Study Reminder'),
+      t(
+        'Saatnya latihan kosakata Anki, Bunpou N5–N1, dan tantangan JLPT hari ini.',
+        "Time for today's Anki vocabulary, N5–N1 grammar, and JLPT practice.",
+      ),
     );
     setReminderNotice(
       sent
-        ? 'Notifikasi uji coba berhasil dikirim.'
-        : 'Tidak dapat menampilkan notifikasi saat ini.',
+        ? t(
+            'Notifikasi uji coba berhasil dikirim.',
+            'Test notification sent successfully.',
+          )
+        : t(
+            'Tidak dapat menampilkan notifikasi saat ini.',
+            'Unable to display notification right now.',
+          ),
     );
   };
 
@@ -410,11 +430,17 @@ export function SettingsModal({
                 </p>
                 <div
                   role="radiogroup"
-                  aria-label="Pilih ukuran huruf"
+                  aria-label={t('Pilih ukuran huruf', 'Choose text size')}
                   className="grid grid-cols-3 gap-1.5 rounded-2xl bg-surface-container p-1"
                 >
                   {TEXT_SCALE_OPTIONS.map((opt) => {
                     const active = textScale === opt.id;
+                    const label =
+                      opt.id === 'normal'
+                        ? t('Normal', 'Normal')
+                        : opt.id === 'large'
+                          ? t('Besar', 'Large')
+                          : t('Ekstra', 'Extra');
                     return (
                       <button
                         key={opt.id}
@@ -431,7 +457,7 @@ export function SettingsModal({
                             : 'text-on-surface-variant hover:text-on-surface'
                         }`}
                       >
-                        {opt.label}
+                        {label}
                       </button>
                     );
                   })}
@@ -441,11 +467,14 @@ export function SettingsModal({
               <div className="border-t border-outline-variant pt-4">
                 <p className="mb-2 inline-flex items-center gap-1.5 text-xs font-semibold text-on-surface-variant">
                   <GraduationCap className="h-3.5 w-3.5" aria-hidden="true" />
-                  <span>Target Level JLPT ({onboarding.targetLevel})</span>
+                  <span>
+                    {t('Target Level JLPT', 'JLPT Target Level')} (
+                    {onboarding.targetLevel})
+                  </span>
                 </p>
                 <div
                   role="radiogroup"
-                  aria-label="Target level JLPT"
+                  aria-label={t('Target level JLPT', 'JLPT target level')}
                   className="grid grid-cols-5 gap-1.5 rounded-2xl bg-surface-container p-1"
                 >
                   {TARGET_LEVELS.map((lvl) => {
@@ -482,10 +511,13 @@ export function SettingsModal({
                     />
                     <div>
                       <p className="text-xs font-bold text-on-surface">
-                        Getar Haptic (Tactile)
+                        {t('Getar Haptic (Tactile)', 'Haptic Feedback')}
                       </p>
                       <p className="text-[11px] text-on-surface-variant">
-                        Getaran halus saat menekan tombol &amp; kartu
+                        {t(
+                          'Getaran halus saat menekan tombol & kartu',
+                          'Subtle vibration when tapping buttons & cards',
+                        )}
                       </p>
                     </div>
                   </div>
@@ -502,13 +534,16 @@ export function SettingsModal({
                       }}
                       className="m3-tactile min-h-[38px] rounded-xl border border-outline bg-surface-container px-2.5 py-1 text-[11px] font-bold text-on-surface hover:bg-surface-container-high"
                     >
-                      Tes
+                      {t('Tes', 'Test')}
                     </button>
                     <button
                       type="button"
                       role="switch"
                       aria-checked={hapticsOn}
-                      aria-label="Aktifkan getar haptic saat menekan tombol"
+                      aria-label={t(
+                        'Aktifkan getar haptic saat menekan tombol',
+                        'Enable haptic vibration on tap',
+                      )}
                       onClick={() => {
                         const next = !hapticsOn;
                         setHapticsEnabled(next);
@@ -541,11 +576,13 @@ export function SettingsModal({
             <section className="space-y-4 rounded-3xl border border-outline-variant bg-surface-container-low p-5 shadow-xs">
               <div>
                 <h3 className="font-display text-base font-bold text-on-surface">
-                  Pengingat Belajar &amp; Bantuan
+                  {t('Pengingat Belajar & Bantuan', 'Study Reminders & Help')}
                 </h3>
                 <p className="mt-1 text-xs leading-relaxed text-on-surface-variant">
-                  Atur pengingat latihan harian, hubungi pengajar, atau kelola
-                  progres belajarmu.
+                  {t(
+                    'Atur pengingat latihan harian, hubungi pengajar, atau kelola progres belajarmu.',
+                    'Set daily study reminders, contact the teacher, or manage your learning progress.',
+                  )}
                 </p>
               </div>
 
@@ -558,13 +595,25 @@ export function SettingsModal({
                   <div className="space-y-0.5">
                     <p className="text-xs font-bold text-on-surface">
                       {permissionState === 'denied'
-                        ? 'Pengingat Harian Diblokir Browser'
-                        : 'Pengingat Harian Tidak Tersedia'}
+                        ? t(
+                            'Pengingat Harian Diblokir Browser',
+                            'Daily Reminder Blocked by Browser',
+                          )
+                        : t(
+                            'Pengingat Harian Tidak Tersedia',
+                            'Daily Reminder Unavailable',
+                          )}
                     </p>
                     <p className="text-[11px] leading-relaxed text-on-surface-variant">
                       {permissionState === 'denied'
-                        ? 'Izin notifikasi sedang ditolak. Aktifkan izin notifikasi untuk situs ini di setelan browser agar pengingat harian bisa menyala.'
-                        : 'Browser perangkat ini belum mendukung notifikasi pengingat harian.'}
+                        ? t(
+                            'Izin notifikasi sedang ditolak. Aktifkan izin notifikasi untuk situs ini di setelan browser agar pengingat harian bisa menyala.',
+                            'Notification permission is denied. Enable notifications for this site in your browser settings to turn on daily reminders.',
+                          )
+                        : t(
+                            'Browser perangkat ini belum mendukung notifikasi pengingat harian.',
+                            'This device browser does not support daily reminder notifications yet.',
+                          )}
                     </p>
                   </div>
                 </div>
@@ -578,12 +627,15 @@ export function SettingsModal({
                       />
                       <div>
                         <p className="text-xs font-bold text-on-surface">
-                          Pengingat Harian
+                          {t('Pengingat Harian', 'Daily Reminder')}
                         </p>
                         <p className="text-[11px] text-on-surface-variant">
                           {permissionState === 'granted'
-                            ? 'Notifikasi diizinkan'
-                            : 'Ketuk tombol untuk mengaktifkan pengingat'}
+                            ? t('Notifikasi diizinkan', 'Notifications allowed')
+                            : t(
+                                'Ketuk tombol untuk mengaktifkan pengingat',
+                                'Tap switch to enable reminders',
+                              )}
                         </p>
                       </div>
                     </div>
@@ -592,7 +644,10 @@ export function SettingsModal({
                       type="button"
                       role="switch"
                       aria-checked={reminder.enabled}
-                      aria-label="Aktifkan pengingat belajar harian"
+                      aria-label={t(
+                        'Aktifkan pengingat belajar harian',
+                        'Enable daily study reminder',
+                      )}
                       onClick={() => void handleToggleReminder()}
                       className="m3-tactile inline-flex min-h-[48px] items-center rounded-xl px-1"
                     >
@@ -618,7 +673,7 @@ export function SettingsModal({
                       htmlFor="settings-reminder-time-input"
                       className="sr-only"
                     >
-                      Jam pengingat belajar harian
+                      {t('Jam pengingat belajar harian', 'Daily reminder time')}
                     </label>
                     <input
                       id="settings-reminder-time-input"
@@ -634,7 +689,7 @@ export function SettingsModal({
                       onClick={() => void handleTestNotification()}
                       className="m3-tactile inline-flex min-h-[48px] flex-1 items-center justify-center whitespace-nowrap rounded-xl border border-outline bg-surface-container-low px-3 py-2 text-xs font-semibold text-on-surface hover:bg-surface-container-high"
                     >
-                      Uji Notifikasi
+                      {t('Uji Notifikasi', 'Test Notification')}
                     </button>
                   </div>
 
@@ -679,7 +734,10 @@ export function SettingsModal({
                     aria-hidden="true"
                   />
                   <span>
-                    Tanya Pengajar via Instagram ({TEACHER_INSTAGRAM_HANDLE})
+                    {t(
+                      `Tanya Pengajar via Instagram (${TEACHER_INSTAGRAM_HANDLE})`,
+                      `Ask Teacher on Instagram (${TEACHER_INSTAGRAM_HANDLE})`,
+                    )}
                   </span>
                   <ExternalLink
                     className="h-3.5 w-3.5 text-on-surface-variant"
@@ -697,12 +755,17 @@ export function SettingsModal({
                   className="m3-tactile inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-2xl border border-outline bg-surface-container px-4 py-2 text-xs font-semibold text-on-surface hover:bg-surface-container-high"
                 >
                   <RotateCcw className="h-4 w-4" aria-hidden="true" />
-                  <span>Reset Semua Progres Belajar</span>
+                  <span>
+                    {t('Reset Semua Progres Belajar', 'Reset All Study Progress')}
+                  </span>
                 </button>
 
                 {resetDone && (
                   <p className="text-xs font-medium text-success">
-                    Semua progres belajar berhasil direset ke Level 1.
+                    {t(
+                      'Semua progres belajar berhasil direset ke Level 1.',
+                      'All study progress has been reset to Level 1.',
+                    )}
                   </p>
                 )}
 
@@ -710,7 +773,7 @@ export function SettingsModal({
                   <div className="space-y-2 border-t border-outline-variant pt-3">
                     {(accountUsername || accountEmail) && (
                       <p className="font-mono text-[11px] text-on-surface-variant">
-                        Akun:{' '}
+                        {t('Akun:', 'Account:')}{' '}
                         <strong className="text-on-surface">
                           {accountUsername ? `@${accountUsername}` : ''}
                           {accountUsername && accountEmail ? ' · ' : ''}
@@ -729,7 +792,7 @@ export function SettingsModal({
                         className="m3-tactile inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-2xl border border-outline bg-surface-container px-3.5 py-2 text-xs font-semibold text-primary hover:bg-surface-container-high"
                       >
                         <LogOut className="h-4 w-4" aria-hidden="true" />
-                        <span>Keluar Akun</span>
+                        <span>{t('Keluar Akun', 'Sign Out')}</span>
                       </button>
                     )}
                   </div>
@@ -746,11 +809,15 @@ export function SettingsModal({
                       className="h-4 w-4 shrink-0 text-primary"
                       aria-hidden="true"
                     />
-                    <span>Suara &amp; Pelafalan Jepang</span>
+                    <span>
+                      {t('Suara & Pelafalan Jepang', 'Japanese Voice & Audio')}
+                    </span>
                   </h3>
                   <p className="mt-1 text-xs leading-relaxed text-on-surface-variant">
-                    Menggunakan suara bawaan perangkat (instan &amp; bisa
-                    diputar offline). Berlaku di Anki, Kamus, dan Bunpou.
+                    {t(
+                      'Menggunakan suara bawaan perangkat (instan & bisa diputar offline). Berlaku di Anki, Kamus, dan Bunpou.',
+                      'Uses your native device voice (instant & works offline). Applies to Anki, Dictionary, and Grammar.',
+                    )}
                   </p>
                 </div>
 
@@ -795,10 +862,10 @@ export function SettingsModal({
                     )}
                     <span>
                       {loadingVoiceTest
-                        ? 'Memuat Suara...'
+                        ? t('Memuat Suara...', 'Loading Voice...')
                         : testingVoice
-                          ? 'Hentikan Uji'
-                          : 'Uji Suara'}
+                          ? t('Hentikan Uji', 'Stop Test')
+                          : t('Uji Suara', 'Test Voice')}
                     </span>
                   </button>
                 )}
@@ -806,15 +873,21 @@ export function SettingsModal({
 
               {!speechSupported ? (
                 <p className="rounded-2xl bg-surface-container p-3.5 text-xs text-on-surface-variant">
-                  Browser perangkat ini belum mendukung pemutaran audio
-                  pelafalan Jepang.
+                  {t(
+                    'Browser perangkat ini belum mendukung pemutaran audio pelafalan Jepang.',
+                    'This browser does not support Japanese speech playback yet.',
+                  )}
                 </p>
               ) : (
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <div className="space-y-2">
+                  <div
+                    className={`space-y-2 ${
+                      showDeviceVoiceDropdown ? '' : 'md:col-span-2'
+                    }`}
+                  >
                     <div className="flex items-center justify-between text-xs">
                       <span className="font-semibold text-on-surface-variant">
-                        Kecepatan Bicara
+                        {t('Kecepatan Bicara', 'Speech Speed')}
                       </span>
                       <span className="font-mono font-bold tabular-nums text-primary">
                         {formatSpeechRateLabel(speechPrefs.rate)}
@@ -845,64 +918,16 @@ export function SettingsModal({
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <p className="text-xs font-semibold text-on-surface-variant">
-                      Gaya Suara ({formatSpeechStyleLabel(speechPrefs.voiceStyle)}
-                      )
-                    </p>
-                    <div
-                      role="radiogroup"
-                      aria-label="Pilih gaya suara Jepang"
-                      className="grid grid-cols-3 gap-1.5 rounded-2xl bg-surface-container p-1"
-                    >
-                      {(
-                        [
-                          { id: 'auto', label: 'Otomatis' },
-                          { id: 'female', label: 'Cewek' },
-                          { id: 'male', label: 'Cowok' },
-                        ] as ReadonlyArray<{
-                          id: SpeechVoiceStyle;
-                          label: string;
-                        }>
-                      ).map((opt) => {
-                        const active = speechPrefs.voiceStyle === opt.id;
-                        return (
-                          <button
-                            key={opt.id}
-                            type="button"
-                            role="radio"
-                            aria-checked={active}
-                            onClick={() => {
-                              vibrateTap();
-                              stopJapaneseSpeech();
-                              setTestingVoice(false);
-                              setLoadingVoiceTest(false);
-                              saveSpeechPreferences({
-                                voiceStyle: opt.id,
-                                voiceURI: '',
-                              });
-                            }}
-                            className={`m3-tactile min-h-[44px] rounded-xl px-2 text-xs font-bold transition-colors ${
-                              active
-                                ? 'bg-surface-container-low text-on-surface shadow-xs'
-                                : 'text-on-surface-variant hover:text-on-surface'
-                            }`}
-                          >
-                            {opt.label}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
                   {showDeviceVoiceDropdown && (
                     <div className="space-y-1.5">
                       <label
                         htmlFor="settings-jp-voice-select"
                         className="block text-xs font-semibold text-on-surface-variant"
                       >
-                        Pilihan Suara Perangkat ({japaneseVoices.length} suara
-                        tersedia)
+                        {t(
+                          `Pilihan Suara Perangkat (${japaneseVoices.length} suara tersedia)`,
+                          `Device Voice (${japaneseVoices.length} available)`,
+                        )}
                       </label>
                       <select
                         id="settings-jp-voice-select"
@@ -913,40 +938,37 @@ export function SettingsModal({
                         className="min-h-[44px] w-full rounded-xl border border-outline-variant bg-surface px-3 text-xs font-medium text-on-surface focus:border-primary focus:outline-none"
                       >
                         <option value="">
-                          Otomatis Perangkat (
-                          {formatSpeechStyleLabel(speechPrefs.voiceStyle)})
+                          {t('Otomatis Perangkat', 'Device Default')}
                         </option>
                         {japaneseVoices.map((v) => (
                           <option key={v.voiceURI} value={v.voiceURI}>
-                            {v.name} ({v.lang}
-                            {v.detectedGender !== 'unknown'
-                              ? ` · ${v.detectedGender === 'female' ? 'Cewek' : 'Cowok'}`
-                              : ''}
-                            )
+                            {v.name} ({v.lang})
                           </option>
                         ))}
                       </select>
                     </div>
                   )}
 
-                  <div
-                    className={`flex items-center justify-between gap-3 rounded-2xl bg-surface-container px-4 py-3 ${
-                      showDeviceVoiceDropdown ? '' : 'md:col-span-2'
-                    }`}
-                  >
+                  <div className="flex items-center justify-between gap-3 rounded-2xl bg-surface-container px-4 py-3 md:col-span-2">
                     <div>
                       <p className="text-xs font-bold text-on-surface">
-                        Auto-play Audio di Anki
+                        {t('Auto-play Audio di Anki', 'Auto-play Audio in Anki')}
                       </p>
                       <p className="text-[11px] text-on-surface-variant">
-                        Otomatis membacakan kata Jepang saat kartu baru muncul
+                        {t(
+                          'Otomatis membacakan kata Jepang saat kartu baru muncul',
+                          'Automatically speaks Japanese words when a new card appears',
+                        )}
                       </p>
                     </div>
                     <button
                       type="button"
                       role="switch"
                       aria-checked={speechPrefs.autoPlayAnki}
-                      aria-label="Aktifkan auto-play audio pada kartu Anki"
+                      aria-label={t(
+                        'Aktifkan auto-play audio pada kartu Anki',
+                        'Enable auto-play audio on Anki cards',
+                      )}
                       onClick={() => {
                         vibrateTap();
                         saveSpeechPreferences({
@@ -982,10 +1004,13 @@ export function SettingsModal({
 
       <ConfirmDialog
         open={confirmResetOpen}
-        title="Reset Semua Progres?"
-        description="Semua XP, level terbuka, jadwal ulang kartu Anki, serta jawaban Try Out di perangkat ini akan dihapus dan kembali ke Level 1."
-        confirmLabel="Ya, Reset"
-        cancelLabel="Batal"
+        title={t('Reset Semua Progres?', 'Reset All Progress?')}
+        description={t(
+          'Semua XP, level terbuka, jadwal ulang kartu Anki, serta jawaban Try Out di perangkat ini akan dihapus dan kembali ke Level 1.',
+          'All XP, unlocked levels, Anki review schedules, and Try Out answers on this device will be cleared and reset to Level 1.',
+        )}
+        confirmLabel={t('Ya, Reset', 'Yes, Reset')}
+        cancelLabel={t('Batal', 'Cancel')}
         onConfirm={handleConfirmReset}
         onCancel={() => setConfirmResetOpen(false)}
       />

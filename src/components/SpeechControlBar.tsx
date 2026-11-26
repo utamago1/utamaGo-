@@ -6,10 +6,10 @@ import {
   Volume2,
   X,
 } from 'lucide-react';
+import { useLanguage } from '../i18n/LanguageContext';
 import { vibrateTap } from '../utils/haptics';
 import {
   formatSpeechRateLabel,
-  formatSpeechStyleLabel,
   isDeviceSpeechSynthesisSupported,
   isJapaneseSpeechSupported,
   listJapaneseVoices,
@@ -21,7 +21,6 @@ import {
   subscribeSpeechPreferences,
   type JapaneseVoiceOption,
   type SpeechPreferences,
-  type SpeechVoiceStyle,
 } from '../utils/japaneseSpeech';
 
 interface SpeechControlBarProps {
@@ -35,12 +34,6 @@ interface SpeechControlBarProps {
   writeKanjiLabel?: string;
 }
 
-const STYLE_OPTIONS: ReadonlyArray<{ id: SpeechVoiceStyle; label: string }> = [
-  { id: 'auto', label: 'Otomatis' },
-  { id: 'female', label: 'Cewek' },
-  { id: 'male', label: 'Cowok' },
-];
-
 export function SpeechControlBar({
   text,
   compact = false,
@@ -49,8 +42,9 @@ export function SpeechControlBar({
   showAutoPlayToggle = false,
   className = '',
   onWriteKanji,
-  writeKanjiLabel = 'Latih Tulis',
+  writeKanjiLabel,
 }: SpeechControlBarProps) {
+  const { t } = useLanguage();
   const [prefs, setPrefs] = useState<SpeechPreferences>(() =>
     loadSpeechPreferences(),
   );
@@ -62,6 +56,7 @@ export function SpeechControlBar({
   );
 
   const supported = isJapaneseSpeechSupported();
+  const resolvedWriteLabel = writeKanjiLabel ?? t('Latih Tulis', 'Write');
 
   useEffect(() => {
     const unsub = subscribeSpeechPreferences(setPrefs);
@@ -117,7 +112,11 @@ export function SpeechControlBar({
         <button
           type="button"
           onClick={handleToggleSpeak}
-          aria-label={speaking ? 'Hentikan suara' : 'Dengarkan pelafalan Jepang'}
+          aria-label={
+            speaking
+              ? t('Hentikan suara', 'Stop audio')
+              : t('Dengarkan pelafalan Jepang', 'Listen to Japanese pronunciation')
+          }
           className={`m3-tactile inline-flex ${btnHeight} items-center gap-1.5 whitespace-nowrap rounded-xl border text-xs font-bold transition-colors ${
             speaking
               ? 'border-primary bg-primary text-on-primary'
@@ -132,7 +131,11 @@ export function SpeechControlBar({
             <Volume2 className="h-3.5 w-3.5" aria-hidden="true" />
           )}
           <span>
-            {loadingAudio ? 'Memuat...' : speaking ? 'Berhenti' : 'Dengar'}
+            {loadingAudio
+              ? t('Memuat...', 'Loading...')
+              : speaking
+                ? t('Berhenti', 'Stop')
+                : t('Dengar', 'Listen')}
           </span>
         </button>
 
@@ -144,7 +147,10 @@ export function SpeechControlBar({
               setPopoverOpen((prev) => !prev);
             }}
             aria-expanded={popoverOpen}
-            aria-label="Atur kecepatan dan gaya suara Jepang"
+            aria-label={t(
+              'Atur kecepatan suara Jepang',
+              'Adjust Japanese speech speed',
+            )}
             className={`m3-tactile inline-flex ${btnHeight} items-center gap-1.5 whitespace-nowrap rounded-xl border text-xs font-semibold transition-colors ${
               popoverOpen
                 ? 'border-primary bg-surface text-primary'
@@ -153,8 +159,7 @@ export function SpeechControlBar({
           >
             <SlidersHorizontal className="h-3.5 w-3.5" aria-hidden="true" />
             <span className="font-mono tabular-nums">
-              {formatSpeechRateLabel(prefs.rate)} ·{' '}
-              {formatSpeechStyleLabel(prefs.voiceStyle)}
+              {formatSpeechRateLabel(prefs.rate)}
             </span>
           </button>
         )}
@@ -168,7 +173,7 @@ export function SpeechControlBar({
             }}
             className={`m3-tactile inline-flex ${btnHeight} items-center gap-1.5 whitespace-nowrap rounded-xl border border-outline-variant bg-surface-container-low text-xs font-semibold text-on-surface-variant hover:border-outline hover:text-primary`}
           >
-            <span>{writeKanjiLabel}</span>
+            <span>{resolvedWriteLabel}</span>
           </button>
         )}
       </div>
@@ -176,12 +181,15 @@ export function SpeechControlBar({
       {popoverOpen && (
         <div
           role="region"
-          aria-label="Kontrol cepat suara Jepang"
+          aria-label={t(
+            'Kontrol cepat suara Jepang',
+            'Japanese speech quick controls',
+          )}
           className="space-y-3 rounded-2xl border border-outline-variant bg-surface p-3.5 text-left shadow-sm"
         >
           <div className="flex items-center justify-between gap-2">
             <p className="text-xs font-bold text-on-surface">
-              Pengaturan Cepat Suara Jepang
+              {t('Pengaturan Cepat Suara Jepang', 'Quick Japanese Voice Settings')}
             </p>
             <button
               type="button"
@@ -189,7 +197,7 @@ export function SpeechControlBar({
                 vibrateTap();
                 setPopoverOpen(false);
               }}
-              aria-label="Tutup kontrol suara"
+              aria-label={t('Tutup kontrol suara', 'Close voice controls')}
               className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
             >
               <X className="h-4 w-4" aria-hidden="true" />
@@ -198,7 +206,9 @@ export function SpeechControlBar({
 
           <div className="space-y-1.5">
             <div className="flex items-center justify-between text-[11px] text-on-surface-variant">
-              <span className="font-semibold">Kecepatan Bicara</span>
+              <span className="font-semibold">
+                {t('Kecepatan Bicara', 'Speech Speed')}
+              </span>
               <span className="font-mono font-bold tabular-nums text-primary">
                 {formatSpeechRateLabel(prefs.rate)}
               </span>
@@ -227,47 +237,16 @@ export function SpeechControlBar({
             </div>
           </div>
 
-          <div className="space-y-1.5">
-            <p className="text-[11px] font-semibold text-on-surface-variant">
-              Gaya Suara
-            </p>
-            <div className="grid grid-cols-3 gap-1.5">
-              {STYLE_OPTIONS.map((opt) => {
-                const active = prefs.voiceStyle === opt.id;
-                return (
-                  <button
-                    key={opt.id}
-                    type="button"
-                    onClick={() => {
-                      vibrateTap();
-                      stopJapaneseSpeech();
-                      setSpeaking(false);
-                      setLoadingAudio(false);
-                      saveSpeechPreferences({
-                        voiceStyle: opt.id,
-                        voiceURI: '',
-                      });
-                    }}
-                    className={`min-h-[40px] rounded-lg border px-2 text-xs font-bold transition-colors ${
-                      active
-                        ? 'border-primary bg-primary-container text-on-primary-container'
-                        : 'border-outline-variant bg-surface-container-low text-on-surface-variant hover:border-outline hover:text-on-surface'
-                    }`}
-                  >
-                    {opt.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
           {voices.length > 1 && (
             <div className="space-y-1.5">
               <label
                 htmlFor="quick-jp-voice-select"
                 className="block text-[11px] font-semibold text-on-surface-variant"
               >
-                Suara Perangkat ({voices.length} tersedia)
+                {t(
+                  `Suara Perangkat (${voices.length} tersedia)`,
+                  `Device Voice (${voices.length} available)`,
+                )}
               </label>
               <select
                 id="quick-jp-voice-select"
@@ -278,15 +257,11 @@ export function SpeechControlBar({
                 className="min-h-[40px] w-full rounded-xl border border-outline-variant bg-surface-container-low px-3 text-xs font-medium text-on-surface focus:border-primary focus:outline-none"
               >
                 <option value="">
-                  Otomatis Perangkat ({formatSpeechStyleLabel(prefs.voiceStyle)})
+                  {t('Otomatis Perangkat', 'Device Default')}
                 </option>
                 {voices.map((v) => (
                   <option key={v.voiceURI} value={v.voiceURI}>
-                    {v.name} ({v.lang}
-                    {v.detectedGender !== 'unknown'
-                      ? ` · ${v.detectedGender === 'female' ? 'Cewek' : 'Cowok'}`
-                      : ''}
-                    )
+                    {v.name} ({v.lang})
                   </option>
                 ))}
               </select>
@@ -296,7 +271,10 @@ export function SpeechControlBar({
           {showAutoPlayToggle && (
             <label className="flex min-h-[40px] cursor-pointer items-center justify-between gap-3 border-t border-outline-variant pt-2.5 text-xs">
               <span className="font-semibold text-on-surface">
-                Putar otomatis saat kartu Anki muncul
+                {t(
+                  'Putar otomatis saat kartu Anki muncul',
+                  'Auto-play when Anki card appears',
+                )}
               </span>
               <input
                 type="checkbox"

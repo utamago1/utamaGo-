@@ -4,6 +4,7 @@ import {
   CheckCircle2,
   Target,
 } from 'lucide-react';
+import { useLanguage } from '../i18n/LanguageContext';
 import { vibrateTap } from '../utils/haptics';
 import type {
   JlptWeaknessReport,
@@ -16,35 +17,51 @@ interface WeaknessDetectorCardProps {
   onExecuteAction: (action: WeaknessActionTarget) => void;
 }
 
-function getSeverityMeta(severity: WeaknessSeverity): {
+function getSeverityMeta(
+  severity: WeaknessSeverity,
+  t: (id: string, en: string) => string,
+): {
   label: string;
   textClass: string;
 } {
   if (severity === 'high') {
-    return { label: 'Prioritas Tinggi', textClass: 'text-primary' };
+    return {
+      label: t('Prioritas Tinggi', 'High Priority'),
+      textClass: 'text-primary',
+    };
   }
   if (severity === 'medium') {
-    return { label: 'Perlu Penguatan', textClass: 'text-warning' };
+    return {
+      label: t('Perlu Penguatan', 'Needs Practice'),
+      textClass: 'text-warning',
+    };
   }
-  return { label: 'Rekomendasi', textClass: 'text-success' };
+  return {
+    label: t('Rekomendasi', 'Recommended'),
+    textClass: 'text-success',
+  };
 }
 
 export function WeaknessDetectorCard({
   report,
   onExecuteAction,
 }: WeaknessDetectorCardProps) {
+  const { t } = useLanguage();
   if (report.insights.length === 0) return null;
 
   return (
     <section
-      aria-label="Detektor Kelemahan JLPT dan Rekomendasi Latihan"
+      aria-label={t(
+        'Detektor Kelemahan JLPT dan Rekomendasi Latihan',
+        'JLPT Weakness Detector and Study Recommendations',
+      )}
       className="w-full min-w-0 space-y-3 rounded-2xl border border-outline-variant bg-surface-container-low p-4"
     >
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="inline-flex items-center gap-1.5 text-xs font-bold text-primary">
             <Target className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-            <span>Detektor Kelemahan JLPT</span>
+            <span>{t('Detektor Kelemahan JLPT', 'JLPT Weakness Detector')}</span>
           </p>
           <h3 className="mt-0.5 font-display text-[15px] font-extrabold text-on-surface">
             {report.readinessLabel}
@@ -57,7 +74,7 @@ export function WeaknessDetectorCard({
 
       <div className="divide-y divide-outline-variant border-t border-outline-variant">
         {report.insights.map((insight) => {
-          const meta = getSeverityMeta(insight.severity);
+          const meta = getSeverityMeta(insight.severity, t);
           return (
             <div
               key={insight.id}

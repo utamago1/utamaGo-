@@ -461,7 +461,7 @@ export function speakJapanese(
     typeof options?.rate === 'number'
       ? clampSpeechRate(options.rate)
       : prefs.rate;
-  const effectiveStyle = options?.voiceStyle ?? prefs.voiceStyle;
+  const effectiveStyle = options?.voiceStyle ?? 'auto';
   const effectiveVoiceURI =
     options?.voiceURI !== undefined ? options.voiceURI : prefs.voiceURI;
 

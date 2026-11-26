@@ -30,11 +30,20 @@ export function JlptCountdownCard({
   sessionPreference,
   onChangeSessionPreference,
 }: JlptCountdownCardProps) {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
   const countdown = useMemo(
     () => resolveNextJlptExam(sessionPreference, dailyMinutes),
     [sessionPreference, dailyMinutes],
   );
+  const formattedExamDate = useMemo(() => {
+    if (lang !== 'en') return countdown.formattedDateId;
+    return countdown.examDate.toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  }, [countdown.examDate, countdown.formattedDateId, lang]);
 
   return (
     <section
@@ -85,7 +94,7 @@ export function JlptCountdownCard({
 
         <div className="min-w-0 flex-1 space-y-1">
           <p className="truncate text-sm font-bold leading-snug text-on-surface">
-            {countdown.formattedDateId}
+            {formattedExamDate}
           </p>
           <p className="text-xs leading-snug text-[#4b4b53] dark:text-[#b4b4c0]">
             {countdown.isExamDay ? (

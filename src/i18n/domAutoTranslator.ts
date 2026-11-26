@@ -3,11 +3,11 @@ import {
   needsIndonesianTranslation,
 } from './staticEnDict';
 
-const CACHE_STORAGE_KEY = 'utamago_en_cache_v2';
-const MAX_CACHE_ENTRIES = 4000;
-const BATCH_DELAY_MS = 35;
-const BATCH_MAX_ITEMS = 38;
-const MAX_CONCURRENT_BATCHES = 2;
+const CACHE_STORAGE_KEY = 'utamago_en_cache_v3';
+const MAX_CACHE_ENTRIES = 5000;
+const BATCH_DELAY_MS = 30;
+const BATCH_MAX_ITEMS = 24;
+const MAX_CONCURRENT_BATCHES = 3;
 const TRANSLATED_ATTRS = ['placeholder', 'title', 'aria-label'] as const;
 type TranslatedAttr = (typeof TRANSLATED_ATTRS)[number];
 
@@ -29,6 +29,7 @@ const SKIP_TAGS = new Set([
 interface NodeRecord {
   original: string;
   translated: string;
+  status: 'pending' | 'translated';
 }
 
 const textNodeRecords = new WeakMap<Text, NodeRecord>();
@@ -44,15 +45,16 @@ let cacheSaveTimer: ReturnType<typeof setTimeout> | null = null;
 
 // Pending async translation queue
 const pendingCallbacks = new Map<string, Set<(en: string) => void>>();
-const failedKeys = new Set<string>();
+const failedAttempts = new Map<string, number>();
 const queuedKeys: string[] = [];
 const queuedSet = new Set<string>();
 let batchTimer: ReturnType<typeof setTimeout> | null = null;
 let activeBatches = 0;
+let serverTranslateUnavailable = false;
 
 let observer: MutationObserver | null = null;
 let isRunning = false;
-let isApplyingInternal = false;
+const sweepTimers = new Set<ReturnType<typeof setTimeout>>();
 
 function loadCacheOnce(): void {
   if (cacheLoaded || typeof window === 'undefined') return;
@@ -102,7 +104,10 @@ function setCachedTranslation(trimmedSrc: string, trimmedEn: string): void {
   scheduleCacheSave();
 }
 
-function preserveEdgeWhitespace(raw: string, translatedTrimmed: string): string {
+function preserveEdgeWhitespace(
+  raw: string,
+  translatedTrimmed: string,
+): string {
   const leading = raw.match(/^\s*/)?.[0] ?? '';
   const trailing = raw.match(/\s*$/)?.[0] ?? '';
   return `${leading}${translatedTrimmed}${trailing}`;
@@ -137,7 +142,11 @@ function resolveImmediate(raw: string): string | null {
   return null;
 }
 
-function applyTextNodeTranslation(node: Text, original: string, translated: string): void {
+function applyTextNodeTranslation(
+  node: Text,
+  original: string,
+  translated: string,
+): void {
   if (!isRunning || !node.isConnected) return;
   const current = node.nodeValue ?? '';
   const existing = textNodeRecords.get(node);
@@ -145,15 +154,10 @@ function applyTextNodeTranslation(node: Text, original: string, translated: stri
   if (existing && existing.original !== original) return;
   if (!existing && current !== original) return;
 
-  isApplyingInternal = true;
-  try {
-    textNodeRecords.set(node, { original, translated });
-    trackedTextNodes.add(node);
-    if (node.nodeValue !== translated) {
-      node.nodeValue = translated;
-    }
-  } finally {
-    isApplyingInternal = false;
+  textNodeRecords.set(node, { original, translated, status: 'translated' });
+  trackedTextNodes.add(node);
+  if (node.nodeValue !== translated) {
+    node.nodeValue = translated;
   }
 }
 
@@ -170,24 +174,22 @@ function applyAttrTranslation(
   if (existing && existing.original !== original) return;
   if (!existing && current !== original) return;
 
-  isApplyingInternal = true;
-  try {
-    if (!map) {
-      map = new Map();
-      attrRecords.set(el, map);
-    }
-    map.set(attr, { original, translated });
-    trackedAttrElements.add(el);
-    if (el.getAttribute(attr) !== translated) {
-      el.setAttribute(attr, translated);
-    }
-  } finally {
-    isApplyingInternal = false;
+  if (!map) {
+    map = new Map();
+    attrRecords.set(el, map);
+  }
+  map.set(attr, { original, translated, status: 'translated' });
+  trackedAttrElements.add(el);
+  if (el.getAttribute(attr) !== translated) {
+    el.setAttribute(attr, translated);
   }
 }
 
-function enqueueAsyncTranslation(trimmedSrc: string, onDone: (en: string) => void): void {
-  if (failedKeys.has(trimmedSrc)) return;
+function enqueueAsyncTranslation(
+  trimmedSrc: string,
+  onDone: (en: string) => void,
+): void {
+  if ((failedAttempts.get(trimmedSrc) ?? 0) >= 2) return;
 
   let set = pendingCallbacks.get(trimmedSrc);
   if (!set) {
@@ -230,7 +232,37 @@ async function flushBatches(): Promise<void> {
   }
 }
 
-async function processBatchChunk(texts: string[]): Promise<void> {
+async function translateSingleViaMyMemory(
+  text: string,
+): Promise<string | null> {
+  if (text.length > 450) return null;
+  try {
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=id|en`;
+    const response = await fetch(url);
+    if (!response.ok) return null;
+    const data = (await response.json()) as {
+      responseStatus?: number;
+      responseData?: { translatedText?: unknown };
+    };
+    const translated = data?.responseData?.translatedText;
+    if (
+      data?.responseStatus === 200 &&
+      typeof translated === 'string' &&
+      translated.trim() &&
+      !translated.toUpperCase().includes('MYMEMORY WARNING')
+    ) {
+      return translated.trim();
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+async function translateBatchViaServer(
+  texts: string[],
+): Promise<string[] | null> {
+  if (serverTranslateUnavailable || texts.length === 0) return null;
   try {
     const response = await fetch('/api/translate-batch', {
       method: 'POST',
@@ -239,51 +271,99 @@ async function processBatchChunk(texts: string[]): Promise<void> {
     });
 
     if (!response.ok) {
-      // On 429/5xx, don't permanently blacklist unless 400
-      if (response.status === 400 || response.status === 503) {
-        for (const t of texts) {
-          pendingCallbacks.delete(t);
-        }
-      } else {
-        for (const t of texts) {
-          pendingCallbacks.delete(t);
-        }
+      if (
+        response.status === 404 ||
+        response.status === 405 ||
+        response.status === 503
+      ) {
+        serverTranslateUnavailable = true;
       }
-      return;
+      return null;
     }
 
     const data = (await response.json()) as { translations?: unknown };
     const translations = Array.isArray(data.translations)
       ? data.translations
       : null;
-
     if (!translations || translations.length !== texts.length) {
-      for (const t of texts) {
-        pendingCallbacks.delete(t);
-      }
-      return;
+      return null;
     }
 
-    for (let i = 0; i < texts.length; i += 1) {
-      const src = texts[i];
+    return texts.map((src, i) => {
       const rawEn = translations[i];
-      const en = typeof rawEn === 'string' && rawEn.trim() ? rawEn.trim() : src;
-      setCachedTranslation(src, en);
-
-      const cbs = pendingCallbacks.get(src);
-      pendingCallbacks.delete(src);
-      if (cbs && isRunning) {
-        for (const cb of cbs) {
-          cb(en);
-        }
-      }
-    }
+      return typeof rawEn === 'string' && rawEn.trim() ? rawEn.trim() : src;
+    });
   } catch {
-    for (const t of texts) {
-      failedKeys.add(t);
-      pendingCallbacks.delete(t);
+    serverTranslateUnavailable = true;
+    return null;
+  }
+}
+
+async function runWithConcurrency<T, R>(
+  items: T[],
+  limit: number,
+  worker: (item: T) => Promise<R>,
+): Promise<R[]> {
+  const results = new Array<R>(items.length);
+  let nextIndex = 0;
+
+  async function next(): Promise<void> {
+    while (nextIndex < items.length) {
+      const current = nextIndex;
+      nextIndex += 1;
+      results[current] = await worker(items[current]);
     }
   }
+
+  const runners = Array.from(
+    { length: Math.min(limit, items.length) },
+    () => next(),
+  );
+  await Promise.all(runners);
+  return results;
+}
+
+function deliverTranslation(src: string, en: string): void {
+  setCachedTranslation(src, en);
+  failedAttempts.delete(src);
+
+  const cbs = pendingCallbacks.get(src);
+  pendingCallbacks.delete(src);
+  if (cbs && isRunning) {
+    for (const cb of cbs) {
+      cb(en);
+    }
+  }
+}
+
+function markFailed(src: string): void {
+  failedAttempts.set(src, (failedAttempts.get(src) ?? 0) + 1);
+  pendingCallbacks.delete(src);
+}
+
+async function processBatchChunk(texts: string[]): Promise<void> {
+  if (!isRunning || texts.length === 0) return;
+
+  // 1) Server-side /api/translate-batch (zero browser CORS errors, fast batching)
+  const serverResult = await translateBatchViaServer(texts);
+  if (serverResult) {
+    for (let i = 0; i < texts.length; i += 1) {
+      deliverTranslation(texts[i], serverResult[i]);
+    }
+    return;
+  }
+
+  // 2) CORS-safe browser fallback via MyMemory (for static deployments without Express)
+  if (!isRunning) return;
+  await runWithConcurrency(texts, 3, async (item) => {
+    if (!isRunning) return;
+    const en = await translateSingleViaMyMemory(item);
+    if (en) {
+      deliverTranslation(item, en);
+    } else {
+      markFailed(item);
+    }
+  });
 }
 
 function processTextNode(node: Text): void {
@@ -295,12 +375,25 @@ function processTextNode(node: Text): void {
   if (!raw.trim()) return;
 
   const existing = textNodeRecords.get(node);
-  if (existing && raw === existing.translated) {
+  if (
+    existing &&
+    existing.status === 'translated' &&
+    raw === existing.translated
+  ) {
     // Already displaying our translation
     return;
   }
+  if (
+    existing &&
+    existing.status === 'pending' &&
+    raw === existing.original &&
+    pendingCallbacks.has(raw.trim())
+  ) {
+    // Already queued and awaiting translation
+    return;
+  }
 
-  // Either brand-new node, or React updated its text content
+  // Either brand-new node, React updated its text content, or prior attempt was dropped
   const original = raw;
   const immediate = resolveImmediate(original);
   if (immediate !== null) {
@@ -317,8 +410,12 @@ function processTextNode(node: Text): void {
     return;
   }
 
-  // Record original before async fill
-  textNodeRecords.set(node, { original, translated: original });
+  // Record original as pending (NOT translated) before async fill
+  textNodeRecords.set(node, {
+    original,
+    translated: original,
+    status: 'pending',
+  });
   trackedTextNodes.add(node);
 
   const trimmed = original.trim();
@@ -336,7 +433,11 @@ function processElementAttributes(el: Element): void {
   ) {
     return;
   }
-  if (el.tagName === 'SCRIPT' || el.tagName === 'STYLE' || el.tagName === 'SVG') {
+  if (
+    el.tagName === 'SCRIPT' ||
+    el.tagName === 'STYLE' ||
+    el.tagName === 'SVG'
+  ) {
     return;
   }
 
@@ -345,7 +446,21 @@ function processElementAttributes(el: Element): void {
     if (!raw || !raw.trim()) continue;
 
     const existing = attrRecords.get(el)?.get(attr);
-    if (existing && raw === existing.translated) continue;
+    if (
+      existing &&
+      existing.status === 'translated' &&
+      raw === existing.translated
+    ) {
+      continue;
+    }
+    if (
+      existing &&
+      existing.status === 'pending' &&
+      raw === existing.original &&
+      pendingCallbacks.has(raw.trim())
+    ) {
+      continue;
+    }
 
     const original = raw;
     const immediate = resolveImmediate(original);
@@ -361,7 +476,7 @@ function processElementAttributes(el: Element): void {
       map = new Map();
       attrRecords.set(el, map);
     }
-    map.set(attr, { original, translated: original });
+    map.set(attr, { original, translated: original, status: 'pending' });
     trackedAttrElements.add(el);
 
     const trimmed = original.trim();
@@ -378,7 +493,10 @@ function walkSubtree(root: Node): void {
     processTextNode(root as Text);
     return;
   }
-  if (root.nodeType !== Node.ELEMENT_NODE && root.nodeType !== Node.DOCUMENT_FRAGMENT_NODE) {
+  if (
+    root.nodeType !== Node.ELEMENT_NODE &&
+    root.nodeType !== Node.DOCUMENT_FRAGMENT_NODE
+  ) {
     return;
   }
 
@@ -407,7 +525,11 @@ function walkSubtree(root: Node): void {
           ) {
             return NodeFilter.FILTER_REJECT;
           }
-          if (el.tagName === 'SCRIPT' || el.tagName === 'STYLE' || el.tagName === 'SVG') {
+          if (
+            el.tagName === 'SCRIPT' ||
+            el.tagName === 'STYLE' ||
+            el.tagName === 'SVG'
+          ) {
             return NodeFilter.FILTER_REJECT;
           }
           return NodeFilter.FILTER_ACCEPT;
@@ -441,32 +563,48 @@ function pruneDisconnected(): void {
   }
 }
 
+function scheduleFollowUpSweeps(target: HTMLElement): void {
+  for (const delay of [180, 650]) {
+    const timer = setTimeout(() => {
+      sweepTimers.delete(timer);
+      if (isRunning) {
+        walkSubtree(target);
+      }
+    }, delay);
+    sweepTimers.add(timer);
+  }
+}
+
 export function startDomAutoTranslator(): void {
   if (typeof window === 'undefined' || typeof document === 'undefined') return;
   loadCacheOnce();
-  failedKeys.clear();
+  failedAttempts.clear();
+
+  const target = document.getElementById('root') ?? document.body;
+  if (!target) return;
 
   if (isRunning) {
-    const root = document.getElementById('root') ?? document.body;
-    if (root) walkSubtree(root);
+    walkSubtree(target);
+    scheduleFollowUpSweeps(target);
     return;
   }
 
   isRunning = true;
-  const target = document.getElementById('root') ?? document.body;
-  if (!target) return;
-
   walkSubtree(target);
+  scheduleFollowUpSweeps(target);
 
   observer = new MutationObserver((mutations) => {
-    if (!isRunning || isApplyingInternal) return;
+    if (!isRunning) return;
     if (trackedTextNodes.size > 2500) {
       pruneDisconnected();
     }
     for (const m of mutations) {
       if (m.type === 'characterData' && m.target.nodeType === Node.TEXT_NODE) {
         processTextNode(m.target as Text);
-      } else if (m.type === 'attributes' && m.target.nodeType === Node.ELEMENT_NODE) {
+      } else if (
+        m.type === 'attributes' &&
+        m.target.nodeType === Node.ELEMENT_NODE
+      ) {
         processElementAttributes(m.target as Element);
       } else if (m.type === 'childList') {
         for (let i = 0; i < m.addedNodes.length; i += 1) {
@@ -488,6 +626,11 @@ export function startDomAutoTranslator(): void {
 export function stopDomAutoTranslatorAndRestore(): void {
   isRunning = false;
 
+  for (const timer of sweepTimers) {
+    clearTimeout(timer);
+  }
+  sweepTimers.clear();
+
   if (batchTimer) {
     clearTimeout(batchTimer);
     batchTimer = null;
@@ -503,30 +646,33 @@ export function stopDomAutoTranslatorAndRestore(): void {
 
   if (typeof document === 'undefined') return;
 
-  isApplyingInternal = true;
-  try {
-    for (const node of trackedTextNodes) {
-      const rec = textNodeRecords.get(node);
-      if (rec && node.isConnected && node.nodeValue === rec.translated) {
-        node.nodeValue = rec.original;
-      }
-      textNodeRecords.delete(node);
+  for (const node of trackedTextNodes) {
+    const rec = textNodeRecords.get(node);
+    if (
+      rec &&
+      rec.status === 'translated' &&
+      node.isConnected &&
+      node.nodeValue === rec.translated
+    ) {
+      node.nodeValue = rec.original;
     }
-    trackedTextNodes.clear();
+    textNodeRecords.delete(node);
+  }
+  trackedTextNodes.clear();
 
-    for (const el of trackedAttrElements) {
-      const map = attrRecords.get(el);
-      if (map && el.isConnected) {
-        for (const [attr, rec] of map.entries()) {
-          if (el.getAttribute(attr) === rec.translated) {
-            el.setAttribute(attr, rec.original);
-          }
+  for (const el of trackedAttrElements) {
+    const map = attrRecords.get(el);
+    if (map && el.isConnected) {
+      for (const [attr, rec] of map.entries()) {
+        if (
+          rec.status === 'translated' &&
+          el.getAttribute(attr) === rec.translated
+        ) {
+          el.setAttribute(attr, rec.original);
         }
       }
-      attrRecords.delete(el);
     }
-    trackedAttrElements.clear();
-  } finally {
-    isApplyingInternal = false;
+    attrRecords.delete(el);
   }
+  trackedAttrElements.clear();
 }

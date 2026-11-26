@@ -147,7 +147,7 @@ export function HomeScreen({
   onStartStage,
   onNavigate,
 }: HomeScreenProps) {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
   const [showDifficultView, setShowDifficultView] = useState(false);
   const speechSupported = useMemo(() => isJapaneseSpeechSupported(), []);
 
@@ -229,17 +229,17 @@ export function HomeScreen({
               className="m3-tactile inline-flex min-h-[44px] shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl border border-outline bg-surface-container-low px-3.5 py-2 text-xs font-bold text-on-surface hover:bg-surface-container"
             >
               <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-              <span>Kembali</span>
+              <span>{t('Kembali', 'Back')}</span>
             </button>
             <div className="min-w-0">
               <h2 className="font-display text-lg font-extrabold tracking-tight text-on-surface">
-                Kata Sulit
+                {t('Kata Sulit', 'Difficult Words')}
               </h2>
               <p className="text-[13px] text-on-surface-variant">
                 <span className="font-mono tabular-nums">
                   {difficultCards.length}
                 </span>{' '}
-                kartu perlu perhatian ekstra
+                {t('kartu perlu perhatian ekstra', 'cards need extra review')}
               </p>
             </div>
           </div>
@@ -247,19 +247,20 @@ export function HomeScreen({
 
         {difficultCards.length === 0 ? (
           <section
-            aria-label="Daftar Kata Sulit Kosong"
+            aria-label={t('Daftar Kata Sulit Kosong', 'Empty Difficult Words List')}
             className="rounded-2xl border border-outline-variant bg-surface-container-low p-5 text-center"
           >
             <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-primary-container text-primary">
               <RotateCcw className="h-5 w-5" aria-hidden="true" />
             </div>
             <h3 className="mt-3 font-display text-base font-bold text-on-surface">
-              Belum ada kata sulit
+              {t('Belum ada kata sulit', 'No difficult words yet')}
             </h3>
             <p className="mt-1.5 text-[13px] leading-relaxed text-on-surface-variant">
-              Kartu yang kamu tandai &ldquo;Ulangi&rdquo; saat latihan Anki atau
-              kamu tandai di Kamus akan otomatis terkumpul di sini untuk sesi
-              drill khusus.
+              {t(
+                'Kartu yang kamu tandai "Ulangi" saat latihan Anki atau kamu tandai di Kamus akan otomatis terkumpul di sini untuk sesi drill khusus.',
+                'Cards marked "Again" during Anki review or bookmarked in the Dictionary are automatically collected here for focused drill sessions.',
+              )}
             </p>
             <div className="mt-4 space-y-2.5">
               <button
@@ -271,7 +272,7 @@ export function HomeScreen({
                 }}
                 className="m3-tactile inline-flex min-h-[44px] w-full items-center justify-center rounded-2xl bg-primary px-4 py-2.5 text-sm font-bold text-on-primary hover:bg-primary-hover"
               >
-                Mulai Latihan Anki
+                {t('Mulai Latihan Anki', 'Start Anki Practice')}
               </button>
               <button
                 type="button"
@@ -282,7 +283,7 @@ export function HomeScreen({
                 className="m3-tactile inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-2xl border border-outline bg-surface px-4 py-2.5 text-sm font-bold text-on-surface hover:bg-surface-container"
               >
                 <Search className="h-4 w-4 text-primary" aria-hidden="true" />
-                <span>Cari &amp; Tandai di Kamus</span>
+                <span>{t('Cari & Tandai di Kamus', 'Search & Bookmark in Dictionary')}</span>
               </button>
             </div>
           </section>
@@ -298,8 +299,10 @@ export function HomeScreen({
             >
               <Play className="h-4 w-4 fill-current" aria-hidden="true" />
               <span>
-                Mulai Drill Kata Sulit ({Math.min(difficultCards.length, 15)}{' '}
-                kartu)
+                {t(
+                  `Mulai Drill Kata Sulit (${Math.min(difficultCards.length, 15)} kartu)`,
+                  `Start Difficult Words Drill (${Math.min(difficultCards.length, 15)} cards)`,
+                )}
               </span>
             </button>
 
@@ -327,7 +330,7 @@ export function HomeScreen({
                       <span className="font-mono font-semibold text-primary">
                         {card.jlptLevel ?? 'JLPT'}
                       </span>{' '}
-                      · diulang{' '}
+                      · {t('diulang', 'repeated')}{' '}
                       <span className="font-mono tabular-nums">{lapses}x</span>
                     </p>
                   </div>
@@ -339,7 +342,10 @@ export function HomeScreen({
                         vibrateTap();
                         speakJapanese(card.word || card.furigana || '');
                       }}
-                      aria-label={`Dengarkan pelafalan ${card.word}`}
+                      aria-label={t(
+                        `Dengarkan pelafalan ${card.word}`,
+                        `Listen to pronunciation of ${card.word}`,
+                      )}
                       className="m3-tactile inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-container text-primary hover:opacity-90"
                     >
                       <Volume2 className="h-4.5 w-4.5" aria-hidden="true" />
@@ -358,7 +364,7 @@ export function HomeScreen({
               }}
               className="m3-tactile flex min-h-[44px] w-full items-center justify-center rounded-2xl border border-outline bg-surface-container-low px-5 py-2.5 text-sm font-bold text-on-surface hover:bg-surface-container"
             >
-              Buka Deck Anki Reguler
+              {t('Buka Deck Anki Reguler', 'Open Regular Anki Decks')}
             </button>
           </div>
         )}
@@ -505,11 +511,15 @@ export function HomeScreen({
             role="list"
             aria-label={t('Aktivitas belajar Senin sampai Minggu', 'Study activity Monday to Sunday')}
           >
-            {weekDots.map((dot) => (
+            {weekDots.map((dot, dotIndex) => {
+              const enDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+              const displayDay =
+                lang === 'en' ? (enDays[dotIndex] ?? dot.label) : dot.label;
+              return (
               <div
                 key={dot.dateKey}
                 role="listitem"
-                aria-label={`${dot.label}: ${dot.active ? t('Aktif belajar', 'Active') : t('Belum belajar', 'Not yet')}`}
+                aria-label={`${displayDay}: ${dot.active ? t('Aktif belajar', 'Active') : t('Belum belajar', 'Not yet')}`}
                 className="flex flex-col items-center gap-1.5"
               >
                 <span
@@ -536,10 +546,11 @@ export function HomeScreen({
                         : 'text-[#4b4b53] dark:text-[#b4b4c0]'
                   }`}
                 >
-                  {dot.label}
+                  {displayDay}
                 </span>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -568,7 +579,12 @@ export function HomeScreen({
 
           <div className="min-w-0 flex-1">
             <p className="text-xs font-bold text-primary">
-              {continueLearning.eyebrow}
+              {continueLearning.isResume
+                ? t('Lanjutkan belajar', 'Continue learning')
+                : t(
+                    continueLearning.eyebrow,
+                    `${unlockedLevel} Recommendation`,
+                  )}
             </p>
             <p className="mt-0.5 font-display text-[15px] font-bold leading-snug text-on-surface break-words">
               {continueLearning.title}
