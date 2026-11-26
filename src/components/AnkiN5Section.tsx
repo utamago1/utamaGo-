@@ -73,7 +73,6 @@ import {
 import {
   isJapaneseSpeechSupported,
   loadSpeechPreferences,
-  prefetchJapaneseSpeechBatch,
   speakJapanese,
   stopJapaneseSpeech,
 } from '../utils/japaneseSpeech';
@@ -693,37 +692,6 @@ export function AnkiN5Section({
       setPopupOpen(false);
     }
   }, [activeModalSession, setPopupOpen, studyModalOpen]);
-
-  // Proactively pre-warm TTS cache for the active Anki card (word + first example)
-  // and the next card in queue so tapping Dengar is instantaneous
-  useEffect(() => {
-    if (!studyModalOpen || !activeCard || !canSpeakJapanese) return;
-    const nextIdx = activeModalSession
-      ? activeModalSession.currentIndex + 1
-      : -1;
-    const nextCardId =
-      activeModalSession &&
-      nextIdx >= 0 &&
-      nextIdx < activeModalSession.queueCardIds.length
-        ? activeModalSession.queueCardIds[nextIdx]
-        : null;
-    const nextCard = nextCardId ? cardById.get(nextCardId) : undefined;
-
-    const timer = window.setTimeout(() => {
-      prefetchJapaneseSpeechBatch([
-        activeCard.word,
-        activeCard.examples[0]?.jp,
-        nextCard?.word,
-      ]);
-    }, 120);
-    return () => window.clearTimeout(timer);
-  }, [
-    activeCard,
-    activeModalSession,
-    canSpeakJapanese,
-    cardById,
-    studyModalOpen,
-  ]);
 
   // Auto-play pronunciation when user enables autoPlayAnki preference
   useEffect(() => {

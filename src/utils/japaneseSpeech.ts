@@ -699,6 +699,7 @@ export function prefetchJapaneseSpeech(
 ): void {
   if (typeof window === 'undefined' || typeof fetch !== 'function') return;
   if (typeof navigator !== 'undefined' && navigator.onLine === false) return;
+  if (serverTtsUnconfigured || isServerTtsInQuotaCooldown()) return;
   const cleaned = cleanJapaneseSpeechText(rawText);
   if (!cleaned) return;
   const style = voiceStyle ?? loadSpeechPreferences().voiceStyle;
@@ -1176,6 +1177,9 @@ function speakViaDeviceWebSpeech(
     utterance.onend = finishOnce;
     utterance.onerror = finishOnce;
 
+    if (typeof window.speechSynthesis.resume === 'function') {
+      window.speechSynthesis.resume();
+    }
     window.speechSynthesis.speak(utterance);
     return true;
   } catch {
@@ -1326,6 +1330,7 @@ export function speakJapanese(
     const canStreamDirectly =
       !asset &&
       !serverTtsUnconfigured &&
+      !isServerTtsInQuotaCooldown() &&
       effectiveRate >= 0.85 &&
       effectiveRate <= 1.2 &&
       (typeof navigator === 'undefined' || navigator.onLine !== false);
@@ -1347,10 +1352,11 @@ export function speakJapanese(
       if (streamOutcome === 'played' || streamOutcome === 'aborted' || activePlaybackToken !== token) {
         return;
       }
+      options?.onLoadingChange?.(false);
     }
 
-    // Unary /api/tts fetch (used for slow/fast pitch-preserved speeds or if stream failed)
-    if (!asset) {
+    // Unary /api/tts fetch (used for slow/fast pitch-preserved speeds or if stream failed without hitting quota)
+    if (!asset && !serverTtsUnconfigured && !isServerTtsInQuotaCooldown()) {
       options?.onLoadingChange?.(true);
       try {
         asset = await fetchServerTtsAsset(
@@ -1384,26 +1390,9 @@ export function speakJapanese(
       if (webAudioOk || activePlaybackToken !== token) return;
     }
 
-    // Strict voice-gender lock: never silently flip Cowok -> Cewek on a transient error while online
+    // Always fall back to device Web Speech synthesis when server TTS is unavailable or quota-limited
     if (activePlaybackToken !== token) return;
-    const isOffline =
-      typeof navigator !== 'undefined' && navigator.onLine === false;
-    const hasMatchingGenderDeviceVoice =
-      effectiveStyle === 'auto' ||
-      deviceVoices.some(
-        (v) => detectJapaneseVoiceGender(v.name) === effectiveStyle,
-      );
-
-    if (
-      !isOffline &&
-      !serverTtsUnconfigured &&
-      !hasMatchingGenderDeviceVoice &&
-      (effectiveStyle === 'male' || effectiveStyle === 'female')
-    ) {
-      options?.onEnd?.();
-      return;
-    }
-
+    options?.onLoadingChange?.(false);
     speakViaDeviceWebSpeech(cleaned, {
       rate: effectiveRate,
       voiceStyle: effectiveStyle,

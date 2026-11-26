@@ -36,7 +36,6 @@ import {
   type BunpouN2Item,
 } from '../utils/bunpouN2Parser';
 import { vibrateSuccess, vibrateTap } from '../utils/haptics';
-import { prefetchJapaneseSpeechBatch } from '../utils/japaneseSpeech';
 import {
   isJlptLevelUnlocked,
   JLPT_LEVELS_ASC,
@@ -303,22 +302,6 @@ export function BunpouSection({
   const activePos = activeItem
     ? displayedItems.findIndex((item) => item.id === activeItem.id)
     : -1;
-
-  // Pre-warm audio for active Bunpou example sentences so tapping Dengar is instant
-  useEffect(() => {
-    if (!activeItem) return;
-    const targets = activeItem.examples
-      .slice(0, 2)
-      .map((ex) => ex.jp)
-      .filter(Boolean);
-    if (targets.length === 0) {
-      targets.push(activeItem.pattern);
-    }
-    const timer = window.setTimeout(() => {
-      prefetchJapaneseSpeechBatch(targets);
-    }, 220);
-    return () => window.clearTimeout(timer);
-  }, [activeItem]);
 
   const activeGroupLabel = useMemo(
     () => activeBunpouGroups.find((g) => g.id === groupFilter)?.shortLabel ?? '',

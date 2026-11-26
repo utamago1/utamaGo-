@@ -14,7 +14,6 @@ import {
   isJapaneseSpeechSupported,
   listJapaneseVoices,
   loadSpeechPreferences,
-  prefetchJapaneseSpeech,
   saveSpeechPreferences,
   speakJapanese,
   SPEECH_RATE_PRESETS,
