@@ -10,6 +10,7 @@ import {
 import type { JlptLevel } from '../data/utamagoContent';
 import type { AnkiCard } from './ankiParser';
 import type { BunpouN2Item } from './bunpouN2Parser';
+import { resolveAnkiCardSpeechText } from './japaneseSpeech';
 import { hashSeed } from './practiceGenerators';
 
 function createRng(seed: number): () => number {
@@ -109,7 +110,7 @@ function buildVocabAudioQuestion(
       kind: 'audio-choice',
       tag: `聴解クイズ ${level}`,
       prompt: '音声で流れた言葉の正しい漢字表記を選んでください。',
-      audioText: kana || speechText,
+      audioText: resolveAnkiCardSpeechText(card),
       audioReveal: `${word} (${kana})`,
       options,
       correctIndex: options.indexOf(word),
@@ -142,7 +143,7 @@ function buildVocabAudioQuestion(
     kind: 'audio-choice',
     tag: `Tebak Audio ${level}`,
     prompt: 'Dengarkan pelafalan Jepang berikut, lalu pilih arti yang tepat:',
-    audioText: speechText,
+    audioText: resolveAnkiCardSpeechText(card),
     audioReveal: word && kana && word !== kana ? `${word} (${kana})` : speechText,
     options,
     correctIndex: options.indexOf(correctMeaning),

@@ -8,8 +8,12 @@ import {
   detectJapaneseVoiceGender,
   formatSpeechRateLabel,
   formatSpeechStyleLabel,
+  resolveAnkiCardSpeechText,
+  resolveBunpouSpeechText,
   resolveJapaneseVoiceSelection,
   resolveServerTtsVoice,
+  resolveWritingItemSpeechText,
+  romajiToHiragana,
   sanitizeSpeechPreferences,
 } from './japaneseSpeech';
 
@@ -113,4 +117,134 @@ test('resolveServerTtsVoice maps male to Charon and female/auto to Kore with dis
   assert.notEqual(maleKey, femaleKey);
   assert.ok(maleKey.includes('/male/'));
   assert.ok(femaleKey.includes('/female/'));
+});
+
+test('cleanJapaneseSpeechText strips dialogue speaker labels and bracketed notes', () => {
+  assert.equal(
+    cleanJapaneseSpeechText('A: 明日、会社へ行きますか。  B: はい、行きます。'),
+    '明日、会社へ行きますか。 はい、行きます。',
+  );
+  assert.equal(
+    cleanJapaneseSpeechText('若いうちに、いろいろな国を旅行しておきたい。 (makna A)'),
+    '若いうちに、いろいろな国を旅行しておきたい。',
+  );
+  assert.equal(
+    cleanJapaneseSpeechText('A案に対する反対意見を言う。'),
+    'A案に対する反対意見を言う。',
+  );
+});
+
+test('resolveAnkiCardSpeechText prefers pure kana furigana over bare kanji for vocab cards', () => {
+  // Single kanji like 夢 must speak as ゆめ (never bare 夢 which device TTS misreads as む)
+  assert.equal(
+    resolveAnkiCardSpeechText({
+      word: '夢',
+      furigana: 'ゆめ',
+      readingTerm: '夢(ゆめ)',
+      cardKind: 'vocab',
+    }),
+    'ゆめ',
+  );
+  assert.equal(
+    resolveAnkiCardSpeechText({
+      word: '夢中',
+      furigana: 'むちゅう',
+      readingTerm: '夢中(むちゅう)',
+      cardKind: 'vocab',
+    }),
+    'むちゅう',
+  );
+  // Numeric kana readings like １０ぷん are preserved
+  assert.equal(
+    resolveAnkiCardSpeechText({
+      word: '１０分',
+      furigana: '１０ぷん',
+      readingTerm: '１０分(１０ぷん)',
+      cardKind: 'vocab',
+    }),
+    '１０ぷん',
+  );
+  // Falls back to readingTerm parens if furigana is absent
+  assert.equal(
+    resolveAnkiCardSpeechText({
+      word: '一日',
+      furigana: null,
+      readingTerm: '一日(ついたち)',
+      cardKind: 'vocab',
+    }),
+    'ついたち',
+  );
+  // Pure katakana/hiragana word without furigana uses word directly
+  assert.equal(
+    resolveAnkiCardSpeechText({
+      word: 'コーヒー',
+      furigana: null,
+      readingTerm: 'コーヒー',
+      cardKind: 'vocab',
+    }),
+    'コーヒー',
+  );
+});
+
+test('romajiToHiragana and resolveBunpouSpeechText convert Japanese romaji cleanly and reject Indonesian glosses', () => {
+  assert.equal(romajiToHiragana('sai (ni)'), 'さいに');
+  assert.equal(romajiToHiragana('ue (de)'), 'うえで');
+  assert.equal(romajiToHiragana('saichuu da'), 'さいちゅうだ');
+  assert.equal(romajiToHiragana('aida / aida ni'), 'あいだ');
+  assert.equal(romajiToHiragana('ya / ya ina ya'), 'やいなや');
+  assert.equal(romajiToHiragana('te kara to iu mono (wa)'), 'てからというものは');
+  assert.equal(
+    romajiToHiragana('o kawakiri ni (shite) / o kawakiri to shite'),
+    'をかわきりにして',
+  );
+
+  // Must reject Indonesian grammar descriptions in N5 Bunpou
+  assert.equal(romajiToHiragana('Ungkapan salam dasar'), null);
+  assert.equal(romajiToHiragana('~no / pengganti kata benda'), null);
+  assert.equal(romajiToHiragana('~desu / ~masu / negatif'), null);
+
+  assert.equal(
+    resolveAnkiCardSpeechText({
+      word: '~際(に)',
+      furigana: 'sai (ni)',
+      romaji: 'sai (ni)',
+      cardKind: 'bunpou',
+    }),
+    'さいに',
+  );
+  assert.equal(
+    resolveBunpouSpeechText({
+      pattern: '日本の です',
+      romaji: '~no / pengganti kata benda',
+    }),
+    '日本の です',
+  );
+  assert.equal(
+    resolveBunpouSpeechText({
+      pattern: '~(ら)れます   ((ra)remasu) [bentuk potensial]',
+      romaji: '',
+    }),
+    'られます',
+  );
+});
+
+test('resolveWritingItemSpeechText prefers kana reading of example word', () => {
+  assert.equal(
+    resolveWritingItemSpeechText({
+      character: '夢',
+      reading: 'ゆめ・ム',
+      exampleWord: '夢',
+      exampleReading: 'ゆめ',
+    }),
+    'ゆめ',
+  );
+  assert.equal(
+    resolveWritingItemSpeechText({
+      character: 'あ',
+      reading: 'あ',
+      exampleWord: 'あめ',
+      exampleReading: 'あめ',
+    }),
+    'あめ',
+  );
 });

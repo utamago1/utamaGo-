@@ -35,6 +35,7 @@ import {
   type WritingPracticeMode,
 } from '../utils/writingPractice';
 import { useLanguage } from '../i18n/LanguageContext';
+import { resolveWritingItemSpeechText } from '../utils/japaneseSpeech';
 import { SpeechControlBar } from './SpeechControlBar';
 
 interface StrokePoint {
@@ -1135,7 +1136,7 @@ export function WritingStudioModal({
 
                 <div className="border-t border-outline-variant pt-3">
                   <SpeechControlBar
-                    text={activeItem.exampleWord || activeItem.character}
+                    text={resolveWritingItemSpeechText(activeItem)}
                     compact
                     showQuickSettings
                   />

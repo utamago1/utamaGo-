@@ -58,6 +58,7 @@ import { BunpouExplanation } from './BunpouExplanation';
 import { BunpouFormula } from './BunpouFormula';
 import { ChallengeRunnerModal } from './ChallengeRunnerModal';
 import { HighlightedJapaneseText } from './HighlightedJapaneseText';
+import { resolveBunpouSpeechText } from '../utils/japaneseSpeech';
 import { SpeechControlBar } from './SpeechControlBar';
 import { StudyNotePanel } from './StudyNotePanel';
 
@@ -611,7 +612,10 @@ export function BunpouSection({
             )}
             <div className="mt-4 space-y-2.5">
               <SpeechControlBar
-                text={activeItem.examples[0]?.jp || activeItem.pattern}
+                text={
+                  activeItem.examples[0]?.jp ||
+                  resolveBunpouSpeechText(activeItem)
+                }
                 compact
                 align="left"
                 showQuickSettings

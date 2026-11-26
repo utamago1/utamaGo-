@@ -31,6 +31,7 @@ import {
 } from '../utils/homeSummary';
 import {
   isJapaneseSpeechSupported,
+  resolveAnkiCardSpeechText,
   speakJapanese,
 } from '../utils/japaneseSpeech';
 import type { ComputedTryOutReport } from '../utils/jlptReport';
@@ -340,7 +341,7 @@ export function HomeScreen({
                       type="button"
                       onClick={() => {
                         vibrateTap();
-                        speakJapanese(card.word || card.furigana || '');
+                        speakJapanese(resolveAnkiCardSpeechText(card));
                       }}
                       aria-label={t(
                         `Dengarkan pelafalan ${card.word}`,

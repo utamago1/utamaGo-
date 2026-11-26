@@ -73,6 +73,7 @@ import {
 import {
   isJapaneseSpeechSupported,
   loadSpeechPreferences,
+  resolveAnkiCardSpeechText,
   speakJapanese,
   stopJapaneseSpeech,
 } from '../utils/japaneseSpeech';
@@ -699,13 +700,13 @@ export function AnkiN5Section({
     const prefs = loadSpeechPreferences();
     if (!prefs.autoPlayAnki) return;
     const timer = window.setTimeout(() => {
-      speakJapanese(activeCard.word);
+      speakJapanese(resolveAnkiCardSpeechText(activeCard));
     }, 180);
     return () => {
       window.clearTimeout(timer);
       stopJapaneseSpeech();
     };
-  }, [activeCard?.id, activeCard?.word, canSpeakJapanese, studyModalOpen]);
+  }, [activeCard, canSpeakJapanese, studyModalOpen]);
 
   const dragX = useMotionValue(0);
   const cardRotate = useTransform(dragX, [-180, 0, 180], [-6, 0, 6]);
@@ -2667,7 +2668,7 @@ export function AnkiN5Section({
                         extractKanjiCharacters(activeCard.word).length > 0)) && (
                       <div className="mt-3.5 flex justify-center">
                         <SpeechControlBar
-                          text={activeCard.word}
+                          text={resolveAnkiCardSpeechText(activeCard)}
                           align="center"
                           showQuickSettings={false}
                           showAutoPlayToggle={false}

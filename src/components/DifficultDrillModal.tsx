@@ -12,6 +12,7 @@ import { vibrateSuccess, vibrateTap } from '../utils/haptics';
 import type { DifficultCardEntry } from '../utils/homeSummary';
 import {
   isJapaneseSpeechSupported,
+  resolveAnkiCardSpeechText,
   speakJapanese,
 } from '../utils/japaneseSpeech';
 import { HighlightedJapaneseText } from './HighlightedJapaneseText';
@@ -284,7 +285,7 @@ export function DifficultDrillModal({
                       onClick={(e) => {
                         e.stopPropagation();
                         vibrateTap();
-                        speakJapanese(currentCard.word || currentCard.furigana || '');
+                        speakJapanese(resolveAnkiCardSpeechText(currentCard));
                       }}
                       aria-label={`Dengarkan pelafalan ${currentCard.word}`}
                       className="m3-tactile inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary-container text-primary hover:opacity-90"

@@ -16,6 +16,7 @@ import type { AnkiSrsMap } from '../utils/ankiSrs';
 import { vibrateTap } from '../utils/haptics';
 import {
   isJapaneseSpeechSupported,
+  resolveAnkiCardSpeechText,
   speakJapanese,
 } from '../utils/japaneseSpeech';
 import {
@@ -404,7 +405,7 @@ export function VocabDictionaryModal({
                               type="button"
                               onClick={() => {
                                 vibrateTap();
-                                speakJapanese(card.word || card.furigana || '');
+                                speakJapanese(resolveAnkiCardSpeechText(card));
                               }}
                               aria-label={`Dengarkan pelafalan ${card.word}`}
                               className="m3-tactile inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary-container text-primary hover:opacity-90"
@@ -478,7 +479,7 @@ export function VocabDictionaryModal({
                           )}
 
                           <SpeechControlBar
-                            text={card.word || card.furigana || ''}
+                            text={resolveAnkiCardSpeechText(card)}
                             compact
                             showQuickSettings
                           />
