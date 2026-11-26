@@ -1,5 +1,7 @@
+import { sendEmailVerification } from 'firebase/auth';
 import {
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -229,6 +231,14 @@ export function validateBetaFeedbackInput(
   };
 }
 
+export interface FirebaseAdminAuthState {
+  signedIn: boolean;
+  email: string;
+  emailVerified: boolean;
+  isBootstrapEmail: boolean;
+  isAdmin: boolean;
+}
+
 export async function checkIsBetaFeedbackAdmin(): Promise<boolean> {
   const currentUser = auth.currentUser;
   if (!currentUser) return false;
@@ -244,6 +254,46 @@ export async function checkIsBetaFeedbackAdmin(): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+export async function getFirebaseAdminAuthState(): Promise<FirebaseAdminAuthState> {
+  const currentUser = auth.currentUser;
+  if (!currentUser) {
+    return {
+      signedIn: false,
+      email: '',
+      emailVerified: false,
+      isBootstrapEmail: false,
+      isAdmin: false,
+    };
+  }
+  const email = (currentUser.email ?? '').trim().toLowerCase();
+  const isBootstrapEmail = email === BOOTSTRAP_ADMIN_EMAIL;
+  const isAdmin = await checkIsBetaFeedbackAdmin();
+  return {
+    signedIn: true,
+    email,
+    emailVerified: Boolean(currentUser.emailVerified),
+    isBootstrapEmail,
+    isAdmin,
+  };
+}
+
+export async function sendAdminVerificationEmail(): Promise<void> {
+  const currentUser = auth.currentUser;
+  if (!currentUser) {
+    throw new Error('Silakan masuk akun terlebih dahulu.');
+  }
+  await sendEmailVerification(currentUser);
+}
+
+export async function reloadFirebaseAdminAuthState(): Promise<FirebaseAdminAuthState> {
+  const currentUser = auth.currentUser;
+  if (currentUser) {
+    await currentUser.reload();
+    await currentUser.getIdToken(true);
+  }
+  return getFirebaseAdminAuthState();
 }
 
 export async function submitBetaFeedback(params: {
@@ -359,5 +409,14 @@ export async function updateBetaFeedbackStatus(params: {
     });
   } catch (err) {
     handleFirestoreError(err, OperationType.UPDATE, path);
+  }
+}
+
+export async function deleteBetaFeedback(feedbackId: string): Promise<void> {
+  const path = `betaFeedback/${feedbackId}`;
+  try {
+    await deleteDoc(doc(db, 'betaFeedback', feedbackId));
+  } catch (err) {
+    handleFirestoreError(err, OperationType.DELETE, path);
   }
 }

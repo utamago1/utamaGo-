@@ -198,6 +198,7 @@ export function AdminMessagesScreen({
         adminToken,
         item.id,
         patch,
+        item,
       );
       vibrateSuccess();
       setItems((prev) => {
@@ -227,8 +228,9 @@ export function AdminMessagesScreen({
     vibrateTap();
     setDeletingId(id);
     setErrorMessage(null);
+    const targetItem = items.find((entry) => entry.id === id);
     try {
-      await deleteAdminFeedbackMessage(adminToken, id);
+      await deleteAdminFeedbackMessage(adminToken, id, targetItem);
       vibrateSuccess();
       setConfirmDeleteId(null);
       setItems((prev) => {
