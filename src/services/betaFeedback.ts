@@ -1,4 +1,9 @@
-import { sendEmailVerification } from 'firebase/auth';
+import {
+  GoogleAuthProvider,
+  sendEmailVerification,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from 'firebase/auth';
 import {
   collection,
   deleteDoc,
@@ -242,11 +247,22 @@ export interface FirebaseAdminAuthState {
 export async function checkIsBetaFeedbackAdmin(): Promise<boolean> {
   const currentUser = auth.currentUser;
   if (!currentUser) return false;
-  if (
-    currentUser.emailVerified &&
-    currentUser.email?.toLowerCase() === BOOTSTRAP_ADMIN_EMAIL
-  ) {
-    return true;
+  const emailLower = (currentUser.email ?? '').trim().toLowerCase();
+  if (emailLower === BOOTSTRAP_ADMIN_EMAIL) {
+    if (!currentUser.emailVerified) {
+      // Refresh once in case user already clicked Gmail verification link
+      try {
+        await currentUser.reload();
+        if (currentUser.emailVerified) {
+          await currentUser.getIdToken(true);
+        }
+      } catch {
+        // Ignore transient reload error
+      }
+    }
+    if (currentUser.emailVerified) {
+      return true;
+    }
   }
   try {
     const snap = await getDoc(doc(db, 'admins', currentUser.uid));
@@ -273,7 +289,7 @@ export async function getFirebaseAdminAuthState(): Promise<FirebaseAdminAuthStat
   return {
     signedIn: true,
     email,
-    emailVerified: Boolean(currentUser.emailVerified),
+    emailVerified: Boolean(auth.currentUser?.emailVerified),
     isBootstrapEmail,
     isAdmin,
   };
@@ -293,6 +309,40 @@ export async function reloadFirebaseAdminAuthState(): Promise<FirebaseAdminAuthS
     await currentUser.reload();
     await currentUser.getIdToken(true);
   }
+  return getFirebaseAdminAuthState();
+}
+
+export async function signInAdminWithGoogle(): Promise<FirebaseAdminAuthState> {
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({
+    login_hint: BOOTSTRAP_ADMIN_EMAIL,
+    prompt: 'select_account',
+  });
+  const credential = await signInWithPopup(auth, provider);
+  await credential.user.getIdToken(true);
+  const state = await getFirebaseAdminAuthState();
+  if (!state.isAdmin) {
+    throw new Error(
+      `Akun Google yang dipilih (${state.email || 'tidak diketahui'}) bukan akun admin ${BOOTSTRAP_ADMIN_EMAIL}. Pilih akun ${BOOTSTRAP_ADMIN_EMAIL}.`,
+    );
+  }
+  return state;
+}
+
+export async function signInAdminWithEmailPassword(
+  password: string,
+): Promise<FirebaseAdminAuthState> {
+  const trimmed = password.trim();
+  if (!trimmed) {
+    throw new Error('Masukkan password akun admin terlebih dahulu.');
+  }
+  const credential = await signInWithEmailAndPassword(
+    auth,
+    BOOTSTRAP_ADMIN_EMAIL,
+    trimmed,
+  );
+  await credential.user.reload().catch(() => {});
+  await credential.user.getIdToken(true).catch(() => {});
   return getFirebaseAdminAuthState();
 }
 

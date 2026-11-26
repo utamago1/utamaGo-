@@ -71,7 +71,10 @@ import {
   saveAnkiDeckStateToFirestore,
   saveAnkiReviewToFirestore,
 } from './services/ankiPersistence';
-import { logoutAdminInbox } from './services/feedbackInboxApi';
+import {
+  FIREBASE_ADMIN_TOKEN,
+  logoutAdminInbox,
+} from './services/feedbackInboxApi';
 import { readCachedAnkiDeck, writeCachedAnkiDeck } from './utils/ankiCache';
 import {
   ALL_ANKI_DECK_IDS,
@@ -3056,7 +3059,7 @@ export default function App() {
     return <LoginScreen onLoginSuccess={handleLoginSuccess} />;
   }
 
-  if (!appState.onboarding.completed) {
+  if (!appState.onboarding.completed && !(adminMessagesTabActive && adminSessionToken)) {
     return (
       <OnboardingFlow
         initialName={appState.onboarding.name || authProfile.name || ''}
@@ -3345,6 +3348,9 @@ export default function App() {
                   onSessionExpired={handleAdminSessionExpired}
                   onSummaryChange={(nextSummary) =>
                     setAdminOpenMessagesCount(nextSummary.open)
+                  }
+                  onUpgradeToFirebaseAdmin={() =>
+                    setAdminSessionToken(FIREBASE_ADMIN_TOKEN)
                   }
                 />
               )}

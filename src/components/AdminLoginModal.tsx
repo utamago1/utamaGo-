@@ -18,6 +18,8 @@ import {
   getFirebaseAdminAuthState,
   reloadFirebaseAdminAuthState,
   sendAdminVerificationEmail,
+  signInAdminWithEmailPassword,
+  signInAdminWithGoogle,
   type FirebaseAdminAuthState,
 } from '../services/betaFeedback';
 import {
@@ -53,6 +55,11 @@ export function AdminLoginModal({
   const [sendingVerify, setSendingVerify] = useState(false);
   const [verifySent, setVerifySent] = useState(false);
   const [checkingVerify, setCheckingVerify] = useState(false);
+  const [googleSigningIn, setGoogleSigningIn] = useState(false);
+  const [adminEmailPassword, setAdminEmailPassword] = useState('');
+  const [emailPasswordSigningIn, setEmailPasswordSigningIn] = useState(false);
+  const [showEmailPasswordFallback, setShowEmailPasswordFallback] =
+    useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -61,6 +68,8 @@ export function AdminLoginModal({
     let cancelled = false;
     setPassword('');
     setConfirmPassword('');
+    setAdminEmailPassword('');
+    setShowEmailPasswordFallback(false);
     setShowPassword(false);
     setErrorMessage(null);
     setVerifySent(false);
@@ -179,6 +188,83 @@ export function AdminLoginModal({
       );
     } finally {
       setCheckingVerify(false);
+    }
+  };
+
+  const handleGoogleAdminSignIn = async () => {
+    vibrateTap();
+    setGoogleSigningIn(true);
+    setErrorMessage(null);
+    try {
+      const next = await signInAdminWithGoogle();
+      setFirebaseAdmin(next);
+      if (next.isAdmin) {
+        vibrateSuccess();
+        onAuthenticated(FIREBASE_ADMIN_TOKEN);
+      }
+    } catch (err) {
+      vibrateError();
+      const rawMsg = err instanceof Error ? err.message : '';
+      if (rawMsg.includes('auth/popup-closed-by-user')) {
+        setErrorMessage(
+          t(
+            'Popup login Google ditutup sebelum selesai. Coba lagi.',
+            'Google sign-in popup was closed before finishing. Please try again.',
+          ),
+        );
+      } else if (rawMsg.includes('auth/unauthorized-domain')) {
+        setShowEmailPasswordFallback(true);
+        setErrorMessage(
+          t(
+            'Domain ini belum masuk Authorized Domains untuk popup Google di Firebase Console. Gunakan login email & password admin di bawah.',
+            'This domain is not yet in Firebase Authorized Domains for Google popup. Use admin email & password login below.',
+          ),
+        );
+      } else {
+        setErrorMessage(
+          rawMsg ||
+            t(
+              'Gagal masuk dengan akun Google admin.',
+              'Failed to sign in with Google admin account.',
+            ),
+        );
+      }
+    } finally {
+      setGoogleSigningIn(false);
+    }
+  };
+
+  const handleAdminEmailPasswordSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    vibrateTap();
+    setEmailPasswordSigningIn(true);
+    setErrorMessage(null);
+    try {
+      const next = await signInAdminWithEmailPassword(adminEmailPassword);
+      setFirebaseAdmin(next);
+      setAdminEmailPassword('');
+      if (next.isAdmin) {
+        vibrateSuccess();
+        onAuthenticated(FIREBASE_ADMIN_TOKEN);
+      }
+    } catch (err) {
+      vibrateError();
+      const rawMsg = err instanceof Error ? err.message : '';
+      setErrorMessage(
+        rawMsg.includes('auth/invalid-credential') ||
+          rawMsg.includes('auth/wrong-password')
+          ? t(
+              'Password akun Firebase admin salah.',
+              'Incorrect Firebase admin account password.',
+            )
+          : rawMsg ||
+              t(
+                'Gagal masuk dengan email admin.',
+                'Failed to sign in with admin email.',
+              ),
+      );
+    } finally {
+      setEmailPasswordSigningIn(false);
     }
   };
 
@@ -450,35 +536,110 @@ export function AdminLoginModal({
                 </div>
               )}
 
-              {/* Static hosting (Vercel) without server backend and not signed in as admin */}
-              {!serverAvailable &&
-                !canUnlockViaFirebase &&
-                !needsEmailVerification && (
-                  <div className="space-y-3 rounded-2xl border border-outline-variant bg-surface-container-low p-4 text-xs leading-relaxed text-on-surface-variant">
+              {/* 1-click Google Admin sign-in (works on AI Studio & Vercel, auto-verifies email) */}
+              {!canUnlockViaFirebase && (
+                <div className="space-y-3 rounded-2xl border border-outline-variant bg-surface-container-low p-3.5">
+                  <div className="space-y-1 text-xs leading-relaxed text-on-surface-variant">
                     <p className="font-bold text-on-surface">
                       {t(
-                        'Masuk dengan Akun Admin UtamaGo!',
-                        'Sign In with the UtamaGo! Admin Account',
+                        'Masuk Cepat dengan Akun Google Admin',
+                        'Quick Sign-In with Google Admin',
                       )}
                     </p>
-                    <p>
+                    <p className="text-[11px]">
                       {t(
-                        `Untuk membuka Halaman Admin (data pendaftar, progres & laporan bug) di versi web ini, keluar dulu dari akun saat ini (${firebaseAdmin?.email || 'belum login'}) lalu login menggunakan email admin ${BOOTSTRAP_ADMIN_EMAIL}.`,
-                        `To open the Admin Console (users, progress & bug reports) on this web deployment, sign out from the current account (${firebaseAdmin?.email || 'signed out'}) and sign in with admin email ${BOOTSTRAP_ADMIN_EMAIL}.`,
+                        `Masuk langsung sebagai ${BOOTSTRAP_ADMIN_EMAIL} untuk memuat seluruh data pendaftar, progres belajar, dan laporan bug dari Firestore.`,
+                        `Sign in directly as ${BOOTSTRAP_ADMIN_EMAIL} to load all registered learners, study progress, and bug reports from Firestore.`,
                       )}
                     </p>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        vibrateTap();
-                        onClose();
-                      }}
-                      className="m3-tactile inline-flex min-h-[42px] w-full items-center justify-center rounded-xl border border-outline-variant bg-surface px-4 py-2 text-xs font-bold text-on-surface hover:bg-surface-container"
-                    >
-                      {t('Mengerti', 'Got It')}
-                    </button>
+                    {firebaseAdmin?.signedIn && !firebaseAdmin.isBootstrapEmail && (
+                      <p className="text-[11px] font-medium text-amber-700 dark:text-amber-300">
+                        {t(
+                          `Saat ini aktif sebagai: ${firebaseAdmin.email}`,
+                          `Currently signed in as: ${firebaseAdmin.email}`,
+                        )}
+                      </p>
+                    )}
                   </div>
-                )}
+
+                  <button
+                    type="button"
+                    disabled={googleSigningIn}
+                    onClick={() => void handleGoogleAdminSignIn()}
+                    className="m3-tactile inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-2xl bg-primary px-4 py-2 text-xs font-extrabold text-on-primary shadow-xs hover:bg-primary-hover disabled:opacity-60"
+                  >
+                    {googleSigningIn ? (
+                      <Loader2
+                        className="h-4 w-4 animate-spin"
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <ShieldCheck className="h-4 w-4" aria-hidden="true" />
+                    )}
+                    <span>
+                      {t(
+                        'Masuk Google Admin (utamaryan1)',
+                        'Sign in with Google Admin',
+                      )}
+                    </span>
+                  </button>
+
+                  {!needsEmailVerification && (
+                    <div className="pt-0.5">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setShowEmailPasswordFallback((prev) => !prev)
+                        }
+                        className="text-[11px] font-bold text-primary hover:underline"
+                      >
+                        {showEmailPasswordFallback
+                          ? t('Sembunyikan form password akun', 'Hide account password form')
+                          : t(
+                              'Atau masuk pakai password akun utamaryan1@gmail.com',
+                              'Or sign in with utamaryan1@gmail.com password',
+                            )}
+                      </button>
+
+                      {showEmailPasswordFallback && (
+                        <form
+                          onSubmit={(e) => void handleAdminEmailPasswordSubmit(e)}
+                          className="mt-2.5 space-y-2"
+                        >
+                          <input
+                            type="password"
+                            value={adminEmailPassword}
+                            onChange={(e) => {
+                              setAdminEmailPassword(e.target.value);
+                              if (errorMessage) setErrorMessage(null);
+                            }}
+                            placeholder={t(
+                              'Password akun utamaryan1@gmail.com',
+                              'Password for utamaryan1@gmail.com',
+                            )}
+                            className="min-h-[42px] w-full rounded-xl border border-outline bg-surface px-3.5 py-2 text-xs font-medium text-on-surface focus:border-primary focus:outline-none"
+                          />
+                          <button
+                            type="submit"
+                            disabled={emailPasswordSigningIn}
+                            className="m3-tactile inline-flex min-h-[40px] w-full items-center justify-center gap-2 rounded-xl border border-outline-variant bg-surface px-4 py-2 text-xs font-bold text-on-surface hover:bg-surface-container disabled:opacity-60"
+                          >
+                            {emailPasswordSigningIn && (
+                              <Loader2
+                                className="h-3.5 w-3.5 animate-spin"
+                                aria-hidden="true"
+                              />
+                            )}
+                            <span>
+                              {t('Masuk Akun Admin', 'Sign In Admin Account')}
+                            </span>
+                          </button>
+                        </form>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Server password login / first-run setup (when Express backend is available) */}
               {serverAvailable && (

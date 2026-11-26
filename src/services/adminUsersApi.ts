@@ -8,8 +8,18 @@ import {
 import type { JlptLevel } from '../data/utamagoContent';
 import type { LearnerGender } from '../utils/levelProgression';
 import type { UserProgressSummary } from './accountAuth';
-import { checkIsBetaFeedbackAdmin } from './betaFeedback';
+import {
+  getFirebaseAdminAuthState,
+  type FirebaseAdminAuthState,
+} from './betaFeedback';
 import { db, handleFirestoreError, OperationType } from './firebaseClient';
+
+export interface AdminUserAnkiFallbackSummary {
+  trackedCards: number;
+  masteredCards: number;
+  activeDecks: number;
+  lastDateKey: string;
+}
 
 export interface AdminRegisteredUser {
   uid: string;
@@ -22,6 +32,7 @@ export interface AdminRegisteredUser {
   dailyMinutes: number;
   onboardingCompleted: boolean;
   progressSummary: UserProgressSummary | null;
+  ankiFallback: AdminUserAnkiFallbackSummary | null;
   createdAtMs: number;
   updatedAtMs: number;
 }
@@ -111,13 +122,55 @@ function parseProgressSummary(raw: unknown): UserProgressSummary | null {
   };
 }
 
+async function fetchAnkiFallbackForUser(
+  uid: string,
+): Promise<AdminUserAnkiFallbackSummary | null> {
+  try {
+    const [decksSnap, cardsSnap] = await Promise.all([
+      getDocs(query(collection(db, 'users', uid, 'ankiDecks'), limit(12))),
+      getDocs(query(collection(db, 'users', uid, 'ankiCards'), limit(500))),
+    ]);
+
+    if (decksSnap.empty && cardsSnap.empty) {
+      return null;
+    }
+
+    let lastDateKey = '';
+    for (const d of decksSnap.docs) {
+      const daily = d.data()?.daily as Record<string, unknown> | undefined;
+      const dk = typeof daily?.dateKey === 'string' ? daily.dateKey : '';
+      if (dk > lastDateKey) lastDateKey = dk;
+    }
+
+    let trackedCards = 0;
+    let masteredCards = 0;
+    for (const c of cardsSnap.docs) {
+      const data = c.data() as Record<string, unknown>;
+      trackedCards += 1;
+      if (Boolean(data.isMastered)) {
+        masteredCards += 1;
+      }
+    }
+
+    return {
+      trackedCards,
+      masteredCards,
+      activeDecks: decksSnap.size,
+      lastDateKey,
+    };
+  } catch {
+    return null;
+  }
+}
+
 export async function loadAllRegisteredUsersForAdmin(): Promise<{
   users: AdminRegisteredUser[];
   firebaseAdminVerified: boolean;
+  authState: FirebaseAdminAuthState;
 }> {
-  const isAdmin = await checkIsBetaFeedbackAdmin();
-  if (!isAdmin) {
-    return { users: [], firebaseAdminVerified: false };
+  const authState = await getFirebaseAdminAuthState();
+  if (!authState.isAdmin) {
+    return { users: [], firebaseAdminVerified: false, authState };
   }
 
   const q = query(collection(db, 'users'), limit(300));
@@ -142,13 +195,37 @@ export async function loadAllRegisteredUsersForAdmin(): Promise<{
               : 20,
           onboardingCompleted: Boolean(data.onboardingCompleted),
           progressSummary: parseProgressSummary(data.progressSummary),
+          ankiFallback: null,
           createdAtMs: toMillis(data.createdAt),
           updatedAtMs: toMillis(data.updatedAt),
         };
       })
       .sort((a, b) => b.createdAtMs - a.createdAtMs);
 
-    return { users, firebaseAdminVerified: true };
+    // Hydrate Anki subcollection stats for existing users who signed up before progressSummary existed
+    const usersNeedingFallback = users
+      .filter((u) => !u.progressSummary)
+      .slice(0, 32);
+
+    const BATCH_SIZE = 8;
+    for (let i = 0; i < usersNeedingFallback.length; i += BATCH_SIZE) {
+      const slice = usersNeedingFallback.slice(i, i + BATCH_SIZE);
+      const results = await Promise.all(
+        slice.map(async (u) => ({
+          uid: u.uid,
+          summary: await fetchAnkiFallbackForUser(u.uid),
+        })),
+      );
+      for (const res of results) {
+        if (!res.summary) continue;
+        const target = users.find((u) => u.uid === res.uid);
+        if (target) {
+          target.ankiFallback = res.summary;
+        }
+      }
+    }
+
+    return { users, firebaseAdminVerified: true, authState };
   } catch (err) {
     handleFirestoreError(err, OperationType.LIST, 'users');
   }

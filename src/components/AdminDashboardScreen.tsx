@@ -24,7 +24,14 @@ import {
   type AdminRegisteredUser,
   type AdminUserAnkiDetail,
 } from '../services/adminUsersApi';
-import { BOOTSTRAP_ADMIN_EMAIL } from '../services/betaFeedback';
+import {
+  BOOTSTRAP_ADMIN_EMAIL,
+  reloadFirebaseAdminAuthState,
+  sendAdminVerificationEmail,
+  signInAdminWithEmailPassword,
+  signInAdminWithGoogle,
+  type FirebaseAdminAuthState,
+} from '../services/betaFeedback';
 import {
   FeedbackInboxApiError,
   fetchAdminFeedbackMessages,
@@ -32,7 +39,7 @@ import {
   type FeedbackInboxItem,
   type FeedbackInboxSummary,
 } from '../services/feedbackInboxApi';
-import { vibrateSuccess, vibrateTap } from '../utils/haptics';
+import { vibrateError, vibrateSuccess, vibrateTap } from '../utils/haptics';
 import { AdminMessagesScreen } from './AdminMessagesScreen';
 
 interface AdminDashboardScreenProps {
@@ -40,6 +47,7 @@ interface AdminDashboardScreenProps {
   onLockAdmin: () => void;
   onSessionExpired: () => void;
   onSummaryChange?: (summary: FeedbackInboxSummary) => void;
+  onUpgradeToFirebaseAdmin?: () => void;
 }
 
 type AdminDashboardTab = 'overview' | 'users' | 'feedback' | 'tools';
@@ -106,6 +114,7 @@ export function AdminDashboardScreen({
   onLockAdmin,
   onSessionExpired,
   onSummaryChange,
+  onUpgradeToFirebaseAdmin,
 }: AdminDashboardScreenProps) {
   const { lang, t } = useLanguage();
   const [activeTab, setActiveTab] = useState<AdminDashboardTab>('overview');
@@ -114,8 +123,17 @@ export function AdminDashboardScreen({
   // Registered users & progress state
   const [users, setUsers] = useState<AdminRegisteredUser[]>([]);
   const [firebaseAdminVerified, setFirebaseAdminVerified] = useState(true);
+  const [firebaseAuthState, setFirebaseAuthState] =
+    useState<FirebaseAdminAuthState | null>(null);
   const [usersLoading, setUsersLoading] = useState(true);
   const [usersError, setUsersError] = useState<string | null>(null);
+
+  // Inline Firebase Admin unlock controls (when unlocked via server password or unverified email)
+  const [unlockBusy, setUnlockBusy] = useState(false);
+  const [unlockNotice, setUnlockNotice] = useState<string | null>(null);
+  const [unlockError, setUnlockError] = useState<string | null>(null);
+  const [showAdminPwdForm, setShowAdminPwdForm] = useState(false);
+  const [adminPwdInput, setAdminPwdInput] = useState('');
 
   // Feedback summary & recent items for Overview + Export
   const [feedbackItems, setFeedbackItems] = useState<FeedbackInboxItem[]>([]);
@@ -158,6 +176,7 @@ export function AdminDashboardScreen({
         if (usersRes.status === 'fulfilled') {
           setUsers(usersRes.value.users);
           setFirebaseAdminVerified(usersRes.value.firebaseAdminVerified);
+          setFirebaseAuthState(usersRes.value.authState);
         } else {
           setUsersError(
             usersRes.reason instanceof Error
@@ -247,8 +266,10 @@ export function AdminDashboardScreen({
     const totalUsers = users.length;
     const completedOnboarding = users.filter((u) => u.onboardingCompleted).length;
     const active7d = users.filter((u) => {
-      if (u.progressSummary?.lastActiveDate) {
-        const ts = Date.parse(`${u.progressSummary.lastActiveDate}T00:00:00`);
+      const dateStr =
+        u.progressSummary?.lastActiveDate || u.ankiFallback?.lastDateKey || '';
+      if (dateStr) {
+        const ts = Date.parse(`${dateStr}T00:00:00`);
         if (Number.isFinite(ts) && isWithinDays(ts, 7)) return true;
       }
       return isWithinDays(u.updatedAtMs, 7);
@@ -258,7 +279,11 @@ export function AdminDashboardScreen({
       0,
     );
     const totalMasteredAll = users.reduce(
-      (sum, u) => sum + (u.progressSummary?.ankiMasteredTotal ?? 0),
+      (sum, u) =>
+        sum +
+        (u.progressSummary?.ankiMasteredTotal ??
+          u.ankiFallback?.masteredCards ??
+          0),
       0,
     );
     const totalTryOutAll = users.reduce(
@@ -313,10 +338,15 @@ export function AdminDashboardScreen({
         return (b.progressSummary?.xp ?? 0) - (a.progressSummary?.xp ?? 0);
       }
       if (sortBy === 'mastered') {
-        return (
-          (b.progressSummary?.ankiMasteredTotal ?? 0) -
-          (a.progressSummary?.ankiMasteredTotal ?? 0)
-        );
+        const bMastered =
+          b.progressSummary?.ankiMasteredTotal ??
+          b.ankiFallback?.masteredCards ??
+          0;
+        const aMastered =
+          a.progressSummary?.ankiMasteredTotal ??
+          a.ankiFallback?.masteredCards ??
+          0;
+        return bMastered - aMastered;
       }
       if (sortBy === 'active') {
         return b.updatedAtMs - a.updatedAtMs;
@@ -359,11 +389,16 @@ export function AdminDashboardScreen({
       u.progressSummary?.xp ?? 0,
       u.progressSummary?.learnerLevel ?? 1,
       u.progressSummary?.streakDays ?? 0,
-      u.progressSummary?.ankiReviewedTotal ?? 0,
-      u.progressSummary?.ankiMasteredTotal ?? 0,
+      u.progressSummary?.ankiReviewedTotal ??
+        u.ankiFallback?.trackedCards ??
+        0,
+      u.progressSummary?.ankiMasteredTotal ??
+        u.ankiFallback?.masteredCards ??
+        0,
       u.progressSummary?.tryOutCompletedCount ?? 0,
       u.progressSummary?.challengeClearedCount ?? 0,
       u.progressSummary?.lastActiveDate ||
+        u.ankiFallback?.lastDateKey ||
         (u.updatedAtMs ? new Date(u.updatedAtMs).toISOString().slice(0, 10) : ''),
       u.createdAtMs ? new Date(u.createdAtMs).toISOString() : '',
     ]);
@@ -404,6 +439,134 @@ export function AdminDashboardScreen({
     vibrateTap();
     setRefreshNonce((n) => n + 1);
     void loadDashboardData(true);
+  };
+
+  const handleInlineGoogleAdminSignIn = async () => {
+    vibrateTap();
+    setUnlockBusy(true);
+    setUnlockError(null);
+    setUnlockNotice(null);
+    try {
+      const next = await signInAdminWithGoogle();
+      setFirebaseAuthState(next);
+      if (next.isAdmin) {
+        vibrateSuccess();
+        onUpgradeToFirebaseAdmin?.();
+        setRefreshNonce((n) => n + 1);
+        await loadDashboardData(true);
+      }
+    } catch (err) {
+      vibrateError();
+      const msg = err instanceof Error ? err.message : '';
+      if (msg.includes('auth/unauthorized-domain')) {
+        setShowAdminPwdForm(true);
+        setUnlockError(
+          t(
+            'Domain ini belum masuk Authorized Domains untuk popup Google. Gunakan login password akun admin di bawah.',
+            'This domain is not authorized for Google popup. Use admin account password below.',
+          ),
+        );
+      } else if (!msg.includes('auth/popup-closed-by-user')) {
+        setUnlockError(
+          msg ||
+            t(
+              'Gagal masuk dengan akun Google admin.',
+              'Failed to sign in with Google admin.',
+            ),
+        );
+      }
+    } finally {
+      setUnlockBusy(false);
+    }
+  };
+
+  const handleInlineSendVerify = async () => {
+    vibrateTap();
+    setUnlockBusy(true);
+    setUnlockError(null);
+    try {
+      await sendAdminVerificationEmail();
+      vibrateSuccess();
+      setUnlockNotice(
+        t(
+          'Email verifikasi sudah dikirim ke Gmail Anda. Klik tautannya lalu tekan "Sudah Verifikasi? Muat Data".',
+          'Verification email sent to your Gmail. Open the link then tap "Already Verified? Load Data".',
+        ),
+      );
+    } catch (err) {
+      vibrateError();
+      setUnlockError(
+        err instanceof Error
+          ? err.message
+          : t('Gagal mengirim email verifikasi.', 'Failed to send verification email.'),
+      );
+    } finally {
+      setUnlockBusy(false);
+    }
+  };
+
+  const handleInlineRecheckVerify = async () => {
+    vibrateTap();
+    setUnlockBusy(true);
+    setUnlockError(null);
+    try {
+      const next = await reloadFirebaseAdminAuthState();
+      setFirebaseAuthState(next);
+      if (next.isAdmin) {
+        vibrateSuccess();
+        onUpgradeToFirebaseAdmin?.();
+        setRefreshNonce((n) => n + 1);
+        await loadDashboardData(true);
+      } else {
+        setUnlockError(
+          t(
+            'Email masih tercatat belum terverifikasi. Pastikan tautan di Gmail sudah dibuka lalu coba lagi.',
+            'Email is still unverified. Open the link in Gmail and try again.',
+          ),
+        );
+      }
+    } catch {
+      vibrateError();
+      setUnlockError(
+        t('Gagal memeriksa status verifikasi.', 'Failed to check verification status.'),
+      );
+    } finally {
+      setUnlockBusy(false);
+    }
+  };
+
+  const handleInlineAdminPasswordLogin = async () => {
+    if (!adminPwdInput.trim()) return;
+    vibrateTap();
+    setUnlockBusy(true);
+    setUnlockError(null);
+    try {
+      const next = await signInAdminWithEmailPassword(adminPwdInput);
+      setFirebaseAuthState(next);
+      setAdminPwdInput('');
+      if (next.isAdmin) {
+        vibrateSuccess();
+        onUpgradeToFirebaseAdmin?.();
+        setRefreshNonce((n) => n + 1);
+        await loadDashboardData(true);
+      } else if (next.isBootstrapEmail && !next.emailVerified) {
+        setUnlockNotice(
+          t(
+            'Berhasil masuk utamaryan1@gmail.com! Tinggal verifikasi email 1x lewat tombol di atas (atau klik Masuk Google Admin).',
+            'Signed in as utamaryan1@gmail.com! Complete 1-time email verification above (or tap Google Admin).',
+          ),
+        );
+      }
+    } catch (err) {
+      vibrateError();
+      setUnlockError(
+        err instanceof Error
+          ? err.message
+          : t('Password akun admin salah.', 'Incorrect admin account password.'),
+      );
+    } finally {
+      setUnlockBusy(false);
+    }
   };
 
   const navTabs: ReadonlyArray<{
@@ -529,27 +692,126 @@ export function AdminDashboardScreen({
         </nav>
       </section>
 
-      {/* Notice if server-token admin isn't signed into verified Firebase admin account */}
-      {!firebaseAdminVerified && activeTab !== 'feedback' && (
+      {/* Interactive unlock banner whenever Firestore admin session isn't verified yet */}
+      {!firebaseAdminVerified && (
         <div
           role="status"
-          className="flex items-start gap-2.5 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-200"
+          className="space-y-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs leading-relaxed text-amber-950 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-100"
         >
-          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-          <div>
-            <p className="font-bold">
-              {t(
-                'Login Firebase Admin diperlukan untuk melihat daftar pendaftar',
-                'Verified Firebase Admin login required to list registered users',
-              )}
-            </p>
-            <p className="mt-0.5 opacity-90">
-              {t(
-                `Untuk keamanan data pengguna di Firestore, daftar pendaftar hanya bisa diakses saat Anda masuk akun ${BOOTSTRAP_ADMIN_EMAIL} yang sudah terverifikasi.`,
-                `For user privacy in Firestore, registered learner lists require signing in with the verified ${BOOTSTRAP_ADMIN_EMAIL} account.`,
-              )}
-            </p>
+          <div className="flex items-start gap-2.5">
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-amber-700 dark:text-amber-300" aria-hidden="true" />
+            <div className="min-w-0 flex-1 space-y-1">
+              <p className="font-bold">
+                {t(
+                  'Hubungkan Akun Admin Firestore agar Data Pendaftar & Laporan Muncul',
+                  'Connect Verified Firebase Admin to Load Users & Reports',
+                )}
+              </p>
+              <p className="opacity-90">
+                {firebaseAuthState?.signedIn
+                  ? t(
+                      `Akun Firebase yang sedang aktif: ${firebaseAuthState.email} (${firebaseAuthState.emailVerified ? 'email terverifikasi' : 'email belum terverifikasi'}). Data pendaftar & laporan di database hanya bisa dibaca oleh ${BOOTSTRAP_ADMIN_EMAIL} yang sudah terverifikasi.`,
+                      `Active Firebase account: ${firebaseAuthState.email} (${firebaseAuthState.emailVerified ? 'verified' : 'unverified'}). Database records require verified ${BOOTSTRAP_ADMIN_EMAIL}.`,
+                    )
+                  : t(
+                      `Belum ada akun Firebase yang aktif di sesi ini. Klik tombol di bawah untuk langsung masuk sebagai ${BOOTSTRAP_ADMIN_EMAIL} dan memuat semua pendaftar dari database.`,
+                      `No Firebase account is active in this session. Tap below to sign in as ${BOOTSTRAP_ADMIN_EMAIL} and load all registered users from Firestore.`,
+                    )}
+              </p>
+            </div>
           </div>
+
+          {unlockNotice && (
+            <p className="rounded-xl bg-white/80 px-3 py-2 text-[11px] font-semibold text-emerald-700 dark:bg-zinc-900/60 dark:text-emerald-300">
+              {unlockNotice}
+            </p>
+          )}
+          {unlockError && (
+            <p className="rounded-xl bg-rose-100/80 px-3 py-2 text-[11px] font-semibold text-rose-800 dark:bg-rose-950/60 dark:text-rose-200">
+              {unlockError}
+            </p>
+          )}
+
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              disabled={unlockBusy}
+              onClick={() => void handleInlineGoogleAdminSignIn()}
+              className="m3-tactile inline-flex min-h-[40px] items-center gap-2 rounded-xl bg-primary px-3.5 py-2 text-xs font-extrabold text-on-primary shadow-xs hover:bg-primary-hover disabled:opacity-60"
+            >
+              {unlockBusy ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
+              ) : (
+                <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
+              )}
+              <span>
+                {t('Masuk Google Admin (1 Klik)', 'Sign in Google Admin (1-Click)')}
+              </span>
+            </button>
+
+            {firebaseAuthState?.isBootstrapEmail && !firebaseAuthState.emailVerified && (
+              <>
+                <button
+                  type="button"
+                  disabled={unlockBusy}
+                  onClick={() => void handleInlineSendVerify()}
+                  className="m3-tactile inline-flex min-h-[40px] items-center gap-1.5 rounded-xl border border-amber-300 bg-white px-3 py-2 text-xs font-bold text-amber-950 hover:bg-amber-100 disabled:opacity-60 dark:border-amber-800 dark:bg-zinc-900 dark:text-amber-100"
+                >
+                  <span>{t('Kirim Email Verifikasi', 'Send Verification Email')}</span>
+                </button>
+                <button
+                  type="button"
+                  disabled={unlockBusy}
+                  onClick={() => void handleInlineRecheckVerify()}
+                  className="m3-tactile inline-flex min-h-[40px] items-center gap-1.5 rounded-xl border border-amber-300 bg-white px-3 py-2 text-xs font-bold text-amber-950 hover:bg-amber-100 disabled:opacity-60 dark:border-amber-800 dark:bg-zinc-900 dark:text-amber-100"
+                >
+                  <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
+                  <span>{t('Sudah Verifikasi? Muat Data', 'Verified? Load Data')}</span>
+                </button>
+              </>
+            )}
+
+            {(!firebaseAuthState?.isBootstrapEmail) && (
+              <button
+                type="button"
+                onClick={() => setShowAdminPwdForm((prev) => !prev)}
+                className="inline-flex min-h-[40px] items-center rounded-xl px-2.5 py-2 text-xs font-bold text-amber-900 underline-offset-2 hover:underline dark:text-amber-200"
+              >
+                {showAdminPwdForm
+                  ? t('Tutup form password', 'Hide password form')
+                  : t('Atau pakai password akun admin', 'Or use admin password')}
+              </button>
+            )}
+          </div>
+
+          {showAdminPwdForm && !firebaseAuthState?.isBootstrapEmail && (
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <input
+                type="password"
+                value={adminPwdInput}
+                onChange={(e) => setAdminPwdInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    void handleInlineAdminPasswordLogin();
+                  }
+                }}
+                placeholder={t(
+                  'Password akun utamaryan1@gmail.com',
+                  'Password for utamaryan1@gmail.com',
+                )}
+                className="min-h-[40px] min-w-[200px] flex-1 rounded-xl border border-amber-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-900 focus:border-primary focus:outline-none dark:border-amber-800 dark:bg-zinc-900 dark:text-zinc-100"
+              />
+              <button
+                type="button"
+                disabled={unlockBusy || !adminPwdInput.trim()}
+                onClick={() => void handleInlineAdminPasswordLogin()}
+                className="m3-tactile inline-flex min-h-[40px] items-center gap-1.5 rounded-xl bg-zinc-900 px-3.5 py-2 text-xs font-bold text-white hover:bg-zinc-800 disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-900"
+              >
+                <span>{t('Masuk', 'Sign In')}</span>
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -979,6 +1241,21 @@ export function AdminDashboardScreen({
                   <tbody className="divide-y divide-outline-variant">
                     {filteredUsers.map((u) => {
                       const ps = u.progressSummary;
+                      const af = u.ankiFallback;
+                      const masteredDisplay = ps
+                        ? ps.ankiMasteredTotal
+                        : af
+                          ? af.masteredCards
+                          : null;
+                      const reviewedDisplay = ps
+                        ? ps.ankiReviewedTotal
+                        : af
+                          ? af.trackedCards
+                          : null;
+                      const lastActiveDisplay =
+                        ps?.lastActiveDate ||
+                        af?.lastDateKey ||
+                        formatShortDate(u.updatedAtMs, lang);
                       return (
                         <tr
                           key={u.uid}
@@ -1011,7 +1288,9 @@ export function AdminDashboardScreen({
                               {ps ? `${ps.xp} XP` : '—'}
                             </p>
                             <p className="text-[11px] text-on-surface-variant">
-                              {ps ? `Lv.${ps.learnerLevel}` : t('Belum sinkron', 'Not synced')}
+                              {ps
+                                ? `Lv.${ps.learnerLevel}`
+                                : t('Belum buka v.baru', 'Pre-update')}
                             </p>
                           </td>
                           <td className="px-3 py-3 text-right font-mono tabular-nums text-on-surface">
@@ -1019,10 +1298,12 @@ export function AdminDashboardScreen({
                           </td>
                           <td className="px-3 py-3 text-right font-mono tabular-nums">
                             <p className="font-bold text-emerald-700 dark:text-emerald-400">
-                              {ps ? ps.ankiMasteredTotal : '—'}
+                              {masteredDisplay !== null ? masteredDisplay : '—'}
                             </p>
                             <p className="text-[11px] text-on-surface-variant">
-                              {ps ? `${ps.ankiReviewedTotal} rev` : t('Klik detail', 'Tap detail')}
+                              {reviewedDisplay !== null
+                                ? `${reviewedDisplay} ${t('kartu', 'cards')}`
+                                : t('Klik detail', 'Tap detail')}
                             </p>
                           </td>
                           <td className="px-3 py-3 text-right font-mono tabular-nums text-on-surface">
@@ -1033,8 +1314,7 @@ export function AdminDashboardScreen({
                               {formatShortDate(u.createdAtMs, lang)}
                             </p>
                             <p className="text-on-surface-variant">
-                              {ps?.lastActiveDate ||
-                                formatShortDate(u.updatedAtMs, lang)}
+                              {lastActiveDisplay}
                             </p>
                           </td>
                         </tr>
@@ -1115,6 +1395,16 @@ export function AdminDashboardScreen({
               </div>
               <div className="flex items-center justify-between border-b border-outline-variant pb-2">
                 <dt className="text-on-surface-variant">
+                  {t('Akun Firebase Aktif Saat Ini', 'Current Firebase Account')}
+                </dt>
+                <dd className="font-mono font-semibold text-on-surface">
+                  {firebaseAuthState?.signedIn
+                    ? `${firebaseAuthState.email} (${firebaseAuthState.emailVerified ? 'verified' : 'unverified'})`
+                    : t('Belum masuk', 'Signed out')}
+                </dd>
+              </div>
+              <div className="flex items-center justify-between border-b border-outline-variant pb-2">
+                <dt className="text-on-surface-variant">
                   {t('Akses Data Pengguna', 'Firestore User Access')}
                 </dt>
                 <dd
@@ -1125,8 +1415,8 @@ export function AdminDashboardScreen({
                   }`}
                 >
                   {firebaseAdminVerified
-                    ? t('Aktif & Terverifikasi', 'Active & Verified')
-                    : t('Perlu Login Email Admin', 'Admin Email Login Needed')}
+                    ? t(`Aktif (${users.length} pendaftar)`, `Active (${users.length} users)`)
+                    : t('Perlu Login Google/Email Admin', 'Admin Login Needed')}
                 </dd>
               </div>
               <div className="flex items-center justify-between">

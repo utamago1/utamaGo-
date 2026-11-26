@@ -422,6 +422,9 @@ export async function syncUserProfileToFirestore(
     >
   >,
 ): Promise<void> {
+  if (!auth.currentUser || auth.currentUser.uid !== uid) {
+    return;
+  }
   const userPath = `users/${uid}`;
   const payload: Record<string, unknown> = {
     updatedAt: serverTimestamp(),
