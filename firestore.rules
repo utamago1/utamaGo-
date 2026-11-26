@@ -94,6 +94,39 @@ service cloud.firestore {
         (isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
     }
 
+    function isValidUserProgressSummary(p) {
+      return p is map &&
+        p.keys().hasAll([
+          'xp',
+          'learnerLevel',
+          'streakDays',
+          'ankiReviewedTotal',
+          'ankiMasteredTotal',
+          'tryOutCompletedCount',
+          'challengeClearedCount',
+          'lastActiveDate'
+        ]) &&
+        p.keys().hasOnly([
+          'xp',
+          'learnerLevel',
+          'streakDays',
+          'ankiReviewedTotal',
+          'ankiMasteredTotal',
+          'tryOutCompletedCount',
+          'challengeClearedCount',
+          'lastActiveDate'
+        ]) &&
+        p.xp is number && p.xp >= 0 && p.xp <= 10000000 &&
+        p.learnerLevel is number && p.learnerLevel >= 1 && p.learnerLevel <= 999 &&
+        p.streakDays is number && p.streakDays >= 0 && p.streakDays <= 10000 &&
+        p.ankiReviewedTotal is number && p.ankiReviewedTotal >= 0 && p.ankiReviewedTotal <= 1000000 &&
+        p.ankiMasteredTotal is number && p.ankiMasteredTotal >= 0 && p.ankiMasteredTotal <= 100000 &&
+        p.tryOutCompletedCount is number && p.tryOutCompletedCount >= 0 && p.tryOutCompletedCount <= 500 &&
+        p.challengeClearedCount is number && p.challengeClearedCount >= 0 && p.challengeClearedCount <= 500 &&
+        p.lastActiveDate is string && p.lastActiveDate.size() <= 10 &&
+        (p.lastActiveDate == '' || isValidDateKey(p.lastActiveDate));
+    }
+
     function isValidUserProfile(data) {
       return data.keys().hasAll([
           'uid',
@@ -118,6 +151,7 @@ service cloud.firestore {
           'targetLevel',
           'dailyMinutes',
           'onboardingCompleted',
+          'progressSummary',
           'createdAt',
           'updatedAt'
         ]) &&
@@ -137,6 +171,7 @@ service cloud.firestore {
         data.dailyMinutes >= 5 &&
         data.dailyMinutes <= 240 &&
         data.onboardingCompleted is bool &&
+        (!('progressSummary' in data) || isValidUserProgressSummary(data.progressSummary)) &&
         data.createdAt is timestamp &&
         data.updatedAt is timestamp;
     }
@@ -400,8 +435,8 @@ service cloud.firestore {
     }
 
     match /users/{userId} {
-      allow get: if isOwner(userId) && isValidId(userId);
-      allow list: if false;
+      allow get: if (isOwner(userId) || isAdmin()) && isValidId(userId);
+      allow list: if isVerifiedBootstrapAdmin();
       allow create: if isOwner(userId) &&
         isValidId(userId) &&
         isValidUserProfile(incoming()) &&
@@ -422,13 +457,15 @@ service cloud.firestore {
           'targetLevel',
           'dailyMinutes',
           'onboardingCompleted',
+          'progressSummary',
           'updatedAt'
         ]);
       allow delete: if isOwner(userId) && isValidId(userId);
 
       match /ankiDecks/{deckId} {
-        allow get: if isOwner(userId) && isValidId(userId) && isValidAnkiDeckId(deckId);
-        allow list: if isOwner(userId) && isValidId(userId) && resource.data.userId == request.auth.uid;
+        allow get: if (isOwner(userId) || isAdmin()) && isValidId(userId) && isValidAnkiDeckId(deckId);
+        allow list: if (isOwner(userId) && isValidId(userId) && resource.data.userId == request.auth.uid) ||
+          (isVerifiedBootstrapAdmin() && isValidId(userId));
         allow create: if isOwner(userId) &&
           isValidId(userId) &&
           isValidAnkiDeckId(deckId) &&
@@ -451,8 +488,9 @@ service cloud.firestore {
       }
 
       match /ankiCards/{cardDocId} {
-        allow get: if isOwner(userId) && isValidId(userId) && isValidId(cardDocId);
-        allow list: if isOwner(userId) && isValidId(userId) && resource.data.userId == request.auth.uid;
+        allow get: if (isOwner(userId) || isAdmin()) && isValidId(userId) && isValidId(cardDocId);
+        allow list: if (isOwner(userId) && isValidId(userId) && resource.data.userId == request.auth.uid) ||
+          (isVerifiedBootstrapAdmin() && isValidId(userId));
         allow create: if isOwner(userId) &&
           isValidId(userId) &&
           isValidId(cardDocId) &&

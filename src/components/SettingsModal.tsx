@@ -35,7 +35,6 @@ import {
   isJapaneseSpeechSupported,
   listJapaneseVoices,
   loadSpeechPreferences,
-  prefetchJapaneseSpeech,
   saveSpeechPreferences,
   speakJapanese,
   SPEECH_RATE_PRESETS,
@@ -750,8 +749,8 @@ export function SettingsModal({
                     <span>Suara &amp; Pelafalan Jepang</span>
                   </h3>
                   <p className="mt-1 text-xs leading-relaxed text-on-surface-variant">
-                    Suara Cowok &amp; Cewek Jepang asli dengan cache otomatis
-                    untuk pemakaian offline. Berlaku di Anki, Kamus, dan Bunpou.
+                    Menggunakan suara bawaan perangkat (instan &amp; bisa
+                    diputar offline). Berlaku di Anki, Kamus, dan Bunpou.
                   </p>
                 </div>
 
@@ -882,7 +881,6 @@ export function SettingsModal({
                                 voiceStyle: opt.id,
                                 voiceURI: '',
                               });
-                              prefetchJapaneseSpeech(VOICE_TEST_SENTENCE, opt.id);
                             }}
                             className={`m3-tactile min-h-[44px] rounded-xl px-2 text-xs font-bold transition-colors ${
                               active
@@ -915,7 +913,7 @@ export function SettingsModal({
                         className="min-h-[44px] w-full rounded-xl border border-outline-variant bg-surface px-3 text-xs font-medium text-on-surface focus:border-primary focus:outline-none"
                       >
                         <option value="">
-                          Suara Server Natural (
+                          Otomatis Perangkat (
                           {formatSpeechStyleLabel(speechPrefs.voiceStyle)})
                         </option>
                         {japaneseVoices.map((v) => (

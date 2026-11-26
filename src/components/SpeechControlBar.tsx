@@ -278,7 +278,7 @@ export function SpeechControlBar({
                 className="min-h-[40px] w-full rounded-xl border border-outline-variant bg-surface-container-low px-3 text-xs font-medium text-on-surface focus:border-primary focus:outline-none"
               >
                 <option value="">
-                  Suara Server Natural ({formatSpeechStyleLabel(prefs.voiceStyle)})
+                  Otomatis Perangkat ({formatSpeechStyleLabel(prefs.voiceStyle)})
                 </option>
                 {voices.map((v) => (
                   <option key={v.voiceURI} value={v.voiceURI}>

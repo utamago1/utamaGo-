@@ -278,22 +278,22 @@ export function AdminLoginModal({
               >
                 {isFirstRunSetup
                   ? t('Atur Password Admin', 'Set Up Admin Password')
-                  : t('Login Admin Pesan', 'Admin Inbox Login')}
+                  : t('Login Halaman Admin', 'Admin Console Login')}
               </h2>
               <p className="text-[11px] font-medium text-on-surface-variant">
                 {canUnlockViaFirebase
                   ? t(
-                      'Akun admin terverifikasi siap membuka tab Pesan',
-                      'Verified admin account ready to open Messages tab',
+                      'Akun admin terverifikasi siap membuka Halaman Admin',
+                      'Verified admin account ready to open Admin Console',
                     )
                   : isFirstRunSetup
                     ? t(
-                        'Pengaturan pertama kali untuk membuka tab Pesan',
-                        'One-time setup to unlock the hidden Messages tab',
+                        'Pengaturan pertama kali untuk membuka Halaman Admin',
+                        'One-time setup to unlock the hidden Admin Console',
                       )
                     : t(
-                        'Akses khusus admin untuk melihat laporan bug & saran',
-                        'Admin access for viewing bug reports & feedback',
+                        'Akses khusus admin: data pendaftar, progres & laporan bug',
+                        'Admin access: registered users, progress & bug reports',
                       )}
               </p>
             </div>
@@ -363,8 +363,8 @@ export function AdminLoginModal({
                     <ShieldCheck className="h-4 w-4" aria-hidden="true" />
                     <span>
                       {t(
-                        'Buka Tab Pesan Sekarang',
-                        'Open Messages Tab Now',
+                        'Buka Halaman Admin Sekarang',
+                        'Open Admin Console Now',
                       )}
                     </span>
                   </button>
@@ -463,8 +463,8 @@ export function AdminLoginModal({
                     </p>
                     <p>
                       {t(
-                        `Untuk membuka Tab Pesan (laporan bug & saran) di versi web ini, keluar dulu dari akun saat ini (${firebaseAdmin?.email || 'belum login'}) lalu login menggunakan email admin ${BOOTSTRAP_ADMIN_EMAIL}.`,
-                        `To open the Messages tab on this web deployment, sign out from the current account (${firebaseAdmin?.email || 'signed out'}) and sign in with admin email ${BOOTSTRAP_ADMIN_EMAIL}.`,
+                        `Untuk membuka Halaman Admin (data pendaftar, progres & laporan bug) di versi web ini, keluar dulu dari akun saat ini (${firebaseAdmin?.email || 'belum login'}) lalu login menggunakan email admin ${BOOTSTRAP_ADMIN_EMAIL}.`,
+                        `To open the Admin Console (users, progress & bug reports) on this web deployment, sign out from the current account (${firebaseAdmin?.email || 'signed out'}) and sign in with admin email ${BOOTSTRAP_ADMIN_EMAIL}.`,
                       )}
                     </p>
                     <button
@@ -499,8 +499,8 @@ export function AdminLoginModal({
                   {isFirstRunSetup && (
                     <div className="rounded-2xl border border-outline-variant bg-surface-container-low px-3.5 py-2.5 text-xs leading-relaxed text-on-surface-variant">
                       {t(
-                        'Buat password admin sekali di sini untuk mengaktifkan tab Pesan tersembunyi. Password disimpan aman dalam bentuk hash di server.',
-                        'Create your admin password once here to unlock the hidden Messages tab. It is stored securely as a salted hash on the server.',
+                        'Buat password admin sekali di sini untuk mengaktifkan Halaman Admin tersembunyi. Password disimpan aman dalam bentuk hash di server.',
+                        'Create your admin password once here to unlock the hidden Admin Console. It is stored securely as a salted hash on the server.',
                       )}
                     </div>
                   )}
@@ -624,8 +624,8 @@ export function AdminLoginModal({
                           <Lock className="h-3.5 w-3.5" aria-hidden="true" />
                           <span>
                             {isFirstRunSetup
-                              ? t('Simpan & Buka Pesan', 'Save & Open Inbox')
-                              : t('Buka Tab Pesan', 'Open Messages Tab')}
+                              ? t('Simpan & Buka Admin', 'Save & Open Admin')
+                              : t('Buka Halaman Admin', 'Open Admin Console')}
                           </span>
                         </>
                       )}

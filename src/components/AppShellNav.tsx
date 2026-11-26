@@ -4,9 +4,9 @@ import {
   ClipboardCheck,
   Home,
   Layers,
-  Mail,
   Moon,
   Settings,
+  ShieldCheck,
   Star,
   Sun,
   User,
@@ -92,11 +92,11 @@ const BASE_TAB_ITEMS: TabItemMeta[] = [
 
 const ADMIN_MESSAGES_TAB: TabItemMeta = {
   id: 'messages',
-  shortLabelId: 'Pesan',
-  shortLabelEn: 'Inbox',
-  titleId: 'Pesan',
-  titleEn: 'Inbox',
-  icon: Mail,
+  shortLabelId: 'Admin',
+  shortLabelEn: 'Admin',
+  titleId: 'Halaman Admin',
+  titleEn: 'Admin Console',
+  icon: ShieldCheck,
 };
 
 function useTripleTapTrigger(onTrigger?: () => void) {

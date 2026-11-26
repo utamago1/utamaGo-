@@ -16,7 +16,7 @@ import { App as CapApp } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import { AnimatePresence, motion } from 'motion/react';
 import { AdminLoginModal } from './components/AdminLoginModal';
-import { AdminMessagesScreen } from './components/AdminMessagesScreen';
+import { AdminDashboardScreen } from './components/AdminDashboardScreen';
 import { AnkiN5Section } from './components/AnkiN5Section';
 import {
   DesktopNavigationRail,
@@ -61,6 +61,7 @@ import {
   logoutAccount,
   syncUserProfileToFirestore,
   type AuthenticatedUserProfile,
+  type UserProgressSummary,
 } from './services/accountAuth';
 import {
   deleteAnkiCardFromFirestore,
@@ -165,6 +166,7 @@ import {
 } from './utils/storage';
 import {
   EMPTY_ACTIVITY_LOG,
+  getDailyStreak,
   getLocalDateKey,
   recordStudyActivity,
 } from './utils/studyAnalytics';
@@ -1904,6 +1906,108 @@ export default function App() {
     return () => window.clearTimeout(timer);
   }, [authProfile, appState.onboarding]);
 
+  // Debounced sync of learner progress summary to Firestore so Admin Dashboard sees live learner progress
+  const lastSyncedProgressKeyRef = useRef<string>('');
+
+  const computedProgressSummary = useMemo<UserProgressSummary>(() => {
+    const srsEntries = Object.values(appState.ankiSrs);
+    let reviewedFromSrs = 0;
+    let masteredFromSrs = 0;
+    for (const entry of srsEntries) {
+      if (
+        entry.repetitions > 0 ||
+        entry.lapses > 0 ||
+        Boolean(entry.lastReviewedAt)
+      ) {
+        reviewedFromSrs += 1;
+      }
+      if (
+        Boolean(entry.isMastered) ||
+        (resolveCardState(entry) === 'review' && entry.intervalDays >= 21)
+      ) {
+        masteredFromSrs += 1;
+      }
+    }
+
+    const ankiReviewedTotal = Math.max(
+      reviewedFromSrs,
+      appState.ankiProgress.studiedIds.length,
+    );
+
+    const packetsMap = appState.packetsProgress ?? {};
+    let tryOutCompletedCount = 0;
+    for (const pkt of Object.values(packetsMap)) {
+      const submitted = pkt?.packetProgress?.submittedIds?.length ?? 0;
+      const completed = pkt?.packetProgress?.completedIds?.length ?? 0;
+      if (submitted > 0 || completed > 0) {
+        tryOutCompletedCount += 1;
+      }
+    }
+
+    const activeDateKeys = Object.entries(appState.activityLog.days)
+      .filter(([, entry]) => (entry?.total ?? 0) > 0)
+      .map(([key]) => key)
+      .sort();
+    const lastActiveDate =
+      activeDateKeys[activeDateKeys.length - 1] ??
+      (appState.gameProgress.totalXp > 0 || ankiReviewedTotal > 0
+        ? getLocalDateKey()
+        : '');
+
+    return {
+      xp: Math.max(0, Math.round(appState.gameProgress.totalXp)),
+      learnerLevel: Math.max(1, levelProgress.level),
+      streakDays: Math.max(0, getDailyStreak(appState.activityLog)),
+      ankiReviewedTotal,
+      ankiMasteredTotal: masteredFromSrs,
+      tryOutCompletedCount,
+      challengeClearedCount: completedCampaignStagesCount,
+      lastActiveDate,
+    };
+  }, [
+    appState.ankiSrs,
+    appState.ankiProgress.studiedIds.length,
+    appState.packetsProgress,
+    appState.activityLog,
+    appState.gameProgress.totalXp,
+    levelProgress.level,
+    completedCampaignStagesCount,
+  ]);
+
+  useEffect(() => {
+    if (!authProfile || authProfile.uid === 'utamago-preview') {
+      lastSyncedProgressKeyRef.current = '';
+      return;
+    }
+
+    const serialized = `${authProfile.uid}:${JSON.stringify(computedProgressSummary)}`;
+    if (lastSyncedProgressKeyRef.current === serialized) {
+      return;
+    }
+
+    // Also skip write if Firestore profile already has identical summary
+    if (
+      authProfile.progressSummary &&
+      JSON.stringify(authProfile.progressSummary) ===
+        JSON.stringify(computedProgressSummary)
+    ) {
+      lastSyncedProgressKeyRef.current = serialized;
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      void syncUserProfileToFirestore(authProfile.uid, {
+        progressSummary: computedProgressSummary,
+      })
+        .then(() => {
+          lastSyncedProgressKeyRef.current = serialized;
+        })
+        .catch(() => {});
+    }, 2200);
+
+    return () => window.clearTimeout(timer);
+  }, [authProfile, computedProgressSummary]);
+
   const handleRateAnkiCard = useCallback(
     (
       deckId: AnkiDeckId,
@@ -3235,7 +3339,7 @@ export default function App() {
               )}
 
               {activeTab === 'messages' && adminSessionToken && (
-                <AdminMessagesScreen
+                <AdminDashboardScreen
                   adminToken={adminSessionToken}
                   onLockAdmin={handleLockAdmin}
                   onSessionExpired={handleAdminSessionExpired}

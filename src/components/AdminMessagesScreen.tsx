@@ -41,6 +41,7 @@ interface AdminMessagesScreenProps {
   onLockAdmin: () => void;
   onSessionExpired: () => void;
   onSummaryChange?: (summary: FeedbackInboxSummary) => void;
+  embedded?: boolean;
 }
 
 type StatusFilter = 'all' | BetaFeedbackStatus;
@@ -93,6 +94,7 @@ export function AdminMessagesScreen({
   onLockAdmin,
   onSessionExpired,
   onSummaryChange,
+  embedded = false,
 }: AdminMessagesScreenProps) {
   const { lang, t } = useLanguage();
   const [items, setItems] = useState<FeedbackInboxItem[]>([]);
@@ -349,69 +351,107 @@ export function AdminMessagesScreen({
   return (
     <div className="space-y-4">
       {/* Header card */}
-      <section className="rounded-3xl border border-outline-variant bg-surface-container-low p-4 sm:p-5">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div className="flex items-start gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary-container text-primary">
-              <Inbox className="h-5 w-5" aria-hidden="true" />
-            </span>
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
+      <section className="rounded-2xl border border-outline-variant bg-surface-container-low p-4 sm:p-5">
+        {!embedded ? (
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="flex items-start gap-3">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary-container text-primary">
+                <Inbox className="h-5 w-5" aria-hidden="true" />
+              </span>
+              <div>
                 <h2 className="font-display text-lg font-extrabold tracking-tight text-on-surface">
                   {t('Pesan Bug & Saran', 'Bug & Feedback Inbox')}
                 </h2>
-                <span className="rounded-md border border-primary/30 bg-primary-container/70 px-2 py-0.5 font-mono text-[10px] font-bold uppercase text-on-primary-container">
-                  Admin
-                </span>
+                <p className="mt-0.5 text-xs text-on-surface-variant">
+                  {t(
+                    'Daftar laporan bug dan saran dari pengguna UtamaGo!. Tab ini tersembunyi dari pengguna biasa.',
+                    'Incoming bug reports and suggestions from UtamaGo! users. This tab stays hidden from regular users.',
+                  )}
+                </p>
               </div>
-              <p className="mt-0.5 text-xs text-on-surface-variant">
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              {items.length > 0 && (
+                <button
+                  type="button"
+                  onClick={handleExportJson}
+                  className="m3-tactile inline-flex min-h-[40px] items-center gap-1.5 rounded-xl border border-outline-variant bg-surface px-3 py-1.5 text-xs font-bold text-on-surface hover:bg-surface-container"
+                >
+                  <Download className="h-3.5 w-3.5" aria-hidden="true" />
+                  <span>{t('Ekspor JSON', 'Export JSON')}</span>
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => {
+                  vibrateTap();
+                  void loadMessages(true);
+                }}
+                disabled={refreshing}
+                className="m3-tactile inline-flex min-h-[40px] items-center gap-1.5 rounded-xl border border-outline-variant bg-surface px-3 py-1.5 text-xs font-bold text-on-surface hover:bg-surface-container disabled:opacity-60"
+              >
+                <RefreshCw
+                  className={`h-3.5 w-3.5 ${refreshing ? 'animate-spin' : ''}`}
+                  aria-hidden="true"
+                />
+                <span>{t('Muat Ulang', 'Refresh')}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  vibrateTap();
+                  onLockAdmin();
+                }}
+                className="m3-tactile inline-flex min-h-[40px] items-center gap-1.5 rounded-xl border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-bold text-rose-700 hover:bg-rose-100 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-300"
+              >
+                <Lock className="h-3.5 w-3.5" aria-hidden="true" />
+                <span>{t('Kunci Admin', 'Lock Admin')}</span>
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h3 className="font-display text-sm font-extrabold text-on-surface">
+                {t('Laporan Bug & Saran Pengguna', 'User Bug Reports & Suggestions')}
+              </h3>
+              <p className="text-xs text-on-surface-variant">
                 {t(
-                  'Daftar laporan bug dan saran dari pengguna UtamaGo!. Tab ini tersembunyi dari pengguna biasa.',
-                  'Incoming bug reports and suggestions from UtamaGo! users. This tab stays hidden from regular users.',
+                  'Tinjau laporan, perbarui status, dan tambahkan catatan tindak lanjut.',
+                  'Review reports, update status, and record follow-up notes.',
                 )}
               </p>
             </div>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            {items.length > 0 && (
+            <div className="flex items-center gap-2">
+              {items.length > 0 && (
+                <button
+                  type="button"
+                  onClick={handleExportJson}
+                  className="m3-tactile inline-flex min-h-[38px] items-center gap-1.5 rounded-xl border border-outline-variant bg-surface px-3 py-1.5 text-xs font-bold text-on-surface hover:bg-surface-container"
+                >
+                  <Download className="h-3.5 w-3.5" aria-hidden="true" />
+                  <span>{t('Ekspor JSON', 'Export JSON')}</span>
+                </button>
+              )}
               <button
                 type="button"
-                onClick={handleExportJson}
-                className="m3-tactile inline-flex min-h-[40px] items-center gap-1.5 rounded-xl border border-outline-variant bg-surface px-3 py-1.5 text-xs font-bold text-on-surface hover:bg-surface-container"
+                onClick={() => {
+                  vibrateTap();
+                  void loadMessages(true);
+                }}
+                disabled={refreshing}
+                className="m3-tactile inline-flex min-h-[38px] items-center gap-1.5 rounded-xl border border-outline-variant bg-surface px-3 py-1.5 text-xs font-bold text-on-surface hover:bg-surface-container disabled:opacity-60"
               >
-                <Download className="h-3.5 w-3.5" aria-hidden="true" />
-                <span>{t('Ekspor JSON', 'Export JSON')}</span>
+                <RefreshCw
+                  className={`h-3.5 w-3.5 ${refreshing ? 'animate-spin' : ''}`}
+                  aria-hidden="true"
+                />
+                <span>{t('Muat Ulang', 'Refresh')}</span>
               </button>
-            )}
-            <button
-              type="button"
-              onClick={() => {
-                vibrateTap();
-                void loadMessages(true);
-              }}
-              disabled={refreshing}
-              className="m3-tactile inline-flex min-h-[40px] items-center gap-1.5 rounded-xl border border-outline-variant bg-surface px-3 py-1.5 text-xs font-bold text-on-surface hover:bg-surface-container disabled:opacity-60"
-            >
-              <RefreshCw
-                className={`h-3.5 w-3.5 ${refreshing ? 'animate-spin' : ''}`}
-                aria-hidden="true"
-              />
-              <span>{t('Muat Ulang', 'Refresh')}</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                vibrateTap();
-                onLockAdmin();
-              }}
-              className="m3-tactile inline-flex min-h-[40px] items-center gap-1.5 rounded-xl border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-bold text-rose-700 hover:bg-rose-100 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-300"
-            >
-              <Lock className="h-3.5 w-3.5" aria-hidden="true" />
-              <span>{t('Kunci Admin', 'Lock Admin')}</span>
-            </button>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Summary KPI strip */}
         <div className="mt-4 grid grid-cols-4 gap-2">

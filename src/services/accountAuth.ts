@@ -31,6 +31,17 @@ import {
   testFirestoreConnection,
 } from './firebaseClient';
 
+export interface UserProgressSummary {
+  xp: number;
+  learnerLevel: number;
+  streakDays: number;
+  ankiReviewedTotal: number;
+  ankiMasteredTotal: number;
+  tryOutCompletedCount: number;
+  challengeClearedCount: number;
+  lastActiveDate: string;
+}
+
 export interface AuthenticatedUserProfile {
   uid: string;
   username: string;
@@ -41,6 +52,7 @@ export interface AuthenticatedUserProfile {
   targetLevel: JlptLevel;
   dailyMinutes: number;
   onboardingCompleted: boolean;
+  progressSummary?: UserProgressSummary;
 }
 
 const VALID_JLPT_LEVELS: readonly JlptLevel[] = ['N5', 'N4', 'N3', 'N2', 'N1'];
@@ -372,6 +384,29 @@ export async function requestPasswordResetByEmail(email: string): Promise<string
   return emailCheck.normalized;
 }
 
+function clampNonNegativeInt(val: unknown, min: number, max: number): number {
+  if (typeof val !== 'number' || !Number.isFinite(val)) return min;
+  return Math.max(min, Math.min(max, Math.round(val)));
+}
+
+function sanitizeProgressSummary(
+  input: UserProgressSummary,
+): UserProgressSummary {
+  const rawDate =
+    typeof input.lastActiveDate === 'string' ? input.lastActiveDate.trim() : '';
+  const validDate = /^\d{4}-\d{2}-\d{2}$/.test(rawDate) ? rawDate : '';
+  return {
+    xp: clampNonNegativeInt(input.xp, 0, 10_000_000),
+    learnerLevel: clampNonNegativeInt(input.learnerLevel, 1, 999),
+    streakDays: clampNonNegativeInt(input.streakDays, 0, 10_000),
+    ankiReviewedTotal: clampNonNegativeInt(input.ankiReviewedTotal, 0, 1_000_000),
+    ankiMasteredTotal: clampNonNegativeInt(input.ankiMasteredTotal, 0, 100_000),
+    tryOutCompletedCount: clampNonNegativeInt(input.tryOutCompletedCount, 0, 500),
+    challengeClearedCount: clampNonNegativeInt(input.challengeClearedCount, 0, 500),
+    lastActiveDate: validDate,
+  };
+}
+
 export async function syncUserProfileToFirestore(
   uid: string,
   patch: Partial<
@@ -383,6 +418,7 @@ export async function syncUserProfileToFirestore(
       | 'targetLevel'
       | 'dailyMinutes'
       | 'onboardingCompleted'
+      | 'progressSummary'
     >
   >,
 ): Promise<void> {
@@ -411,6 +447,9 @@ export async function syncUserProfileToFirestore(
   }
   if (typeof patch.onboardingCompleted === 'boolean') {
     payload.onboardingCompleted = patch.onboardingCompleted;
+  }
+  if (patch.progressSummary) {
+    payload.progressSummary = sanitizeProgressSummary(patch.progressSummary);
   }
 
   try {

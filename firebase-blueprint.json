@@ -45,6 +45,30 @@
         "onboardingCompleted": {
           "type": "boolean"
         },
+        "progressSummary": {
+          "type": "object",
+          "description": "Ringkasan progres belajar pengguna (XP, level, streak, Anki, Try Out, Tantangan) untuk tampilan dasbor admin.",
+          "properties": {
+            "xp": { "type": "number" },
+            "learnerLevel": { "type": "number" },
+            "streakDays": { "type": "number" },
+            "ankiReviewedTotal": { "type": "number" },
+            "ankiMasteredTotal": { "type": "number" },
+            "tryOutCompletedCount": { "type": "number" },
+            "challengeClearedCount": { "type": "number" },
+            "lastActiveDate": { "type": "string", "maxLength": 10 }
+          },
+          "required": [
+            "xp",
+            "learnerLevel",
+            "streakDays",
+            "ankiReviewedTotal",
+            "ankiMasteredTotal",
+            "tryOutCompletedCount",
+            "challengeClearedCount",
+            "lastActiveDate"
+          ]
+        },
         "createdAt": {
           "type": "string",
           "format": "date-time"
